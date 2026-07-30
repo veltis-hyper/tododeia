@@ -1,0 +1,1109 @@
+<article class="chapter" data-id="cap19" data-title="Integraciones con IDEs" data-part="3">
+  <header class="ch-head">
+    <p class="ch-kicker">Parte 3 · Claude Code · Capítulo 19</p>
+    <h1>Integraciones con IDEs</h1>
+    <p class="ch-lede">Claude Code en VS Code, JetBrains, Desktop y terminal integrado</p>
+  </header>
+
+  <p><strong>Nivel:</strong> Intermedio</p>
+
+  <p>Claude Code no vive solo en la terminal. Puedes usarlo dentro de tu editor favorito: VS Code, JetBrains o la app de escritorio Claude Desktop. Cada opción tiene sus ventajas. En este capítulo vas a aprender a instalar, configurar y sacarle el máximo provecho a cada integración.</p>
+
+  <h2 id="cap19-panorama-general">Panorama general: tres formas de usar Claude Code</h2>
+  <p>Imagina que Claude Code es un asistente que puede sentarse en diferentes escritorios. Puede estar en:</p>
+  <ul class="deflist">
+    <li><strong>VS Code</strong> — con una extensión oficial que tiene más de 6.5 millones de instalaciones</li>
+    <li><strong>JetBrains</strong> — con un plugin dedicado (en Beta) para IntelliJ, PyCharm, WebStorm y más</li>
+    <li><strong>Claude Desktop</strong> — una app independiente con funciones avanzadas como preview de apps y tareas programadas</li>
+    <li><strong>Terminal integrado</strong> — el CLI clásico, pero corriendo dentro de cualquier IDE</li>
+  </ul>
+  <p>Todas estas opciones comparten la misma configuración base. Tus archivos <code>CLAUDE.md</code>, tus MCP servers y tu historial de conversaciones funcionan igual en todas partes.</p>
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p><strong>Sobre plugins de la comunidad (no oficiales):</strong> Para editores que no tienen extensión oficial (Neovim, Emacs, Zed) existen plugins de la comunidad que reimplementan el protocolo WebSocket/MCP de la extensión oficial: <code>claudecode.nvim</code>, <code>claude-code.nvim</code>, <code>vim-claude-code</code> para Neovim; integraciones en Emacs con project context y diagnostics; y en Zed se usa via terminal integrado. No los soporta Anthropic, pero la comunidad los mantiene activos.</p>
+  </div>
+
+  <h3>Qué se comparte entre todas las opciones</h3>
+  <p>Sin importar dónde uses Claude Code, estas cosas se comparten automáticamente:</p>
+  <ul>
+    <li>Archivos <code>CLAUDE.md</code> del proyecto</li>
+    <li>MCP servers configurados en <code>~/.claude.json</code> o <code>.mcp.json</code></li>
+    <li>Hooks y skills definidos en settings</li>
+    <li>Settings globales en <code>~/.claude/settings.json</code></li>
+    <li>Reglas de permisos y herramientas permitidas</li>
+    <li>Historial de conversaciones (la extensión y el CLI comparten historial)</li>
+  </ul>
+  <div class="callout warn">
+    <p class="callout-label">Ojo</p>
+    <p>Los MCP servers configurados para la app de chat de Claude Desktop (<code>claude_desktop_config.json</code>) son completamente separados del Code tab. No aparecen en Claude Code. Esto confunde a mucha gente.</p>
+  </div>
+
+  <h2 id="cap19-claude-code-en-vs-code">Claude Code en VS Code</h2>
+  <p>La extensión de VS Code es el método recomendado por Anthropic. Piensa en ella como un panel de chat inteligente dentro de tu editor. No solo responde preguntas: puede editar archivos, ejecutar comandos y hasta controlar tu navegador.</p>
+
+  <h3>Instalación paso a paso</h3>
+  <p>Necesitas VS Code versión 1.98.0 o superior y una cuenta Anthropic.</p>
+  <p>La forma más rápida:</p>
+  <ol class="steps">
+    <li>Abre VS Code</li>
+    <li>Presiona <code>Cmd+Shift+X</code> en Mac (o <code>Ctrl+Shift+X</code> en Windows/Linux)</li>
+    <li>Busca <strong>Claude Code</strong></li>
+    <li>Haz clic en <strong>Install</strong></li>
+  </ol>
+  <p>Si no aparece la extensión, reinicia VS Code o ejecuta <code>Developer: Reload Window</code> desde la Command Palette.</p>
+  <p><strong>Link directo de instalación:</strong> también puedes usar URLs especiales que abren VS Code o Cursor en la página de instalación de la extensión:</p>
+  <ul>
+    <li>VS Code: <code>vscode:extension/anthropic.claude-code</code></li>
+    <li>Cursor: <code>cursor:extension/anthropic.claude-code</code></li>
+  </ul>
+  <p>En macOS, <code>open "vscode:extension/anthropic.claude-code"</code> abre la extensión lista para instalar. En Linux usa <code>xdg-open</code> y en Windows <code>Start-Process</code>.</p>
+  <p><strong>Soporte para forks de VS Code:</strong> la misma extensión se instala en Cursor, Devin Desktop (antes Windsurf), Kiro y VSCodium. Devin Desktop es el mismo fork de VS Code de siempre: en Claude Code v2.1.169 (8 de junio de 2026) solo cambió el nombre del producto, no la integración. Los forks que no usan el Microsoft Marketplace (porque sus términos lo prohíben) descargan la extensión desde el Open VSX Registry con el mismo identificador <code>anthropic.claude-code</code>. Si tu fork no permite instalar la extensión, siempre puedes correr <code>claude</code> desde su terminal integrado.</p>
+
+  <h3>Cuatro formas de abrir Claude en VS Code</h3>
+  <p>Una vez instalada la extensión, tienes varias formas de abrirla:</p>
+  <ol>
+    <li><strong>Icono Spark</strong> — El icono de chispa en la esquina superior derecha del editor. Es la forma más rápida. Solo aparece cuando tienes un archivo abierto.</li>
+    <li><strong>Activity Bar</strong> — El icono de chispa en la barra lateral izquierda. Siempre visible. Muestra la lista de sesiones.</li>
+    <li><strong>Command Palette</strong> — Presiona <code>Cmd+Shift+P</code> (Mac) o <code>Ctrl+Shift+P</code> (Win/Linux). Escribe <code>Claude Code</code> y elige la opción que necesites.</li>
+    <li><strong>Status Bar</strong> — Haz clic en <strong>* Claude Code</strong> en la esquina inferior derecha. Funciona incluso sin archivo abierto.</li>
+  </ol>
+
+  <h3>Dónde colocar el panel de Claude</h3>
+  <p>Puedes mover el panel de Claude a tres posiciones:</p>
+  <ul class="deflist">
+    <li><strong>Sidebar derecha (secundaria)</strong> — La posición recomendada. Mantiene Claude visible mientras escribes código. Es como tener un copiloto siempre a la vista.</li>
+    <li><strong>Sidebar izquierda</strong> — Junto al explorador de archivos, búsqueda, etc.</li>
+    <li><strong>Área del editor</strong> — Claude se abre como una pestaña más junto a tus archivos. Útil para tareas secundarias.</li>
+  </ul>
+  <p>También puedes cambiar la ubicación predeterminada en los settings de la extensión con <code>claudeCode.preferredLocation</code>.</p>
+
+  <h3>El sistema de @-menciones: cómo dar contexto a Claude</h3>
+  <p>Las @-menciones son como etiquetas. Le dicen a Claude exactamente qué mirar. Es como señalar algo con el dedo y decir "mira esto".</p>
+  <ul class="deflist">
+    <li><strong><code>@archivo.ts</code></strong> — Menciona un archivo. Soporta fuzzy matching (búsqueda inteligente). Si escribes <code>@auth</code>, encuentra <code>auth.js</code>, <code>AuthService.ts</code>, etc.</li>
+    <li><strong><code>@carpeta/</code></strong> — Menciona una carpeta entera. No olvides la barra final.</li>
+    <li><strong><code>@archivo.ts#5-10</code></strong> — Referencia a líneas específicas. El atajo <code>Option+K</code> (Mac) o <code>Alt+K</code> (Win/Linux) lo inserta automáticamente cuando tienes código seleccionado.</li>
+    <li><strong><code>@terminal:nombre</code></strong> — Referencia a la salida de un terminal por su título. Evita tener que copiar y pegar.</li>
+    <li><strong><code>@browser</code></strong> — Conecta con Chrome para tareas del navegador. Requiere la extensión Claude in Chrome versión 1.0.36 o superior.</li>
+    <li><strong><code>@archivo.pdf</code></strong> — Menciona un PDF. Puedes pedir páginas específicas en el mismo prompt: "página 3", un rango "1-10", o un rango abierto "desde la página 3". Útil para PDFs grandes que no quieres cargar enteros.</li>
+  </ul>
+  <p>También puedes arrastrar archivos con <code>Shift</code> para adjuntarlos. Y la selección del editor se comparte automáticamente (puedes desactivar esto con el icono del ojo).</p>
+
+  <h3>Modos de permisos</h3>
+  <p>Los modos de permisos controlan cuánta libertad tiene Claude. Piensa en ellos como niveles de confianza:</p>
+  <ul class="deflist">
+    <li><strong>Ask permissions (predeterminado)</strong> — Claude pregunta antes de cada acción. Como un empleado nuevo que confirma cada paso contigo.</li>
+    <li><strong>Auto accept edits</strong> — Claude edita archivos sin preguntar, pero pide permiso para comandos de terminal. Como un empleado con más experiencia.</li>
+    <li><strong>Plan mode</strong> — Claude analiza y crea un plan, pero no modifica nada. Como pedirle que piense antes de actuar.</li>
+    <li><strong>Bypass permissions</strong> — Claude hace todo sin preguntar. Solo para entornos sandbox. Como darle las llaves de la casa.</li>
+  </ul>
+  <p>Puedes cambiar el modo en cualquier momento durante la sesión. El setting <code>claudeCode.initialPermissionMode</code> define cuál se usa al iniciar.</p>
+  <p><strong>Plan mode con feedback inline (exclusivo de VS Code):</strong> cuando activas Plan mode en la extensión, Claude abre el plan como un documento markdown a pantalla completa dentro del editor. Puedes leerlo, añadir comentarios inline al lado de las líneas que no te convencen y revisar todo antes de aprobar. Cuando aceptas, esos comentarios viajan de vuelta a Claude como ajustes al plan. Este flujo combina la claridad del editor con el control del CLI y es único de VS Code: ni el CLI puro ni el plugin de JetBrains lo tienen.</p>
+
+  <h3>Checkpoints: tu máquina del tiempo</h3>
+  <p>Los checkpoints son puntos de control. Cada vez que Claude modifica algo, se guarda un checkpoint. Si algo sale mal, puedes retroceder.</p>
+  <p>Al pasar el cursor sobre cualquier mensaje, tienes tres opciones:</p>
+  <ul class="deflist">
+    <li><strong>Fork conversation from here</strong> — Crea una nueva rama de conversación. Mantiene los cambios en el código.</li>
+    <li><strong>Rewind code to here</strong> — Revierte los cambios de archivos, pero mantiene el historial de chat.</li>
+    <li><strong>Fork conversation and rewind code</strong> — Combina las dos anteriores. Nueva rama + revertir cambios.</li>
+  </ul>
+  <p>Es como tener <code>Ctrl+Z</code> con superpoderes.</p>
+
+  <h3>Sesiones paralelas</h3>
+  <p>Puedes tener varias conversaciones con Claude al mismo tiempo. Cada una tiene su propio historial y contexto.</p>
+  <p>Para abrir una nueva sesión:</p>
+  <ul class="deflist">
+    <li><strong><code>Cmd+Shift+Esc</code> (Mac) o <code>Ctrl+Shift+Esc</code> (Win/Linux)</strong> — Abre una nueva sesión como pestaña</li>
+    <li><strong>Command Palette &gt; Open in New Window</strong> — Abre una sesión en ventana separada</li>
+  </ul>
+  <p>Indicadores útiles:</p>
+  <ul class="deflist">
+    <li><strong>Punto azul</strong> — Claude necesita un permiso. Ve a esa pestaña.</li>
+    <li><strong>Punto naranja</strong> — Claude terminó mientras la pestaña estaba oculta.</li>
+  </ul>
+
+  <h3>Resumir sesiones remotas</h3>
+  <p>Si usas Claude Code on the web (<a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>), puedes continuar esas sesiones en VS Code.</p>
+  <ol class="steps">
+    <li>Abre el dropdown de <strong>Past Conversations</strong></li>
+    <li>Ve a la pestaña <strong>Remote</strong></li>
+    <li>Selecciona la sesión que quieres continuar</li>
+  </ol>
+  <p><strong>Requisitos:</strong> necesitas iniciar sesión con una suscripción de <a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a> (no Anthropic Console). Solo aparecen sesiones que se iniciaron con un repositorio de GitHub.</p>
+  <div class="callout warn">
+    <p class="callout-label">Importante</p>
+    <p>La sesión se descarga a tu máquina local. Los cambios que hagas no se sincronizan de vuelta a <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>.</p>
+  </div>
+
+  <h3>Comandos del menú / en el prompt</h3>
+  <p>Al escribir <code>/</code> en el prompt de la extensión aparece un menú con los comandos disponibles. Es un subconjunto del CLI, pero cubre lo que más se usa día a día:</p>
+  <ul class="deflist">
+    <li><strong><code>/usage</code></strong> — Muestra el uso del plan en la sesión actual (mensajes consumidos, ventana de reset, modelo activo). En la extensión se ve como una barra gráfica. Desde Claude Code v2.1.174 o posterior, el diálogo Account &amp; usage añade un desglose de atribución por skill, subagente, plugin y MCP (además de cache misses y contexto largo) en ventanas de 24 horas y 7 días, para que veas qué está consumiendo tu cuota. Las cifras son aproximadas y solo cuentan las sesiones locales de esa máquina.</li>
+    <li><strong><code>/remote-control</code></strong> — Inicia una sesión de Remote Control. Te da una URL para controlar la misma sesión desde el navegador de otro dispositivo (laptop, teléfono).</li>
+    <li><strong><code>/plugins</code></strong> — Abre el plugin manager gráfico (ver sección dedicada).</li>
+    <li><strong><code>/mcp</code></strong> — Abre la gestión de MCP servers (enable/disable, reconectar, OAuth).</li>
+    <li><strong><code>/compact</code></strong> — Compacta manualmente la conversación cuando el contexto se llena.</li>
+    <li><strong><code>/config</code></strong> — Abre la configuración interactiva (modelo, diff tool, editor mode, etc.).</li>
+    <li><strong><code>/theme</code></strong> — Cambia el tema visual o crea uno custom.</li>
+    <li><strong><code>/terminal-setup</code></strong> — Configura Shift+Enter y otros keybindings para el terminal actual (ver sección dedicada).</li>
+    <li><strong><code>/ide</code></strong> — Conecta el CLI con el IDE cuando corres desde un terminal externo.</li>
+    <li><strong><code>/desktop</code></strong> — Mueve la sesión a Claude Desktop.</li>
+  </ul>
+  <p>Los items que llevan un icono de terminal dentro del menú abren el comando en el terminal integrado en lugar de ejecutarlo en el panel gráfico. Para los comandos que no aparecen en este menú (por ejemplo, el atajo <code>!</code> para bash o el tab completion), tienes que abrir <code>claude</code> en el terminal integrado.</p>
+
+  <h3>Modo Vim para el prompt</h3>
+  <p>Si estás acostumbrado a Vim, puedes editar el prompt con keybindings tipo Vim. Lo activas de dos formas:</p>
+  <ul>
+    <li>En <code>~/.claude/settings.json</code>: <code>"editorMode": "vim"</code></li>
+    <li>Desde Claude: <code>/config</code> → Editor mode → vim</li>
+  </ul>
+  <p>El modo soporta un subset de motions de Vim:</p>
+  <ul>
+    <li><strong>NORMAL:</strong> <code>hjkl</code> (movimiento), <code>w/b/e</code> (palabras), <code>0/$</code> (inicio/fin de línea), <code>gg/G</code> (arriba/abajo), <code>i/a/I/A</code> (entrar a INSERT), <code>o/O</code> (nueva línea), <code>d/c/y</code> con text objects (<code>dw</code>, <code>ciw</code>, <code>yy</code>).</li>
+    <li><strong>VISUAL:</strong> <code>v</code> (carácter), <code>V</code> (línea); <code>d/c/y</code> sobre la selección.</li>
+  </ul>
+  <p><strong>Diferencia clave con Vim estándar:</strong> Enter en INSERT envía el prompt, no inserta nueva línea. Para meter un salto de línea tienes dos caminos:</p>
+  <ul>
+    <li>Volver a NORMAL (<code>Esc</code>) y usar <code>o</code> u <code>O</code></li>
+    <li>Pulsar <code>Ctrl+J</code> directamente desde INSERT</li>
+  </ul>
+  <p>Las motions del modo Vim no son remapeables via <code>keybindings.json</code> de VS Code: están manejadas dentro del prompt de Claude, no por el editor.</p>
+
+  <h2 id="cap19-deep-links">Deep links: abrir Claude desde URLs externas</h2>
+  <p>Claude Code registra dos esquemas de URL para que puedas lanzar sesiones desde cualquier sitio que entienda links: un Slack, una página de Notion, un runbook, un bookmarklet o un alias de shell.</p>
+  <ul class="deflist">
+    <li><strong><code>vscode://anthropic.claude-code/open</code></strong> — abre una pestaña de Claude Code dentro de VS Code.</li>
+    <li><strong><code>claude-cli://open</code></strong> — abre una sesión de Claude Code en el terminal del sistema.</li>
+  </ul>
+  <p>Los dos rellenan el prompt pero no lo envían automáticamente. El ingeniero siempre revisa antes de pulsar Enter.</p>
+
+  <h3>vscode://anthropic.claude-code/open (pestaña en VS Code)</h3>
+  <p>La extensión registra este URI handler al instalarse. Te permite abrir un tab de Claude Code desde cualquier lugar: un script de shell, un bookmarklet o una herramienta de automatización.</p>
+  <p>La URL base es:</p>
+  <pre><code class="lang-text">vscode://anthropic.claude-code/open</code></pre>
+  <p>Si VS Code no está corriendo, la URL lo lanza primero. Si ya está abierto, la URL abre la pestaña en la ventana enfocada.</p>
+  <p>Acepta dos parámetros opcionales:</p>
+  <ul class="deflist">
+    <li><strong><code>prompt</code></strong> — Texto pre-llenado en el prompt box (URL-encoded). No se envía automáticamente, solo se pre-llena.</li>
+    <li><strong><code>session</code></strong> — ID de una sesión existente para reanudarla en vez de iniciar una nueva. Debe pertenecer al workspace abierto. Si la sesión ya está abierta en otra pestaña, la enfoca.</li>
+  </ul>
+  <p>Para invocarlo desde la terminal:</p>
+  <ul>
+    <li>macOS: <code>open "vscode://anthropic.claude-code/open?prompt=review%20my%20changes"</code></li>
+    <li>Linux: <code>xdg-open "vscode://anthropic.claude-code/open?prompt=review%20my%20changes"</code></li>
+    <li>Windows: <code>start vscode://anthropic.claude-code/open?prompt=review%20my%20changes</code></li>
+  </ul>
+  <p>Es útil para crear alias de shell que abran Claude con un prompt predefinido. Por ejemplo, un alias <code>cr</code> que abra Claude con el prompt "review my changes" cada vez que quieras una revisión rápida.</p>
+
+  <h3>claude-cli://open (sesión de terminal)</h3>
+  <p>El esquema <code>claude-cli://open</code> abre una sesión de terminal de Claude Code con el directorio y el prompt pre-rellenados. Pensado para embeber en runbooks de incidentes, alertas de PagerDuty, tickets de Linear o cualquier sitio donde un link cumpla la función de "haz clic y arranca Claude en este contexto".</p>
+  <p>Requiere Claude Code v2.1.91 o superior. El handler se registra la primera vez que ejecutas <code>claude</code> interactivo en la máquina; antes de eso, los links no hacen nada.</p>
+  <p>Parámetros aceptados:</p>
+  <ul class="deflist">
+    <li><strong><code>q</code></strong> — Prompt pre-rellenado, URL-encoded. Hasta 5000 caracteres. Usa <code>%0A</code> para salto de línea.</li>
+    <li><strong><code>cwd</code></strong> — Ruta absoluta del directorio de trabajo. Tiene prioridad sobre <code>repo</code>. Rechaza rutas de red o UNC.</li>
+    <li><strong><code>repo</code></strong> — Slug <code>owner/name</code> de GitHub. Se resuelve al último clon donde ejecutaste <code>claude</code>. Si nunca corriste Claude en ese repo, el handler cae al directorio home.</li>
+  </ul>
+  <p>Cuando el link se abre, Claude muestra un banner sobre el input avisando que el prompt viene de una fuente externa. Si el prompt supera los 1000 caracteres, el banner recomienda revisarlo antes de enviar.</p>
+  <p>Ejemplos:</p>
+  <pre><code class="lang-text"># Runbook que abre Claude en el repo correcto con prompt:
+claude-cli://open?repo=acme/web-gateway&amp;q=5xx%20rate%20is%20elevated.%20Check%20recent%20deploys.
+
+# Con ruta absoluta (gana sobre repo):
+claude-cli://open?cwd=/Users/jane/work/api&amp;q=review%20open%20PRs</code></pre>
+  <div class="callout warn">
+    <p class="callout-label">Importante</p>
+    <p><strong>Importante con GitHub Markdown:</strong> GitHub strip-ea los esquemas custom (todo lo que no es <code>http://</code> o <code>https://</code>) cuando renderiza markdown. Los deep links <code>claude-cli://</code> solo funcionan como links activos en plataformas que sí permiten esquemas custom: Slack, Notion, Confluence, Linear, PagerDuty. En GitHub mete la URL en un bloque de código para que el lector pueda copiarla.</p>
+  </div>
+  <p>Por dónde se registra el handler en cada SO:</p>
+  <ul>
+    <li>macOS: <code>~/Applications/Claude Code URL <a href="https://Handler.app" target="_blank" rel="noopener">Handler.app</a></code></li>
+    <li>Linux: <code>$XDG_DATA_HOME/applications/claude-code-url-handler.desktop</code> (por defecto <code>~/.local/share/applications</code>)</li>
+    <li>Windows: <code>HKEY_CURRENT_USER\Software\Classes\claude-cli</code></li>
+  </ul>
+  <p>Claude recuerda el último terminal donde lo abriste (iTerm2, Ghostty, kitty, Alacritty, WezTerm, <a href="https://Terminal.app" target="_blank" rel="noopener">Terminal.app</a> en macOS; <code>$TERMINAL</code> o equivalente en Linux; Windows Terminal en Windows). Si el deep link abre el terminal equivocado, lanza <code>claude</code> una vez en tu terminal favorito y la próxima vez lo recordará.</p>
+
+  <h3>Desactivar el handler en empresa</h3>
+  <p>En entornos corporativos puede que no quieras que los usuarios reciban deep links desde fuentes externas. Añade esta clave a <code>~/.claude/settings.json</code> o, mejor todavía, a <code>managed-settings.json</code>:</p>
+  <pre><code class="lang-json">{
+    "disableDeepLinkRegistration": "disable"
+}</code></pre>
+  <p>Con esto, Claude Code no registra el handler <code>claude-cli://</code> al primer arranque. Si lo configuras via managed settings, los usuarios no pueden re-habilitarlo desde sus propios settings.</p>
+
+  <h2 id="cap19-settings-de-la-extension-vs-code">Settings de la extensión VS Code</h2>
+  <p>La extensión tiene varias opciones de configuración. Puedes acceder a ellas con <code>Cmd+,</code> (Mac) o <code>Ctrl+,</code> (Win/Linux) y buscar <code>Claude Code</code>.</p>
+  <p>Estas son las más importantes:</p>
+
+  <h3>Settings principales</h3>
+  <ul class="deflist">
+    <li><strong><code>claudeCode.selectedModel</code></strong> — El modelo para nuevas conversaciones. Valor predeterminado: <code>default</code>. Puedes cambiarlo por sesión con <code>/model</code>.</li>
+    <li><strong><code>claudeCode.useTerminal</code></strong> — Si prefieres la interfaz de terminal en vez del panel gráfico, pon esto en <code>true</code>.</li>
+    <li><strong><code>claudeCode.preferredLocation</code></strong> — Dónde se abre Claude: <code>sidebar</code> (derecha) o <code>panel</code> (nueva pestaña).</li>
+    <li><strong><code>claudeCode.autosave</code></strong> — Guarda archivos automáticamente antes de que Claude los lea o escriba. Predeterminado: <code>true</code>. Déjalo activado.</li>
+    <li><strong><code>claudeCode.useCtrlEnterToSend</code></strong> — Usa <code>Ctrl/Cmd+Enter</code> en vez de <code>Enter</code> para enviar. Útil si envías mensajes por accidente.</li>
+    <li><strong><code>claudeCode.respectGitIgnore</code></strong> — Excluye archivos de <code>.gitignore</code> en las búsquedas. Predeterminado: <code>true</code>.</li>
+  </ul>
+
+  <h3>Settings avanzados</h3>
+  <ul class="deflist">
+    <li><strong><code>claudeCode.initialPermissionMode</code></strong> — El modo de permisos al iniciar. Opciones: <code>default</code>, <code>plan</code>, <code>acceptEdits</code>, <code>bypassPermissions</code>.</li>
+    <li><strong><code>claudeCode.environmentVariables</code></strong> — Variables de entorno para Claude. Ejemplo: <code>["MY_VAR=value"]</code>. Pero es mejor usar <code>~/.claude/settings.json</code> para que funcione tanto en la extensión como en el CLI.</li>
+    <li><strong><code>claudeCode.disableLoginPrompt</code></strong> — Omite la pantalla de login. Necesario si usas Amazon Bedrock, Google Vertex AI o Microsoft Foundry.</li>
+    <li><strong><code>claudeCode.allowDangerouslySkipPermissions</code></strong> — Omite TODOS los permisos. Solo para entornos sandbox. Usar con extrema precaución.</li>
+    <li><strong><code>claudeCode.enableNewConversationShortcut</code></strong> — Habilita <code>Cmd/Ctrl+N</code> para nueva conversación. Predeterminado: <code>true</code>.</li>
+    <li><strong><code>claudeCode.claudeProcessWrapper</code></strong> — Ruta a un ejecutable wrapper personalizado para el proceso de Claude. Es un string vacío por defecto. Útil para entornos especiales donde necesitas envolver el proceso de Claude en otro comando.</li>
+    <li><strong><code>claudeCode.hideOnboarding</code></strong> — Oculta el checklist de onboarding (el icono del gorro de graduación). Predeterminado: <code>false</code>. Actívalo después de completar la guía inicial si ya no lo necesitas.</li>
+  </ul>
+
+  <h3>Settings extras de productividad</h3>
+  <ul class="deflist">
+    <li><strong><code>claudeCode.enableReopenClosedSessionShortcut</code></strong> — Habilita <code>Cmd+Shift+T</code> (Mac) o <code>Ctrl+Shift+T</code> (Win/Linux) para reabrir la última sesión de Claude que cerraste. Predeterminado: <code>true</code>. Si el último tab cerrado no era de Claude, el atajo cae al comportamiento normal de VS Code (reabrir el último editor cerrado). Si esto te molesta, ponlo en <code>false</code>.</li>
+    <li><strong><code>claudeCode.usePythonEnvironment</code></strong> — Activa el entorno Python del workspace al ejecutar Claude. Predeterminado: <code>true</code>. Requiere tener instalada la extensión oficial de Python de Microsoft (<code>ms-python.python</code>). Esto significa que Claude usa el mismo intérprete y dependencias que tu IDE: si tienes un venv activo, Claude lo respeta. Si no usas Python o no quieres que Claude active el entorno, pásalo a <code>false</code>.</li>
+  </ul>
+
+  <h3>Temas personalizados</h3>
+  <p>Claude Code trae presets de temas: <code>dark</code>, <code>light</code>, <code>dark-daltonized</code>, <code>light-daltonized</code>, <code>dark-ansi</code> y <code>light-ansi</code>. Los daltonizados ajustan colores para usuarios con daltonismo.</p>
+  <p>También puedes crear tus propios temas. Claude observa la carpeta <code>~/.claude/themes/</code> y carga cualquier archivo JSON con esta forma:</p>
+  <pre><code class="lang-json">// ~/.claude/themes/dracula.json
+{
+    "name": "Dracula",
+    "base": "dark",
+    "overrides": {
+        "claude": "#bd93f9",
+        "error": "#ff5555",
+        "success": "#50fa7b"
+    }
+}</code></pre>
+  <p>Campos:</p>
+  <ul class="deflist">
+    <li><strong><code>name</code></strong> — Cómo aparece en el selector <code>/theme</code>.</li>
+    <li><strong><code>base</code></strong> — Tema preset del que hereda (<code>dark</code> o <code>light</code>). Define los colores por defecto.</li>
+    <li><strong><code>overrides</code></strong> — Diccionario con los tokens que quieres cambiar: <code>claude</code>, <code>error</code>, <code>success</code>, colores del prompt, diffs, fullscreen, usage meter, subagentes, etc.</li>
+  </ul>
+  <p>Para activar un tema, usa <code>/theme</code> y selecciónalo. Para crear uno interactivamente, <code>/theme</code> → New custom theme.... Para editar uno existente, selecciónalo y pulsa <code>Ctrl+E</code>. Claude recarga el tema en caliente cada vez que guardas el archivo.</p>
+
+  <h2 id="cap19-atajos-de-teclado-en-vs-code">Atajos de teclado en VS Code</h2>
+  <p>Los atajos te ahorran tiempo. Aquí están los más útiles:</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Acción</th>
+          <th>Mac</th>
+          <th>Windows/Linux</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Alternar foco editor/Claude</td>
+          <td><code>Cmd+Esc</code></td>
+          <td><code>Ctrl+Esc</code></td>
+        </tr>
+        <tr>
+          <td>Abrir nueva sesión como pestaña</td>
+          <td><code>Cmd+Shift+Esc</code></td>
+          <td><code>Ctrl+Shift+Esc</code></td>
+        </tr>
+        <tr>
+          <td>Nueva conversación</td>
+          <td><code>Cmd+N</code></td>
+          <td><code>Ctrl+N</code></td>
+        </tr>
+        <tr>
+          <td>Reabrir última sesión cerrada</td>
+          <td><code>Cmd+Shift+T</code></td>
+          <td><code>Ctrl+Shift+T</code></td>
+        </tr>
+        <tr>
+          <td>Insertar referencia al archivo seleccionado</td>
+          <td><code>Option+K</code></td>
+          <td><code>Alt+K</code></td>
+        </tr>
+        <tr>
+          <td>Nueva línea sin enviar</td>
+          <td><code>Shift+Enter</code></td>
+          <td><code>Shift+Enter</code></td>
+        </tr>
+        <tr>
+          <td>Expandir/colapsar bloques de extended thinking</td>
+          <td><code>Ctrl+O</code></td>
+          <td><code>Ctrl+O</code></td>
+        </tr>
+        <tr>
+          <td>Abrir terminal integrado</td>
+          <td><code>Cmd+`</code></td>
+          <td><code>Ctrl+`</code></td>
+        </tr>
+        <tr>
+          <td>Abrir Command Palette</td>
+          <td><code>Cmd+Shift+P</code></td>
+          <td><code>Ctrl+Shift+P</code></td>
+        </tr>
+        <tr>
+          <td>Abrir Settings</td>
+          <td><code>Cmd+,</code></td>
+          <td><code>Ctrl+,</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Además, desde la Command Palette puedes acceder a: Open in Side Bar, Open in Terminal, Open in New Window, Show Logs, Logout y Open Walkthrough.</p>
+
+  <h2 id="cap19-cli-vs-extension">CLI vs Extensión: qué puede hacer cada uno</h2>
+  <p>La extensión y el CLI no son idénticos. Cada uno tiene funciones que el otro no tiene.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Función</th>
+          <th>CLI</th>
+          <th>Extensión</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Comandos y skills</td>
+          <td>Todos</td>
+          <td>Un subconjunto (escribe <code>/</code> para ver)</td>
+        </tr>
+        <tr>
+          <td>Configurar MCP servers</td>
+          <td>Completo</td>
+          <td>Parcial (agregar vía CLI, gestionar con <code>/mcp</code>)</td>
+        </tr>
+        <tr>
+          <td>Checkpoints</td>
+          <td>Sí</td>
+          <td>Sí</td>
+        </tr>
+        <tr>
+          <td>Atajo <code>!</code> para bash</td>
+          <td>Sí</td>
+          <td>No</td>
+        </tr>
+        <tr>
+          <td>Tab completion</td>
+          <td>Sí</td>
+          <td>No</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>La buena noticia: puedes usar ambos al mismo tiempo. Abre el CLI en el terminal integrado de VS Code y tendrás lo mejor de los dos mundos.</p>
+
+  <h2 id="cap19-claude-code-en-jetbrains">Claude Code en JetBrains</h2>
+  <p>Si usas IntelliJ IDEA, PyCharm, Android Studio, WebStorm, PhpStorm o GoLand, hay un plugin dedicado. Está en Beta, pero funciona bien para las tareas más comunes.</p>
+  <p><strong>Limitación importante de teclado:</strong> el terminal de JetBrains no soporta <code>Shift+Enter</code> para salto de línea, ni siquiera tras ejecutar <code>/terminal-setup</code>. Es una limitación del propio terminal de JetBrains. Como alternativa, usa <code>Ctrl+J</code> o el patrón <code>\</code> + <code>Enter</code> (un backslash al final de la línea antes de Enter).</p>
+
+  <h3>Instalación</h3>
+  <p>A diferencia de VS Code, necesitas dos cosas:</p>
+  <ol class="steps">
+    <li>Claude Code CLI instalado globalmente: <code>npm install -g @anthropic-ai/claude-code</code></li>
+    <li>Plugin de JetBrains: busca <strong>Claude Code</strong> en el JetBrains Marketplace e instala el de Anthropic PBC</li>
+  </ol>
+  <p>Después de instalar, reinicia el IDE completamente. A veces necesitas reiniciar más de una vez.</p>
+  <div class="callout note">
+    <p class="callout-label">Nota importante</p>
+    <p>Existe otro producto llamado <strong>Claude Agent in JetBrains IDEs</strong> que es parte de la suscripción JetBrains AI. Eso es diferente. Aquí hablamos del plugin oficial de Anthropic.</p>
+  </div>
+
+  <h3>Funciones del plugin</h3>
+  <p>El plugin agrega cuatro capacidades principales:</p>
+  <ul class="deflist">
+    <li><strong>Diff viewing</strong> — Los cambios de código se muestran en el visor de diffs del IDE. No tienes que leerlos en la terminal.</li>
+    <li><strong>Selection context</strong> — Tu selección actual y la pestaña abierta se comparten automáticamente con Claude.</li>
+    <li><strong>File reference shortcuts</strong> — Usa <code>Cmd+Option+K</code> (Mac) o <code>Alt+Ctrl+K</code> (Win/Linux) para insertar referencias como <code>@File#L1-99</code>.</li>
+    <li><strong>Diagnostic sharing</strong> — Los errores de lint, sintaxis y otros diagnósticos del IDE se comparten automáticamente con Claude.</li>
+  </ul>
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p><strong>Remote Development:</strong> Si usas JetBrains con Remote Development (conexión a un servidor remoto), el plugin debe instalarse en el host remoto, no en tu máquina local. Ve a Settings &gt; Plugins (Host) para instalarlo en el servidor. Si lo instalas solo en el cliente local, no funcionará.</p>
+  </div>
+
+  <h3>Atajos de teclado en JetBrains</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Acción</th>
+          <th>Mac</th>
+          <th>Windows/Linux</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Abrir/enfocar Claude Code</td>
+          <td><code>Cmd+Esc</code></td>
+          <td><code>Ctrl+Esc</code></td>
+        </tr>
+        <tr>
+          <td>Insertar referencia de archivo</td>
+          <td><code>Cmd+Option+K</code></td>
+          <td><code>Alt+Ctrl+K</code></td>
+        </tr>
+        <tr>
+          <td>Nueva línea en prompt (solo macOS)</td>
+          <td><code>Option+Enter</code></td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Settings del plugin JetBrains</h3>
+  <p>Accede a los settings en Settings &gt; Tools &gt; Claude Code [Beta]:</p>
+  <ul class="deflist">
+    <li><strong>Claude command</strong> — Ruta al ejecutable. Predeterminado: <code>claude</code>. Si está en otra ubicación, escribe la ruta completa.</li>
+    <li><strong>Enable Option+Enter for multi-line</strong> — Solo macOS. Desactiva si Option se captura de forma inesperada.</li>
+    <li><strong>Enable automatic updates</strong> — Verifica e instala actualizaciones automáticamente.</li>
+    <li><strong>Suppress notification for Claude command not found</strong> — Si es <code>true</code>, omite las notificaciones cuando no se encuentra el comando de Claude. Predeterminado: <code>false</code>. Útil si tienes proyectos donde no usas Claude y no quieres ver la notificación cada vez.</li>
+  </ul>
+  <p><strong>Configurar diff tool:</strong> Para que los diffs se muestren automáticamente en el visor nativo del IDE, ejecuta <code>claude</code> en la terminal, escribe <code>/config</code>, busca la opción <strong>diff tool</strong> y establécela en <code>auto</code>. Esto permite que Claude detecte automáticamente tu IDE y use su visor de diffs.</p>
+
+  <h3>JetBrains con WSL (Windows)</h3>
+  <p>WSL significa Windows Subsystem for Linux. Es una forma de correr Linux dentro de Windows.</p>
+  <p>Si usas WSL con JetBrains, configura el comando de Claude así:</p>
+  <pre><code class="lang-bash">wsl -d Ubuntu -- bash -lic "claude"</code></pre>
+  <p>Reemplaza <code>Ubuntu</code> con el nombre de tu distribución WSL.</p>
+  <p><strong>Error frecuente: "No available IDEs detected".</strong> Cuando <code>claude</code> corre dentro de WSL2 y JetBrains corre en Windows, por defecto WSL2 usa NAT y Windows Firewall bloquea la comunicación entre los dos. Hay dos soluciones:</p>
+  <p><strong>Opción A: regla de firewall (cualquier Windows).</strong> Averigua la IP interna de WSL2 con <code>hostname -I</code> dentro de WSL (por ejemplo <code>172.21.123.45</code>). Luego, en una PowerShell de administrador, crea una regla que permita el tráfico interno:</p>
+  <pre><code class="lang-bash">New-NetFirewallRule -DisplayName "Allow WSL2 Internal Traffic" `
+   -Direction Inbound -Protocol TCP -Action Allow `
+   -RemoteAddress 172.21.0.0/16 -LocalAddress 172.21.0.0/16</code></pre>
+  <p><strong>Opción B: mirrored networking (Windows 11 22H2+).</strong> Edita <code>%USERPROFILE%\.wslconfig</code> y añade:</p>
+  <pre><code class="lang-text">[wsl2]
+networkingMode=mirrored</code></pre>
+  <p>Cierra todo con <code>wsl --shutdown</code> y vuelve a abrir. En este modo, WSL2 comparte la red con Windows directamente y el plugin detecta el IDE sin necesidad de reglas de firewall.</p>
+  <p>Tras aplicar cualquiera de las dos soluciones, reinicia el IDE y vuelve a ejecutar <code>claude</code>.</p>
+
+  <h3>Solución: ESC no interrumpe a Claude</h3>
+  <p>Si presionas <code>ESC</code> y Claude no se detiene, es porque JetBrains tiene un atajo que entra en conflicto.</p>
+  <p>Para solucionarlo:</p>
+  <ol class="steps">
+    <li>Ve a Settings &gt; Tools &gt; Terminal</li>
+    <li>Desmarca <strong>Move focus to the editor with Escape</strong></li>
+  </ol>
+  <p>Otra opción: ve a <strong>Configure terminal keybindings</strong> y elimina <strong>Switch focus to Editor</strong>.</p>
+
+  <h2 id="cap19-cli-en-el-terminal-integrado">CLI en el terminal integrado</h2>
+  <p>No necesitas una extensión para usar Claude Code en tu IDE. Puedes simplemente abrir el terminal integrado y escribir <code>claude</code>.</p>
+  <p>Esto funciona en cualquier IDE: VS Code, JetBrains, Zed, o cualquier editor que tenga terminal integrado.</p>
+
+  <h3>Integración automática con el IDE</h3>
+  <p>Cuando ejecutas <code>claude</code> en el terminal integrado de VS Code o JetBrains, el CLI detecta automáticamente el IDE. Activa funciones como el visor de diffs y la compartición de diagnósticos.</p>
+  <p>Si usas un terminal externo (fuera del IDE), puedes conectarlo manualmente:</p>
+  <ol class="steps">
+    <li>Abre tu terminal externo</li>
+    <li>Ejecuta <code>claude</code></li>
+    <li>Escribe <code>/ide</code></li>
+  </ol>
+  <div class="callout warn">
+    <p class="callout-label">Importante</p>
+    <p>Inicia Claude desde el mismo directorio que el proyecto raíz del IDE. Si no, Claude no tendrá acceso a los mismos archivos.</p>
+  </div>
+  <div class="callout note">
+    <p class="callout-label">Nota técnica</p>
+    <p>Cuando la extensión de VS Code está activa, ejecuta un servidor MCP local oculto al que el CLI se conecta automáticamente. Este servidor es el que permite que el CLI abra diffs en el visor nativo, lea tu selección actual y comparta diagnósticos del IDE. Se enlaza a <code>127.0.0.1</code> en un puerto aleatorio (no accesible desde otras máquinas) y usa un token de autenticación almacenado en <code>~/.claude/ide/</code>. No necesitas configurar nada: todo es automático.</p>
+  </div>
+  <p>El servidor expone dos tools al modelo (el resto son RPC internos entre CLI y extensión que nunca llegan al LLM):</p>
+  <ul class="deflist">
+    <li><strong><code>mcp__ide__getDiagnostics</code></strong> — Read-only. Devuelve los diagnostics del language server (el contenido del panel Problems del IDE). Puede acotarse a un solo archivo. Claude la invoca cuando le pides cosas como "arregla los errores".</li>
+    <li><strong><code>mcp__ide__executeCode</code></strong> — Ejecuta código Python en el kernel del notebook Jupyter activo. Inserta el código como nueva celda al final del notebook, hace scroll a la vista y siempre abre un Quick Pick nativo de VS Code con Execute o Cancel para que confirmes. Rechaza si no hay notebook activo, si no tienes la extensión <code>ms-toolsai.jupyter</code> o si el kernel no es Python. Los hooks PreToolUse no eliminan este Quick Pick: la confirmación manual es obligatoria.</li>
+  </ul>
+  <p>Esto importa si configuras hooks PreToolUse con allowlists de herramientas MCP: tienes que listar explícitamente <code>mcp__ide__getDiagnostics</code> y <code>mcp__ide__executeCode</code> si quieres que Claude las pueda usar.</p>
+
+  <h3>Historial compartido</h3>
+  <p>La extensión y el CLI comparten historial de conversaciones. Esto significa que puedes empezar una conversación en la extensión y continuarla en el CLI:</p>
+  <pre><code class="lang-bash">claude --resume</code></pre>
+  <p>Este comando abre un selector interactivo donde puedes buscar y elegir la conversación que quieres continuar.</p>
+
+  <h2 id="cap19-configurar-el-terminal-para-claude-code">Configurar el terminal para Claude Code</h2>
+  <p>Algunos terminales no traen, de fábrica, todo lo que Claude necesita: <code>Shift+Enter</code> para salto de línea, notificaciones nativas, render sin parpadeo. Para esos casos, Claude trae un comando que lo configura todo en un paso: <code>/terminal-setup</code>.</p>
+
+  <h3>El comando /terminal-setup</h3>
+  <p>Dentro de <code>claude</code>, escribe:</p>
+  <pre><code class="lang-bash">/terminal-setup</code></pre>
+  <p>El comando detecta tu terminal actual y aplica la configuración correcta. Funciona con:</p>
+  <ul>
+    <li>VS Code</li>
+    <li>Cursor</li>
+    <li>Devin Desktop (antes Windsurf) — el mismo fork de VS Code; solo cambió el nombre del producto en v2.1.169</li>
+    <li>Alacritty</li>
+    <li>Zed</li>
+  </ul>
+  <p>Qué ajusta exactamente:</p>
+  <ul class="deflist">
+    <li><strong>Keybinding de Shift+Enter</strong> — Lo agrega al <code>keybindings.json</code> de VS Code/Cursor/Devin Desktop para que dentro del terminal <code>Shift+Enter</code> envíe un salto de línea en vez de ejecutar.</li>
+    <li><strong><code>terminal.integrated.macOptionIsMeta</code></strong> — Lo pone en <code>true</code> en macOS para que Option funcione como Meta (ver más abajo).</li>
+    <li><strong><code>terminal.integrated.mouseWheelScrollSensitivity</code></strong> — Lo afina para que el scroll funcione bien en modo fullscreen.</li>
+  </ul>
+  <p>Si Claude detecta que ya tienes un keybinding personalizado para <code>Shift+Enter</code>, te avisa y respeta el existente sin sobrescribirlo. Para forzar, edita manualmente <code>keybindings.json</code>.</p>
+  <p>Ejecuta <code>/terminal-setup</code> en el terminal del host, no dentro de tmux o screen. El comando necesita escribir en los settings del editor anfitrión, no en una sesión multiplexada.</p>
+
+  <h3>Soporte de Shift+Enter por terminal</h3>
+  <p>No todos los terminales soportan <code>Shift+Enter</code> igual. Esta tabla resume el estado:</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Terminal</th>
+          <th>Soporte de Shift+Enter</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Ghostty, Kitty, iTerm2, WezTerm, Warp, Apple Terminal, Windows Terminal</td>
+          <td>Funciona out of the box</td>
+        </tr>
+        <tr>
+          <td>VS Code, Cursor, Devin Desktop (antes Windsurf), Alacritty, Zed</td>
+          <td>Requiere <code>/terminal-setup</code></td>
+        </tr>
+        <tr>
+          <td>gnome-terminal, terminales JetBrains (PyCharm, IntelliJ, etc.)</td>
+          <td>No disponible. Usa <code>Ctrl+J</code> o <code>\</code> + <code>Enter</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>macOS: que Option funcione en el terminal integrado</h3>
+  <p>En macOS, la mayoría de terminales no envían la tecla <code>Option</code> como modifier por defecto. Esto rompe atajos como <code>Option+Enter</code> (nueva línea en JetBrains) u <code>Option+K</code> (insertar referencia de archivo en VS Code).</p>
+  <p>Para el terminal integrado de VS Code, abre <code>settings.json</code> de VS Code y añade:</p>
+  <pre><code class="lang-json">"terminal.integrated.macOptionIsMeta": true</code></pre>
+  <p><code>/terminal-setup</code> lo hace por ti. En otros terminales hay que activar el equivalente: iTerm2 → Preferences → Profiles → Keys → Left Option Key: Esc+, etc.</p>
+
+  <h3>Resolver parpadeo y scroll inestable</h3>
+  <p>El terminal integrado de VS Code (y algunos otros) puede parpadear o saltar la posición de scroll mientras Claude renderiza. Hay dos formas de arreglarlo:</p>
+  <ul class="deflist">
+    <li><strong>Por sesión:</strong> dentro de Claude, ejecuta <code>/tui fullscreen</code>. Activa el modo fullscreen de la TUI, que no parpadea.</li>
+    <li><strong>Permanente:</strong> exporta la variable de entorno <code>CLAUDE_CODE_NO_FLICKER=1</code> antes de lanzar Claude. Por ejemplo, en <code>~/.zshrc</code>:</li>
+  </ul>
+  <pre><code class="lang-bash">export CLAUDE_CODE_NO_FLICKER=1</code></pre>
+  <p>Con esto, Claude arranca siempre en fullscreen.</p>
+
+  <h3>Notificaciones: terminal_bell vs desktop</h3>
+  <p>Por defecto, Claude solo envía notificaciones de escritorio nativas en Ghostty, Kitty e iTerm2. En el resto (incluyendo el terminal integrado de VS Code, Warp, gnome-terminal, etc.) las notificaciones se pierden.</p>
+  <p>Tienes dos opciones:</p>
+  <ul>
+    <li>Cambiar el canal de notificaciones en <code>~/.claude/settings.json</code>:</li>
+  </ul>
+  <pre><code class="lang-json">{
+    "preferredNotifChannel": "terminal_bell"
+}</code></pre>
+  <p>Con <code>terminal_bell</code>, Claude hace sonar la campana del terminal (carácter <code>\a</code>). La mayoría de terminales muestran un badge o suenan al recibirlo.</p>
+  <ul>
+    <li>Hook de <code>Notification</code> con sonido (recomendado para el terminal integrado de VS Code, que ni siquiera tiene campana visible):</li>
+  </ul>
+  <pre><code class="lang-json">{
+    "hooks": {
+        "Notification": [
+            {
+                "hooks": [
+                    { "type": "command", "command": "afplay /System/Library/Sounds/Glass.aiff" }
+                ]
+            }
+        ]
+    }
+}</code></pre>
+  <p>En Linux usa <code>paplay</code> o <code>aplay</code>, y en Windows <code>powershell -c [console]::beep(800,200)</code>.</p>
+
+  <h3>Configurar tmux</h3>
+  <p>Si trabajas dentro de tmux, hay tres líneas que tienes que añadir a <code>~/.tmux.conf</code> para que <code>Shift+Enter</code>, las notificaciones y las barras de progreso atraviesen el multiplexor:</p>
+  <pre><code class="lang-bash">set -g allow-passthrough on
+set -s extended-keys on
+set -as terminal-features 'xterm*:extkeys'</code></pre>
+  <p>Aplica los cambios sin reiniciar la sesión:</p>
+  <pre><code class="lang-bash">tmux source-file ~/.tmux.conf</code></pre>
+  <p><code>allow-passthrough</code> deja que los escape sequences (incluida la campana del terminal) lleguen al terminal exterior. <code>extended-keys</code> y <code>terminal-features</code> habilitan los códigos de tecla extendidos que necesita <code>Shift+Enter</code>.</p>
+
+  <h2 id="cap19-claude-code-desktop">Claude Code Desktop</h2>
+  <p>Claude Desktop es la app de escritorio oficial. Está disponible en macOS y Windows. No funciona en Linux.</p>
+  <p>La app tiene tres pestañas, no solo una:</p>
+  <ul class="deflist">
+    <li><strong>Chat</strong> — Conversación general con Claude, como en <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a> pero como app de escritorio.</li>
+    <li><strong>Cowork</strong> — Agente autónomo que corre en una VM en la nube de Anthropic. Lanza tareas largas y vuelves cuando estén listas (ver <a class="xref" href="#/cap23">capítulo 23</a>).</li>
+    <li><strong>Code</strong> — Asistente de programación interactivo con acceso a tu sistema de archivos local. Es la pestaña que cubre este capítulo.</li>
+  </ul>
+  <p>El Code tab es la única integración que mete Claude Code en una app dedicada con funciones que no existen en VS Code ni en el CLI: revisión visual de diffs con comentarios, preview de apps, monitoreo de PRs, tareas programadas.</p>
+
+  <h3>Instalación y requisitos</h3>
+  <p>Necesitas:</p>
+  <ul>
+    <li><strong>macOS:</strong> Big Sur (versión 11) o superior. Apple Silicon o Intel.</li>
+    <li><strong>Windows:</strong> x64 (desde el 10 de febrero de 2026, lanzamiento oficial) o ARM64 (desde marzo de 2026).</li>
+    <li><strong>Suscripción activa:</strong> Pro, Max, Teams o Enterprise.</li>
+    <li><strong>Git instalado</strong> (obligatorio en Windows para la pestaña Code).</li>
+  </ul>
+  <p>Descarga la app desde <code><a href="https://claude.com/download" target="_blank" rel="noopener">claude.com/download</a></code>.</p>
+  <p><strong>Para empresas:</strong> se puede distribuir vía MDM (Jamf, Kandji) en macOS o como paquete MSIX en Windows.</p>
+
+  <h3>Funciones exclusivas de Desktop</h3>
+  <p>Desktop tiene cosas que no encontrarás en la extensión de VS Code ni en el CLI:</p>
+  <ul class="deflist">
+    <li><strong>Visual diff review con comentarios inline</strong> — Puedes dejar comentarios en los cambios, como en una revisión de código en GitHub. Usa <code>Cmd+Enter</code> (Mac) o <code>Ctrl+Enter</code> (Win) para enviar todos los comentarios de golpe.</li>
+    <li><strong>Preview de apps</strong> — Claude puede iniciar un servidor de desarrollo y abrir un navegador embebido para verificar cambios. Toma screenshots, inspecciona el DOM, hace clic en elementos y corrige problemas automáticamente.</li>
+    <li><strong>Monitoreo de Pull Requests</strong> — Después de abrir un PR, aparece una barra de estado de CI. Claude puede corregir checks fallidos automáticamente y hacer merge cuando todo pasa.</li>
+    <li><strong>Tareas programadas</strong> — Programa tareas que se ejecutan solas: code reviews diarios, checks de dependencias, briefings matutinos.</li>
+    <li><strong>Conectores</strong> — Integra servicios externos como Google Calendar, Slack, GitHub, Linear y Notion directamente.</li>
+    <li><strong>Sesiones SSH</strong> — Ejecuta Claude en una máquina remota usando Desktop como interfaz.</li>
+    <li><strong>Sesiones remotas cloud</strong> — Sesiones que corren en la nube de Anthropic. Continúan aunque cierres la app.</li>
+    <li><strong>Quick Entry (solo macOS)</strong> — Un popup global que aparece desde cualquier app con un atajo. Escribes un prompt y Claude responde sin sacarte de lo que estabas haciendo. De momento solo está en macOS.</li>
+    <li><strong>Desktop Extensions (.mcpb)</strong> — Formato de paquete específico de Desktop para instalar MCP servers en un clic. En lugar de editar JSON a mano, descargas un <code>.mcpb</code>, lo abres y Desktop lo registra. Es la forma más rápida de añadir conectores de terceros.</li>
+  </ul>
+  <p>Cowork (la pestaña central) requiere:</p>
+  <ul>
+    <li><strong>macOS:</strong> cualquier versión compatible con la app.</li>
+    <li><strong>Windows:</strong> Pro, Enterprise o Education. Windows Home no es compatible (Cowork necesita features de virtualización que solo vienen en las ediciones superiores).</li>
+    <li><strong>Plan pago:</strong> Pro ($20/mes), Max ($100/mes), Team o Enterprise. El plan Free no incluye Cowork.</li>
+  </ul>
+
+  <h3>Sesiones paralelas con worktrees</h3>
+  <p>Un worktree es como una copia independiente de tu proyecto. Tiene sus propios archivos y su propia rama de Git, pero comparte el historial.</p>
+  <p>En Desktop, cada nueva sesión automáticamente obtiene su propio worktree. Esto significa que puedes tener a Claude trabajando en dos cosas diferentes al mismo tiempo sin que se pisen.</p>
+  <p>Desde el CLI, puedes hacer lo mismo:</p>
+  <pre><code class="lang-bash">claude --worktree feature-auth
+# o la forma corta:
+claude -w feature-auth</code></pre>
+  <p>Los worktrees se guardan en <code>&lt;proyecto&gt;/.claude/worktrees/</code> por defecto.</p>
+
+  <h3>Configurar preview de apps con launch.json</h3>
+  <p>Para que el preview de apps funcione, necesitas crear un archivo <code>.claude/launch.json</code> en tu proyecto:</p>
+  <pre><code class="lang-json">{
+    "version": "0.0.1",
+    "autoVerify": true,
+    "configurations": [
+        {
+            "name": "web",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run", "dev"],
+            "port": 3000
+        }
+    ]
+}</code></pre>
+  <p>Campos importantes:</p>
+  <ul class="deflist">
+    <li><strong><code>runtimeExecutable</code></strong> — El comando a ejecutar (<code>npm</code>, <code>yarn</code>, <code>node</code>).</li>
+    <li><strong><code>runtimeArgs</code></strong> — Los argumentos. Ejemplo: <code>["run", "dev"]</code>.</li>
+    <li><strong><code>port</code></strong> — Puerto del servidor. Predeterminado: 3000.</li>
+    <li><strong><code>autoVerify</code></strong> — Si es <code>true</code>, Claude verifica cambios automáticamente. Predeterminado: <code>true</code>.</li>
+    <li><strong><code>cwd</code></strong> — Directorio de trabajo relativo a la raíz del proyecto.</li>
+  </ul>
+
+  <h3>Tareas programadas</h3>
+  <p>Las tareas programadas inician una sesión nueva automáticamente en el horario que elijas.</p>
+  <p><strong>Frecuencias disponibles:</strong> Manual, Hourly, Daily, Weekdays, Weekly.</p>
+  <p>Para crear una:</p>
+  <ol class="steps">
+    <li>Haz clic en <strong>Schedule</strong> en el sidebar</li>
+    <li>Haz clic en <strong>+ New task</strong></li>
+    <li>Escribe nombre, frecuencia y prompt</li>
+    <li>Haz clic en <strong>Run now</strong> para probar y aprobar permisos</li>
+  </ol>
+  <div class="callout warn">
+    <p class="callout-label">Limitación</p>
+    <p>Las tareas se ejecutan localmente. La app debe estar abierta y la computadora debe estar despierta. Si se pierde una ejecución, Desktop ejecuta una compensatoria la próxima vez.</p>
+  </div>
+
+  <h3>Mover una sesión del CLI a Desktop</h3>
+  <p>Si estás en el CLI y quieres continuar en Desktop, escribe:</p>
+  <pre><code class="lang-bash">/desktop</code></pre>
+  <p>Claude guarda la sesión y la abre en la app de escritorio. Luego sale del CLI. Solo funciona en macOS y Windows.</p>
+
+  <h2 id="cap19-cli-vs-desktop">CLI vs Desktop: comparativa rápida</h2>
+  <p>Aquí tienes una tabla para decidir cuál usar:</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Función</th>
+          <th>CLI</th>
+          <th>Desktop</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Modos de permisos</td>
+          <td>Todos (incluyendo <code>dontAsk</code>)</td>
+          <td>Ask, Auto accept, Plan, Bypass</td>
+        </tr>
+        <tr>
+          <td>Proveedores terceros</td>
+          <td>Bedrock, Vertex, Foundry</td>
+          <td>No. Solo API directa de Anthropic</td>
+        </tr>
+        <tr>
+          <td>Plugins</td>
+          <td>Comando <code>/plugin</code></td>
+          <td>Plugin manager gráfico</td>
+        </tr>
+        <tr>
+          <td>Adjuntar archivos</td>
+          <td>No</td>
+          <td>Imágenes y PDFs</td>
+        </tr>
+        <tr>
+          <td>Sesiones paralelas</td>
+          <td>Terminales separados</td>
+          <td>Tabs con worktrees automáticos</td>
+        </tr>
+        <tr>
+          <td>Tareas recurrentes</td>
+          <td>Cron jobs, CI pipelines</td>
+          <td>Tareas programadas integradas</td>
+        </tr>
+        <tr>
+          <td>Scripting y automatización</td>
+          <td><code>--print</code>, Agent SDK</td>
+          <td>No</td>
+        </tr>
+        <tr>
+          <td>Linux</td>
+          <td>Sí</td>
+          <td>No</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>En resumen: el CLI es mejor para automatización y Linux. Desktop es mejor para revisión visual, tareas programadas y funciones avanzadas con interfaz gráfica.</p>
+
+  <h2 id="cap19-integracion-con-el-navegador">Integración con el navegador</h2>
+  <p>Claude puede controlar tu navegador Chrome desde VS Code. Esto es útil para probar apps web, depurar errores de consola y automatizar flujos de trabajo.</p>
+  <p>Para usarlo:</p>
+  <ol class="steps">
+    <li>Instala la extensión <strong>Claude in Chrome</strong> (versión 1.0.36 o superior)</li>
+    <li>En el prompt de Claude, escribe <code>@browser</code> seguido de tu instrucción</li>
+  </ol>
+  <p>Ejemplo:</p>
+  <pre><code class="lang-text">@browser go to localhost:3000 and check the console for errors</code></pre>
+  <p>Claude abre nuevas pestañas y comparte tu estado de login. Puede acceder a sitios donde ya estás logueado.</p>
+
+  <h2 id="cap19-gestion-de-plugins-desde-la-extension">Gestión de plugins desde la extensión</h2>
+  <p>La extensión de VS Code incluye una interfaz gráfica para gestionar plugins (funcionalidades extra que puedes agregar a Claude).</p>
+  <p>Para acceder, escribe <code>/plugins</code> en la caja de prompt.</p>
+  <p>Verás dos pestañas:</p>
+  <ul class="deflist">
+    <li><strong>Plugins</strong> — Los instalados y los disponibles.</li>
+    <li><strong>Marketplaces</strong> — Las fuentes de donde descargar plugins.</li>
+  </ul>
+  <p>Hay tres niveles de instalación:</p>
+  <ul class="deflist">
+    <li><strong>Install for you</strong> — Para tu usuario en todos los proyectos.</li>
+    <li><strong>Install for this project</strong> — Solo para este proyecto. Se comparte con colaboradores.</li>
+    <li><strong>Install locally</strong> — Solo para ti, solo en este repositorio.</li>
+  </ul>
+  <p>Los plugins que configures en la extensión también están disponibles en el CLI, y viceversa.</p>
+
+  <h2 id="cap19-flujos-de-trabajo-recomendados">Flujos de trabajo recomendados</h2>
+  <p>Después de probar muchas combinaciones, estos son los flujos que mejor funcionan:</p>
+
+  <h3>Sidebar principal + tabs secundarios</h3>
+  <p>Mantén Claude en la sidebar derecha como tu sesión principal. Cuando necesites hacer algo en paralelo, abre pestañas adicionales con <code>Cmd+Shift+Esc</code>.</p>
+  <p>Ejemplo: en la sidebar estás refactorizando una función. En una pestaña, le pides a Claude que escriba los tests.</p>
+
+  <h3>Planificar primero, ejecutar después</h3>
+  <p>Para tareas complejas:</p>
+  <ol class="steps">
+    <li>Empieza en <strong>Plan mode</strong>. Claude analiza el problema y propone un plan sin tocar archivos.</li>
+    <li>Revisa el plan. Ajusta lo que necesites.</li>
+    <li>Cambia a <strong>Auto accept</strong> o <strong>Ask</strong> para que Claude ejecute el plan.</li>
+  </ol>
+  <p>Es como ver un plano de la casa antes de empezar a construir.</p>
+
+  <h3>Evita copiar y pegar con @terminal</h3>
+  <p>Si tienes un error en la terminal, no lo copies. Usa <code>@terminal:nombre</code> para que Claude lea directamente la salida del terminal.</p>
+  <p>Nombra tus terminales para identificarlos fácilmente. Haz clic derecho en la pestaña del terminal y selecciona <strong>Rename</strong>.</p>
+
+  <h3>Libera contexto con /compact</h3>
+  <p>Cuando la conversación se hace larga, Claude empieza a olvidar cosas del principio. Escribe <code>/compact</code> para que Claude resuma la conversación y libere espacio.</p>
+  <p>Piensa en ello como limpiar tu escritorio para tener espacio para trabajar.</p>
+
+  <h3>Autocompletado en settings.json</h3>
+  <p>Agrega esta línea al inicio de tu archivo <code>~/.claude/settings.json</code>:</p>
+  <pre><code class="lang-json">"$schema": "https://json.schemastore.org/claude-code-settings.json"</code></pre>
+  <p>Esto habilita autocompletado y validación en tiempo real dentro de VS Code. Ya no tienes que adivinar los nombres de los settings.</p>
+
+  <h2 id="cap19-consideraciones-de-seguridad">Consideraciones de seguridad</h2>
+  <p>Cuando usas Claude Code dentro de un IDE, ten en cuenta estos riesgos:</p>
+  <ul class="deflist">
+    <li><strong>VS Code con auto-edit</strong> — Claude puede modificar archivos de configuración de VS Code (<code>settings.json</code>, <code>tasks.json</code>) que el editor puede ejecutar automáticamente. Solución: usa VS Code Restricted Mode para proyectos no confiables.</li>
+    <li><strong>JetBrains con auto-edit</strong> — Riesgo similar. Claude puede modificar archivos de configuración que el IDE ejecuta automáticamente. Solución: usa el modo de aprobación manual.</li>
+    <li><strong>Privacidad del código</strong> — Tu código se procesa por la API de Anthropic para darte asistencia. Pero no se usa para entrenar modelos.</li>
+  </ul>
+
+  <h2 id="cap19-errores-comunes">Errores comunes y cómo resolverlos</h2>
+  <p>Aquí tienes los problemas más frecuentes y sus soluciones:</p>
+
+  <h3>El icono Spark no aparece en VS Code</h3>
+  <p>Posibles causas y soluciones:</p>
+  <ol>
+    <li><strong>No hay archivo abierto</strong> — Abre cualquier archivo.</li>
+    <li><strong>VS Code viejo</strong> — Actualiza a versión 1.98.0 o superior.</li>
+    <li><strong>Extensión conflictiva</strong> — Desactiva extensiones AI como Cline o Continue.</li>
+    <li><strong>Restricted Mode</strong> — Verifica que el workspace sea confiable.</li>
+  </ol>
+  <p>Alternativa: haz clic en <strong>* Claude Code</strong> en la Status Bar (esquina inferior derecha).</p>
+
+  <h3>Cmd+Esc no hace nada en macOS Tahoe</h3>
+  <p>En macOS Tahoe y posteriores, el atajo <code>Cmd+Esc</code> está reservado por el Game Overlay del sistema. Eso significa que <code>claude-code.focusInput</code> nunca recibe el evento.</p>
+  <p>Dos formas de arreglarlo:</p>
+  <ol>
+    <li><strong>Liberar el atajo del sistema:</strong> abre System Settings → Keyboard → Keyboard Shortcuts → Game Controllers y desmarca <strong>Game Overlay</strong>.</li>
+    <li><strong>Remapear el atajo de Claude:</strong> en VS Code, abre Keyboard Shortcuts con <code>Cmd+K Cmd+S</code>, busca <code>claude-code.focusInput</code> y asígnale otro atajo (por ejemplo <code>Cmd+Shift+L</code>).</li>
+  </ol>
+
+  <h3>Caracteres perdidos al pegar texto largo en el terminal integrado de VS Code</h3>
+  <p>El terminal integrado de VS Code tiene un bug conocido: cuando pegas más de 10000 caracteres, pierde parte del contenido. Esto rompe pegar prompts largos o respuestas extensas.</p>
+  <p>Workaround:</p>
+  <ol class="steps">
+    <li>Guarda el texto en un archivo, por ejemplo <code>prompt.md</code>.</li>
+    <li>Dentro de Claude, referéncialo con <code>@prompt.md</code>.</li>
+  </ol>
+  <p>Claude Code colapsa pastes de más de 10000 caracteres como [Pasted text], pero el bug es a nivel del terminal de VS Code, no de Claude.</p>
+
+  <h3>VS Code no hereda ANTHROPIC_API_KEY del shell</h3>
+  <p>Si lanzaste VS Code desde el Dock o el menú de aplicaciones, no heredó las variables de entorno de tu shell. Resultado: pese a tener <code>ANTHROPIC_API_KEY</code> exportada en <code>~/.zshrc</code> o <code>~/.bashrc</code>, la extensión te pide login.</p>
+  <p>Solución: cierra VS Code y vuelve a abrirlo desde el terminal:</p>
+  <pre><code class="lang-bash">cd /ruta/al/proyecto
+code .</code></pre>
+  <p>Ahora VS Code hereda el entorno completo del shell. Otra opción es usar el flujo de login con cuenta de Claude (que no depende de variables de entorno).</p>
+
+  <h3>Command not found en JetBrains</h3>
+  <p>Claude Code no está instalado globalmente o el path no está configurado.</p>
+  <ol class="steps">
+    <li>Verifica: <code>npm list -g @anthropic-ai/claude-code</code></li>
+    <li>Configura la ruta completa en los settings del plugin.</li>
+    <li>Para WSL: usa el formato <code>wsl -d Ubuntu -- bash -lic "claude"</code></li>
+  </ol>
+
+  <h3>Herramientas como npm/node no encontradas en Desktop</h3>
+  <p>Desktop no encuentra las herramientas porque el PATH no está configurado en tu shell profile.</p>
+  <ol class="steps">
+    <li>Verifica que las herramientas funcionen en una terminal normal.</li>
+    <li>Revisa tu <code>~/.zshrc</code> o <code>~/.bashrc</code> para confirmar que configuren el PATH.</li>
+    <li>Reinicia la app de escritorio.</li>
+  </ol>
+
+  <h3>Git required en Windows Desktop</h3>
+  <p>El Code tab de Desktop requiere Git en Windows.</p>
+  <p>Solución: instala Git for Windows desde <code><a href="https://git-scm.com/downloads/win" target="_blank" rel="noopener">git-scm.com/downloads/win</a></code> y reinicia la app.</p>
+
+  <h2 id="cap19-configuracion-para-empresas">Configuración para empresas</h2>
+  <p>Si eres administrador de una organización, Desktop ofrece controles empresariales:</p>
+  <ul class="deflist">
+    <li><strong>Admin Console</strong> — Habilitar/deshabilitar el Code tab, el modo Bypass permissions y las sesiones remotas.</li>
+    <li><strong>Managed settings</strong> — La clave <code>disableBypassPermissionsMode</code> previene que usuarios habiliten el modo sin permisos.</li>
+    <li><strong>Distribución</strong> — macOS: vía MDM con instalador <code>.dmg</code>. Windows: vía paquete MSIX o <code>.exe</code> con instalación silenciosa.</li>
+    <li><strong>Device management</strong> — macOS: usa el dominio <code>com.anthropic.Claude</code> con Jamf o Kandji. Windows: vía registry en <code>SOFTWARE\Policies\Claude</code>.</li>
+  </ul>
+  <p>Para proveedores terceros (Bedrock, Vertex, Foundry) en VS Code, activa <code>disableLoginPrompt</code> en la extensión y configura el proveedor en <code>~/.claude/settings.json</code>.</p>
+
+  <h2 id="cap19-ejemplos-practicos">Ejemplos Prácticos</h2>
+
+  <h3>Instalar la extensión en VS Code y abrir Claude</h3>
+  <pre><code class="lang-text">1. Cmd+Shift+X &gt; buscar 'Claude Code' &gt; Install
+2. Click en el icono Spark (esquina superior derecha)
+3. Iniciar sesión con cuenta Anthropic
+4. Seguir la checklist Learn Claude Code</code></pre>
+  <p>Estos son los pasos básicos para empezar a usar Claude Code en VS Code. La checklist te guía por las funciones principales.</p>
+
+  <h3>Referenciar código seleccionado con un atajo</h3>
+  <pre><code class="lang-text">1. Selecciona las líneas 5-10 en tu archivo auth.ts
+2. Presiona Option+K (Mac) o Alt+K (Win/Linux)
+3. Se inserta @auth.ts#5-10 en el prompt
+4. Escribe: 'Explica qué hace este código'</code></pre>
+  <p>El atajo <code>Option+K</code> inserta una referencia exacta al código seleccionado. Claude puede ver automáticamente la selección, pero la referencia explícita es más precisa.</p>
+
+  <h3>Usar el CLI desde el terminal integrado de VS Code</h3>
+  <pre><code class="lang-bash"># Abre el terminal: Cmd+` (Mac) o Ctrl+` (Win/Linux)
+claude
+# Si usas un terminal externo:
+claude
+/ide</code></pre>
+  <p>El CLI detecta automáticamente VS Code y activa integraciones como el visor de diffs. Desde un terminal externo, usa <code>/ide</code> para conectar manualmente.</p>
+
+  <h3>Continuar una conversación de la extensión en el CLI</h3>
+  <pre><code class="lang-bash">claude --resume</code></pre>
+  <p>Abre un selector donde puedes buscar entre todas tus conversaciones. El historial es compartido entre la extensión y el CLI.</p>
+
+  <h3>Configurar preview de app en Desktop</h3>
+  <pre><code class="lang-json">// Crear archivo .claude/launch.json
+{
+    "version": "0.0.1",
+    "autoVerify": true,
+    "configurations": [
+        {
+            "name": "web",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": ["dev"],
+            "port": 3000
+        }
+    ]
+}</code></pre>
+  <p>Con este archivo, Desktop puede iniciar tu servidor de desarrollo y abrir un navegador embebido. Claude verifica los cambios automáticamente: toma screenshots, hace clic y corrige problemas.</p>
+
+  <h3>Crear una tarea programada diaria en Desktop</h3>
+  <pre><code class="lang-text">1. Click Schedule en sidebar
+2. + New task
+3. Name: daily-review
+4. Frequency: Daily 9:00 AM
+5. Prompt: 'Revisa los commits de ayer y genera un resumen'
+6. Click Run now para probar</code></pre>
+  <p>La tarea se ejecuta localmente. La app debe estar abierta y la computadora despierta. Si se pierde una ejecución, Desktop la ejecuta la próxima vez que pueda.</p>
+
+  <h3>Configurar JetBrains con WSL en Windows</h3>
+  <pre><code class="lang-text">Settings &gt; Tools &gt; Claude Code [Beta] &gt; Claude command:
+wsl -d Ubuntu -- bash -lic "claude"</code></pre>
+  <p>Reemplaza <code>Ubuntu</code> con el nombre de tu distribución WSL. Esto permite que JetBrains use Claude Code a través de WSL.</p>
+
+  <h3>Habilitar autocompletado en settings.json</h3>
+  <pre><code class="lang-json">// En ~/.claude/settings.json, agrega al inicio:
+"$schema": "https://json.schemastore.org/claude-code-settings.json"</code></pre>
+  <p>VS Code usa este schema para ofrecerte autocompletado e inline validation para todas las settings disponibles de Claude Code.</p>
+
+  <h3>Abrir Claude desde un script con URI handler</h3>
+  <pre><code class="lang-bash"># macOS
+open "vscode://anthropic.claude-code/open?prompt=review%20my%20changes"
+
+# Linux
+xdg-open "vscode://anthropic.claude-code/open?prompt=revisa%20los%20tests"
+
+# Windows
+start vscode://anthropic.claude-code/open?prompt=review%20my%20changes</code></pre>
+  <p>El URI handler abre VS Code con un tab de Claude Code y pre-llena el prompt. Útil para crear alias de shell o integraciones con otras herramientas.</p>
+
+  <h3>Embeber un link claude-cli:// en un runbook</h3>
+  <pre><code class="lang-text">## High 5xx rate on web-gateway
+
+1. Acknowledge the page in PagerDuty.
+2. [Open Claude Code in the gateway repo](claude-cli://open?repo=acme/web-gateway&amp;q=5xx%20rate%20is%20elevated.%20Check%20recent%20deploys.)
+3. Post initial findings in #incident.</code></pre>
+  <p>Al hacer clic, el ingeniero on-call abre Claude Code en el repo correcto con el prompt pre-rellenado. Pégalo en Slack, Notion, Confluence o PagerDuty (GitHub Markdown elimina los esquemas custom y lo deja como texto plano).</p>
+
+  <h3>Configurar el terminal integrado para Shift+Enter</h3>
+  <pre><code class="lang-bash"># Dentro de claude en VS Code, Cursor, Devin Desktop (antes Windsurf), Alacritty o Zed:
+/terminal-setup</code></pre>
+  <p>Una sola vez tras instalar Claude. Añade el keybinding de <code>Shift+Enter</code>, activa macOptionIsMeta en macOS y ajusta la sensibilidad del scroll. Ejecútalo en el terminal del host, no dentro de tmux.</p>
+
+  <h3>Habilitar tráfico WSL2 en Windows Firewall (JetBrains)</h3>
+  <pre><code class="lang-bash"># En WSL
+hostname -I            # ej: 172.21.123.45
+
+# En PowerShell como administrador
+New-NetFirewallRule -DisplayName "Allow WSL2 Internal Traffic" `
+    -Direction Inbound -Protocol TCP -Action Allow `
+    -RemoteAddress 172.21.0.0/16 -LocalAddress 172.21.0.0/16</code></pre>
+  <p>Solución al error 'No available IDEs detected' cuando <code>claude</code> corre en WSL2 y JetBrains corre en Windows. Alternativa más limpia (Win11 22H2+): <code>networkingMode=mirrored</code> en <code>.wslconfig</code>.</p>
+
+  <h3>Notificación con sonido para el terminal integrado de VS Code</h3>
+  <pre><code class="lang-json">// ~/.claude/settings.json
+{
+    "hooks": {
+        "Notification": [
+            {
+                "hooks": [
+                    { "type": "command", "command": "afplay /System/Library/Sounds/Glass.aiff" }
+                ]
+            }
+        ]
+    }
+}</code></pre>
+  <p>El terminal integrado de VS Code no recibe notificaciones de escritorio. Este hook reproduce un sonido cuando Claude pide permiso o termina. En Linux usa <code>paplay</code>/<code>aplay</code>; en Windows <code>powershell -c [console]::beep</code>.</p>
+
+  <h3>Crear un tema custom</h3>
+  <pre><code class="lang-json">// ~/.claude/themes/dracula.json
+{
+    "name": "Dracula",
+    "base": "dark",
+    "overrides": {
+        "claude": "#bd93f9",
+        "error": "#ff5555",
+        "success": "#50fa7b"
+    }
+}
+
+// Dentro de claude:
+/theme     → Dracula</code></pre>
+  <p>Claude observa <code>~/.claude/themes/</code> y recarga en caliente. Edita el archivo y los colores se actualizan al guardar.</p>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa la sidebar derecha para tu sesión principal de Claude y abre tabs adicionales con <code>Cmd+Shift+Esc</code> para tareas secundarias. Así puedes trabajar en varias cosas sin perder el hilo.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Empieza tareas complejas en Plan mode. Claude analiza el problema sin tocar nada. Cuando el plan te convenza, cambia a Auto accept para ejecutar.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Nombra tus terminales (clic derecho &gt; Rename) y usa <code>@terminal:nombre</code> para compartir errores con Claude sin copiar y pegar.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Los MCP servers de la app de chat de Claude Desktop (<code>claude_desktop_config.json</code>) son SEPARADOS del Code tab. No aparecen en Claude Code. Configura los de Claude Code en <code>~/.claude.json</code> o <code>.mcp.json</code>.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Con Auto accept edits, Claude puede modificar archivos de configuración del IDE que se ejecutan automáticamente. Usa Restricted Mode en VS Code para proyectos no confiables.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>El Bypass permissions mode le da control total a Claude. Solo úsalo en entornos sandbox donde no haya datos sensibles.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>La extensión de VS Code y el CLI comparten historial de conversaciones. Puedes empezar en la extensión y continuar en el CLI con <code>claude --resume</code>.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Claude Desktop no está disponible para Linux. Si usas Linux, la extensión de VS Code o el CLI en terminal integrado son tus mejores opciones.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>El plugin de JetBrains está en Beta (mayo 2026). Funciona bien, pero puede tener errores ocasionales. A veces necesitas reiniciar el IDE más de una vez.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Crea un alias de shell para abrir Claude con prompts frecuentes. Por ejemplo: <code>alias cr='open "vscode://anthropic.claude-code/open?prompt=review%20my%20changes"'</code> te da un comando rápido para code review.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Plan mode en VS Code abre el plan como documento markdown a pantalla completa. Aprovecha para añadir comentarios inline junto a las líneas que no te convencen antes de aprobar: Claude los recibe como ajustes al plan. Es un flujo único de la extensión de VS Code.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Tras instalar Claude por primera vez en VS Code, Cursor, Devin Desktop (antes Windsurf), Alacritty o Zed, ejecuta <code>/terminal-setup</code> una vez. Configura Shift+Enter para salto de línea, macOptionIsMeta en macOS y la sensibilidad del scroll. Te ahorras pelearte con el teclado luego.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>El terminal integrado de VS Code no recibe notificaciones de escritorio. Si dejas a Claude corriendo y esperas que te avise cuando termine, configura un hook Notification que reproduzca un sonido (<code>afplay</code> en macOS, <code>paplay</code> en Linux). Sin eso, te quedarás mirando la pantalla en vano.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Embebe links <code>claude-cli://</code> en runbooks de incidentes, alertas y dashboards para que el ingeniero on-call abra Claude en el repo correcto con un solo clic. Ojo: GitHub Markdown strip-ea los esquemas custom; usa Slack, Notion, Confluence o PagerDuty.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>El handler <code>claude-cli://</code> se registra al primer <code>claude</code> interactivo. Si los links no funcionan, lanza <code>claude</code> una vez en esa máquina para que se registre.</p>
+  </div>
+
+  <section class="recap">
+    <h2 id="cap19-resumen-del-capitulo">Resumen del Capítulo</h2>
+    <p>Claude Code se integra con VS Code (extensión oficial), JetBrains (plugin Beta) y Claude Desktop (app con tres pestañas: Chat, Cowork y Code). También puedes usarlo desde el terminal integrado de cualquier IDE. Todas las integraciones comparten configuración, historial y MCP servers. Elige según tus necesidades: la extensión para el día a día, Desktop para revisión visual y tareas avanzadas, y el CLI para automatización. Los deep links <code>claude-cli://</code> y <code>vscode://anthropic.claude-code/open</code> permiten lanzar sesiones desde runbooks, scripts y alertas.</p>
+  </section>
+</article>

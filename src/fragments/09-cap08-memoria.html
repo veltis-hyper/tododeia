@@ -1,0 +1,549 @@
+<article class="chapter" data-id="cap08" data-title="Memoria y Personalización" data-part="2">
+  <header class="ch-head">
+    <p class="ch-kicker">Parte 2 · <a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a> en Profundidad · Capítulo 8</p>
+    <h1>Memoria y Personalización</h1>
+    <p class="ch-sub">Cómo hacer que Claude te conozca, recuerde tus preferencias y se adapte a ti</p>
+    <p class="ch-level">Intermedio</p>
+    <p class="ch-lede">Imagina que cada vez que hablas con un amigo, él olvida todo lo que le contaste antes. Frustrante, ¿verdad? Claude tiene un sistema de memoria que evita eso. Aprende quién eres, qué haces y cómo te gusta trabajar. En este capítulo vas a descubrir cómo funciona esa memoria, cómo controlarla y cómo personalizar a Claude para que se sienta como un asistente hecho a tu medida.</p>
+  </header>
+
+  <h2 id="cap08-como-funciona-la-memoria-de-claude">Cómo funciona la memoria de Claude</h2>
+  <p>La memoria de Claude es como un cuaderno de notas inteligente. Cada vez que hablas con Claude, él toma apuntes sobre lo importante. Luego usa esos apuntes para ayudarte mejor en futuras conversaciones.</p>
+  <p>Pero hay un detalle clave: Claude no revisa sus notas al azar. Él empieza cada conversación "en blanco" y solo consulta su memoria cuando lo necesita. Es como un asistente que tiene un archivo con tus datos, pero solo lo abre cuando es relevante.</p>
+  <p>Esto es diferente a ChatGPT. ChatGPT carga toda tu información al inicio de cada chat, sin que tú lo pidas. Claude es más respetuoso: solo busca lo que necesita, cuando lo necesita. Y te muestra cuándo lo hace.</p>
+  <div class="callout note">
+    <p class="callout-label">Una nota histórica</p>
+    <p>Desde marzo de 2026, la memoria sintetizada está disponible en todos los planes, incluyendo el plan Free. Antes era exclusiva de planes pagos. La única función que sigue siendo exclusiva de los planes pagos es la búsqueda en chats antiguos (Chat Search), que se explica más adelante.</p>
+  </div>
+
+  <h3>La síntesis automática: tu resumen personal</h3>
+  <p>Claude crea un resumen sintetizado de tus conversaciones. Piensa en esto como un perfil que se actualiza solo. Claude analiza tus chats y extrae patrones: tu rol profesional, tus proyectos actuales, tus preferencias y decisiones frecuentes.</p>
+  <p>Este resumen se organiza en categorías:</p>
+  <ul class="deflist">
+    <li><strong>Rol y trabajo</strong> — tu ocupación y contexto laboral</li>
+    <li><strong>Proyectos actuales</strong> — en qué estás trabajando</li>
+    <li><strong>Contenido personal</strong> — preferencias de comunicación y estilo</li>
+  </ul>
+  <p>La síntesis se actualiza cada 24 horas. Esto quiere decir que si le dices algo importante a Claude hoy, puede que no lo "recuerde" hasta mañana. No es instantáneo.</p>
+
+  <h3>Memoria por proyecto vs. memoria general</h3>
+  <p>Claude mantiene dos tipos de memoria, como si tuviera dos cuadernos separados:</p>
+  <ul class="deflist">
+    <li><strong>Memoria general</strong> — para chats que no están dentro de ningún proyecto. Acumula información de todas tus conversaciones sueltas.</li>
+    <li><strong>Memoria de proyecto</strong> — cada proyecto tiene su propio resumen dedicado. Solo guarda lo relevante a ese proyecto.</li>
+  </ul>
+  <p>Esto evita mezclar información. Si trabajas en un proyecto de pagos y otro de marketing, Claude no va a confundir datos entre ellos.</p>
+
+  <h2 id="cap08-buscar-en-conversaciones-anteriores">Buscar en conversaciones anteriores</h2>
+  <p>Además de la memoria automática, Claude puede buscar en tus chats pasados. Es como tener un buscador dentro de tu historial de conversaciones.</p>
+  <p>Para usarlo, simplemente pregunta algo como:</p>
+  <ul>
+    <li>"¿Qué discutimos sobre la base de datos la semana pasada?"</li>
+    <li>"Encuentra nuestra conversación sobre el diseño del logo"</li>
+    <li>"¿Qué decidimos sobre la arquitectura del proyecto?"</li>
+  </ul>
+  <p>Claude usa dos herramientas internas para esto:</p>
+  <ul class="deflist">
+    <li><strong><code>conversation_search</code></strong> — busca en tu historial por tema o palabra clave</li>
+    <li><strong><code>recent_chats</code></strong> — recupera tus conversaciones más recientes</li>
+  </ul>
+  <p>Lo mejor: las búsquedas son transparentes. Claude te muestra cuándo está buscando en tu historial. Aparece como una llamada de herramienta visible en el chat.</p>
+  <p>Cuando Claude hace referencia a conversaciones anteriores, proporciona citaciones con enlaces a los chats originales. Así puedes verificar el contexto y, si quieres, eliminar conversaciones específicas desde ahí.</p>
+
+  <h3>Requisitos para usar la búsqueda</h3>
+  <p>La búsqueda en chats tiene una limitación importante: solo está disponible en planes pagados (Pro, Max, Team o Enterprise). Si usas el plan gratuito, tienes acceso a la memoria automática, pero no puedes buscar en chats anteriores.</p>
+  <p>La búsqueda funciona en la web, en Claude Desktop y en la app móvil.</p>
+
+  <h2 id="cap08-preferencias-de-perfil">Preferencias de perfil: dile a Claude quién eres</h2>
+  <p>Las preferencias de perfil son como una tarjeta de presentación que le das a Claude. Le dices quién eres, qué haces y cómo quieres que te trate. Esta información se aplica a todas tus conversaciones automáticamente, incluyendo las que están dentro de proyectos y las incógnito.</p>
+  <p>Para configurarlas:</p>
+  <ol class="steps">
+    <li>Haz clic en tu icono de iniciales (esquina inferior izquierda)</li>
+    <li>Ve a <strong>Settings → General</strong></li>
+    <li>Verás cuatro campos visibles:
+      <ul class="deflist">
+        <li><strong>Full name</strong> — tu nombre completo. Claude lo usa para dirigirse a ti.</li>
+        <li><strong>What should we call you</strong> — el apodo o nombre corto con el que prefieres que te llamen.</li>
+        <li><strong>What do you do</strong> — tu rol o función profesional (suele ser un dropdown con opciones como software engineer, diseñador, estudiante, etc.).</li>
+        <li><strong>What preferences should Claude consider in responses?</strong> — el campo libre de instrucciones personalizadas. Este es el equivalente a las "custom instructions" de otros asistentes y es donde escribes el grueso de tus preferencias.</li>
+      </ul>
+    </li>
+    <li>Pulsa <strong>Save changes</strong></li>
+  </ol>
+
+  <h3>Qué incluir en tu perfil</h3>
+  <p>Un buen perfil no necesita ser largo. Unos pocos párrafos concisos funcionan mejor que páginas de instrucciones vagas. Incluye:</p>
+  <ul class="deflist">
+    <li><strong>Tu nivel de experiencia</strong> — ¿Eres principiante o experto? Esto cambia cómo Claude te explica las cosas.</li>
+    <li><strong>Tu uso principal</strong> — ¿Para qué usas Claude? ¿Programar? ¿Escribir? ¿Investigar?</li>
+    <li><strong>Preferencias de formato</strong> — ¿Te gustan las listas? ¿Prefieres párrafos cortos? ¿Quieres código con tipos?</li>
+    <li><strong>Lo que NO quieres</strong> — ¿Te molestan las introducciones largas? ¿No te gustan las frases como "¡Excelente pregunta!"? Dilo.</li>
+    <li><strong>Contexto profesional</strong> — tu ocupación, tecnologías que usas, industria en la que trabajas.</li>
+  </ul>
+  <p><strong>Cuánto escribir: menos de 500 palabras.</strong> La recomendación oficial y de la comunidad es mantener el campo "What preferences should Claude consider in responses" por debajo de unas 500 palabras (entre 4 y 6 párrafos compactos). ¿Por qué? Porque ese texto se inyecta como tokens al inicio de cada conversación nueva. Si escribes una página entera, estás gastando contexto útil antes de empezar a hablar. Sé específico, pero acotado.</p>
+
+  <h3>Ejemplo de un perfil bien escrito</h3>
+  <p>Aquí tienes un ejemplo real que puedes adaptar:</p>
+  <pre><code class="lang-text">Nombre: Maria Garcia
+Ocupacion: Desarrolladora full-stack senior
+
+Preferencias:
+- Responde en espanol
+- Soy experta en React, Node.js y PostgreSQL
+- Prefiero codigo conciso sin explicaciones largas
+- No uses "Excelente pregunta!" ni introducciones innecesarias
+- Formato: bullet points y pasos numerados
+- Cuando muestres codigo, incluye tipos TypeScript siempre</code></pre>
+  <p>Nota cómo es específico. No dice "respondeme bien". Dice exactamente qué quiere y qué no quiere. Eso marca la diferencia.</p>
+
+  <h3>La jerarquía de personalización: cómo se apilan las capas</h3>
+  <p>Claude aplica la personalización en un orden específico. Entender este orden te ayuda a saber qué tiene prioridad cuando hay instrucciones que podrían contradecirse:</p>
+  <ol class="steps">
+    <li><strong>Preferencias de perfil</strong>: cargan primero. Son las reglas universales que aplican a todas tus conversaciones.</li>
+    <li><strong>Instrucciones de proyecto</strong>: añaden contexto específico de la tarea. Solo aplican dentro de ese proyecto.</li>
+    <li><strong>Estilos de respuesta</strong>: ajustan el formato de comunicación. Se pueden cambiar a mitad de conversación.</li>
+    <li><strong>Memoria</strong>: contexto aprendido de conversaciones previas. Es lo último que se consulta.</li>
+  </ol>
+  <p>Todas estas capas trabajan juntas. Si tu perfil dice "responde en español" y las instrucciones de proyecto dicen "usa terminología médica", Claude hace ambas cosas. Si hay un conflicto directo, las capas superiores (perfil) tienen prioridad sobre las inferiores (memoria).</p>
+
+  <h2 id="cap08-instrucciones-de-proyecto">Instrucciones de proyecto: reglas solo para un proyecto</h2>
+  <p>Si las preferencias de perfil son una tarjeta de presentación general, las instrucciones de proyecto son un manual específico. Aplican solo dentro de un proyecto particular. No afectan tus otros chats.</p>
+  <p>Para configurarlas:</p>
+  <ol class="steps">
+    <li>Ve a <strong>Projects</strong> en la barra lateral</li>
+    <li>Selecciona o crea un proyecto</li>
+    <li>Abre la configuración del proyecto</li>
+    <li>Escribe las instrucciones</li>
+  </ol>
+  <p>Casos de uso típicos:</p>
+  <ul>
+    <li>Contexto del proyecto ("Este proyecto es una API de pagos en Node.js")</li>
+    <li>Directrices de estilo de código ("Usar ESLint con reglas de Airbnb")</li>
+    <li>Roles específicos ("Actúa como un experto en seguridad")</li>
+    <li>Requisitos de formato ("Siempre incluir tests unitarios")</li>
+  </ul>
+  <p><strong>Buenas noticias:</strong> las instrucciones de proyecto están disponibles en todos los planes, incluyendo el gratuito. La única limitación es que el plan gratuito permite máximo 5 proyectos.</p>
+
+  <h2 id="cap08-estilos-de-respuesta">Estilos de respuesta: cambia cómo habla Claude</h2>
+  <p>Los estilos de respuesta controlan cómo Claude se comunica contigo. No cambian lo que sabe, sino cómo lo presenta. Es como elegir si quieres que tu asistente te hable de forma casual o profesional.</p>
+
+  <h3>Los 5 estilos predefinidos</h3>
+  <p>Claude viene con cinco estilos listos para usar:</p>
+  <ul class="deflist">
+    <li><strong>Normal</strong> — el estilo por defecto. Equilibrado entre detalle y brevedad.</li>
+    <li><strong>Concise</strong> — respuestas cortas y directas. Ideal cuando ya sabes lo básico y solo quieres la respuesta.</li>
+    <li><strong>Explanatory</strong> — respuestas educativas. Claude explica cada concepto como si fuera un profesor.</li>
+    <li><strong>Formal</strong> — respuestas claras y pulidas. Bueno para documentos profesionales.</li>
+    <li><strong>Learning</strong> — estilo de aprendizaje. En lugar de darte solo la respuesta, te guía paso a paso y te ayuda a entender el tema, ideal cuando estás estudiando algo nuevo y quieres asimilarlo, no solo resolverlo.</li>
+  </ul>
+  <p>Para cambiar de estilo, ve al menú <strong>Search and tools</strong> (esquina inferior izquierda) y selecciona <strong>Use style</strong>. Puedes cambiar de estilo en cualquier momento, incluso a mitad de una conversación.</p>
+  <p>Un detalle menor: los estilos Normal y Concise siempre aparecen en la lista y no se pueden ocultar. Los demás estilos predefinidos (Explanatory, Formal y Learning) sí se pueden ocultar desde el modal <strong>Create &amp; edit styles</strong>.</p>
+
+  <h3>Crear tu propio estilo personalizado</h3>
+  <p>Los estilos predefinidos están bien, pero lo realmente potente es crear los tuyos. Hay dos formas:</p>
+  <p><strong>Método 1: Muestras de escritura</strong></p>
+  <ol class="steps">
+    <li>Ve a <strong>Search and tools → Use style → Create &amp; edit styles</strong></li>
+    <li>Selecciona <strong>From writing samples</strong></li>
+    <li>Sube un PDF, DOC o TXT con ejemplos de tu escritura</li>
+    <li>Claude analiza tu estilo y lo replica</li>
+  </ol>
+  <p>Esto es como darle a Claude un ejemplo de tu voz. Él analiza tu estructura de oraciones, vocabulario y tono. Muy útil para mantener consistencia de marca.</p>
+  <p><strong>Cuántas muestras subir:</strong> la recomendación práctica es 3 a 5 muestras de tipos distintos (por ejemplo: un post de blog, un email, un caption de redes), sumando alrededor de 2000 palabras en total. Pocas muestras, o muestras muy parecidas entre sí, producen estilos que no se parecen a ti. Diversificar formatos ayuda a Claude a aislar tu voz independientemente del medio.</p>
+  <p><strong>Método 2: Descripción</strong></p>
+  <ol class="steps">
+    <li>Misma ruta: <strong>Create &amp; edit styles</strong></li>
+    <li>Describe cómo quieres que Claude responda</li>
+    <li>Opcionalmente, activa <strong>Use custom instructions (advanced)</strong> para instrucciones específicas</li>
+  </ol>
+  <p>Ejemplo de descripción: "Responde de forma técnica, sin introducciones, directo al grano. Usa bullet points. Si das código, incluye comentarios."</p>
+
+  <h3>Importante: las Skills están reemplazando a los estilos</h3>
+  <p>Hay un cambio que conviene conocer. Según el centro de ayuda oficial de Anthropic (a junio de 2026), las Skills están reemplazando progresivamente la función previa de los estilos. Es una transición en marcha, no un apagón repentino.</p>
+  <p>¿Qué significa esto en la práctica?</p>
+  <ul class="deflist">
+    <li><strong>Los estilos siguen funcionando durante la transición.</strong> Si usas Normal, Concise, Learning o un estilo personalizado, todo continúa igual por ahora. No tienes que cambiar nada de golpe.</li>
+    <li><strong>Las Skills hacen lo mismo que los estilos y más.</strong> Igual que un estilo, una Skill ajusta el tono y el formato de las respuestas y puede replicar los patrones de tu propia escritura. Pero además añaden capacidades especializadas para tareas o temas concretos, algo que un estilo no podía hacer.</li>
+    <li><strong>Si un estilo personalizado desaparece o cambia, lo más probable es que sea por esta migración.</strong> La solución es recrear ese comportamiento como una Skill.</li>
+  </ul>
+  <p>En otras palabras: si te encariñaste con un estilo, el camino a futuro es convertirlo en Skill. Las Skills se explican a fondo en el capítulo de Skills y slash commands.</p>
+
+  <h2 id="cap08-gestionar-tu-memoria">Gestionar tu memoria: ver, editar, pausar y borrar</h2>
+  <p>Tú tienes el control total sobre lo que Claude recuerda. No es un sistema cerrado. Puedes ver, editar, pausar y hasta borrar toda la memoria.</p>
+
+  <h3>Ver y editar lo que Claude recuerda</h3>
+  <p>Para ver todo lo que Claude sabe de ti:</p>
+  <ol class="steps">
+    <li>Ve a <strong>Settings → Capabilities</strong></li>
+    <li>Haz clic en <strong>View and edit memory</strong></li>
+  </ol>
+  <p>Se abre un modal donde puedes leer todo el resumen. Si algo está mal o desactualizado, haz clic en el icono de lápiz para editarlo.</p>
+  <p>También puedes actualizar la memoria directamente desde un chat. Solo dile a Claude: "Recuerda que nuestro proyecto usa PostgreSQL 16 con pgvector". Él lo anotará para la próxima vez.</p>
+
+  <h3>Pausar la memoria</h3>
+  <p>A veces quieres hablar con Claude sin que tome notas. Para eso puedes pausar la memoria.</p>
+  <p>Ve a <strong>Settings → Capabilities</strong> y desactiva la memoria (también puedes ir a <strong>Settings → Memory → Pause memory</strong>). Cuando pausas la memoria, Claude deja de usar los recuerdos existentes y deja de crear nuevos hasta que la reactives. Los recuerdos guardados no se borran, pero quedan inactivos. Es como cerrar el cuaderno: ni escribe ni lee de él hasta que lo abras de nuevo.</p>
+  <p>Los chats que tengas mientras la memoria está pausada no se incluirán en la síntesis, aunque luego la reactives.</p>
+
+  <h3>Borrar toda la memoria</h3>
+  <p>Si quieres empezar de cero, puedes borrar toda la memoria:</p>
+  <p><strong>Settings → Capabilities → Reset memory</strong></p>
+  <div class="callout warn">
+    <p class="callout-label">Cuidado</p>
+    <p>Esto es irreversible. Una vez que borras la memoria, no hay forma de recuperarla. Se elimina todo, incluyendo memorias de proyectos. Asegúrate de que realmente quieres hacerlo antes de hacer clic.</p>
+  </div>
+  <div class="callout warn">
+    <p class="callout-label">Importante</p>
+    <p>Borrar la memoria no detiene la generación de nuevas memorias. Para un reset completo necesitas dos pasos:</p>
+    <ol class="steps">
+      <li><strong>Borrar:</strong> Settings → Memory → Clear all → Confirm "Reset memory"</li>
+      <li><strong>Desactivar:</strong> Settings → Capabilities → desactiva el toggle "Generate memory from chat history"</li>
+    </ol>
+    <p>Sin el segundo paso, Claude seguirá creando nuevas memorias a partir de tus próximas conversaciones. Si lo que quieres es empezar completamente de cero y que no se generen más memorias, necesitas hacer ambas cosas.</p>
+  </div>
+
+  <h3>El toggle "Help improve Claude" (privacidad y entrenamiento)</h3>
+  <p>Hay otro control relacionado con tus datos que conviene conocer aunque no esté en el menú de memoria: <strong>Settings → Privacy → Help improve Claude</strong>.</p>
+  <p>Este toggle decide si Anthropic puede usar tus conversaciones (incluyendo lo que entra en memoria) para entrenar futuros modelos.</p>
+  <ul>
+    <li>En planes consumer (Free, Pro, Max) viene <strong>activado por defecto</strong>. Si no quieres que tus chats se usen para entrenamiento, tienes que desactivarlo manualmente.</li>
+    <li>En planes Enterprise y en la API viene <strong>desactivado por defecto</strong>. Los datos de empresa y de desarrolladores no entran al pipeline de entrenamiento salvo opt-in explícito.</li>
+  </ul>
+  <p>Si desactivas el toggle, los datos que estaban en el pipeline se purgan en aproximadamente 30 días. Pero ojo: lo que ya se usó para entrenar un modelo anterior no se puede revertir. Por eso conviene decidirlo cuanto antes y, sobre todo, evitar meter secretos, credenciales o datos personales sensibles en cualquier chat, incluso con el toggle desactivado.</p>
+
+  <h3>Pedirle a Claude que recuerde (o que olvide) algo</h3>
+  <p>No tienes que esperar a que Claude deduzca cosas de tus conversaciones. Puedes decirle directamente que recuerde algo:</p>
+  <pre><code class="lang-text">"Recuerda que nuestro proyecto usa PostgreSQL 16 con pgvector
+para embeddings y que el equipo prefiere migraciones con Prisma"</code></pre>
+  <p>Claude actualiza su resumen con esta información. Estará disponible la próxima vez que inicies una conversación. Solo recuerda que la actualización puede tardar hasta 24 horas.</p>
+  <p><strong>Cómo verificar que realmente se guardó:</strong> Cuando Claude invoca la herramienta interna de memoria, aparece un pequeño indicador visible en el chat que dice "memory updated" (o similar). Si ves ese indicador, el dato quedó guardado y aparecerá en <strong>Settings → Memory</strong> como un snippet editable. Si Claude solo responde algo como "claro, lo tendré en cuenta" sin que aparezca el indicador, no se guardó nada: fue una respuesta de cortesía. En ese caso, pídelo de forma más directa: "Guarda esto en memoria: …" o "Crea una memoria que diga …".</p>
+  <p>También funciona en la dirección inversa. Si Claude tiene información incorrecta o desactualizada, puedes pedirle que la olvide:</p>
+  <pre><code class="lang-text">"Olvida que trabajo en la empresa X, ya no trabajo ahí"
+"Olvida mi preferencia de framework anterior, ahora uso Svelte"</code></pre>
+  <p>Claude actualizará su memoria eliminando o corrigiendo la información. Esto es más rápido que ir a Settings a editar manualmente cada entrada.</p>
+
+  <h2 id="cap08-modo-incognito">Modo incógnito: chats que no dejan huella</h2>
+  <p>El modo incógnito es para conversaciones privadas. Son chats temporales que no se guardan en tu historial ni se incluyen en la memoria de Claude. Tampoco se usan para entrenamiento.</p>
+  <p>Para activarlo:</p>
+  <ul>
+    <li>Haz clic en el icono de fantasma (esquina superior derecha) al iniciar un chat nuevo</li>
+    <li>O usa el atajo <code>Ctrl+Shift+I</code></li>
+  </ul>
+  <p>Lo que debes saber sobre el modo incógnito:</p>
+  <ul>
+    <li><strong>Solo funciona fuera de proyectos.</strong> No puedes usarlo dentro de un proyecto.</li>
+    <li>Una vez que cierras un chat incógnito, <strong>no puedes reabrirlo</strong>.</li>
+    <li><strong>Claude no carga su memoria sintetizada durante chats incógnito.</strong> No va a consultar lo que ha aprendido de conversaciones anteriores.</li>
+    <li><strong>Sin embargo, tus preferencias de perfil y estilos de respuesta sí permanecen activos.</strong> Incógnito desactiva la memoria aprendida, pero no tu configuración manual de perfil.</li>
+    <li><strong>Los chats incógnito no alimentan futuros resúmenes de memoria.</strong> Lo que hables ahí se queda ahí.</li>
+    <li>Para salir, haz clic en la X o usa <code>Ctrl+Shift+I</code> de nuevo.</li>
+  </ul>
+
+  <h3>Nota para usuarios Enterprise y Team</h3>
+  <p>En cuentas Enterprise, los chats incógnito no son 100% privados para la organización. Se retienen al menos 30 días por razones de seguridad y se incluyen en exportaciones de datos organizacionales. El usuario no los ve, pero la organización sí puede acceder a ellos.</p>
+  <p>Además, en planes Enterprise existe un toggle a nivel de organización que permite a los propietarios habilitar o deshabilitar la generación de memoria para todos los usuarios. Se encuentra en <strong>Organization settings → Capabilities → "Generate memory from chat history"</strong>.</p>
+  <div class="callout warn">
+    <p class="callout-label">Cuidado</p>
+    <p>Deshabilitar la memoria a nivel organizacional elimina automática y permanentemente todos los datos de memoria de todos los usuarios de la organización. Esta acción es irreversible. Cuando el toggle está desactivado, los usuarios individuales no pueden reactivar la memoria por su cuenta.</p>
+  </div>
+  <p>Los planes Team, en cambio, no tienen estos controles a nivel de organización. En Team, cada miembro gestiona su propia configuración de memoria de forma individual.</p>
+
+  <h2 id="cap08-importar-y-exportar-memoria">Importar y exportar memoria</h2>
+  <p>¿Vienes de otro asistente de IA como ChatGPT? Puedes traer tu contexto a Claude. Y si algún día quieres irte, puedes llevarte tus memorias también.</p>
+
+  <h3>Importar memoria desde otro servicio</h3>
+  <p>Claude soporta importación de memoria desde <strong>ChatGPT, Gemini, Copilot y Grok</strong>. El proceso tiene dos pasos:</p>
+  <p><strong>Paso 1: Exportar del servicio anterior</strong></p>
+  <p>En ChatGPT, Gemini, Copilot o Grok, pide algo como: "Lista cada memoria almacenada sobre mí en formato [fecha] - contenido".</p>
+  <p><strong>Paso 2: Importar en Claude</strong></p>
+  <p>Tienes dos formas de acceder a la importación:</p>
+  <ul>
+    <li>Ve a <strong>Settings → Capabilities → Memory → Import memory from other AI providers</strong></li>
+    <li>O visita directamente <code><a href="https://claude.com/import-memory" target="_blank" rel="noopener">claude.com/import-memory</a></code></li>
+  </ul>
+  <ol class="steps">
+    <li>Pega el texto que exportaste</li>
+    <li>Haz clic en <strong>Add to memory</strong></li>
+  </ol>
+  <p>Claude extrae la información clave y la almacena. Los cambios pueden tardar hasta 24 horas en aparecer.</p>
+  <p>Esta función es experimental. Claude se enfoca en contexto profesional, así que datos personales sin relación laboral pueden no guardarse.</p>
+
+  <h3>Exportar tu memoria de Claude</h3>
+  <p>Tienes dos opciones:</p>
+  <ul>
+    <li>Ve a <strong>Settings → Capabilities → View and edit memory</strong> y copia el contenido</li>
+    <li>O pregúntale a Claude directamente: "Escribe mis memorias exactamente como aparecen en tu memoria"</li>
+  </ul>
+
+  <h2 id="cap08-memoria-en-claude-code">Memoria en Claude Code: CLAUDE.md y más</h2>
+  <p>Si usas Claude Code (la herramienta de línea de comandos para programadores), la memoria funciona de forma diferente. No usa la síntesis automática de <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>. En su lugar, usa archivos de texto que tú controlas directamente.</p>
+
+  <h3>CLAUDE.md: el archivo de instrucciones</h3>
+  <p>El archivo <code>CLAUDE.md</code> es como un manual de instrucciones que dejas en tu proyecto. Claude Code lo lee al inicio de cada sesión y sigue lo que dice.</p>
+  <p>Puedes tener <code>CLAUDE.md</code> en tres lugares diferentes:</p>
+  <ul class="deflist">
+    <li><strong>En tu proyecto</strong> — <code>./CLAUDE.md</code> o <code>./.claude/CLAUDE.md</code>. Se comparte con tu equipo vía control de versiones.</li>
+    <li><strong>En tu carpeta personal</strong> — <code>~/.claude/CLAUDE.md</code>. Aplica a todos tus proyectos. No se comparte.</li>
+    <li><strong>A nivel de organización</strong> — en una ruta del sistema operativo. Aplica a todos los usuarios de la máquina.</li>
+  </ul>
+  <p>¿No sabes qué poner? Ejecuta <code>/init</code> en Claude Code. Él analiza tu proyecto y genera un <code>CLAUDE.md</code> automáticamente.</p>
+  <p>Consejos para un buen <code>CLAUDE.md</code>:</p>
+  <ul>
+    <li><strong>Mantenlo corto:</strong> menos de 200 líneas</li>
+    <li><strong>Sé específico:</strong> "Usar 2 espacios de indentación" es mejor que "formatear bien"</li>
+    <li><strong>Incluye comandos de build y test:</strong> Claude Code los necesita todo el tiempo</li>
+    <li><strong>Agrega convenciones:</strong> nombres de variables, estructura de carpetas, herramientas</li>
+  </ul>
+
+  <h3>Auto Memory: Claude Code toma notas solo</h3>
+  <p>Auto Memory es una función que permite a Claude Code acumular conocimiento entre sesiones sin que tú escribas nada. Claude guarda notas para sí mismo: comandos que descubrió, problemas que resolvió, patrones de tu código y tus preferencias.</p>
+  <p>Está habilitado por defecto desde Claude Code v2.1.59+. Las notas se guardan en un archivo llamado <code>MEMORY.md</code> dentro de <code>~/.claude/projects/&lt;proyecto&gt;/memory/</code>.</p>
+  <p>Un detalle técnico importante: solo las primeras 200 líneas de Auto Memory se cargan por sesión. Si el archivo crece mucho, las notas al final se ignoran. Por eso Claude prioriza la información más relevante al inicio del archivo.</p>
+  <p>Para controlar Auto Memory:</p>
+  <ul>
+    <li>Ejecuta <code>/memory</code> para ver el estado y los archivos cargados</li>
+    <li>Desactívalo en settings: <code>{"autoMemoryEnabled": false}</code></li>
+    <li>O con la variable de entorno: <code>CLAUDE_CODE_DISABLE_AUTO_MEMORY=1</code></li>
+  </ul>
+  <p>Un detalle importante: Auto Memory es local a tu máquina. No se sincroniza entre dispositivos. Si trabajas en dos computadoras, cada una tendrá su propia memoria.</p>
+  <p><strong>La diferencia clave:</strong> <code>CLAUDE.md</code> son reglas explícitas que tú escribes. Auto Memory (<code>MEMORY.md</code>) son patrones que Claude observa y documenta por su cuenta.</p>
+
+  <h3>Auto Dream (Memory 2.0): limpieza automática de memoria</h3>
+  <p>Desde marzo 2026, Claude Code incluye un sistema llamado Auto Dream (también conocido como Memory 2.0). Es un proceso automático que mantiene tu memoria limpia y organizada.</p>
+  <p>¿Qué hace Auto Dream?</p>
+  <ul>
+    <li>Limpia memorias obsoletas que ya no aplican</li>
+    <li>Fusiona insights duplicados en una sola entrada</li>
+    <li>Resuelve contradicciones entre memorias antiguas y nuevas</li>
+    <li>Organiza la información en conocimiento coherente</li>
+  </ul>
+  <p>Auto Dream opera automáticamente en segundo plano. No necesitas activarlo ni configurarlo. Si Auto Memory está habilitado, Auto Dream se encarga de que el archivo <code>MEMORY.md</code> no se llene de basura con el tiempo.</p>
+
+  <h3>Reglas por ruta: instrucciones inteligentes</h3>
+  <p>Para proyectos grandes, puedes crear reglas que solo se activan cuando Claude trabaja con ciertos archivos. Es como tener un asistente que sabe cambiar de sombrero según la tarea.</p>
+  <p>Crea archivos <code>.md</code> en <code>.claude/rules/</code>. Cada archivo puede tener un encabezado YAML que indica a qué archivos aplica:</p>
+  <pre><code class="lang-text"># Archivo: .claude/rules/api-design.md
+---
+paths:
+  - "src/api/**/*.ts"
+---
+
+# Reglas de API
+- Todos los endpoints deben incluir validacion de input
+- Usar formato estandar de respuesta de error
+- Incluir comentarios de documentacion OpenAPI</code></pre>
+  <p>Esta regla solo se carga cuando Claude trabaja con archivos TypeScript en <code>src/api/</code>. Esto ahorra contexto y evita reglas irrelevantes.</p>
+  <p>Las reglas sin <code>paths</code> se cargan siempre al inicio, igual que un <code>CLAUDE.md</code> normal.</p>
+
+  <h2 id="cap08-memory-tool">Memory Tool: memoria para desarrolladores (API)</h2>
+  <p>Si estás construyendo aplicaciones con la API de Claude, existe una herramienta especial llamada Memory Tool. Permite que tu aplicación almacene y recupere información entre conversaciones.</p>
+  <p>Es como darle a Claude un disco duro donde puede guardar archivos de texto con notas, progreso y contexto.</p>
+
+  <h3>Cómo funciona</h3>
+  <p>La Memory Tool crea un directorio virtual <code>/memories</code> donde Claude puede:</p>
+  <ul class="deflist">
+    <li><strong><code>view</code></strong> — ver archivos o el directorio completo</li>
+    <li><strong><code>create</code></strong> — crear archivos nuevos</li>
+    <li><strong><code>str_replace</code></strong> — reemplazar texto en un archivo</li>
+    <li><strong><code>insert</code></strong> — insertar texto en una línea específica</li>
+    <li><strong><code>delete</code></strong> — eliminar archivos</li>
+    <li><strong><code>rename</code></strong> — renombrar o mover archivos</li>
+  </ul>
+  <p>Un detalle clave: la memoria se almacena del lado del cliente. Tú controlas dónde se guardan los datos. Claude solo lee y escribe; tú decides el almacenamiento.</p>
+  <pre><code class="lang-python">import anthropic
+
+client = anthropic.Anthropic()
+message = client.messages.create(
+    model="claude-opus-4-8",
+    max_tokens=2048,
+    messages=[{"role": "user", "content": "Ayudame con mi proyecto"}],
+    tools=[{"type": "memory_20250818", "name": "memory"}]
+)</code></pre>
+  <p>Cuando activas la Memory Tool, Claude automáticamente revisa su directorio <code>/memories</code> antes de empezar a trabajar. Si encuentra notas de sesiones anteriores, las usa como contexto.</p>
+
+  <h2 id="cap08-resumen-que-memoria-hay-en-cada-plataforma">Resumen: qué memoria hay en cada plataforma</h2>
+  <p>La memoria funciona diferente según dónde uses Claude. Aquí tienes una guía rápida:</p>
+  <ul class="deflist">
+    <li><strong><a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a> (web/app)</strong> — síntesis automática cada 24 horas + búsqueda en chats (planes pagados) + preferencias de perfil + estilos + instrucciones de proyecto + modo incógnito</li>
+    <li><strong>Claude Code (terminal)</strong> — archivos <code>CLAUDE.md</code> + Auto Memory (<code>MEMORY.md</code>, primeras 200 líneas) + Auto Dream para limpieza automática + reglas por ruta en <code>.claude/rules/</code></li>
+    <li><strong>API de Claude</strong> — Memory Tool con almacenamiento del lado del cliente</li>
+  </ul>
+  <p>Cada plataforma tiene su propio enfoque, pero el objetivo es el mismo: que Claude te conozca y te ayude mejor cada vez.</p>
+
+  <h2 id="cap08-ejemplos-practicos">Ejemplos Prácticos</h2>
+
+  <h3>Configurar preferencias de perfil efectivas</h3>
+  <pre><code class="lang-text">Nombre: Maria Garcia
+Ocupacion: Desarrolladora full-stack senior
+
+Preferencias:
+- Responde en español
+- Soy experta en React, Node.js y PostgreSQL
+- Prefiero código conciso sin explicaciones largas
+- No uses "Excelente pregunta!" ni introducciones innecesarias
+- Formato: bullet points y pasos numerados
+- Cuando muestres código, incluye tipos TypeScript siempre</code></pre>
+  <p>Un perfil bien escrito incluye tu contexto profesional, nivel de experiencia, formato preferido y comportamientos que quieres evitar. Sé específico. No digas 'respóndeme bien'; di exactamente qué quieres.</p>
+
+  <h3>Pedirle a Claude que recuerde información clave</h3>
+  <pre><code class="lang-text">Recuerda que nuestro proyecto usa PostgreSQL 16 con pgvector para
+embeddings y que el equipo prefiere migraciones con Prisma</code></pre>
+  <p>Escribe esto directamente en un chat con Claude. Él actualiza su resumen de memoria con esta información. Estará disponible en tu siguiente conversación, aunque puede tardar hasta 24 horas.</p>
+
+  <h3>Pedirle a Claude que olvide algo incorrecto</h3>
+  <pre><code class="lang-text">Olvida que trabajo en la empresa X, ya no trabajo ahí</code></pre>
+  <p>Claude actualiza su memoria eliminando o corrigiendo la información obsoleta. También puedes ser más específico: 'Olvida mi preferencia de framework anterior, ahora uso Svelte'.</p>
+
+  <h3>Buscar en conversaciones anteriores</h3>
+  <pre><code class="lang-text">¿Qué discutimos la semana pasada sobre la arquitectura del
+microservicio de pagos?</code></pre>
+  <p>Claude usa <code>conversation_search</code> para buscar en tu historial. Verás la búsqueda como una llamada de herramienta en el chat. Solo funciona en planes pagados (Pro, Max, Team, Enterprise).</p>
+
+  <h3>Crear un CLAUDE.md para tu proyecto (Claude Code)</h3>
+  <pre><code class="lang-text"># Proyecto: API de Pagos
+
+## Comandos
+- Build: `npm run build`
+- Test: `npm test`
+- Lint: `npm run lint`
+
+## Arquitectura
+- Express.js + TypeScript
+- PostgreSQL con Prisma ORM
+- Tests con Vitest
+
+## Convenciones
+- Usar 2 espacios de indentacion
+- Nombres de variables en camelCase
+- Handlers de API en src/api/handlers/
+- No usar `any` en TypeScript</code></pre>
+  <p>Un <code>CLAUDE.md</code> conciso con los comandos más usados, la arquitectura del proyecto y las convenciones del equipo. Guárdalo en la raíz del proyecto para que todo el equipo lo comparta.</p>
+
+  <h3>Crear reglas condicionadas por ruta (Claude Code)</h3>
+  <pre><code class="lang-text"># Archivo: .claude/rules/api-design.md
+---
+paths:
+  - "src/api/**/*.ts"
+---
+
+# Reglas de API
+- Todos los endpoints deben incluir validación de input
+- Usar formato estandar de respuesta de error
+- Incluir comentarios de documentación OpenAPI</code></pre>
+  <p>Esta regla solo se activa cuando Claude Code trabaja con archivos TypeScript en <code>src/api/</code>. Así no se carga contexto innecesario en otras partes del proyecto.</p>
+
+  <h3>Importar memoria desde ChatGPT, Gemini o Grok</h3>
+  <pre><code class="lang-text">1. En el servicio anterior: 'Lista cada memoria almacenada sobre mi
+en formato [fecha] - contenido'
+2. Copia el resultado
+3. En Claude: visita claude.com/import-memory (o Settings &gt;
+Capabilities &gt; Memory &gt; Import)
+4. Pega el texto exportado
+5. Clic en 'Add to memory'
+6. Espera 24 horas</code></pre>
+  <p>Función experimental para migrar contexto profesional desde otro asistente de IA (ChatGPT, Gemini o Grok). Claude prioriza información laboral; datos personales sin relación al trabajo pueden no guardarse.</p>
+
+  <h3>Reset completo de memoria (dos pasos)</h3>
+  <pre><code class="lang-text">Paso 1: Settings &gt; Memory &gt; Clear all &gt; Confirm 'Reset memory'
+Paso 2: Settings &gt; Capabilities &gt; Toggle OFF 'Generate memory from
+chat history'</code></pre>
+  <p>Para un reset completo necesitas DOS pasos. Solo borrar memorias no evita que Claude cree nuevas en futuras conversaciones. El segundo paso desactiva la generación automática.</p>
+
+  <h3>Usar Memory Tool en la API de Claude</h3>
+  <pre><code class="lang-python">import anthropic
+
+client = anthropic.Anthropic()
+message = client.messages.create(
+    model="claude-opus-4-8",
+    max_tokens=2048,
+    messages=[{"role": "user", "content": "Ayudame con mi proyecto"}],
+    tools=[{"type": "memory_20250818", "name": "memory"}]
+)</code></pre>
+  <p>Ejemplo básico de la API. Claude revisa automáticamente <code>/memories</code> antes de trabajar. Tú implementas los handlers de operaciones (<code>view</code>, <code>create</code>, <code>str_replace</code>, etc.) y controlas dónde se almacenan los datos.</p>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Sé específico en tus preferencias de perfil. 'Usa 2 espacios de indentación' funciona mucho mejor que 'formatea bien el código'.</p>
+  </div>
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa <code>/init</code> en Claude Code para generar un CLAUDE.md automático. Es un excelente punto de partida que puedes personalizar después.</p>
+  </div>
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Puedes decirle a Claude directamente 'Recuerda que...' para agregar información a su memoria sin ir a Settings.</p>
+  </div>
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>También puedes decirle a Claude 'Olvida que...' para corregir información incorrecta o desactualizada en su memoria. Es más rápido que editar manualmente en Settings.</p>
+  </div>
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Para un reset completo de memoria necesitas DOS pasos: borrar las memorias existentes Y desactivar el toggle 'Generate memory from chat history'. Si solo borras, Claude seguirá creando memorias nuevas.</p>
+  </div>
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>El restablecimiento de memoria (Reset memory) es IRREVERSIBLE. Una vez borrada, no hay forma de recuperarla.</p>
+  </div>
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>La memoria se actualiza cada 24 horas, no en tiempo real. Si le dijiste algo importante a Claude hoy, puede que no lo recuerde hasta mañana.</p>
+  </div>
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>CLAUDE.md es contexto, no configuración forzada. Si las instrucciones son vagas o contradictorias, Claude puede no seguirlas.</p>
+  </div>
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>En Enterprise, deshabilitar la memoria a nivel organizacional elimina PERMANENTEMENTE todos los datos de memoria de TODOS los usuarios. No hay vuelta atrás.</p>
+  </div>
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>La búsqueda en chats anteriores solo está disponible en planes pagados (Pro, Max, Team, Enterprise). El plan gratuito tiene memoria pero no búsqueda.</p>
+  </div>
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Auto Memory en Claude Code es local a tu máquina. Si trabajas en dos computadoras, cada una tendrá su propia memoria del proyecto.</p>
+  </div>
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>En cuentas Enterprise, los chats incógnito se retienen 30+ días por seguridad, aunque el usuario no pueda verlos. El plan Team NO tiene controles de memoria a nivel organizacional.</p>
+  </div>
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>El modo incógnito desactiva la memoria sintetizada, pero tus preferencias de perfil y estilos de respuesta siguen activos. No es un 'borrón total'.</p>
+  </div>
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Hay un cap reportado de aproximadamente 30 ediciones manuales de memoria por ciclo, con un límite de 200 caracteres por edición, entre síntesis. Si vas a actualizar muchos datos de golpe (por ejemplo, después de cambiar de empresa o de stack), es más eficiente ir directo a Settings &gt; Memory y editarlos ahí en bloque que pedírselo a Claude muchas veces seguidas en chat.</p>
+  </div>
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Desde marzo de 2026, la memoria sintetizada está disponible en TODOS los planes, incluyendo Free. Lo único que sigue siendo exclusivo de planes pagos es la búsqueda en chats antiguos (Chat Search).</p>
+  </div>
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Settings &gt; Privacy &gt; 'Help improve Claude' viene ACTIVADO por defecto en planes consumer (Free, Pro, Max). Si no quieres que tus chats se usen para entrenar futuros modelos, desactívalo manualmente. En Enterprise y API viene desactivado por defecto.</p>
+  </div>
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Mantén el campo 'What preferences should Claude consider in responses' por debajo de 500 palabras. Se inyecta como tokens al inicio de CADA chat nuevo, así que textos largos reducen el contexto útil disponible para tu conversación.</p>
+  </div>
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Cuando le pidas a Claude 'recuerda que...', verifica que aparezca el indicador 'memory updated' en el chat. Si no aparece y solo te responde con cortesía, no se guardó nada — pídelo de forma más directa: 'Guarda esto en memoria'.</p>
+  </div>
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>A junio de 2026, las Skills están reemplazando progresivamente a los estilos según el centro de ayuda de Anthropic. Los estilos siguen funcionando durante la transición. Si tu estilo personalizado desaparece o cambia, recréalo como Skill (ver el capítulo de Skills y slash commands).</p>
+  </div>
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Ahora hay 5 estilos predefinidos: Normal, Concise, Explanatory, Formal y el nuevo Learning (estilo de aprendizaje que te guía paso a paso en vez de darte solo la respuesta).</p>
+  </div>
+
+  <section class="recap">
+    <h2 id="cap08-resumen-del-capitulo">Resumen del Capítulo</h2>
+    <p>Claude tiene un sistema de memoria que aprende de tus conversaciones y se actualiza cada 24 horas. Puedes personalizar tu experiencia con preferencias de perfil (globales), instrucciones de proyecto (locales), estilos de respuesta y modo incógnito. Estas capas se aplican en orden: perfil → proyecto → estilos → memoria. El modo incógnito desactiva la memoria sintetizada pero mantiene activas tus preferencias de perfil y estilos. En Claude Code, la memoria se gestiona con archivos <code>CLAUDE.md</code>, Auto Memory (<code>MEMORY.md</code>, primeras 200 líneas) con Auto Dream para limpieza automática, y reglas por ruta. Para la API, existe la Memory Tool que permite almacenar contexto entre sesiones.</p>
+  </section>
+</article>

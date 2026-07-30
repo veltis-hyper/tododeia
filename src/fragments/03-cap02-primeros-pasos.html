@@ -1,0 +1,537 @@
+<article class="chapter" data-id="cap02" data-title="Primeros Pasos con Claude" data-part="1">
+  <header class="ch-head">
+    <p class="ch-kicker">Parte 1 · Fundamentos · Capítulo 2</p>
+    <h1>Primeros Pasos con Claude</h1>
+    <p class="ch-lede">Tu primera conversación con Claude: desde crear la cuenta hasta escribir mensajes efectivos</p>
+    <p class="ch-level">Principiante</p>
+  </header>
+
+  <p>En este capítulo vas a aprender todo lo necesario para empezar a usar Claude desde cero. Vamos a crear tu cuenta paso a paso, entender los planes disponibles, conocer la interfaz y escribir tu primer mensaje. Al terminar, vas a poder conversar con Claude con confianza y sacarle el máximo provecho.</p>
+
+  <h2 id="cap02-que-es-claude-y-por-que-usarlo">Qué es Claude y por qué usarlo</h2>
+
+  <p>Claude es un asistente de inteligencia artificial. Lo creó la empresa Anthropic. Puedes hablarle como le hablarías a un colega muy inteligente.</p>
+
+  <p>Imagina que tienes un amigo que leyó millones de libros, artículos y páginas web. Ese amigo puede ayudarte a escribir, analizar datos, programar, traducir y mucho más. Eso es Claude.</p>
+
+  <p>Claude puede:</p>
+
+  <ul>
+    <li>Escribir textos, emails, ensayos y reportes</li>
+    <li>Analizar documentos, imágenes y hojas de cálculo</li>
+    <li>Responder preguntas sobre casi cualquier tema</li>
+    <li>Programar en decenas de lenguajes</li>
+    <li>Crear páginas web, gráficos y presentaciones</li>
+    <li>Traducir entre idiomas</li>
+    <li>Buscar información actualizada en internet</li>
+  </ul>
+
+  <p>Claude no puede navegar internet libremente, pero sí puede hacer búsquedas web estructuradas para obtener información actualizada (esta función está disponible en todos los planes, incluyendo el gratuito). Tampoco puede dar consejo médico, legal o financiero profesional. Y como toda IA, a veces puede equivocarse. Siempre verifica la información importante.</p>
+
+  <h2 id="cap02-como-crear-tu-cuenta-en-claude">Cómo crear tu cuenta en Claude</h2>
+
+  <p>Crear una cuenta en Claude es gratis y toma menos de 5 minutos. Es como registrarte en cualquier servicio web.</p>
+
+  <h3>Qué necesitas antes de empezar</h3>
+
+  <p>Solo necesitas tres cosas:</p>
+
+  <ol>
+    <li>Un navegador web (Chrome, Firefox, Safari, Edge — cualquiera sirve)</li>
+    <li>Un email válido o una cuenta de Google o Apple</li>
+    <li>Un número de teléfono de un país soportado (Claude está disponible en más de 180 países, incluyendo México, Colombia, Argentina, España, Chile, Perú y muchos más)</li>
+  </ol>
+
+  <p>También necesitas tener al menos 18 años.</p>
+
+  <div class="callout note">
+    <p class="callout-label">Aclaración importante</p>
+    <p>La cuenta que vas a crear en <code><a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a></code> es la cuenta de consumidor. Es distinta de la cuenta de Anthropic Console (la consola para desarrolladores que usan la API). Aunque registres ambas con el mismo email, se crean perfiles separados, con login y facturación independientes. Si más adelante quieres usar la API, no te asustes al ver que tu cuenta de <a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a> no aparece allí: tendrás que registrarte de nuevo en <code><a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a></code>.</p>
+  </div>
+
+  <h3>Pasos para registrarte</h3>
+
+  <ol class="steps">
+    <li>Abre tu navegador y ve a <code><a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a></code></li>
+    <li>Haz clic en "Sign Up" (Registrarse)</li>
+    <li>Elige cómo quieres registrarte: con tu email, con tu cuenta de Google o con tu cuenta de Apple</li>
+    <li>Si eliges email: escribe tu dirección y haz clic en "Continue with email"</li>
+    <li>Revisa tu correo. Vas a recibir un mensaje de Anthropic con el asunto "Secure link to log in to <a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a>". Dentro encontrarás un enlace seguro (magic link) y un código de 6 dígitos como respaldo</li>
+    <li>Haz clic en el enlace desde el mismo dispositivo donde lo pediste y entrarás directo. Si lo abres en otro dispositivo, copia el código de 6 dígitos y pégalo en la pantalla de Claude</li>
+    <li>Escribe tu nombre y acepta los términos</li>
+    <li>Ingresa tu número de teléfono para verificar tu cuenta (recibirás un SMS con otro código)</li>
+    <li>¡Listo! Ya puedes empezar a usar Claude</li>
+  </ol>
+
+  <div class="callout warn">
+    <p class="callout-label">Importante</p>
+    <p><a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a> no usa contraseña dedicada. Cada vez que entres desde un dispositivo nuevo recibirás otro magic link en tu correo. Si prefieres no depender del email, también puedes entrar siempre con "Continue with Google" o "Continue with Apple": son los caminos más rápidos y reutilizan tu sesión existente del navegador. Si el correo no llega, revisa spam y añade <code>@mail.anthropic.com</code> a tu lista de remitentes seguros.</p>
+  </div>
+
+  <h2 id="cap02-donde-puedes-usar-claude">Dónde puedes usar Claude</h2>
+
+  <p>Claude no vive solo en el navegador. Puedes usarlo en varias plataformas. Es como Netflix: lo abres en la tele, en el celular o en la computadora, y tu contenido está ahí.</p>
+
+  <ul class="deflist">
+    <li><strong>Web</strong> — Abre <code><a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a></code> en cualquier navegador. Es la forma más común.</li>
+    <li><strong>App de escritorio</strong> — Descarga la app para Mac o Windows desde <code><a href="https://claude.com/download" target="_blank" rel="noopener">claude.com/download</a></code>. Funciona igual que la web pero como aplicación independiente.</li>
+    <li><strong>App móvil</strong> — Disponible para iPhone (iOS) y Android. Tiene las mismas funciones que la web, más el modo de voz y acceso a la cámara.</li>
+    <li><strong>Extensión de Chrome</strong> — Disponible para usuarios de pago. Te permite usar Claude mientras navegas en cualquier página web.</li>
+  </ul>
+
+  <div class="callout warn">
+    <p class="callout-label">Lo importante</p>
+    <p>Todas las plataformas comparten el mismo límite de uso. Si envías 20 mensajes en la web y 10 en el celular, son 30 mensajes en total.</p>
+  </div>
+
+  <h2 id="cap02-planes-y-precios-cual-te-conviene">Planes y precios: cuál te conviene</h2>
+
+  <p>Piensa en los planes como los de un gimnasio. El plan gratis te deja entrar unas horas. El plan de pago te da acceso completo.</p>
+
+  <h3>Plan Gratis ($0/mes)</h3>
+
+  <p>Perfecto para probar Claude y usarlo de forma casual.</p>
+
+  <ul>
+    <li>Aproximadamente 30 a 40 mensajes por ventana de 5 horas (es una estimación; Anthropic no publica un número oficial y la cifra varía según la complejidad de tus mensajes y la demanda del sistema)</li>
+    <li>Acceso a los modelos Sonnet 4.6 y Haiku 4.5</li>
+    <li>No tienes acceso a Opus (el modelo más inteligente)</li>
+    <li>Puedes usar Artifacts y crear hasta 5 proyectos</li>
+    <li>Búsqueda web incluida</li>
+    <li>Extended Thinking (uso limitado)</li>
+    <li>Ejecución de código</li>
+    <li>Memoria entre conversaciones</li>
+    <li>Modo voz incluido (las cinco voces disponibles para todos)</li>
+    <li>En períodos de alta demanda, los usuarios del plan gratuito pueden experimentar respuestas más lentas o throttling temporal</li>
+  </ul>
+
+  <p>Es como la versión de prueba de un servicio de streaming. Funciona bien, pero tiene límites.</p>
+
+  <h3>Plan Pro ($20/mes)</h3>
+
+  <p>El plan más popular para uso profesional individual.</p>
+
+  <ul>
+    <li>5 veces más uso que el plan gratis</li>
+    <li>Aproximadamente 45 mensajes cada 5 horas</li>
+    <li>Acceso a todos los modelos, incluyendo Opus 4.8</li>
+    <li>Acceso prioritario cuando hay mucha demanda</li>
+    <li>Funciones avanzadas: Extended Thinking, Research, Cowork</li>
+    <li>Claude Code con límites reducidos (desde abril 2026, para usar Claude Code de forma intensiva el plan recomendado es Max 5x)</li>
+    <li>Acceso anticipado a funciones nuevas</li>
+  </ul>
+
+  <p>Si usas Claude más de 2 horas al día para trabajar, este plan se paga solo. Se estima que ahorra entre $200 y $400 al mes comparado con el uso equivalente por API.</p>
+
+  <p>También puedes pagar anualmente a $17/mes (un ahorro de $36 al año).</p>
+
+  <h3>Planes Max ($100 o $200/mes)</h3>
+
+  <p>Para usuarios intensivos que necesitan mucho más volumen.</p>
+
+  <ul>
+    <li><strong>Max 5x</strong>: $100/mes — 5 veces la capacidad de Pro (25 veces la de Free)</li>
+    <li><strong>Max 20x</strong>: $200/mes — 20 veces la capacidad de Pro (100 veces la de Free)</li>
+    <li>Máxima prioridad de acceso</li>
+    <li>Claude Code completo y Remote Control desde el celular (es el plan mínimo recomendado para uso intensivo de Code desde abril 2026)</li>
+    <li>Cuotas más altas para correr agentes y sesiones largas sin interrupciones</li>
+    <li>Acceso anticipado a funciones experimentales antes que el resto de planes</li>
+  </ul>
+
+  <p>Estos planes son para quienes usan Claude todo el día, todos los días.</p>
+
+  <h3>Planes Team y Enterprise</h3>
+
+  <p>Para equipos y empresas.</p>
+
+  <ul class="deflist">
+    <li><strong>Team</strong> — $20/asiento al mes con plan anual o $25/asiento al mes con plan mensual (mínimo 5 asientos). Incluye workspace compartido, SSO e integraciones con Slack y Microsoft 365. También ofrece asientos premium a $100/mes (anual) o $125/mes (mensual) por persona, que incluyen acceso intensivo a Claude Code.</li>
+    <li><strong>Enterprise</strong> — Precio personalizado. Para organizaciones grandes con necesidades de seguridad avanzada, cumplimiento normativo (SOC 2, HIPAA), soporte dedicado y ventana de contexto extendida de 400K a 500K tokens.</li>
+  </ul>
+
+  <p>Si trabajas en una empresa, pregunta a tu departamento de TI si ya tienen un plan Team o Enterprise.</p>
+
+  <h2 id="cap02-conociendo-la-interfaz-de-claude">Conociendo la interfaz de Claude</h2>
+
+  <p>La interfaz de Claude es simple y limpia. Piensa en ella como una app de mensajería, pero en vez de chatear con una persona, chateas con una IA.</p>
+
+  <p>Estos son los elementos principales que vas a ver:</p>
+
+  <h3>El campo de texto</h3>
+
+  <p>Es la caja grande en la parte inferior de la pantalla. Aquí escribes tus mensajes. Presiona Enter para enviar.</p>
+
+  <p>Debajo del campo de texto verás el selector de modelo. Si tienes un plan de pago, puedes hacer clic ahí para cambiar entre Haiku, Sonnet y Opus. Por defecto está seleccionado Sonnet.</p>
+
+  <p>A la derecha del campo verás también un icono de micrófono para entrar al modo voz. Desde 2026 el modo voz es gratuito en todos los planes, incluido el Free. Puedes elegir entre cinco voces con personalidades distintas: Buttery (cálida), Airy (ligera), Mellow (suave), Glassy (clara) y Rounded (redonda). Para cambiarla ve a <code>Settings &gt; Voice</code>. El modo voz funciona mejor en inglés, pero entiende y responde en español.</p>
+
+  <h3>El botón '+' para adjuntar archivos</h3>
+
+  <p>Está en la esquina inferior izquierda, junto al campo de texto. Haz clic ahí para adjuntar imágenes, PDFs, documentos o código.</p>
+
+  <p>Es como adjuntar un archivo en un email. Claude lo lee y lo analiza junto con tu mensaje.</p>
+
+  <h3>La barra lateral izquierda</h3>
+
+  <p>Aquí encuentras:</p>
+
+  <ul>
+    <li>Tu historial de conversaciones anteriores</li>
+    <li>Tus proyectos</li>
+    <li>Tus Artifacts guardados</li>
+    <li>Acceso a configuración (clic en tus iniciales abajo a la izquierda)</li>
+  </ul>
+
+  <p>Es como la barra de navegación de cualquier app. Te ayuda a moverte entre conversaciones.</p>
+
+  <h3>El panel de Artifacts</h3>
+
+  <p>Los Artifacts son ventanas especiales que aparecen a la derecha del chat. Claude los crea automáticamente cuando genera contenido grande o reutilizable.</p>
+
+  <p>Imagina que le pides a Claude que escriba un código HTML. En vez de pegarlo en el chat, Claude abre una ventana aparte donde puedes ver el resultado, editarlo, descargarlo o pedir cambios.</p>
+
+  <p>Los Artifacts se crean para:</p>
+
+  <ul>
+    <li>Documentos largos</li>
+    <li>Código de programación</li>
+    <li>Páginas web con vista previa</li>
+    <li>Gráficos SVG</li>
+    <li>Componentes interactivos</li>
+  </ul>
+
+  <p>Puedes activar o desactivar los Artifacts en <code>Settings &gt; Capabilities</code>.</p>
+
+  <h3>Comandos rápidos con '/'</h3>
+
+  <p>Escribe <code>/</code> en el campo de texto y verás una lista de comandos rápidos. Son atajos para acciones comunes.</p>
+
+  <p>Es como los comandos de Slack. Escribes la barra diagonal y aparecen opciones.</p>
+
+  <h3>Capacidades visibles en la interfaz</h3>
+
+  <p>Además del chat básico, la interfaz de Claude incluye capacidades que verás en acción mientras conversas:</p>
+
+  <ul class="deflist">
+    <li><strong>Extended Thinking</strong> — Cuando Claude enfrenta un problema complejo, puede activar un modo de "pensamiento extendido" donde razona paso a paso antes de responder. Verás un indicador en la interfaz cuando esto suceda. Está disponible en todos los planes (con uso limitado en el plan gratuito).</li>
+    <li><strong>Ejecución de código</strong> — Claude puede ejecutar código directamente y mostrarte los resultados. Esto es útil para análisis de datos, cálculos y pruebas rápidas. También está disponible en todos los planes.</li>
+  </ul>
+
+  <h3>Atajos de teclado básicos</h3>
+
+  <p>Dos atajos te van a ahorrar muchos clics desde el primer día:</p>
+
+  <ul class="deflist">
+    <li><strong>Cmd/Ctrl + K</strong> — abre el buscador rápido de conversaciones. Escribe una palabra clave y salta a cualquier chat anterior sin tener que desplazarte por la barra lateral.</li>
+    <li><strong>Cmd/Ctrl + Shift + O</strong> — abre un chat nuevo, en blanco, sin tener que mover el ratón.</li>
+  </ul>
+
+  <p>En la app de escritorio hay además un atajo global (por defecto <code>Cmd/Ctrl + Shift + .</code>) que abre Claude desde cualquier aplicación. Lo puedes cambiar en <code>Settings &gt; Shortcuts</code>.</p>
+
+  <h3>Cambiar el idioma de la interfaz</h3>
+
+  <p>Claude soporta 11 idiomas en los menús, botones y avisos del sistema: inglés, francés, alemán, hindi, indonesio, italiano, japonés, coreano, portugués brasileño, español (España) y español (Latinoamérica).</p>
+
+  <p>Para cambiarlo: clic en tu icono de perfil (esquina inferior izquierda) &gt; <code>Settings &gt; Language</code> &gt; elige tu opción. La interfaz se actualiza al instante.</p>
+
+  <div class="callout warn">
+    <p class="callout-label">Ojo</p>
+    <p>El idioma de la interfaz es independiente del idioma de la conversación. Puedes tener la interfaz en inglés y chatear con Claude en español sin problema, o al revés. Para que Claude te responda siempre en español, basta con escribirle en español o con poner una preferencia global en <code>Settings &gt; Profile</code>.</p>
+  </div>
+
+  <h2 id="cap02-los-tres-modelos-de-claude-cual-elegir">Los tres modelos de Claude: cuál elegir</h2>
+
+  <p>Claude no es un solo modelo. Es una familia de tres modelos, cada uno con un superpoder diferente. Piensa en ellos como tres empleados con diferentes especialidades.</p>
+
+  <h3>Haiku: el rápido</h3>
+
+  <p>Claude Haiku 4.5 es el modelo más rápido. Responde casi al instante.</p>
+
+  <p>Úsalo para tareas simples: corregir ortografía, responder preguntas cortas, traducir frases, o cualquier cosa que necesites rápido.</p>
+
+  <p>Analogía: Haiku es como un empleado que contesta emails en 30 segundos. No es el más profundo, pero es eficiente.</p>
+
+  <h3>Sonnet: el equilibrado</h3>
+
+  <p>Claude Sonnet 4.6 es el modelo por defecto. Combina buena velocidad con buena inteligencia.</p>
+
+  <p>Úsalo para el trabajo diario: analizar documentos, escribir textos, crear código, resumir información.</p>
+
+  <p>Analogía: Sonnet es como un empleado senior. Hace bien casi todo y trabaja a buen ritmo. Es tu opción segura para la mayoría de tareas.</p>
+
+  <h3>Opus: el más inteligente</h3>
+
+  <p>Claude Opus 4.8 es el modelo más capaz. Piensa más profundo y maneja tareas complejas.</p>
+
+  <p>Úsalo para: diseñar arquitecturas de software, análisis complejos, razonamiento avanzado, o cualquier tarea que requiera pensar mucho.</p>
+
+  <p>Analogía: Opus es como un consultor experto. Tarda un poco más, pero la calidad de su trabajo es excepcional.</p>
+
+  <div class="callout warn">
+    <p class="callout-label">Importante</p>
+    <p>Opus solo está disponible en planes de pago (Pro, Max, Team, Enterprise). El plan gratis no incluye acceso a Opus.</p>
+  </div>
+
+  <h2 id="cap02-tu-primera-conversacion-con-claude">Tu primera conversación con Claude</h2>
+
+  <p>Ya tienes tu cuenta. Ya conoces la interfaz. Ahora viene lo bueno: hablar con Claude.</p>
+
+  <p>Abre <code><a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a></code>, haz clic en el campo de texto y escribe tu primer mensaje. Puede ser algo tan simple como:</p>
+
+  <pre><code class="lang-text">Hola Claude, soy nuevo usando inteligencia artificial.
+¿Puedes explicarme que puedes hacer por mi?</code></pre>
+
+  <p>Claude te va a responder con una lista de sus capacidades. A partir de ahí, puedes pedirle lo que necesites.</p>
+
+  <p>No te preocupes por "hablarle bien" al principio. Claude entiende lenguaje natural. Escríbele como le escribirías a un colega por chat.</p>
+
+  <h2 id="cap02-como-escribir-mensajes-que-funcionen-bien">Cómo escribir mensajes que funcionen bien</h2>
+
+  <p>Hablarle a Claude es fácil. Pero hablarle bien es un arte que puedes aprender rápido. La clave es una sola: <strong>sé claro y específico</strong>.</p>
+
+  <p>Piensa en Claude como un empleado brillante que acaba de llegar a tu empresa. Es muy capaz, pero no conoce tu contexto. Cuanto más contexto le des, mejor será su respuesta.</p>
+
+  <h3>La regla de oro</h3>
+
+  <p>Antes de enviar tu mensaje, hazte esta pregunta:</p>
+
+  <p>"Si le mostraras este mensaje a un compañero que no sabe nada del tema, ¿lo entendería?"</p>
+
+  <p>Si tu compañero se confundiría, Claude también se va a confundir. Reescribe el mensaje con más contexto.</p>
+
+  <h3>Los 4 bloques de un buen mensaje</h3>
+
+  <p>Un mensaje efectivo tiene cuatro partes. No siempre necesitas las cuatro, pero entre más uses, mejor será la respuesta.</p>
+
+  <ol>
+    <li><strong>Rol</strong>: Dile a Claude qué papel debe tomar. Ejemplo: <code>Eres un tutor de matemáticas paciente.</code></li>
+    <li><strong>Contexto</strong>: Explica tu situación. Ejemplo: <code>Estoy preparando una presentación para mi jefe sobre ventas del trimestre.</code></li>
+    <li><strong>Tarea</strong>: Di exactamente qué quieres. Ejemplo: <code>Crea un resumen de 200 palabras con los puntos clave.</code></li>
+    <li><strong>Formato</strong>: Especifica cómo quieres la respuesta. Ejemplo: <code>Usa bullets, tono profesional, en español.</code></li>
+  </ol>
+
+  <h3>Ejemplos: mensaje vago vs. mensaje claro</h3>
+
+  <p>Mensaje vago (resultado impredecible):</p>
+
+  <pre><code class="lang-text">Ayudame con un email.</code></pre>
+
+  <p>Claude no sabe: ¿para quién? ¿sobre qué? ¿formal o informal? ¿largo o corto?</p>
+
+  <p>Mensaje claro (resultado preciso):</p>
+
+  <pre><code class="lang-text">Escribe un email profesional para mi jefa Maria.
+Quiero pedirle permiso para trabajar desde casa
+el viernes. El tono debe ser respetuoso pero
+directo. Maximo 100 palabras.</code></pre>
+
+  <p>¿Ves la diferencia? El segundo mensaje tiene contexto, tarea y formato. Claude sabe exactamente qué hacer.</p>
+
+  <h3>El poder del contexto</h3>
+
+  <p>Explicar el <strong>por qué</strong> detrás de tu pedido mejora mucho las respuestas.</p>
+
+  <p>En vez de decir:</p>
+
+  <pre><code class="lang-text">Nunca uses puntos suspensivos.</code></pre>
+
+  <p>Di:</p>
+
+  <pre><code class="lang-text">Nunca uses puntos suspensivos porque tu respuesta
+va a ser leida por un motor de texto a voz que
+no sabe como pronunciarlos.</code></pre>
+
+  <p>Cuando Claude entiende la razón, adapta su respuesta de forma más inteligente.</p>
+
+  <h3>No busques la perfección al primer intento</h3>
+
+  <p>Hablar con Claude es una conversación, no un examen. Si la primera respuesta no es lo que esperabas, dile qué cambiar.</p>
+
+  <ul>
+    <li>Hazlo mas corto.</li>
+    <li>Cambia el tono a algo mas casual.</li>
+    <li>Agrega un ejemplo practico.</li>
+    <li>Eso no es lo que necesito. Lo que quiero es...</li>
+  </ul>
+
+  <p>Claude aprende de tus correcciones dentro de la misma conversación. Cada mensaje que le mandas lo ayuda a entenderte mejor.</p>
+
+  <h2 id="cap02-proyectos-tu-espacio-de-trabajo-personalizado">Proyectos: tu espacio de trabajo personalizado</h2>
+
+  <p>Los Proyectos son como carpetas inteligentes. Puedes crear un proyecto, darle instrucciones específicas a Claude y subir archivos relevantes. Cada vez que inicies una nueva conversación dentro de ese proyecto, Claude ya tendrá ese contexto.</p>
+
+  <p>Es como tener un empleado al que ya le explicaste las reglas de la empresa. No tienes que repetirle todo cada vez.</p>
+
+  <p>Para crear un proyecto:</p>
+
+  <ol class="steps">
+    <li>Haz clic en "Projects" en la barra lateral</li>
+    <li>Haz clic en "New Project"</li>
+    <li>Dale un nombre descriptivo</li>
+    <li>Agrega instrucciones personalizadas (opcional pero recomendado)</li>
+    <li>Sube archivos relevantes si los tienes</li>
+    <li>Inicia un nuevo chat dentro del proyecto</li>
+  </ol>
+
+  <p>Los usuarios del plan gratis pueden crear hasta 5 proyectos. Los planes de pago no tienen este límite.</p>
+
+  <h2 id="cap02-limites-que-debes-conocer">Límites que debes conocer</h2>
+
+  <p>Claude tiene dos tipos de límites. Entenderlos te ahorra frustración.</p>
+
+  <h3>Límites de uso (cuántos mensajes puedes enviar)</h3>
+
+  <p>Piensa en esto como un presupuesto de conversación. Cada plan tiene un número de mensajes que puedes enviar en un período de tiempo.</p>
+
+  <ul class="deflist">
+    <li><strong>Free</strong> — ~30-40 mensajes por ventana de 5 horas (estimación; Anthropic no publica un número oficial y varía con la complejidad y la demanda del sistema)</li>
+    <li><strong>Pro</strong> — ~45 mensajes cada 5 horas</li>
+    <li><strong>Max 5x</strong> — 5 veces lo que Pro</li>
+    <li><strong>Max 20x</strong> — 20 veces lo que Pro</li>
+  </ul>
+
+  <div class="callout warn">
+    <p class="callout-label">Ojo</p>
+    <p>Los mensajes largos, con archivos adjuntos o que usan herramientas como búsqueda web consumen más del presupuesto. Un mensaje con un PDF de 50 páginas "cuesta" más que un mensaje de texto corto.</p>
+  </div>
+
+  <p>En cuanto a archivos: puedes adjuntar hasta 5 archivos por mensaje, con un máximo de 30 MB por archivo y 200K tokens combinados en total. Los formatos aceptados son: PDF, DOCX, XLSX, CSV, TXT, MD para documentos y JPG, PNG, WEBP para imágenes.</p>
+
+  <p>Durante horas pico (5am-11am PT / 7am-1pm hora México, días laborables), los usuarios del plan gratuito pueden experimentar respuestas más lentas o throttling temporal. Los planes de pago tienen cola prioritaria.</p>
+
+  <p>Y recuerda: todas las plataformas comparten el mismo pool. Si usas Claude en la web, en el celular y en la app de escritorio, todo suma del mismo límite.</p>
+
+  <h3>Límites de contexto (la memoria de trabajo de Claude)</h3>
+
+  <p>La ventana de contexto es como la memoria de trabajo de Claude. Es todo lo que puede "recordar" dentro de una conversación.</p>
+
+  <p>El límite estándar es de 200,000 tokens. Eso es aproximadamente 150,000 palabras. Es mucho — equivale a un par de novelas completas.</p>
+
+  <p>Los planes Enterprise pueden tener una ventana de contexto extendida de 400K a 500K tokens, ideal para procesar documentos muy grandes o conversaciones extremadamente largas.</p>
+
+  <p>Pero si tu conversación es muy larga o adjuntas muchos archivos, eventualmente llegarás al límite. Cuando eso pase, Claude resume automáticamente los mensajes anteriores para seguir funcionando.</p>
+
+  <p>Si necesitas empezar un tema fresco, simplemente abre una nueva conversación.</p>
+
+  <h2 id="cap02-lo-que-claude-no-puede-hacer">Lo que Claude no puede hacer</h2>
+
+  <p>Es importante saber los límites de Claude para no frustrarte:</p>
+
+  <ul class="deflist">
+    <li><strong>No genera imágenes, audio ni video</strong> — solo los analiza. Si necesitas crear una imagen, una canción o un clip, tienes que usar otra herramienta (Midjourney, ElevenLabs, Sora, etc.). Claude puede describirte muy bien lo que ves o lo que oyes, pero no produce ese tipo de contenido.</li>
+    <li><strong>No navega internet libremente</strong> — pero puede hacer búsquedas web estructuradas para obtener información actualizada. Esta función está disponible en todos los planes, incluyendo el gratuito.</li>
+    <li><strong>No recuerda conversaciones anteriores automáticamente por defecto</strong> — aunque la función de Memoria (ver más abajo) le permite retener información relevante entre conversaciones. También puedes usar Proyectos para mantener contexto organizado.</li>
+    <li><strong>No da consejo profesional</strong> — médico, legal o financiero</li>
+    <li><strong>No crea contenido dañino</strong> — rechaza solicitudes de violencia, actividades ilegales o material explícito</li>
+    <li><strong>Puede equivocarse</strong> — a veces presenta información incorrecta como si fuera verdadera. Esto se llama "alucinación". Siempre verifica datos importantes</li>
+    <li><strong>Tiene un límite de conocimiento</strong> — su entrenamiento tiene una fecha de corte. Para eventos muy recientes, puede no tener información</li>
+  </ul>
+
+  <p>Tratar a Claude como una herramienta poderosa pero no infalible es la mentalidad correcta.</p>
+
+  <h2 id="cap02-personaliza-tu-experiencia-con-claude">Personaliza tu experiencia con Claude</h2>
+
+  <p>Claude tiene varias formas de adaptarse a ti. Piensa en ellas como capas de personalización:</p>
+
+  <ol>
+    <li><strong>Preferencias de perfil</strong>: Configuración global que aplica a todas tus conversaciones. Ve a <code>Settings &gt; Preferences</code> y dile a Claude cómo te gusta trabajar. Por ejemplo: "Siempre responde en español" o "Prefiero respuestas concisas con bullets".</li>
+    <li><strong>Instrucciones de proyecto</strong>: Contexto específico para cada proyecto. Útil cuando trabajas en temas recurrentes.</li>
+    <li><strong>Estilos</strong>: Ajusta el tono y formato de comunicación. Puedes alternar entre un estilo conciso para respuestas rápidas y uno explicativo cuando quieres aprender a fondo.</li>
+    <li><strong>Memoria</strong>: Claude puede recordar información relevante entre diferentes conversaciones sin que tengas que repetirla. Por ejemplo, si le dices que trabajas en marketing y prefieres ejemplos en español, Claude puede retener esa información para futuras conversaciones. La memoria está disponible en todos los planes, incluyendo el gratuito. Puedes revisar y gestionar lo que Claude recuerda en <code>Settings &gt; Memory</code>.</li>
+  </ol>
+
+  <p>No necesitas configurar todo esto ahora. Empieza a usar Claude y personaliza a medida que descubras tus preferencias.</p>
+
+  <h2 id="cap02-ejemplos-practicos">Ejemplos Prácticos</h2>
+
+  <h3>Tu primer mensaje a Claude</h3>
+
+  <pre><code class="lang-text">Hola Claude, soy nuevo usando inteligencia artificial.
+¿Puedes explicarme que puedes hacer por mi?</code></pre>
+
+  <p>Un primer mensaje simple y directo. Claude te responderá con una lista de sus capacidades. No necesitas ser formal ni usar lenguaje técnico.</p>
+
+  <h3>Mensaje con contexto y formato específico</h3>
+
+  <pre><code class="lang-text">Estoy trabajando en un ensayo universitario sobre
+cambio climatico. Necesito un resumen de 200 palabras
+de las principales causas según la evidencia cientifica
+actual. Usa un tono academico pero accesible.</code></pre>
+
+  <p>Este mensaje incluye los 4 bloques: contexto (ensayo universitario), tarea (resumen de 200 palabras), restricciones (causas principales, evidencia científica) y formato (tono académico pero accesible). Claude va a dar una respuesta precisa.</p>
+
+  <h3>Asignar un rol a Claude</h3>
+
+  <pre><code class="lang-text">Eres un tutor de matemáticas paciente y didactico.
+Explicame el concepto de derivadas como si tuviera
+15 años y nunca hubiera visto cálculo.
+Usa analogias de la vida cotidiana.</code></pre>
+
+  <p>Darle un rol a Claude cambia su tono y enfoque. En este caso, Claude no va a responder como un libro de texto sino como un tutor amigable.</p>
+
+  <h3>Elegir el modelo correcto</h3>
+
+  <pre><code class="lang-text">Haiku: 'Corrige la ortografia de este email rápido'
+Sonnet: 'Analiza estas ventas trimestrales y sugiere estrategias'
+Opus: 'Disena la arquitectura completa de un sistema de
+microservicios'</code></pre>
+
+  <p>Haiku para tareas rápidas y simples. Sonnet para trabajo diario. Opus para tareas que requieren pensar profundamente. Usar el modelo correcto te ahorra tokens y tiempo.</p>
+
+  <h3>Adjuntar un archivo para análisis</h3>
+
+  <pre><code class="lang-text">1. Clic en '+' junto al campo de texto
+2. Selecciona tu archivo (imagen, PDF, hoja de cálculo)
+3. Escribe: 'Analiza está hoja de gastos mensuales.
+   Identifica las 3 categorias con mayor gasto
+   y sugiere donde podria ahorrar.'</code></pre>
+
+  <p>Claude puede leer y analizar archivos que le adjuntes. Los archivos se procesan junto con tu mensaje, como si le dieras un documento a un colega.</p>
+
+  <h3>Técnica iterativa en dos pasos</h3>
+
+  <pre><code class="lang-text">Paso 1: 'Revisa este párrafo y dime que problemas encuentras: [tu texto]'
+Paso 2: 'Ahora reescribelo corrigiendo esos problemas.'</code></pre>
+
+  <p>En vez de pedir todo de golpe, divide en dos pasos. Primero deja que Claude analice. Luego pide la corrección. Esta técnica produce mejores resultados que pedir 'corrige esto'.</p>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Si Claude te da una respuesta demasiado larga, simplemente dile 'Hazlo más corto' o 'Resume en 3 bullets'. Claude se adapta.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa Sonnet para el 90% de tus tareas diarias. Solo cambia a Opus cuando necesites análisis profundo o tareas muy complejas. Así ahorras tokens.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Todas las plataformas de Claude (web, móvil, escritorio, Code) comparten el mismo límite de uso. Si gastas tus mensajes en una plataforma, no tendrás en las otras.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Claude puede presentar información incorrecta como si fuera verdadera (alucinación). Siempre verifica datos importantes, especialmente números, fechas y citas.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>El plan gratis funciona muy bien para probar Claude. No necesitas pagar para empezar. Cuando sientas que los límites te frenan, considera el plan Pro.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Los mensajes con archivos adjuntos, herramientas activas o conversaciones largas consumen más de tu presupuesto de mensajes. Empieza conversaciones nuevas para temas diferentes.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Configura tus preferencias de perfil desde el primer día. Ve a <code>Settings</code> y dile a Claude tu idioma preferido y estilo de respuesta. Así no tienes que repetirlo en cada conversación.</p>
+  </div>
+
+  <section class="recap">
+    <h2 id="cap02-resumen-del-capitulo">Resumen del Capítulo</h2>
+    <p>Claude es un asistente de IA al que puedes acceder gratis desde <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>, apps móviles o de escritorio. Para empezar, solo necesitas crear una cuenta con tu email y número de teléfono. La clave para obtener buenas respuestas es ser claro, dar contexto y especificar el formato que quieres. Elige el modelo adecuado (Haiku para rapidez, Sonnet para equilibrio, Opus para tareas complejas) y recuerda que todos los dispositivos comparten el mismo límite de uso.</p>
+  </section>
+</article>

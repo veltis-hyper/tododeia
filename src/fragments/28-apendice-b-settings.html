@@ -1,0 +1,812 @@
+<article class="chapter" data-id="apx-b" data-part="apx" data-title="Referencia Completa de Settings">
+  <header class="ch-head">
+    <p class="ch-kicker">Apéndice B · Referencia</p>
+    <h1>Referencia Completa de Settings</h1>
+    <p class="ch-lede">Tabla exhaustiva de TODOS los settings de Claude Code con ubicación, tipo, valor por defecto y descripción. Nivel: intermedio.</p>
+  </header>
+
+  <p>Este apéndice es tu diccionario de settings. Aquí encontrarás TODOS los ajustes que puedes cambiar en Claude Code, organizados por categoría. Cada setting tiene su tipo, su valor por defecto y dónde puedes usarlo. Úsalo como referencia rápida cuando necesites configurar algo específico.</p>
+
+  <h2 id="apx-b-como-funciona">Cómo Funciona la Configuración</h2>
+  <p>Claude Code guarda sus ajustes en archivos JSON. Piensa en estos archivos como capas de ropa. Cada capa puede agregar o cambiar algo. Las capas de arriba tienen más poder que las de abajo.</p>
+  <p>El orden de poder (de más fuerte a más débil) es:</p>
+  <ol>
+    <li><strong>Managed Settings</strong> — Las reglas del jefe. Nadie puede cambiarlas. Son políticas de empresa.</li>
+    <li><strong>Argumentos de línea de comandos</strong> — Flags como <code>--model sonnet</code>. Solo duran esa sesión.</li>
+    <li><strong>Settings locales del proyecto</strong> — El archivo <code>.claude/settings.local.json</code>. Tus preferencias personales para este proyecto.</li>
+    <li><strong>Settings compartidos del proyecto</strong> — El archivo <code>.claude/settings.json</code>. Los comparte todo el equipo.</li>
+    <li><strong>Settings de usuario</strong> — El archivo <code>~/.claude/settings.json</code>. Tus preferencias globales.</li>
+  </ol>
+  <div class="callout note">
+    <p class="callout-label">Dato clave</p>
+    <p>Los settings que son listas (arrays) se fusionan entre niveles. No se reemplazan. Si agregas un permiso en el nivel de usuario y otro en el de proyecto, Claude Code usa ambos.</p>
+  </div>
+
+  <h3>Archivos de Configuración</h3>
+  <p>Estos son todos los archivos donde Claude Code busca configuración:</p>
+  <ul class="deflist">
+    <li><strong><code>~/.claude/settings.json</code></strong> — Tus settings globales. Aplican a todos tus proyectos.</li>
+    <li><strong><code>.claude/settings.json</code></strong> — Settings del proyecto. Se commitean al repo. Todo el equipo los ve.</li>
+    <li><strong><code>.claude/settings.local.json</code></strong> — Tus overrides personales para este proyecto. Están en <code>.gitignore</code>.</li>
+    <li><strong><code>managed-settings.json</code></strong> — Políticas enterprise. Ubicación según SO: macOS en <code>/Library/Application Support/ClaudeCode/</code>, Linux en <code>/etc/claude-code/</code>, Windows en <code>C:\Program Files\ClaudeCode\</code>.</li>
+    <li><strong><code>managed-settings.d/*.json</code></strong> — Directorio drop-in para fragmentos de política. Se fusionan alfabéticamente con el archivo base. Archivos ocultos (con punto) se ignoran. Usa prefijos numéricos (<code>10-telemetry.json</code>, <code>20-security.json</code>) para controlar el orden.</li>
+    <li><strong><code>~/.claude.json</code></strong> — Preferencias, OAuth, servidores MCP, caches.</li>
+    <li><strong><code>.mcp.json</code></strong> — Servidores MCP del proyecto.</li>
+    <li><strong><code>CLAUDE.md</code></strong> — Instrucciones para Claude. No es un setting, pero influye en su comportamiento.</li>
+    <li><strong><code>.claude/rules/*.md</code></strong> — Reglas modulares por tema.</li>
+    <li><strong><code>.claude/agents/</code></strong> — Subagentes personalizados.</li>
+  </ul>
+  <div class="callout note">
+    <p class="callout-label">Managed settings por MDM/OS</p>
+    <p>En macOS, usa perfiles de configuración con el dominio <code>com.anthropic.claudecode</code> (Jamf, Kandji). En Windows, usa la clave de registro <code>HKLM\SOFTWARE\Policies\ClaudeCode</code> con valor <code>Settings</code> (REG_SZ con JSON). También se soporta <code>HKCU\SOFTWARE\Policies\ClaudeCode</code> con menor prioridad. Precedencia dentro de managed: server-managed &gt; MDM/OS &gt; file-based &gt; HKCU.</p>
+  </div>
+  <div class="callout tip">
+    <p class="callout-label">Tip</p>
+    <p>Agrega <code>"$schema": "<a href="https://json.schemastore.org/claude-code-settings.json" target="_blank" rel="noopener">https://json.schemastore.org/claude-code-settings.json</a>"</code> al inicio de tu archivo <code>settings.json</code>. Esto te da autocompletado y validación en tu editor.</p>
+  </div>
+
+  <h3>Ver Tus Settings Activos</h3>
+  <p>Para ver qué settings están activos y de dónde vienen, usa estos comandos dentro de Claude Code:</p>
+  <ul class="deflist">
+    <li><strong><code>/status</code></strong> — Muestra cada capa de configuración con su origen.</li>
+    <li><strong><code>/config</code></strong> — Abre una interfaz con pestañas para ver y modificar settings.</li>
+  </ul>
+
+  <h2 id="apx-b-core">Settings Principales (Core)</h2>
+  <p>Estos son los ajustes más básicos. Controlan qué modelo usa Claude, en qué idioma te responde y cómo piensa.</p>
+
+  <h3>Modelo e Idioma</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Tipo</th><th>Default</th><th>Alcance</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>model</code></td><td>string</td><td>Depende de tu cuenta</td><td>Todos</td><td>Cambia el modelo. Acepta aliases (<code>sonnet</code>, <code>opus</code>, <code>haiku</code>, <code>opusplan</code>) o nombres completos.</td></tr>
+        <tr><td><code>availableModels</code></td><td>array[string]</td><td>Sin restricción</td><td>Todos</td><td>Restringe qué modelos pueden elegir los usuarios. Con <code>[]</code> vacío, solo queda el modelo Default.</td></tr>
+        <tr><td><code>modelOverrides</code></td><td>object</td><td>N/A</td><td>Todos</td><td>Mapea IDs de modelo Anthropic a IDs de tu proveedor (Bedrock ARNs, Foundry deployments, etc.).</td></tr>
+        <tr><td><code>advisorModel</code></td><td>string</td><td>N/A</td><td>Todos</td><td>Modelo para la herramienta advisor del lado servidor. Acepta aliases o nombres completos. Disponible desde v2.1.90.</td></tr>
+        <tr><td><code>enforceAvailableModels</code></td><td>boolean</td><td><code>false</code></td><td>Todos</td><td>Si está en <code>true</code> y <code>availableModels</code> no está vacío, fuerza que el modelo por defecto quede dentro de la allowlist. Disponible desde v2.1.175.</td></tr>
+        <tr><td><code>fallbackModel</code></td><td>array[string]</td><td>N/A</td><td>Todos</td><td>Cadena de modelos de respaldo (máximo 3) que se usan cuando el modelo primario no está disponible. El valor <code>default</code> se expande al modelo por defecto.</td></tr>
+        <tr><td><code>effortLevel</code></td><td>string</td><td><code>medium</code> (Max/Team) o <code>high</code></td><td>Todos</td><td>Nivel de esfuerzo: <code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code> (según las docs oficiales). Solo para Opus 4.8 y Sonnet 4.6. El nivel <code>max</code> existe pero NO se puede guardar en settings — solo se usa con <code>/effort max</code> o la variable <code>CLAUDE_CODE_EFFORT_LEVEL=max</code> (solo Opus 4.8).</td></tr>
+        <tr><td><code>language</code></td><td>string</td><td>English</td><td>Todos</td><td>Idioma de las respuestas. Ejemplos: <code>spanish</code>, <code>japanese</code>, <code>french</code>.</td></tr>
+        <tr><td><code>outputStyle</code></td><td>string</td><td>Default</td><td>Todos</td><td>Estilo de salida. Ejemplo: <code>Explanatory</code>.</td></tr>
+        <tr><td><code>alwaysThinkingEnabled</code></td><td>boolean</td><td><code>false</code></td><td>Todos</td><td>Activa el pensamiento extendido en todas las sesiones.</td></tr>
+        <tr><td><code>agent</code></td><td>string</td><td>N/A</td><td>User/Project/Local</td><td>Ejecuta el hilo principal como un subagente con nombre. Aplica el system prompt, restricciones y modelo de ese subagente (debe existir en <code>~/.claude/agents/</code> o <code>.claude/agents/</code>).</td></tr>
+        <tr><td><code>defaultShell</code></td><td>string</td><td><code>bash</code></td><td>Todos</td><td>Shell por defecto para comandos <code>!</code> del input-box. Acepta <code>bash</code> o <code>powershell</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>La prioridad para elegir modelo es: <code>/model</code> (en sesión) &gt; <code>--model</code> (flag al iniciar) &gt; <code>ANTHROPIC_MODEL</code> (variable de entorno) &gt; <code>model</code> (en settings).</p>
+
+  <h2 id="apx-b-autenticacion-y-api">Autenticación y API</h2>
+  <p>Estos settings controlan cómo Claude Code se conecta a los servidores de Anthropic o a tu proveedor cloud.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Tipo</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>apiKeyHelper</code></td><td>string</td><td>Script que genera tu clave API. Se ejecuta en <code>/bin/sh</code>. El resultado se envía como header <code>X-Api-Key</code>.</td></tr>
+        <tr><td><code>forceLoginMethod</code></td><td>string</td><td>Fuerza el método de login: <code>claudeai</code> (cuentas <a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a>) o <code>console</code> (cuentas API).</td></tr>
+        <tr><td><code>forceLoginOrgUUID</code></td><td>string | array[string]</td><td>Selecciona la organización automáticamente durante el login. Con un solo UUID, pre-selecciona esa org. Con un array, cualquier org listada es aceptada sin pre-selección. Array vacío bloquea el login.</td></tr>
+        <tr><td><code>awsAuthRefresh</code></td><td>string</td><td>Script para refrescar credenciales AWS.</td></tr>
+        <tr><td><code>awsCredentialExport</code></td><td>string</td><td>Script que genera JSON con credenciales AWS.</td></tr>
+        <tr><td><code>gcpAuthRefresh</code></td><td>string</td><td>Script que refresca las GCP Application Default Credentials (para Vertex AI).</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout note">
+    <p class="callout-label">TTL y debounce</p>
+    <p>El resultado de <code>apiKeyHelper</code> se cachea según el TTL definido por <code>CLAUDE_CODE_API_KEY_HELPER_TTL_MS</code> (milisegundos). El script de <code>otelHeadersHelper</code> se vuelve a ejecutar con un debounce controlado por <code>CLAUDE_CODE_OTEL_HEADERS_HELPER_DEBOUNCE_MS</code>.</p>
+  </div>
+
+  <h2 id="apx-b-permisos">Permisos</h2>
+  <p>Los permisos son como las reglas de una casa. Dicen qué puede hacer Claude y qué no. Funcionan con tres listas: <code>allow</code> (permitir), <code>ask</code> (preguntar) y <code>deny</code> (prohibir).</p>
+  <p>Las reglas se evalúan en este orden: primero <code>deny</code>, luego <code>ask</code>, luego <code>allow</code>. La primera regla que coincide gana. Deny siempre manda.</p>
+
+  <h3>Settings de Permisos</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Tipo</th><th>Alcance</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>permissions.allow</code></td><td>array[string]</td><td>Todos</td><td>Herramientas permitidas sin pedir confirmación.</td></tr>
+        <tr><td><code>permissions.ask</code></td><td>array[string]</td><td>Todos</td><td>Herramientas que requieren tu confirmación antes de usarse.</td></tr>
+        <tr><td><code>permissions.deny</code></td><td>array[string]</td><td>Todos</td><td>Herramientas prohibidas. Siempre tiene precedencia.</td></tr>
+        <tr><td><code>permissions.additionalDirectories</code></td><td>array[string]</td><td>Todos</td><td>Directorios extra que Claude puede acceder. Equivalente a <code>--add-dir</code>.</td></tr>
+        <tr><td><code>permissions.defaultMode</code></td><td>string</td><td>Todos</td><td>Modo por defecto. Según las docs oficiales actuales: <code>ask</code>, <code>auto</code>, <code>plan</code>, <code>bypassPermissions</code>.</td></tr>
+        <tr><td><code>permissions.disableBypassPermissionsMode</code></td><td>string</td><td>Solo Managed</td><td>Pon <code>disable</code> para bloquear el modo bypassPermissions.</td></tr>
+        <tr><td><code>allowManagedPermissionRulesOnly</code></td><td>boolean</td><td>Solo Managed</td><td>Solo aplican reglas de permisos managed. Las de usuario/proyecto se ignoran.</td></tr>
+        <tr><td><code>disableAutoMode</code></td><td>string</td><td>Todos</td><td>Pon <code>disable</code> para prevenir que auto mode sea activado. Remueve auto del ciclo Shift+Tab.</td></tr>
+        <tr><td><code>autoMode</code></td><td>object</td><td>User/Local/Managed</td><td>Personaliza lo que el clasificador de auto mode bloquea y permite. Contiene arrays: <code>environment</code>, <code>allow</code> y <code>soft_deny</code>. NO se lee desde project settings compartidos.</td></tr>
+        <tr><td><code>permissions.skipDangerousModePermissionPrompt</code></td><td>boolean</td><td>User/Local/Managed</td><td>Salta el prompt de confirmación de bypass permissions mode. Se IGNORA en project settings por seguridad.</td></tr>
+        <tr><td><code>skipAutoPermissionPrompt</code></td><td>boolean</td><td>User/Local/Managed</td><td>Omite el prompt de opt-in de auto mode. Default: <code>false</code>.</td></tr>
+        <tr><td><code>useAutoModeDuringPlan</code></td><td>boolean</td><td>User/Local/Managed</td><td>Si el plan mode usa semántica de auto mode. Default: <code>true</code>. Aparece en <code>/config</code>. NO se lee desde project settings compartidos.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Sintaxis de Reglas de Permisos</h3>
+  <p>Las reglas de permisos usan patrones. Aquí tienes los más comunes:</p>
+  <ul class="deflist">
+    <li><strong><code>Bash</code> o <code>Bash(*)</code></strong> — Coincide con todos los comandos Bash.</li>
+    <li><strong><code>Bash(npm run *)</code></strong> — Coincide con comandos que empiezan con <code>npm run</code>. El <code>*</code> es un comodín.</li>
+    <li><strong><code>Read(./.env)</code></strong> — Controla lectura de archivos. Sigue la sintaxis de gitignore.</li>
+    <li><strong><code>Edit(/docs/**)</code></strong> — Controla edición de archivos. <code>**</code> coincide recursivamente.</li>
+    <li><strong><code>WebFetch(domain:<a href="https://example.com" target="_blank" rel="noopener">example.com</a>)</code></strong> — Controla solicitudes web a un dominio.</li>
+    <li><strong><code>mcp__servidor__herramienta</code></strong> — Controla herramientas MCP específicas.</li>
+    <li><strong><code>Agent(nombre)</code></strong> — Controla qué subagentes puede usar Claude.</li>
+    <li><strong><code>Write(ruta)</code></strong> — Controla escritura de archivos nuevos. Sigue la misma sintaxis de rutas que Edit.</li>
+    <li><strong><code>NotebookEdit(ruta)</code></strong> — Controla edición de notebooks Jupyter.</li>
+    <li><strong><code>Task(nombre)</code></strong> — Controla qué tareas en background puede crear Claude.</li>
+    <li><strong><code>Skill(nombre)</code></strong> — Controla qué skills puede ejecutar Claude.</li>
+    <li><strong><code>MCP(servidor:herramienta)</code></strong> — Controla herramientas MCP. Alternativa a <code>mcp__servidor__herramienta</code>.</li>
+  </ul>
+  <p>Prefijos de ruta para Read/Edit:</p>
+  <ul class="deflist">
+    <li><strong><code>//ruta</code></strong> — Ruta absoluta desde la raíz del sistema.</li>
+    <li><strong><code>~/ruta</code></strong> — Relativa a tu home.</li>
+    <li><strong><code>/ruta</code></strong> — Relativa a la raíz del proyecto.</li>
+    <li><strong><code>./ruta</code></strong> — Relativa al directorio actual.</li>
+  </ul>
+  <div class="callout warn">
+    <p class="callout-label">Cuidado</p>
+    <p><code>Bash(ls *)</code> coincide con <code>ls -la</code> pero NO con <code>lsof</code>. El espacio antes de <code>*</code> importa. <code>Bash(ls*)</code> coincide con ambos.</p>
+  </div>
+
+  <h2 id="apx-b-sandbox">Sandbox</h2>
+  <p>El sandbox es como una caja de arena. Claude puede jugar dentro, pero no puede salir. Solo aplica a comandos Bash (no a Read, Edit o WebFetch).</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Tipo</th><th>Default</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>sandbox.enabled</code></td><td>boolean</td><td><code>false</code></td><td>Activa el sandbox. Disponible en macOS, Linux y WSL2.</td></tr>
+        <tr><td><code>sandbox.autoAllowBashIfSandboxed</code></td><td>boolean</td><td><code>true</code></td><td>Aprueba comandos bash automáticamente cuando el sandbox está activo.</td></tr>
+        <tr><td><code>sandbox.excludedCommands</code></td><td>array[string]</td><td>N/A</td><td>Comandos que se ejecutan fuera del sandbox (ej: <code>git</code>, <code>docker</code>).</td></tr>
+        <tr><td><code>sandbox.allowUnsandboxedCommands</code></td><td>boolean</td><td><code>true</code></td><td>Permite el escape <code>dangerouslyDisableSandbox</code>. Pon <code>false</code> para políticas estrictas.</td></tr>
+        <tr><td><code>sandbox.failIfUnavailable</code></td><td>boolean</td><td><code>false</code></td><td>Sale con error al inicio si el sandbox no puede arrancar. Pensado para políticas managed que requieren sandboxing obligatorio.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Sandbox: Sistema de Archivos</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Tipo</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>sandbox.filesystem.allowWrite</code></td><td>array[string]</td><td>Rutas donde comandos sandboxed pueden escribir. Se fusiona entre niveles.</td></tr>
+        <tr><td><code>sandbox.filesystem.denyWrite</code></td><td>array[string]</td><td>Rutas donde comandos sandboxed NO pueden escribir. Se fusiona entre niveles.</td></tr>
+        <tr><td><code>sandbox.filesystem.denyRead</code></td><td>array[string]</td><td>Rutas donde comandos sandboxed NO pueden leer. Se fusiona entre niveles.</td></tr>
+        <tr><td><code>sandbox.filesystem.allowRead</code></td><td>array[string]</td><td>Rutas para re-permitir lectura dentro de regiones denyRead. Tiene precedencia sobre denyRead. Se fusiona entre niveles.</td></tr>
+        <tr><td><code>sandbox.filesystem.allowManagedReadPathsOnly</code></td><td>boolean</td><td>Solo las rutas allowRead de managed settings se respetan. Solo Managed.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Los prefijos de ruta son: <code>//</code> = absoluta, <code>~/</code> = relativa a home, <code>/</code> = relativa al directorio del settings.</p>
+
+  <h3>Sandbox: Red</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Tipo</th><th>Default</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>sandbox.network.allowUnixSockets</code></td><td>array[string]</td><td>N/A</td><td>Unix sockets accesibles (ej: SSH agents).</td></tr>
+        <tr><td><code>sandbox.network.allowAllUnixSockets</code></td><td>boolean</td><td><code>false</code></td><td>Permite todas las conexiones Unix socket.</td></tr>
+        <tr><td><code>sandbox.network.allowLocalBinding</code></td><td>boolean</td><td><code>false</code></td><td>Permite bindear a puertos localhost. Solo macOS.</td></tr>
+        <tr><td><code>sandbox.network.allowedDomains</code></td><td>array[string]</td><td>N/A</td><td>Dominios permitidos para tráfico saliente. Soporta <code>*.example.com</code>. Se fusiona.</td></tr>
+        <tr><td><code>sandbox.network.allowManagedDomainsOnly</code></td><td>boolean</td><td><code>false</code></td><td>Solo dominios de managed settings. Solo Managed.</td></tr>
+        <tr><td><code>sandbox.network.httpProxyPort</code></td><td>number</td><td>Auto</td><td>Puerto del proxy HTTP.</td></tr>
+        <tr><td><code>sandbox.network.socksProxyPort</code></td><td>number</td><td>N/A</td><td>Puerto del proxy SOCKS5.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Sandbox: Opciones Avanzadas</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Tipo</th><th>Plataforma</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>sandbox.enableWeakerNestedSandbox</code></td><td>boolean</td><td>Linux, WSL2</td><td>Sandbox más débil para Docker sin privilegios. Reduce seguridad.</td></tr>
+        <tr><td><code>sandbox.enableWeakerNetworkIsolation</code></td><td>boolean</td><td>macOS</td><td>Permite acceso a <code>com.apple.trustd.agent</code> para verificación TLS con proxy MITM. Reduce seguridad.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="apx-b-hooks">Hooks</h2>
+  <p>Los hooks son como alarmas automáticas. Cuando pasa algo específico, se dispara un comando que tú defines. Por ejemplo: "cada vez que Claude edite un archivo, ejecuta el linter".</p>
+
+  <h3>Settings de Hooks</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Tipo</th><th>Alcance</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>hooks</code></td><td>object</td><td>Todos</td><td>Configura comandos en eventos del ciclo de vida. Soporta 25 eventos diferentes. 4 tipos de handlers: <code>command</code>, <code>http</code>, <code>prompt</code>, <code>agent</code>.</td></tr>
+        <tr><td><code>disableAllHooks</code></td><td>boolean</td><td>Todos</td><td>Desactiva todos los hooks y la status line. En user/project/local no puede deshabilitar hooks managed.</td></tr>
+        <tr><td><code>allowManagedHooksOnly</code></td><td>boolean</td><td>Solo Managed</td><td>Solo permite hooks managed y SDK. Bloquea hooks de usuario y proyecto.</td></tr>
+        <tr><td><code>allowedHttpHookUrls</code></td><td>array[string]</td><td>Todos</td><td>URLs permitidas para HTTP hooks. Soporta <code>*</code>. Se fusiona entre niveles.</td></tr>
+        <tr><td><code>httpHookAllowedEnvVars</code></td><td>array[string]</td><td>Todos</td><td>Variables de entorno que los HTTP hooks pueden usar. Se fusiona.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout warn">
+    <p class="callout-label">Importante</p>
+    <p>Los hooks se capturan al inicio de la sesión. Si los cambias durante una sesión, necesitas revisar los cambios en <code>/hooks</code> o reiniciar.</p>
+  </div>
+
+  <h3>Eventos de Hooks Disponibles</h3>
+  <p>Hay 25 eventos en los que puedes enganchar hooks:</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Evento</th><th>Cuando se dispara</th><th>Puede bloquear</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>SessionStart</code></td><td>Cuando inicia o se resume una sesión</td><td>No</td></tr>
+        <tr><td><code>UserPromptSubmit</code></td><td>Cuando envías un prompt, antes de que Claude lo procese</td><td>Sí</td></tr>
+        <tr><td><code>PreToolUse</code></td><td>Antes de ejecutar una herramienta. Puede bloquearla</td><td>Sí</td></tr>
+        <tr><td><code>PermissionRequest</code></td><td>Cuando aparece un diálogo de permisos</td><td>Sí</td></tr>
+        <tr><td><code>PostToolUse</code></td><td>Después de que una herramienta termina con éxito</td><td>No</td></tr>
+        <tr><td><code>PostToolUseFailure</code></td><td>Después de que una herramienta falla</td><td>No</td></tr>
+        <tr><td><code>Notification</code></td><td>Cuando Claude envía una notificación</td><td>No</td></tr>
+        <tr><td><code>SubagentStart</code></td><td>Cuando se crea un subagente</td><td>No</td></tr>
+        <tr><td><code>SubagentStop</code></td><td>Cuando un subagente termina</td><td>Sí</td></tr>
+        <tr><td><code>Stop</code></td><td>Cuando Claude termina de responder</td><td>Sí</td></tr>
+        <tr><td><code>TeammateIdle</code></td><td>Cuando un teammate está por quedar inactivo</td><td>Sí</td></tr>
+        <tr><td><code>TaskCompleted</code></td><td>Cuando una tarea se marca como completada</td><td>Sí</td></tr>
+        <tr><td><code>InstructionsLoaded</code></td><td>Cuando un CLAUDE.md se carga en contexto</td><td>No</td></tr>
+        <tr><td><code>ConfigChange</code></td><td>Cuando cambia un archivo de configuración</td><td>Sí</td></tr>
+        <tr><td><code>WorktreeCreate</code></td><td>Cuando se crea un worktree</td><td>Sí</td></tr>
+        <tr><td><code>WorktreeRemove</code></td><td>Cuando se elimina un worktree</td><td>No</td></tr>
+        <tr><td><code>PreCompact</code></td><td>Antes de compactar el contexto</td><td>No</td></tr>
+        <tr><td><code>PermissionDenied</code></td><td>Cuando el clasificador de auto mode deniega una llamada de herramienta</td><td>No</td></tr>
+        <tr><td><code>StopFailure</code></td><td>Cuando el turno termina por un error de API</td><td>No</td></tr>
+        <tr><td><code>TaskCreated</code></td><td>Cuando se está creando una tarea</td><td>Sí</td></tr>
+        <tr><td><code>CwdChanged</code></td><td>Cuando el directorio de trabajo cambia</td><td>No</td></tr>
+        <tr><td><code>FileChanged</code></td><td>Cuando un archivo observado cambia en disco</td><td>No</td></tr>
+        <tr><td><code>PostCompact</code></td><td>Después de que la compactación de contexto se completa</td><td>No</td></tr>
+        <tr><td><code>Elicitation</code></td><td>Cuando un servidor MCP solicita input del usuario durante una llamada de herramienta</td><td>Sí</td></tr>
+        <tr><td><code>ElicitationResult</code></td><td>Después de que un usuario responde a una elicitation MCP</td><td>No</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="apx-b-mcp-servers">MCP Servers</h2>
+  <p>Los servidores MCP (Model Context Protocol) son como enchufes extra. Le dan a Claude herramientas adicionales que no tiene por defecto.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Tipo</th><th>Alcance</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>allowedMcpServers</code></td><td>array[object]</td><td>Solo Managed</td><td>Lista de servidores MCP permitidos. Se fusiona dentro del tier managed.</td></tr>
+        <tr><td><code>deniedMcpServers</code></td><td>array[object]</td><td>Solo Managed</td><td>Lista de servidores MCP bloqueados. Tiene precedencia sobre la allowlist.</td></tr>
+        <tr><td><code>allowManagedMcpServersOnly</code></td><td>boolean</td><td>Solo Managed</td><td>Solo permite servidores MCP definidos en managed settings.</td></tr>
+        <tr><td><code>enableAllProjectMcpServers</code></td><td>boolean</td><td>Todos</td><td>Aprueba automáticamente todos los servidores MCP del <code>.mcp.json</code> del proyecto.</td></tr>
+        <tr><td><code>enabledMcpjsonServers</code></td><td>array[string]</td><td>Todos</td><td>Lista de servidores MCP específicos del <code>.mcp.json</code> a aprobar.</td></tr>
+        <tr><td><code>disabledMcpjsonServers</code></td><td>array[string]</td><td>Todos</td><td>Lista de servidores MCP específicos del <code>.mcp.json</code> a rechazar.</td></tr>
+        <tr><td><code>allowAllClaudeAiMcps</code></td><td>boolean</td><td>Solo Managed</td><td>Carga los conectores de <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a> junto al <code>managed-mcp.json</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="apx-b-plugins-y-marketplaces">Plugins y Marketplaces</h2>
+  <p>Los plugins extienden lo que Claude Code puede hacer. Los marketplaces son como tiendas de apps donde encuentras plugins.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Tipo</th><th>Alcance</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>enabledPlugins</code></td><td>object</td><td>User/Project/Local</td><td>Activa o desactiva plugins. Formato: <code>"plugin-name@marketplace": true</code>.</td></tr>
+        <tr><td><code>disabledPlugins</code></td><td>array[string]</td><td>User/Project/Local</td><td>Lista de plugins a desactivar explícitamente.</td></tr>
+        <tr><td><code>pluginSuggestionMarketplaces</code></td><td>array[object]</td><td>Solo Managed</td><td>Marketplaces cuyos plugins pueden aparecer como sugerencias de instalación.</td></tr>
+        <tr><td><code>strictPluginOnlyCustomization</code></td><td>boolean</td><td>Todos</td><td>Si está en <code>true</code>, limita skills y agents a entregarse únicamente vía plugins.</td></tr>
+        <tr><td><code>extraKnownMarketplaces</code></td><td>object</td><td>User/Project</td><td>Pre-registra marketplaces. Se auto-instala para miembros del equipo.</td></tr>
+        <tr><td><code>strictKnownMarketplaces</code></td><td>array[object]</td><td>Solo Managed</td><td>Allowlist de marketplaces. Array vacío bloquea todos.</td></tr>
+        <tr><td><code>blockedMarketplaces</code></td><td>array[object]</td><td>Solo Managed</td><td>Blocklist de fuentes de marketplace.</td></tr>
+        <tr><td><code>pluginTrustMessage</code></td><td>string</td><td>Solo Managed</td><td>Mensaje personalizado en la advertencia de confianza del plugin.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="apx-b-interfaz-y-ux">Interfaz y Experiencia de Usuario</h2>
+  <p>Estos settings controlan cómo se ve y se siente Claude Code en tu terminal.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Tipo</th><th>Default</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>statusLine</code></td><td>object</td><td>N/A</td><td>Status line personalizada. Ejecuta un script que recibe JSON con datos de la sesión (modelo, costo, contexto, etc.).</td></tr>
+        <tr><td><code>fileSuggestion</code></td><td>object</td><td>N/A</td><td>Script para autocompletado de archivos con <code>@</code>.</td></tr>
+        <tr><td><code>respectGitignore</code></td><td>boolean</td><td><code>true</code></td><td>El file picker <code>@</code> respeta patrones de <code>.gitignore</code>.</td></tr>
+        <tr><td><code>spinnerTipsEnabled</code></td><td>boolean</td><td><code>true</code></td><td>Muestra tips mientras Claude trabaja.</td></tr>
+        <tr><td><code>spinnerTipsOverride</code></td><td>object</td><td>N/A</td><td>Reemplaza los tips del spinner.</td></tr>
+        <tr><td><code>spinnerVerbs</code></td><td>object</td><td>N/A</td><td>Personaliza los verbos de acción en el spinner.</td></tr>
+        <tr><td><code>prefersReducedMotion</code></td><td>boolean</td><td><code>false</code></td><td>Reduce animaciones para accesibilidad.</td></tr>
+        <tr><td><code>autoUpdatesChannel</code></td><td>string</td><td><code>latest</code></td><td>Canal de actualizaciones: <code>stable</code> (una semana de antigüedad) o <code>latest</code>.</td></tr>
+        <tr><td><code>showThinkingSummaries</code></td><td>boolean</td><td><code>false</code></td><td>Muestra resúmenes de extended thinking en sesiones interactivas. El modo no-interactivo (<code>-p</code>) siempre los recibe.</td></tr>
+        <tr><td><code>showClearContextOnPlanAccept</code></td><td>boolean</td><td><code>false</code></td><td>Muestra la opción 'clear context' en la pantalla de aceptación del plan.</td></tr>
+        <tr><td><code>voiceEnabled</code></td><td>boolean</td><td><code>false</code></td><td>Habilita push-to-talk voice dictation. Requiere cuenta <a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a>. Se activa con <code>/voice</code>.</td></tr>
+        <tr><td><code>feedbackSurveyRate</code></td><td>number (0-1)</td><td>Default del sistema</td><td>Probabilidad de que la encuesta de calidad aparezca. Pon <code>0</code> para suprimirla completamente.</td></tr>
+        <tr><td><code>disableDeepLinkRegistration</code></td><td>string</td><td>N/A</td><td>Pon <code>disable</code> para prevenir el registro del protocol handler <code>claude-cli://</code>.</td></tr>
+        <tr><td><code>autoScrollEnabled</code></td><td>boolean</td><td><code>true</code></td><td>En el render fullscreen, sigue la salida nueva hasta el final automáticamente.</td></tr>
+        <tr><td><code>awaySummaryEnabled</code></td><td>boolean</td><td><code>true</code></td><td>Muestra un resumen de una línea al volver tras estar ausente varios minutos. Relacionado con <code>CLAUDE_CODE_ENABLE_AWAY_SUMMARY</code>.</td></tr>
+        <tr><td><code>preferredNotifChannel</code></td><td>string</td><td><code>auto</code></td><td>Método de notificación: <code>auto</code>, <code>terminal_bell</code>, <code>iterm2</code>, <code>iterm2_with_bell</code>, <code>kitty</code>, <code>ghostty</code>, <code>notifications_disabled</code>.</td></tr>
+        <tr><td><code>agentPushNotifEnabled</code></td><td>boolean</td><td><code>false</code></td><td>Permite push notifications proactivas cuando Remote Control está conectado. Disponible desde v2.1.119.</td></tr>
+        <tr><td><code>inputNeededNotifEnabled</code></td><td>boolean</td><td><code>false</code></td><td>Envía push cuando hay un prompt de permiso o pregunta esperando tu respuesta. Disponible desde v2.1.119.</td></tr>
+        <tr><td><code>axScreenReader</code></td><td>boolean</td><td><code>false</code></td><td>Render amigable para lectores de pantalla: texto plano sin bordes ni animaciones. Accesibilidad. Disponible desde v2.1.181. También se activa con <code>CLAUDE_AX_SCREEN_READER=1</code>.</td></tr>
+        <tr><td><code>tui</code></td><td>string</td><td><code>auto</code></td><td>Renderer de la interfaz de terminal: <code>auto</code>, <code>classic</code> o <code>fullscreen</code>.</td></tr>
+        <tr><td><code>theme</code></td><td>string</td><td>N/A</td><td>Preferencia de tema de la interfaz (ej: <code>dark</code>, <code>light</code>).</td></tr>
+        <tr><td><code>footerLinksRegexes</code></td><td>array[object]</td><td><code>[]</code></td><td>Renderiza badges clicables en el footer cuando un regex coincide. Cada entrada tiene <code>pattern</code>, <code>url</code> (con <code>{name}</code>) y <code>label</code> opcional. Disponible desde v2.1.176.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="apx-b-archivos-y-directorios">Archivos y Directorios</h2>
+  <p>Settings que controlan dónde Claude guarda cosas y qué archivos carga.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Tipo</th><th>Default</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>autoMemoryDirectory</code></td><td>string</td><td><code>~/.claude/projects/&lt;project&gt;/memory/</code></td><td>Directorio para auto memory. NO se acepta en project settings (seguridad).</td></tr>
+        <tr><td><code>autoMemoryEnabled</code></td><td>boolean</td><td><code>true</code></td><td>Activa o desactiva la auto memory. También se controla con <code>CLAUDE_CODE_DISABLE_AUTO_MEMORY=1</code>.</td></tr>
+        <tr><td><code>cleanupPeriodDays</code></td><td>number</td><td><code>30</code></td><td>Días de inactividad antes de eliminar sesiones. El valor <code>0</code> se rechaza con error de validación. Mínimo: <code>1</code>.</td></tr>
+        <tr><td><code>plansDirectory</code></td><td>string</td><td><code>~/.claude/plans</code></td><td>Donde se guardan los archivos de planes.</td></tr>
+        <tr><td><code>claudeMdExcludes</code></td><td>array[string]</td><td>N/A</td><td>Excluye archivos CLAUDE.md por ruta o patrón glob. Los managed NO pueden ser excluidos.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="apx-b-atribucion-y-comportamiento">Atribución y Comportamiento</h2>
+  <p>Controlan las firmas en commits/PRs y comportamientos generales de Claude Code.</p>
+
+  <h3>Atribución</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Tipo</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>attribution.commit</code></td><td>string</td><td>Texto de atribución en git commits. String vacío lo oculta.</td></tr>
+        <tr><td><code>attribution.pr</code></td><td>string</td><td>Texto de atribución en descripciones de PR. String vacío lo oculta.</td></tr>
+        <tr><td><code>includeCoAuthoredBy</code></td><td>boolean</td><td>DEPRECADO. Usa <code>attribution.commit</code> en su lugar.</td></tr>
+        <tr><td><code>includeGitInstructions</code></td><td>boolean</td><td>Incluye instrucciones de workflow commit/PR en el system prompt.</td></tr>
+        <tr><td><code>prUrlTemplate</code></td><td>string</td><td>Template de URL para el badge de PR. Sustituye <code>{host}</code>, <code>{owner}</code>, <code>{repo}</code>, <code>{number}</code> y <code>{url}</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Comportamiento General</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Tipo</th><th>Default</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>fastModePerSessionOptIn</code></td><td>boolean</td><td><code>false</code></td><td>El fast mode no persiste entre sesiones. Cada sesión inicia sin él.</td></tr>
+        <tr><td><code>companyAnnouncements</code></td><td>array[string]</td><td>N/A</td><td>Anuncios que se muestran al inicio. Se ciclan aleatoriamente.</td></tr>
+        <tr><td><code>allow_remote_sessions</code></td><td>boolean</td><td><code>true</code></td><td>Permite sesiones Remote Control y web. Solo Managed.</td></tr>
+        <tr><td><code>forceRemoteSettingsRefresh</code></td><td>boolean</td><td><code>false</code></td><td>Bloquea el inicio hasta obtener managed settings frescos del servidor. Si falla, el CLI sale. Solo Managed.</td></tr>
+        <tr><td><code>autoCompactEnabled</code></td><td>boolean</td><td><code>true</code></td><td>Compacta la conversación automáticamente cuando el contexto se acerca al límite. Disponible desde v2.1.119. También se desactiva con <code>DISABLE_AUTO_COMPACT=1</code>.</td></tr>
+        <tr><td><code>fileCheckpointingEnabled</code></td><td>boolean</td><td><code>true</code></td><td>Toma un snapshot de los archivos antes de cada edición, para poder usar <code>/rewind</code>. Disponible desde v2.1.119. También se desactiva con <code>CLAUDE_CODE_DISABLE_FILE_CHECKPOINTING=1</code>.</td></tr>
+        <tr><td><code>disableRemoteControl</code></td><td>boolean</td><td><code>false</code></td><td>Desactiva por completo la función Remote Control. Disponible desde v2.1.128.</td></tr>
+        <tr><td><code>disableArtifact</code></td><td>boolean</td><td><code>false</code></td><td>Desactiva la herramienta Artifact (publicación de páginas web en <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>). También se controla con <code>CLAUDE_CODE_DISABLE_ARTIFACT=1</code>.</td></tr>
+        <tr><td><code>disableAgentView</code></td><td>boolean</td><td><code>false</code></td><td>Desactiva los agentes en background, la vista de agentes y el supervisor. También se controla con <code>CLAUDE_CODE_DISABLE_AGENT_VIEW=1</code>.</td></tr>
+        <tr><td><code>agents</code></td><td>object</td><td><code>{}</code></td><td>Definiciones de agentes personalizados directamente en settings.</td></tr>
+        <tr><td><code>requiredMinimumVersion</code></td><td>string</td><td>N/A</td><td>Versión mínima de Claude Code requerida para arrancar. Solo Managed.</td></tr>
+        <tr><td><code>requiredMaximumVersion</code></td><td>string</td><td>N/A</td><td>Versión máxima permitida para arrancar. Solo Managed.</td></tr>
+        <tr><td><code>minimumVersion</code></td><td>string</td><td>N/A</td><td>Piso que evita downgrades; bloquea auto-updates por debajo de esta versión.</td></tr>
+        <tr><td><code>policyHelper</code></td><td>object</td><td>N/A</td><td>Ejecutable desplegado por el admin que calcula managed settings dinámicamente al arranque. Disponible desde v2.1.136. Solo Managed.</td></tr>
+        <tr><td><code>parentSettingsBehavior</code></td><td>string</td><td><code>first-wins</code></td><td>Cómo interactúan los settings del padre con el tier admin: <code>first-wins</code> o <code>merge</code>. Disponible desde v2.1.133. Solo Managed.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="apx-b-monitoreo">Monitoreo y Variables de Entorno</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Tipo</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>otelHeadersHelper</code></td><td>string</td><td>Script para generar headers de OpenTelemetry. Se ejecuta al inicio y cada ~29 min.</td></tr>
+        <tr><td><code>env</code></td><td>object</td><td>Variables de entorno aplicadas a cada sesión. Ejemplo: <code>"env": {"FOO": "bar"}</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="apx-b-variables-de-entorno">Variables de Entorno</h2>
+  <p>Las variables de entorno son como notas que pegas en la puerta del refrigerador. Claude Code las lee al iniciar y ajusta su comportamiento. Las defines en tu terminal o dentro del setting <code>env</code>.</p>
+
+  <h3>Autenticación</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Variable</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>ANTHROPIC_API_KEY</code></td><td>Tu clave API. Se envía como header <code>X-Api-Key</code>.</td></tr>
+        <tr><td><code>ANTHROPIC_AUTH_TOKEN</code></td><td>Token personalizado de autorización (prefijado con Bearer).</td></tr>
+        <tr><td><code>ANTHROPIC_CUSTOM_HEADERS</code></td><td>Headers personalizados. Formato: <code>Name: Value</code>, separados por salto de línea.</td></tr>
+        <tr><td><code>ANTHROPIC_FOUNDRY_API_KEY</code></td><td>API key para Microsoft Foundry.</td></tr>
+        <tr><td><code>ANTHROPIC_FOUNDRY_BASE_URL</code></td><td>URL base para recurso Foundry.</td></tr>
+        <tr><td><code>ANTHROPIC_FOUNDRY_RESOURCE</code></td><td>Nombre del recurso Foundry.</td></tr>
+        <tr><td><code>AWS_BEARER_TOKEN_BEDROCK</code></td><td>API key de Bedrock.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Selección de Modelo</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Variable</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>ANTHROPIC_MODEL</code></td><td>Sobreescribe el modelo a usar.</td></tr>
+        <tr><td><code>ANTHROPIC_DEFAULT_HAIKU_MODEL</code></td><td>Sobreescribe el modelo Haiku. También para tareas en background.</td></tr>
+        <tr><td><code>ANTHROPIC_DEFAULT_OPUS_MODEL</code></td><td>Sobreescribe el modelo Opus. También para opusplan en Plan Mode.</td></tr>
+        <tr><td><code>ANTHROPIC_DEFAULT_SONNET_MODEL</code></td><td>Sobreescribe el modelo Sonnet. También para opusplan fuera de Plan Mode.</td></tr>
+        <tr><td><code>CLAUDE_CODE_SUBAGENT_MODEL</code></td><td>Modelo para subagentes.</td></tr>
+        <tr><td><code>CLAUDE_CODE_EFFORT_LEVEL</code></td><td>Nivel de esfuerzo: <code>low</code>, <code>medium</code>, <code>high</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Proveedores Cloud</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Variable</th><th>Default</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>CLAUDE_CODE_USE_BEDROCK</code></td><td><code>0</code></td><td>Usar AWS Bedrock.</td></tr>
+        <tr><td><code>CLAUDE_CODE_USE_FOUNDRY</code></td><td><code>0</code></td><td>Usar Microsoft Foundry.</td></tr>
+        <tr><td><code>CLAUDE_CODE_USE_VERTEX</code></td><td><code>0</code></td><td>Usar Google Vertex AI.</td></tr>
+        <tr><td><code>CLAUDE_CODE_SKIP_BEDROCK_AUTH</code></td><td><code>0</code></td><td>Saltar auth AWS para Bedrock (para LLM gateways).</td></tr>
+        <tr><td><code>CLAUDE_CODE_SKIP_FOUNDRY_AUTH</code></td><td><code>0</code></td><td>Saltar auth Azure para Foundry.</td></tr>
+        <tr><td><code>CLAUDE_CODE_SKIP_VERTEX_AUTH</code></td><td><code>0</code></td><td>Saltar auth Google para Vertex.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Bash y Contexto</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Variable</th><th>Default</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>BASH_DEFAULT_TIMEOUT_MS</code></td><td>N/A</td><td>Timeout por defecto para comandos bash de larga duración.</td></tr>
+        <tr><td><code>BASH_MAX_OUTPUT_LENGTH</code></td><td>N/A</td><td>Máximo de caracteres en salida de bash antes de truncar.</td></tr>
+        <tr><td><code>BASH_MAX_TIMEOUT_MS</code></td><td>N/A</td><td>Timeout máximo para comandos bash.</td></tr>
+        <tr><td><code>CLAUDE_CODE_BASH_MAINTAIN_PROJECT_WORKING_DIR</code></td><td><code>false</code></td><td>Retorna al directorio original después de cada comando.</td></tr>
+        <tr><td><code>CLAUDE_CODE_SHELL</code></td><td>Auto</td><td>Sobreescribe la detección del shell.</td></tr>
+        <tr><td><code>CLAUDE_CODE_SHELL_PREFIX</code></td><td>N/A</td><td>Prefijo para todos los comandos bash (logging/auditoría).</td></tr>
+        <tr><td><code>CLAUDE_AUTOCOMPACT_PCT_OVERRIDE</code></td><td><code>95</code></td><td>Porcentaje de contexto al que se activa auto-compactación.</td></tr>
+        <tr><td><code>CLAUDE_CODE_MAX_OUTPUT_TOKENS</code></td><td><code>32000</code></td><td>Máximo tokens de salida por request (max: 64000).</td></tr>
+        <tr><td><code>CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS</code></td><td>N/A</td><td>Límite de tokens para lectura de archivos.</td></tr>
+        <tr><td><code>MAX_THINKING_TOKENS</code></td><td>N/A</td><td>Presupuesto fijo de thinking (cuando adaptive thinking está deshabilitado).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Activar y Desactivar Features</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Variable</th><th>Default</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>CLAUDE_CODE_DISABLE_AUTO_MEMORY</code></td><td><code>0</code></td><td>Desactiva auto memory.</td></tr>
+        <tr><td><code>CLAUDE_CODE_DISABLE_BACKGROUND_TASKS</code></td><td><code>0</code></td><td>Desactiva tareas en background.</td></tr>
+        <tr><td><code>CLAUDE_CODE_DISABLE_CRON</code></td><td><code>0</code></td><td>Desactiva tareas programadas y /loop.</td></tr>
+        <tr><td><code>CLAUDE_CODE_DISABLE_FAST_MODE</code></td><td><code>0</code></td><td>Desactiva fast mode.</td></tr>
+        <tr><td><code>CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY</code></td><td><code>0</code></td><td>Desactiva encuestas de feedback.</td></tr>
+        <tr><td><code>CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS</code></td><td><code>0</code></td><td>Desactiva instrucciones integradas de commit/PR.</td></tr>
+        <tr><td><code>CLAUDE_CODE_DISABLE_TERMINAL_TITLE</code></td><td><code>0</code></td><td>Desactiva actualizaciones del título del terminal.</td></tr>
+        <tr><td><code>CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS</code></td><td><code>0</code></td><td>Desactiva headers anthropic-beta.</td></tr>
+        <tr><td><code>CLAUDE_CODE_DISABLE_1M_CONTEXT</code></td><td><code>0</code></td><td>Desactiva ventana de 1M tokens (compliance).</td></tr>
+        <tr><td><code>CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING</code></td><td><code>0</code></td><td>Desactiva razonamiento adaptativo. Revierte a presupuesto fijo.</td></tr>
+        <tr><td><code>CLAUDE_CODE_ENABLE_TELEMETRY</code></td><td><code>0</code></td><td>Activa recolección OpenTelemetry.</td></tr>
+        <tr><td><code>CLAUDE_CODE_SIMPLE</code></td><td><code>0</code></td><td>System prompt mínimo, solo Bash/Read/Edit.</td></tr>
+        <tr><td><code>DISABLE_AUTO_COMPACT</code></td><td><code>0</code></td><td>Desactiva la compactación automática del contexto (equivale a <code>autoCompactEnabled: false</code>).</td></tr>
+        <tr><td><code>CLAUDE_CODE_DISABLE_FILE_CHECKPOINTING</code></td><td><code>0</code></td><td>Desactiva los snapshots de archivos para <code>/rewind</code>.</td></tr>
+        <tr><td><code>CLAUDE_CODE_ENABLE_AWAY_SUMMARY</code></td><td><code>0</code></td><td>Controla el resumen de regreso tras estar ausente.</td></tr>
+        <tr><td><code>CLAUDE_AX_SCREEN_READER</code></td><td><code>0</code></td><td>Activa el render amigable para lectores de pantalla (accesibilidad).</td></tr>
+        <tr><td><code>CLAUDE_CODE_DISABLE_AGENT_VIEW</code></td><td><code>0</code></td><td>Desactiva agentes en background, vista de agentes y supervisor.</td></tr>
+        <tr><td><code>CLAUDE_CODE_DISABLE_BUNDLED_SKILLS</code></td><td><code>0</code></td><td>Desactiva las skills y workflows bundled.</td></tr>
+        <tr><td><code>CLAUDE_CODE_DISABLE_WORKFLOWS</code></td><td><code>0</code></td><td>Desactiva los workflows dinámicos y comandos de workflow bundled.</td></tr>
+        <tr><td><code>CLAUDE_CODE_DISABLE_ARTIFACT</code></td><td><code>0</code></td><td>Desactiva la herramienta Artifact.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Tráfico y Telemetría</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Variable</th><th>Default</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC</code></td><td><code>0</code></td><td>Desactiva todo: autoupdater, /bug, error reporting, telemetría.</td></tr>
+        <tr><td><code>DISABLE_AUTOUPDATER</code></td><td><code>0</code></td><td>Desactiva actualizaciones automáticas.</td></tr>
+        <tr><td><code>DISABLE_BUG_COMMAND</code></td><td><code>0</code></td><td>Desactiva el comando /bug.</td></tr>
+        <tr><td><code>DISABLE_ERROR_REPORTING</code></td><td><code>0</code></td><td>Desactiva reporte de errores.</td></tr>
+        <tr><td><code>DISABLE_TELEMETRY</code></td><td><code>0</code></td><td>Desactiva telemetría.</td></tr>
+        <tr><td><code>DISABLE_PROMPT_CACHING</code></td><td><code>0</code></td><td>Desactiva prompt caching para todos los modelos.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Rutas, Certificados y Otros</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Variable</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>CLAUDE_CONFIG_DIR</code></td><td>Sobreescribe la ubicación de archivos de configuración.</td></tr>
+        <tr><td><code>CLAUDE_CODE_TMPDIR</code></td><td>Sobreescribe directorio temporal.</td></tr>
+        <tr><td><code>CLAUDE_CODE_CLIENT_CERT</code></td><td>Ruta al certificado del cliente para mTLS.</td></tr>
+        <tr><td><code>CLAUDE_CODE_CLIENT_KEY</code></td><td>Ruta a la clave privada del cliente para mTLS.</td></tr>
+        <tr><td><code>CLAUDE_CODE_CLIENT_KEY_PASSPHRASE</code></td><td>Passphrase para clave encriptada.</td></tr>
+        <tr><td><code>CLAUDE_CODE_GIT_BASH_PATH</code></td><td>Ruta a Git Bash en Windows.</td></tr>
+        <tr><td><code>USE_BUILTIN_RIPGREP</code></td><td>Pon <code>0</code> para Alpine y distribuciones musl-based.</td></tr>
+        <tr><td><code>CLAUDE_CODE_PROXY_RESOLVES_HOSTS</code></td><td>Permite que el proxy haga la resolución DNS.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="apx-b-aliases-de-modelos">Aliases de Modelos</h2>
+  <p>En vez de escribir el nombre completo del modelo, puedes usar atajos:</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Alias</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>default</code></td><td>Modelo recomendado según tu cuenta. Max/Team Premium: Opus 4.8. Pro/Team Standard: Sonnet 4.6.</td></tr>
+        <tr><td><code>best</code></td><td>Modelo más capaz disponible. Actualmente equivalente a <code>opus</code> (Opus 4.8).</td></tr>
+        <tr><td><code>sonnet</code></td><td>Último modelo Sonnet (Sonnet 4.6). Para tareas diarias de código.</td></tr>
+        <tr><td><code>opus</code></td><td>Último modelo Opus (Opus 4.8). Para razonamiento complejo.</td></tr>
+        <tr><td><code>haiku</code></td><td>Modelo Haiku (Haiku 4.5). Rápido y eficiente para tareas simples.</td></tr>
+        <tr><td><code>sonnet[1m]</code></td><td>Sonnet con ventana de 1 millón de tokens. Beta.</td></tr>
+        <tr><td><code>opus[1m]</code></td><td>Opus con ventana de 1 millón de tokens. Beta.</td></tr>
+        <tr><td><code>opusplan</code></td><td>Modo híbrido: Opus durante planificación, Sonnet durante ejecución.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Puedes agregar <code>[1m]</code> a cualquier alias para activar la ventana de 1M tokens.</p>
+
+  <h2 id="apx-b-channels">Channels</h2>
+  <p>Los channels permiten que plugins externos (como Telegram) envíen mensajes a Claude Code. Por seguridad, están desactivados por defecto y solo se pueden habilitar desde managed settings.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Tipo</th><th>Default</th><th>Alcance</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>channelsEnabled</code></td><td>boolean</td><td><code>false</code></td><td>Solo Managed</td><td>Habilita channels para usuarios Team y Enterprise. Sin esto, ningún channel funciona aunque el usuario pase <code>--channels</code>.</td></tr>
+        <tr><td><code>allowedChannelPlugins</code></td><td>array</td><td>Lista default de Anthropic</td><td>Solo Managed</td><td>Allowlist de channel plugins que pueden enviar mensajes. Array vacío bloquea todos. Requiere <code>channelsEnabled: true</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="apx-b-worktree">Worktree</h2>
+  <p>Estos settings controlan cómo Claude Code crea y maneja worktrees de git (copias aisladas del repositorio para subagentes).</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Tipo</th><th>Default</th><th>Alcance</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>worktree.symlinkDirectories</code></td><td>array[string]</td><td><code>[]</code></td><td>User/Project/Local</td><td>Directorios a symlink desde el repo principal a cada worktree. Evita duplicar directorios grandes como <code>node_modules</code>.</td></tr>
+        <tr><td><code>worktree.sparsePaths</code></td><td>array[string]</td><td><code>[]</code></td><td>User/Project/Local</td><td>Directorios a hacer checkout vía git sparse-checkout (cone mode). Solo las rutas listadas se escriben a disco. Útil en monorepos grandes.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout tip">
+    <p class="callout-label">Tip</p>
+    <p>Para copiar archivos gitignored (como <code>.env</code>) a nuevos worktrees, usa un archivo <code>.worktreeinclude</code>.</p>
+  </div>
+
+  <h2 id="apx-b-skills">Skills</h2>
+  <p>Controlan el comportamiento de skills y comandos personalizados.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Tipo</th><th>Default</th><th>Alcance</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>disableSkillShellExecution</code></td><td>boolean</td><td><code>false</code></td><td>Todos (típicamente Managed)</td><td>Deshabilita la ejecución inline de shell para bloques <code>!`...`</code> y <code>```!</code> en skills de fuentes user, project y plugin. Los comandos se reemplazan con un placeholder. Skills bundled y managed no se afectan.</td></tr>
+        <tr><td><code>disableBundledSkills</code></td><td>boolean</td><td><code>false</code></td><td>Todos</td><td>Desactiva las skills y workflows bundled, manteniendo los comandos built-in que puedes tipear. También se controla con <code>CLAUDE_CODE_DISABLE_BUNDLED_SKILLS=1</code>.</td></tr>
+        <tr><td><code>disableWorkflows</code></td><td>boolean</td><td><code>false</code></td><td>Todos</td><td>Desactiva los workflows dinámicos y los comandos de workflow bundled. También se controla con <code>CLAUDE_CODE_DISABLE_WORKFLOWS=1</code>.</td></tr>
+        <tr><td><code>maxSkillDescriptionChars</code></td><td>number</td><td><code>1536</code></td><td>Todos</td><td>Tope de caracteres por skill sobre los campos <code>description</code> + <code>when_to_use</code> combinados. Disponible desde v2.1.105.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="apx-b-global-config">Global Config (~/.claude.json)</h2>
+  <p>Estos settings viven en <code>~/.claude.json</code>, NO en <code>settings.json</code>. Son preferencias de interfaz y comportamiento local. Si los pones en settings.json, Claude Code lanza un error de validación.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Tipo</th><th>Default</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>autoConnectIde</code></td><td>boolean</td><td><code>false</code></td><td>Conecta automáticamente a un IDE al iniciar desde terminal externa. Aparece en <code>/config</code>.</td></tr>
+        <tr><td><code>autoInstallIdeExtension</code></td><td>boolean</td><td><code>true</code></td><td>Instala automáticamente la extensión de Claude Code IDE al ejecutar desde terminal VS Code.</td></tr>
+        <tr><td><code>editorMode</code></td><td>string</td><td><code>normal</code></td><td>Modo de key binding: <code>normal</code> o <code>vim</code>. Aparece en <code>/config</code>.</td></tr>
+        <tr><td><code>showTurnDuration</code></td><td>boolean</td><td><code>true</code></td><td>Muestra cuánto tardó cada respuesta (ej: 'Cooked for 1m 6s').</td></tr>
+        <tr><td><code>terminalProgressBarEnabled</code></td><td>boolean</td><td><code>true</code></td><td>Barra de progreso en terminales soportados (ConEmu, Ghostty 1.2.0+, iTerm2 3.6.6+).</td></tr>
+        <tr><td><code>teammateMode</code></td><td>string</td><td><code>auto</code></td><td>Cómo se muestran teammates: <code>auto</code>, <code>in-process</code> o <code>tmux</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout warn">
+    <p class="callout-label">Cuidado</p>
+    <p>No mezcles estos settings con los de <code>settings.json</code>. Si agregas <code>editorMode</code> o <code>showTurnDuration</code> a <code>settings.json</code>, obtendrás un error de validación de schema.</p>
+  </div>
+
+  <h2 id="apx-b-ejemplos-practicos">Ejemplos Prácticos</h2>
+
+  <h3>Settings mínimos de usuario</h3>
+  <pre><code class="lang-json">{
+    "$schema": "https://json.schemastore.org/claude-code-settings.json",
+    "permissions": {
+        "deny": ["Read(./.env)", "Read(./secrets/**)", "Bash(curl *)"]
+    }
+}</code></pre>
+  <p>Este es un archivo básico para <code>~/.claude/settings.json</code>. Bloquea lectura de archivos .env y secrets, y prohíbe comandos curl. Es un buen punto de partida para proteger tus archivos sensibles.</p>
+
+  <h3>Configuración enterprise con sandbox</h3>
+  <pre><code class="lang-json">{
+    "permissions": {
+        "allow": ["Bash(npm run *)", "Bash(git *)"],
+        "deny": ["WebFetch", "Read(~/credentials)"]
+    },
+    "sandbox": {
+        "enabled": true,
+        "filesystem": {
+            "denyRead": ["~/.aws/credentials"]
+        },
+        "network": {
+            "allowedDomains": ["github.com", "*.npmjs.org"],
+            "allowManagedDomainsOnly": true
+        }
+    },
+    "allowManagedPermissionRulesOnly": true
+}</code></pre>
+  <p>Configuración para empresas. Permite git y npm, bloquea fetch web y credenciales, activa el sandbox con dominios restringidos, y fuerza que solo las reglas managed apliquen.</p>
+
+  <h3>Restringir modelos disponibles</h3>
+  <pre><code class="lang-json">{
+    "model": "sonnet",
+    "availableModels": ["sonnet", "haiku"]
+}</code></pre>
+  <p>Fuerza Sonnet como modelo por defecto y solo deja que los usuarios elijan entre Sonnet y Haiku. Útil para controlar costos.</p>
+
+  <h3>Entorno sin conexión (air-gapped)</h3>
+  <pre><code class="lang-json">{
+    "env": {
+        "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+        "DISABLE_AUTOUPDATER": "1"
+    }
+}</code></pre>
+  <p>Desactiva toda la telemetría, reportes de errores, actualizaciones automáticas y el comando /bug. Ideal para redes restringidas.</p>
+
+  <h3>Hook: lint automático después de ediciones</h3>
+  <pre><code class="lang-json">{
+    "hooks": {
+        "PostToolUse": [
+            {
+                "matcher": "Edit|Write",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "npx eslint --fix $(echo $CLAUDE_PROJECT_DIR)"
+                    }
+                ]
+            }
+        ]
+    }
+}</code></pre>
+  <p>Cada vez que Claude edita o escribe un archivo, se ejecuta ESLint automáticamente. El hook se dispara después de que la herramienta Edit o Write termina.</p>
+
+  <h3>Status line con modelo y costo</h3>
+  <pre><code class="lang-json">{
+    "statusLine": {
+        "type": "command",
+        "command": "jq -r '\"[\\(.model.display_name)] \\(.context_window.used_percentage // 0)% context | $\\(.cost.total_cost_usd // 0)\"'"
+    }
+}</code></pre>
+  <p>Muestra en la barra inferior el modelo activo, el porcentaje de contexto usado y el costo total de la sesión. Usa jq para formatear el JSON que recibe por stdin.</p>
+
+  <h3>Usar AWS Bedrock con modelos pinneados</h3>
+  <pre><code class="lang-json">{
+    "env": {
+        "CLAUDE_CODE_USE_BEDROCK": "1",
+        "ANTHROPIC_DEFAULT_OPUS_MODEL": "us.anthropic.claude-opus-4-8-v1",
+        "ANTHROPIC_DEFAULT_SONNET_MODEL": "us.anthropic.claude-sonnet-4-6-v1",
+        "ANTHROPIC_DEFAULT_HAIKU_MODEL": "us.anthropic.claude-haiku-4-5-v1"
+    }
+}</code></pre>
+  <p>Configura Claude Code para usar AWS Bedrock. Al pinnear versiones específicas de cada modelo, evitas roturas cuando Anthropic lanza nuevas versiones.</p>
+
+  <h3>Windows: configurar Git Bash</h3>
+  <pre><code class="lang-json">{
+    "env": {
+        "CLAUDE_CODE_GIT_BASH_PATH": "C:\\Program Files\\Git\\bin\\bash.exe"
+    }
+}</code></pre>
+  <p>En Windows, si Claude Code no encuentra Git Bash automáticamente, usa esta variable para indicarle la ruta exacta.</p>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Agrega <code>"$schema": "<a href="https://json.schemastore.org/claude-code-settings.json" target="_blank" rel="noopener">https://json.schemastore.org/claude-code-settings.json</a>"</code> al inicio de tu settings.json para obtener autocompletado y validación en tu editor.</p>
+  </div>
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa <code>/status</code> dentro de Claude Code para ver todas las capas de configuración activas y de dónde vienen.</p>
+  </div>
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Los arrays se fusionan entre niveles, no se reemplazan. Si defines permisos en usuario y en proyecto, Claude Code usa ambos.</p>
+  </div>
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Las reglas deny siempre ganan. Si un tool está denegado en cualquier nivel, ningún otro nivel puede permitirlo.</p>
+  </div>
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Los hooks se capturan al inicio de la sesión. Si los cambias mientras Claude trabaja, necesitas ir a <code>/hooks</code> o reiniciar.</p>
+  </div>
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>El sandbox solo aplica a comandos Bash. Las herramientas Read, Edit y WebFetch no están afectadas.</p>
+  </div>
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Las reglas de permisos Bash para restringir argumentos de comandos son frágiles. Prefiere deny rules y WebFetch con dominios específicos.</p>
+  </div>
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Los settings de <code>~/.claude.json</code> (editorMode, showTurnDuration, terminalProgressBarEnabled, autoConnectIde, teammateMode) NO van en <code>settings.json</code>. Si los mezclas, obtendrás un error de validación.</p>
+  </div>
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>CLAUDE.md es contexto, no configuración forzada. Claude intenta seguirlo, pero no hay garantía de cumplimiento estricto.</p>
+  </div>
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Auto memory solo carga las primeras 200 líneas de MEMORY.md al inicio de cada sesión.</p>
+  </div>
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>En rutas de permisos Read/Edit, <code>/Users/alice/file</code> es relativa a la raíz del proyecto. Para ruta absoluta, usa <code>//Users/alice/file</code> (doble barra).</p>
+  </div>
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p><code>includeCoAuthoredBy</code> y <code>ANTHROPIC_SMALL_FAST_MODEL</code> están deprecados. Usa <code>attribution.commit</code> y <code>ANTHROPIC_DEFAULT_HAIKU_MODEL</code> respectivamente.</p>
+  </div>
+
+  <section class="recap">
+    <h2 id="apx-b-resumen">Resumen</h2>
+    <p>Claude Code usa un sistema de configuración por capas donde los managed settings tienen máxima prioridad y los de usuario la mínima. Hay más de 100 settings y 60 variables de entorno organizados en categorías: modelo, permisos, sandbox, hooks, MCP, channels, worktree, skills, UI y más. Los arrays se fusionan entre niveles (no se reemplazan) y las reglas deny siempre ganan. Los settings de <code>~/.claude.json</code> (interfaz local) no deben mezclarse con settings.json.</p>
+  </section>
+</article>

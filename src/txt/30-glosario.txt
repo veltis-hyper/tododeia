@@ -1,0 +1,1955 @@
+Glosario
+
+
+    Este glosario es tu diccionario personal de la guía. Cada vez que encuentres una palabra
+    que no entiendas, ven aquí. Los términos están organizados por temas para que sea
+    fácil buscar. Cada definición usa lenguaje cotidiano, como si te lo explicara un amigo.
+
+
+
+
+Cómo usar este glosario
+
+Este glosario tiene más de 140 términos. Están organizados en 10 categorías temáticas. Si buscas un
+término específico, puedes usar la función de búsqueda de tu lector de PDF (Ctrl+F o Cmd+F).
+
+Cada término incluye:
+
+   • El nombre en inglés (porque muchos términos se usan así en la industria)
+   • La traducción al español cuando existe una natural
+   • Una definición simple, como si se la explicaras a alguien que nunca ha programado
+
+Los términos marcados con los capítulos donde aparecen te ayudan a entender el contexto completo.
+
+
+
+IA y Claude
+
+Estos son los conceptos fundamentales sobre inteligencia artificial y los modelos Claude. Si eres
+nuevo en el mundo de la IA, empieza por aquí.
+
+Adaptive Thinking / Pensamiento Adaptativo
+Un modo de razonamiento donde Claude decide dinámicamente cuánto pensar antes de responder.
+En lugar de que tú le digas cuántos tokens puede usar para pensar (como en Extended Thinking),
+Claude calibra su razonamiento automáticamente según la complejidad de la pregunta y el parámetro
+effort . Es como un estudiante que sabe cuánto tiempo dedicar a cada pregunta del examen.
+
+Aparece en: ch03, ch21, ch22
+
+
+
+
+                                                814                                      @soyenriquerocha
+                                                                                 APÉNDICE D: GLOSARIO
+
+
+
+
+Agente / Agent
+Un sistema de IA que puede actuar solo para completar tareas. A diferencia de un chatbot que solo
+responde preguntas, un agente puede planificar pasos, ejecutar acciones (como editar archivos) y
+tomar decisiones hasta lograr un objetivo. Es como un empleado que recibe una meta y trabaja hasta
+cumplirla, sin necesitar instrucciones paso a paso.
+
+Aparece en: ch20, ch22, ch23
+
+
+Alucinación / Hallucination
+Cuando un modelo de IA inventa información falsa pero la dice con total confianza. Por ejemplo,
+podría citar un libro que no existe o dar estadísticas inventadas. Es como un amigo que siempre
+responde con seguridad, aunque a veces se invente cosas. Es uno de los riesgos principales de los
+LLMs.
+
+Aparece en: ch01, ch04, ch22, ch25
+
+
+Anthropic
+La empresa que creó Claude. Fundada en 2021 por Dario y Daniela Amodei (que antes trabajaban en
+OpenAI). Se enfoca en hacer IA segura. Su lema: crear IA que sea útil, honesta e inofensiva.
+
+Aparece en: ch01, ch03, ch24
+
+
+Claude
+El asistente de inteligencia artificial creado por Anthropic. Es un modelo de lenguaje grande (LLM)
+entrenado para ser útil, honesto e inofensivo. Viene en cuatro familias: Opus (la más inteligente),
+Sonnet (la equilibrada), Haiku (la más rápida) y Fable (la familia frontera más nueva, en el tier Mythos
+por encima de Opus).
+
+Aparece en: ch01, ch02, ch03
+
+
+Constitutional AI
+Un método de entrenamiento inventado por Anthropic. El modelo aprende a comportarse según un
+conjunto de principios escritos (una "constitución"). En lugar de depender solo de humanos para
+corregirlo, el modelo se autocorrige comparando sus respuestas con estos principios. La constitución
+se ha expandido de 2,700 palabras iniciales a 23,000 palabras en 2026, basándose en la Declaración
+Universal de Derechos Humanos y otros principios éticos. Es como darle a alguien un manual de
+conducta muy detallado y pedirle que se autoevalúe.
+
+Aparece en: ch01
+
+
+
+
+                                                  815                                      @soyenriquerocha
+APÉNDICE D: GLOSARIO
+
+
+
+
+Context Window / Ventana de Contexto
+La cantidad máxima de texto que Claude puede "recordar" en una conversación. Es como su memoria
+de trabajo. Todo lo que le escribes y lo que él responde ocupa espacio en esta ventana. Si se llena,
+Claude empieza a "olvidar" lo más antiguo. Claude 4 Sonnet tiene una ventana de 200,000 tokens
+(unas 500 páginas de texto). Algunos modelos ofrecen ventanas de hasta 1 millón de tokens.
+
+Aparece en: ch01, ch03, ch04, ch09, ch21, ch22
+
+
+Computer Use / Uso de Computadora
+Una capacidad de Claude que le permite controlar un escritorio virtual: mover el ratón, hacer clic,
+escribir texto y ver la pantalla. Es como darle a Claude un escritorio remoto para que haga tareas que
+normalmente necesitan a un humano frente a una pantalla.
+
+Aparece en: ch01, ch03
+
+
+Deep Learning / Aprendizaje Profundo
+Una rama de la inteligencia artificial que usa redes neuronales con muchas capas para aprender
+patrones complejos. Es la tecnología detrás de los LLMs como Claude. Piensa en capas como filtros:
+cada capa detecta patrones más abstractos que la anterior.
+
+Aparece en: ch01
+
+
+Embeddings / Incrustaciones
+Una forma de convertir texto en números que representan su significado. Imagina que cada palabra o
+frase se convierte en un punto en un mapa. Las palabras con significados parecidos quedan cerca unas
+de otras. Se usan para buscar documentos similares en sistemas RAG.
+
+Aparece en: ch04, ch22
+
+
+Extended Thinking / Pensamiento Extendido
+Una función que permite a Claude "pensar en voz alta" antes de responder. Claude genera bloques
+internos de razonamiento paso a paso. Esto mejora mucho la calidad en tareas complejas. Es como
+darle a Claude tiempo para pensar antes de hablar, en lugar de pedirle que responda inmediatamente.
+Nota: Deprecado en favor de Adaptive Thinking para modelos 4.6 (Opus 4.6 y Sonnet 4.6). En modelos
+anteriores sigue disponible con budget_tokens .
+
+Aparece en: ch03, ch21, ch22
+
+
+
+
+                                                 816                                    @soyenriquerocha
+                                                                                APÉNDICE D: GLOSARIO
+
+
+
+
+Fable / Familia Fable (tier Mythos)
+La familia frontera más nueva de Claude, presentada en junio de 2026. Vive en un tier llamado
+Mythos, que se sitúa por encima de Opus. Su modelo principal, Claude Fable 5, es el más capaz de
+Anthropic hasta la fecha, pensado para el razonamiento más exigente y el trabajo agéntico más
+complejo. Es como subir un escalón más allá del "premium": cuando ni siquiera Opus alcanza, ahí
+entra Fable. Nota: es un lanzamiento muy reciente (junio 2026), así que sus detalles pueden cambiar.
+
+Aparece en: ch03
+
+
+Fine-Tuning / Ajuste Fino
+El proceso de reentrenar un modelo de IA con datos específicos para que se especialice en algo. Es
+como enviar a un profesional a un curso especializado. Claude ya viene "fine-tuned" por Anthropic. La
+API actualmente no ofrece fine-tuning público.
+
+Aparece en: ch01, ch03
+
+
+Haiku
+El modelo más rápido y barato de la familia Claude. Ideal para tareas simples como clasificar texto o
+dar respuestas rápidas. No necesitas un cañón para matar una mosca: Haiku es perfecto cuando la
+tarea es sencilla. Nota: Claude 3 Haiku está deprecado y se retira el 19 de abril de 2026. La versión
+actual es Claude Haiku 4.5.
+
+Aparece en: ch03, ch10
+
+
+HHH (Helpful, Honest, Harmless)
+Los tres principios de Anthropic para Claude: ser Útil (ayudar con las tareas), Honesto (dar
+información precisa y reconocer sus límites), e Inofensivo (no generar contenido dañino). Son como
+las tres reglas de oro que Claude siempre intenta seguir.
+
+Aparece en: ch01
+
+
+Inference / Inferencia
+El proceso de usar un modelo de IA para generar respuestas. Cada vez que le envías un mensaje a
+Claude y recibes una respuesta, eso es "inferencia". Es diferente del "entrenamiento", que es cuando el
+modelo aprende. La inferencia es como usar una herramienta; el entrenamiento es como fabricarla.
+
+Aparece en: ch01, ch03
+
+
+
+
+                                                  817                                    @soyenriquerocha
+APÉNDICE D: GLOSARIO
+
+
+
+
+Latency / Latencia
+El tiempo que tarda Claude en empezar a responder. Menos latencia = respuesta más rápida. Haiku
+tiene la menor latencia, Opus la mayor. Es como el tiempo de espera en un restaurante: depende de lo
+complicado que sea tu pedido.
+
+Aparece en: ch03, ch21
+
+
+LLM (Large Language Model / Modelo de Lenguaje Grande)
+Un programa de inteligencia artificial entrenado con enormes cantidades de texto para entender y
+generar lenguaje humano. Funciona prediciendo la siguiente palabra más probable. Es como el
+autocompletar del teléfono, pero muchísimo más sofisticado. Claude, ChatGPT y Gemini son ejemplos
+de LLMs.
+
+Aparece en: ch01, ch03, ch04
+
+
+Modelo / Model
+En IA, un programa entrenado para realizar tareas. "Modelo" se refiere a la red neuronal y sus
+parámetros. Claude tiene diferentes modelos (Opus, Sonnet, Haiku) con diferentes capacidades y
+precios. Es como tener diferentes versiones de un auto: básico, intermedio y premium.
+
+Aparece en: ch01, ch03
+
+
+Opus
+El modelo más inteligente y capaz de la familia Claude. Excelente para razonamiento complejo,
+análisis profundo y creatividad sofisticada. También es el más caro y lento. Es el "premium" de Claude.
+La versión más reciente es Claude Opus 4.8 (lanzado el 28 de mayo de 2026).
+
+Aparece en: ch03, ch10
+
+
+Parámetro (de modelo)
+Los números internos del modelo que se ajustan durante el entrenamiento. Cuantos más parámetros,
+más complejo es el modelo. Los LLMs grandes tienen miles de millones de parámetros. Piensa en ellos
+como las conexiones en un cerebro: más conexiones permiten pensamientos más complejos.
+
+Aparece en: ch01
+
+
+
+
+                                                 818                                     @soyenriquerocha
+                                                                                 APÉNDICE D: GLOSARIO
+
+
+
+
+Pretraining / Preentrenamiento
+La fase inicial de entrenamiento de un LLM donde se le alimenta con enormes cantidades de texto. Es
+como la "educación general" del modelo. Aprende gramática, hechos, razonamiento y patrones del
+lenguaje. Después viene el fine-tuning para especializarlo.
+
+Aparece en: ch01
+
+
+RLHF (Reinforcement Learning from Human Feedback)
+Una técnica de entrenamiento donde humanos evalúan las respuestas del modelo. El modelo aprende
+a preferir las respuestas que los humanos calificaron mejor. Es como un estudiante que mejora con las
+correcciones de su profesor.
+
+Aparece en: ch01
+
+
+Sonnet
+El modelo intermedio de Claude. Ofrece el mejor balance entre inteligencia, velocidad y costo. Es el
+modelo recomendado para la mayoría de tareas. Claude 4 Sonnet y Claude 4.6 Sonnet son las
+versiones más recientes. Es el "justo medio" que funciona bien para casi todo.
+
+Aparece en: ch03, ch10
+
+
+Token
+La unidad mínima de texto que Claude procesa. Un token puede ser una palabra, parte de una palabra
+o un carácter especial. En promedio, 1 token son unas 3.5 letras en inglés (o 0.75 palabras). Es como
+dividir un texto en piezas de rompecabezas: cada pieza es un token. Los precios y límites se miden en
+tokens.
+
+Aparece en: ch01, ch03, ch04, ch09, ch10, ch21
+
+
+Transformer
+La arquitectura de red neuronal que usan los LLMs modernos, incluyendo Claude. Inventada por
+Google en 2017. Su innovación clave es el mecanismo de "atención": permite al modelo considerar
+todas las palabras de un texto a la vez, en lugar de una por una. Es como leer un párrafo completo de
+un vistazo en vez de palabra por palabra.
+
+Aparece en: ch01
+
+
+
+
+                                                  819                                    @soyenriquerocha
+APÉNDICE D: GLOSARIO
+
+
+
+
+Visión / Vision
+La capacidad de Claude para analizar imágenes. Puedes enviarle fotos, capturas de pantalla,
+diagramas y gráficos. Claude puede describir lo que ve, extraer texto y responder preguntas sobre el
+contenido visual. Es como si Claude pudiera "ver" además de leer.
+
+Aparece en: ch03, ch09, ch21
+
+
+
+Claude.ai (La interfaz web)
+
+Términos relacionados con la plataforma web donde chateas con Claude desde tu navegador.
+
+Artifact / Artefacto
+Un contenido interactivo que Claude crea en una ventana separada del chat. Puede ser código
+ejecutable, un documento, una página web, un diagrama o una app React completa. Es como un
+lienzo donde Claude construye cosas que puedes ver, editar y compartir.
+
+Aparece en: ch05, ch07
+
+
+Claude.ai
+La interfaz web oficial de Anthropic. Chateas con Claude directamente desde tu navegador. También
+existe como app de escritorio y movil. Es la forma más sencilla de usar Claude sin programar. Solo vas
+a claude.ai , creas una cuenta y empiezas a chatear.
+
+Aparece en: ch02, ch05, ch06, ch07, ch08, ch09, ch10
+
+
+Enterprise Plan
+El plan de Claude para grandes organizaciones. Incluye autenticación corporativa (SSO/SAML),
+consola de administración, registros de auditoría, mayor capacidad y soporte prioritario. El precio se
+negocia directamente con Anthropic.
+
+Aparece en: ch10, ch24
+
+
+Knowledge Base / Base de Conocimiento
+En los Proyectos de Claude.ai, es el conjunto de documentos que subes para que Claude los use como
+referencia. Pueden ser PDFs, textos o código. Es como darle a Claude una carpeta de documentos para
+que estudie antes de responder.
+
+Aparece en: ch06, ch09
+
+
+
+
+                                                  820                                   @soyenriquerocha
+                                                                             APÉNDICE D: GLOSARIO
+
+
+
+
+Max Plan
+El plan individual de mayor capacidad en Claude.ai. Ofrece mucho más uso que Pro, acceso prioritario
+a los modelos más potentes y funciones avanzadas. Es para usuarios que usan Claude intensivamente.
+
+Aparece en: ch10
+
+
+Memoria / Memory
+En Claude.ai, la capacidad de recordar información entre conversaciones distintas (como tu nombre o
+preferencias). En Claude Code, se refiere al contenido de CLAUDE.md y archivos de memoria en
+~/.claude/memory . Es como las notas que Claude toma sobre ti para recordarlas después.
+
+Aparece en: ch08, ch14
+
+
+Pro Plan
+El plan de pago individual de Claude.ai. Ofrece más uso que el plan gratuito, acceso a todos los
+modelos (incluyendo Opus) y funciones avanzadas como Proyectos.
+
+Aparece en: ch10
+
+
+Proyecto / Project
+Una forma de organizar tu trabajo en Claude.ai. Un proyecto agrupa conversaciones relacionadas,
+puede tener instrucciones personalizadas y una base de conocimiento. Es como una carpeta de
+trabajo donde todo está organizado por tema.
+
+Aparece en: ch06
+
+
+Team Plan
+El plan de Claude.ai para equipos de trabajo. Incluye administración centralizada, facturación
+unificada y la posibilidad de compartir proyectos entre miembros. Ideal para empresas medianas.
+
+Aparece en: ch10, ch24
+
+
+Research / Investigación Profunda
+Una función de Claude.ai que le permite investigar un tema a fondo durante varios minutos (hasta 45
+minutos). Claude busca en la web, analiza múltiples fuentes y te entrega un informe detallado. Es
+como enviar a un asistente de investigación a la biblioteca por ti.
+
+Aparece en: ch05, ch09
+
+
+
+
+                                                   821                                @soyenriquerocha
+APÉNDICE D: GLOSARIO
+
+
+
+
+Web Search / Búsqueda Web
+La capacidad de Claude de buscar información en internet en tiempo real. Es como si Claude pudiera
+googlear algo antes de responderte.
+
+Aparece en: ch09, ch10
+
+
+Web Fetch / Leer URL
+Una herramienta que permite a Claude leer el contenido completo de una página web que tú le das. A
+diferencia de Web Search (que busca), Web Fetch va directo a una URL específica.
+
+Aparece en: ch09, ch21
+
+
+Code Execution / Ejecución de Código
+Una función que permite a Claude ejecutar código directamente y mostrarte los resultados. Es como
+tener una calculadora programable dentro del chat.
+
+Aparece en: ch05, ch21
+
+
+Estilos de Respuesta
+Configuraciones que ajustan cómo Claude te contesta: Normal, Conciso, Formal o Explicativo.
+También puedes crear estilos personalizados. Es como ajustar el tono de voz de Claude.
+
+Aparece en: ch05, ch08
+
+
+Chat Incógnito / Modo Incógnito
+Un modo de conversación donde Claude no guarda la conversación en tu historial ni contribuye a su
+memoria sintetizada. Tus preferencias de perfil sí aplican. Es como la ventana de incógnito del
+navegador.
+
+Aparece en: ch05, ch08, ch09
+
+
+Extra Usage / Uso Adicional
+Una opción que te permite seguir usando Claude después de alcanzar tu límite, pagando un costo
+adicional por uso. Es como un plan de datos que cobra por MB extra cuando pasas tu límite.
+
+Aparece en: ch09, ch10
+
+
+
+
+                                                822                                      @soyenriquerocha
+                                                                               APÉNDICE D: GLOSARIO
+
+
+
+
+Free Plan / Plan Gratuito
+El plan de Claude.ai que puedes usar sin pagar. Tiene límites más bajos de mensajes por día, pero es
+perfecto para probar Claude y tareas básicas.
+
+Aparece en: ch02, ch10
+
+
+Fast Mode / Modo Rápido
+Un modo de la API que prioriza la velocidad de respuesta a 6 veces el precio estándar. Solo disponible
+para Opus 4.6. Es como pagar envío express.
+
+Aparece en: ch10, ch25
+
+
+Quick Entry / Entrada Rápida
+Un atajo de la app de escritorio que te permite escribirle un mensaje a Claude desde cualquier parte
+de tu computadora sin abrir la ventana completa.
+
+Aparece en: ch05
+
+
+
+Claude Code (La herramienta de terminal)
+
+Términos específicos de Claude Code, la herramienta de línea de comandos que pone a Claude en tu
+terminal.
+
+Agentic Coding / Programación Agéntica
+Un estilo de programación donde Claude actúa como un agente autónomo. Él escribe, edita, depura y
+prueba código por sí mismo. Toma decisiones sobre qué hacer a continuación sin que le des
+instrucciones paso a paso. Es como tener un programador junior que trabaja solo y te muestra el
+resultado.
+
+Aparece en: ch11, ch20
+
+
+allowedTools / blockedTools
+Listas en los settings de Claude Code que dicen qué herramientas puede o no puede usar.
+allowedTools es una lista blanca: "solo estas herramientas". blockedTools es una lista negra:
+"todas menos estas". Es como las reglas de una casa: "puedes usar todo menos el microondas".
+
+Aparece en: ch13, ch15
+
+
+
+
+                                                   823                                  @soyenriquerocha
+APÉNDICE D: GLOSARIO
+
+
+
+
+Claude Code
+Una herramienta de línea de comandos (CLI) que pone a Claude directamente en tu terminal. Puede
+leer, editar y crear archivos, ejecutar comandos, buscar en internet y actuar como un programador
+autónomo dentro de tu proyecto. Es como tener a Claude sentado junto a ti mientras programas.
+
+Aparece en: ch11 a ch20
+
+
+CLAUDE.md
+Un archivo de texto especial que Claude Code lee automáticamente al iniciar. Contiene instrucciones
+para el proyecto: convenciones de código, reglas y contexto. Es como dejarle una nota al nuevo
+empleado antes de que empiece: "así hacemos las cosas aquí".
+
+Aparece en: ch14, ch20
+
+
+Compaction / Compactación
+Cuando la conversación con Claude Code se vuelve muy larga, él automáticamente resume lo anterior
+para liberar espacio. Es como tomar notas resumidas de una reunión larga: conservas lo importante y
+descartas los detalles innecesarios.
+
+Aparece en: ch12, ch22
+
+
+Context Editing / Edición de Contexto
+La capacidad de eliminar partes específicas de la conversación del contexto de Claude Code. Sirve
+para liberar espacio o quitar información que ya no es relevante.
+
+Aparece en: ch12
+
+
+Cowork
+Una versión de Claude Code con interfaz gráfica, orientada a usuarios no técnicos. Disponible como
+app de escritorio en Mac y Windows, con integración a VS Code y JetBrains. Permite revisión visual de
+diffs y ejecución de múltiples sesiones en paralelo. Es como tener a Claude trabajando en un escritorio
+al lado del tuyo, pero con una interfaz visual en lugar de la terminal.
+
+Aparece en: ch23
+
+
+--dangerously-skip-permissions (flag)
+Un flag que desactiva todas las verificaciones de permisos. Claude puede hacer cualquier cosa sin
+pedir aprobación. Es como quitarle todos los seguros a una herramienta eléctrica. Solo úsalo en
+entornos controlados como contenedores Docker o CI/CD.
+
+
+
+
+                                                   824                                   @soyenriquerocha
+                                                                                APÉNDICE D: GLOSARIO
+
+
+
+
+Aparece en: ch12, ch15
+
+
+Flag (bandera de comando)
+Una opción que agregas a un comando para cambiar su comportamiento. Se escriben con guiones: --
+print , --model , --verbose . Son como interruptores: los enciendes y algo cambia. Por ejemplo,
+--print hace que Claude responda y termine, sin modo interactivo.
+
+Aparece en: ch12, apx-a
+
+
+Full-Auto Mode
+Un modo de permisos donde Claude Code puede hacer todo sin pedir tu aprobación: editar archivos,
+ejecutar comandos, lo que sea. Es el modo más rápido pero también el más riesgoso. Solo se
+recomienda cuando confías completamente en lo que Claude va a hacer.
+
+Aparece en: ch15
+
+
+Glob
+Un patrón de búsqueda de archivos con caracteres comodín. Por ejemplo, *.js encuentra todos los
+archivos JavaScript y **/*.ts busca TypeScript en todas las carpetas. Claude Code lo usa para
+encontrar archivos rápidamente, como un atajo de búsqueda.
+
+Aparece en: ch12
+
+
+Grep
+Una herramienta de búsqueda de texto dentro de archivos. Claude Code la usa para encontrar código,
+funciones o patrones en todo el proyecto. Es como usar Ctrl+F pero en todos los archivos a la vez.
+
+Aparece en: ch12
+
+
+Headless Mode / Modo Sin Cabeza
+Un modo de ejecución sin interfaz de usuario interactiva. Se usa en scripts y automatizaciones donde
+no hay un humano mirando la terminal. Claude recibe instrucciones, trabaja y devuelve resultados,
+todo automáticamente.
+
+Aparece en: ch12, ch23
+
+
+
+
+                                                  825                                    @soyenriquerocha
+APÉNDICE D: GLOSARIO
+
+
+
+
+Hook
+Un comando que se ejecuta automáticamente en momentos específicos. Es como una alarma
+programada: "cada vez que Claude vaya a editar un archivo, primero pasa el linter". Los hooks
+garantizan que ciertas acciones siempre ocurran, a diferencia de instrucciones en texto que Claude
+podría ignorar.
+
+Aparece en: ch17
+
+
+MCP (Model Context Protocol)
+Un protocolo abierto creado por Anthropic. Estandariza cómo las apps de IA se conectan a
+herramientas externas. Es como un puerto USB-C universal para IA: un único estándar para conectar
+Claude a bases de datos, APIs, servicios web y más. Antes de MCP, cada conexión necesitaba código
+personalizado.
+
+Aparece en: ch18, ch20
+
+
+MCP Server / Servidor MCP
+Un programa que implementa el protocolo MCP para darle herramientas a Claude. Por ejemplo, un
+servidor MCP de GitHub permite a Claude interactuar con repositorios. Uno de PostgreSQL le permite
+consultar bases de datos. Es como un adaptador que conecta Claude a un servicio externo.
+
+Aparece en: ch18
+
+
+Matcher / Patrón de Coincidencia
+Un patrón de texto (expresión regular) que se usa en los hooks de Claude Code para filtrar en qué
+herramientas o eventos se activa un hook. Es como un filtro que dice "solo ejecuta esta
+automatización cuando Claude use la herramienta Edit". Soporta regex completas y el comodín *
+para coincidir con todo.
+
+Aparece en: ch17
+
+
+Permisos / Permissions
+El sistema que controla qué puede hacer Claude Code sin pedirte permiso. Hay tres modos: plan (solo
+sugiere), auto-edit (edita archivos pero pide permiso para comandos) y full-auto (hace todo sin
+preguntar). Es como los niveles de confianza que le das a un empleado nuevo.
+
+Aparece en: ch15
+
+
+
+
+                                                826                                   @soyenriquerocha
+                                                                                APÉNDICE D: GLOSARIO
+
+
+
+
+Plan Mode / Modo Plan
+Un modo donde Claude Code solo planifica y sugiere acciones, pero no las ejecuta. Útil para revisar
+qué va a hacer antes de darle luz verde. Se activa con /plan o la tecla Shift+Tab.
+
+Aparece en: ch12, ch15
+
+
+PreToolUse / PostToolUse
+Eventos de hooks en Claude Code. PreToolUse se dispara ANTES de que Claude use una
+herramienta (puedes bloquearla). PostToolUse se dispara DESPUÉS (puedes procesar el resultado).
+Es como un guardia de seguridad que revisa antes y después de cada acción.
+
+Aparece en: ch17
+
+
+--print (flag)
+Un flag que convierte Claude Code en modo no interactivo: recibe un prompt, genera una respuesta y
+termina. Ideal para scripts y automatizaciones. Es la base del modo SDK. Ejemplo: claude --print
+'Explica este error'
+
+Aparece en: ch12, ch23
+
+
+Sandbox / Caja de Arena
+Un entorno aislado y seguro donde Claude Code ejecuta acciones. Las conexiones de red están
+restringidas y los archivos fuera del proyecto no son accesibles. Es como una sala de pruebas donde
+los errores no afectan al resto del sistema.
+
+Aparece en: ch15
+
+
+Settings / Configuración
+Las preferencias de Claude Code. Se guardan en archivos settings.json a nivel global
+( ~/.claude/settings.json ), de proyecto ( .claude/settings.json ) o local ( .claude/
+settings.local.json ). Controlan permisos, herramientas permitidas, modelo por defecto y más.
+
+Aparece en: ch13, apx-b
+
+
+Skill / Habilidad
+Un paquete reutilizable de instrucciones que extiende las capacidades de Claude Code. Los skills se
+activan con comandos que empiezan con / (slash commands) o automáticamente cuando Claude
+detecta que son relevantes. Es como instalarle un plugin a Claude.
+
+Aparece en: ch16
+
+
+
+                                                  827                                   @soyenriquerocha
+APÉNDICE D: GLOSARIO
+
+
+
+
+Slash Command / Comando Slash
+Comandos que empiezan con / y ejecutan funciones específicas. Ejemplos: /help (ayuda), /clear
+(limpiar chat), /model (cambiar modelo), /compact (compactar contexto). También pueden activar
+skills personalizados.
+
+Aparece en: ch12, ch16
+
+
+Subagent / Subagente
+Un agente secundario que Claude Code crea para delegar una tarea. Cada subagente tiene su propia
+conversación, herramientas y puede usar un modelo diferente. Es como un empleado temporal que el
+agente principal contrata para una tarea concreta.
+
+Aparece en: ch20
+
+
+Worktree
+Una copia aislada de tu repositorio Git. Permite trabajar en una rama sin afectar el directorio principal.
+Claude Code usa worktrees para que los subagentes puedan hacer cambios en paralelo sin interferir
+entre sí. Es como trabajar en una fotocopia del documento original.
+
+Aparece en: ch20
+
+
+Agent SDK
+Un kit de desarrollo para construir agentes de IA personalizados usando Claude como base.
+Proporciona herramientas para orquestar agentes, gestionar herramientas y crear flujos de trabajo
+donde varios agentes trabajan juntos.
+
+Aparece en: ch22
+
+
+Auto Memory / MEMORY.md
+Un archivo que Claude Code crea automáticamente para guardar notas sobre ti y tu proyecto. Claude
+lee las primeras 200 líneas cada vez que inicia. Es como un cuaderno donde Claude anota las cosas
+importantes que aprende trabajando contigo.
+
+Aparece en: ch08, ch14
+
+
+CLAUDE.local.md
+Una versión personal de CLAUDE.md que no se comparte con el equipo. Ideal para tus preferencias
+individuales dentro de un proyecto compartido.
+
+Aparece en: ch14
+
+
+
+                                                   828                                     @soyenriquerocha
+                                                                             APÉNDICE D: GLOSARIO
+
+
+
+
+.claude/rules/ (Reglas por Ruta)
+Una carpeta donde pones archivos de reglas que solo aplican a ciertos archivos de tu proyecto. Por
+ejemplo, reglas especiales para todo lo que esté en src/tests/ .
+
+Aparece en: ch14, ch15
+
+
+AGENTS.md
+Un archivo similar a CLAUDE.md pero enfocado en definir subagentes personalizados. Compatible con
+otros frameworks de agentes.
+
+Aparece en: ch14, ch20
+
+
+SKILL.md
+Un archivo que define un skill personalizado para Claude Code. Incluye un frontmatter YAML con
+metadatos y las instrucciones en Markdown. Es la forma de enseñarle a Claude una nueva habilidad.
+
+Aparece en: ch16
+
+
+Agent Tool
+La herramienta interna que Claude Code usa para lanzar subagentes. Cuando Claude necesita ayuda
+con una tarea paralela, usa esta herramienta para crear un subagente independiente. Es como un
+gerente que delega tareas.
+
+Aparece en: ch20
+
+
+Agent Teams / Equipos de Agentes
+Una función que permite crear múltiples subagentes que trabajan juntos en paralelo, cada uno con su
+propio rol. Es como un equipo de trabajo donde cada miembro tiene su especialidad.
+
+Aparece en: ch20, ch23
+
+
+Checkpoints / Puntos de Control
+Puntos de guardado automáticos que Claude Code crea mientras trabaja. Si algo sale mal, puedes
+retroceder a un checkpoint anterior. Es como el "deshacer" pero para todo un conjunto de cambios.
+
+Aparece en: ch19
+
+
+
+
+                                                829                                   @soyenriquerocha
+APÉNDICE D: GLOSARIO
+
+
+
+
+Claude Desktop
+La aplicación de escritorio de Claude Code con interfaz visual. Ofrece funciones exclusivas como
+preview de apps, tareas programadas y auto-verificación con capturas de pantalla.
+
+Aparece en: ch19
+
+
+@-Menciones
+Una forma de referenciar archivos, carpetas, líneas de código o subagentes escribiendo @ seguido del
+nombre. Claude Code muestra un menú de autocompletado. Es como etiquetar a alguien en un chat.
+
+Aparece en: ch19, ch20
+
+
+
+Prompting (Técnicas de comunicación con Claude)
+
+Términos sobre cómo escribir instrucciones efectivas para Claude.
+
+Chain of Thought (CoT) / Cadena de Pensamiento
+Una técnica donde le pides a Claude que piense paso a paso antes de dar su respuesta final. Es como
+pedirle que "muestre su trabajo" en un examen de matemáticas. Mejora mucho la precisión en tareas
+de razonamiento.
+
+Aparece en: ch04, ch22
+
+
+Few-Shot Prompting
+Darle a Claude unos pocos ejemplos de lo que quieres antes de tu pregunta real. Es como mostrarle un
+par de problemas resueltos antes de pedirle que resuelva uno nuevo. Muy efectivo para tareas con
+formato específico.
+
+Aparece en: ch04, ch22
+
+
+Prompt
+El mensaje o instrucción que le envías a Claude. Puede ser una pregunta simple o un conjunto de
+instrucciones detalladas. La calidad del prompt determina la calidad de la respuesta. Un buen prompt
+es claro, específico y da contexto.
+
+Aparece en: ch04, ch22
+
+
+
+
+                                                830                                   @soyenriquerocha
+                                                                                 APÉNDICE D: GLOSARIO
+
+
+
+
+Prompt Chaining / Encadenamiento de Prompts
+Dividir una tarea compleja en varios prompts pequeños. La salida de uno alimenta la entrada del
+siguiente. Es como una línea de producción: cada paso hace una parte específica del trabajo.
+
+Aparece en: ch04, ch22
+
+
+Prompt Engineering / Ingeniería de Prompts
+El arte de escribir instrucciones efectivas para modelos de IA. Incluye técnicas como dar contexto, ser
+específico, usar ejemplos y estructurar las instrucciones claramente. No necesitas ser programador
+para hacer buena ingeniería de prompts.
+
+Aparece en: ch04, ch22
+
+
+Role Prompting
+Asignarle a Claude un rol específico. Por ejemplo: "Eres un experto en marketing digital". Esto orienta
+sus respuestas hacia ese dominio y estilo. Es como ponerle una gorra de chef para que cocine, o una
+bata de médico para que diagnostique.
+
+Aparece en: ch04
+
+
+System Prompt / Prompt del Sistema
+Instrucciones especiales que se le dan a Claude antes de la conversación. El usuario final no las ve.
+Definen la personalidad, reglas y comportamiento de Claude para una app. Es como el "manual del
+empleado" que Claude sigue internamente.
+
+Aparece en: ch04, ch12, ch21, ch22
+
+
+XML Tags / Etiquetas XML
+Etiquetas como <document> y </document> que se usan para organizar secciones dentro de un
+prompt. Claude está especialmente entrenado para entenderlas. Son como carpetas dentro de tu
+mensaje que separan claramente cada parte.
+
+Aparece en: ch04, ch22
+
+
+Zero-Shot Prompting
+Hacerle una pregunta a Claude sin darle ningún ejemplo previo. Claude usa solo sus conocimientos
+para responder. Es la forma más simple de interactuar: escribes lo que necesitas y listo.
+
+Aparece en: ch04
+
+
+
+
+                                                  831                                       @soyenriquerocha
+APÉNDICE D: GLOSARIO
+
+
+
+
+API de Claude
+
+Términos relacionados con la API que los desarrolladores usan para integrar Claude en sus
+aplicaciones.
+
+Batch API / API por Lotes
+Una forma de enviar muchas peticiones a Claude de una sola vez. Es más barato (hasta 50% de
+descuento) pero más lento. Los resultados pueden tardar hasta 24 horas. Es como enviar una caja
+llena de cartas en lugar de una por una.
+
+Aparece en: ch21, ch22
+
+
+Constrained Decoding / Decodificación Restringida
+Una técnica que fuerza a Claude a generar solo respuestas que sigan un esquema específico (como
+JSON válido). En lugar de "pedirle" que siga un formato y esperar que lo haga, constrained decoding lo
+garantiza a nivel de generación. Es la tecnología detrás de Structured Outputs.
+
+Aparece en: ch21, ch22
+
+
+Citations / Citaciones
+Una función que permite a Claude indicar exactamente de dónde sacó cada parte de su respuesta. Es
+como las notas al pie de un libro académico. Útil para verificar que Claude está usando información
+real de tus documentos.
+
+Aparece en: ch21, ch22
+
+
+Deprecation / Deprecación
+Cuando Anthropic anuncia que una versión antigua de un modelo dejará de funcionar en una fecha
+futura. Te da tiempo para migrar a la versión nueva. Es como cuando tu teléfono deja de recibir
+actualizaciones: sigue funcionando un tiempo, pero eventualmente necesitas cambiar.
+
+Aparece en: ch03, ch21
+
+
+Effort Parameter / Parámetro de Esfuerzo
+Un parámetro que controla cuánto "esfuerzo" dedica Claude a pensar. Valores altos producen
+respuestas más reflexivas pero más lentas y caras. Valores bajos dan respuestas rápidas y económicas.
+Es como pedir un informe detallado versus un resumen rápido.
+
+Aparece en: ch03, ch22
+
+
+
+
+                                                 832                                    @soyenriquerocha
+                                                                                 APÉNDICE D: GLOSARIO
+
+
+
+
+Endpoint
+La dirección URL a la que tu programa envía peticiones para hablar con Claude. Es como la dirección
+de una oficina específica dentro de un edificio. El endpoint principal de Claude es https://
+api.anthropic.com/v1/messages .
+
+Aparece en: ch21, ch24
+
+
+Files API / API de Archivos
+Una API en beta que permite subir y gestionar archivos para usarlos en múltiples llamadas a la API, sin
+tener que re-enviarlos cada vez. Acepta archivos de hasta 500 MB. Es como dejar un documento en la
+oficina de Claude para que lo consulte cuando lo necesite, sin tener que llevárselo cada vez.
+
+Aparece en: ch21
+
+
+HTTP / HTTPS
+El protocolo de comunicación que usan los navegadores y aplicaciones para enviar y recibir
+información en Internet. La API de Claude usa HTTPS (la versión segura) para todas las
+comunicaciones. Los métodos más comunes son GET (obtener) y POST (enviar). Es como el idioma
+que hablan tu programa y los servidores de Claude.
+
+Aparece en: ch21
+
+
+Interleaved Thinking / Pensamiento Intercalado
+Cuando Claude piensa (extended thinking) entre cada uso de herramienta, no solo al principio.
+Permite razonamiento más sofisticado en tareas de múltiples pasos. Es como un detective que
+reflexiona después de cada pista nueva.
+
+Aparece en: ch21, ch22
+
+
+MCP Connector
+Una función de la API que permite conectarse a servidores MCP directamente, sin construir un cliente
+propio. Simplifica la integración con herramientas MCP.
+
+Aparece en: ch21
+
+
+Messages API
+El endpoint principal de la API de Claude. Es la puerta de entrada para enviar mensajes y recibir
+respuestas. Soporta texto, imágenes, PDFs, herramientas, streaming y más. Todo empieza aquí.
+
+Aparece en: ch21, ch22
+
+
+
+                                                  833                                     @soyenriquerocha
+APÉNDICE D: GLOSARIO
+
+
+
+
+Model Alias / Alias de Modelo
+Un nombre corto que siempre apunta a la versión más reciente de un modelo. Por ejemplo, claude-
+sonnet-4-6 siempre apunta al último Claude 4.6 Sonnet. Si Anthropic actualiza el modelo, el alias
+automáticamente apunta a la nueva versión. Útil para obtener mejoras sin cambiar tu código.
+
+Aparece en: ch03, ch21
+
+
+Model ID / Identificador de Modelo
+El nombre técnico completo de una versión específica, incluyendo la fecha. Ejemplo: claude-
+sonnet-4-6-20260301 . A diferencia del alias, siempre apunta a la misma versión exacta. Útil cuando
+necesitas resultados reproducibles.
+
+Aparece en: ch03, ch21
+
+
+MTok (Mega Token / Millón de Tokens)
+Un millón de tokens. Es la unidad que se usa para expresar los precios de la API de Claude. Por
+ejemplo, "$5 / input MTok" significa 5 dólares por cada millón de tokens de entrada. Un MTok equivale
+a unas 750,000 palabras en inglés. Es como medir gasolina en litros: necesitas la unidad para comparar
+precios.
+
+Aparece en: ch03, ch10, ch21
+
+
+Multi-Turn Conversation / Conversación Multi-Turno
+Una conversación con varios intercambios de ida y vuelta. Cada turno incluye el historial completo de
+mensajes anteriores para que Claude mantenga el contexto. Es como una conversación normal donde
+ambos recuerdan lo que se dijo antes.
+
+Aparece en: ch04, ch21, ch22
+
+
+Prompt Caching / Cache de Prompts
+Una función que guarda en memoria partes del prompt que se repiten. Si envías el mismo system
+prompt 100 veces, solo se procesa la primera. Ahorra hasta 90% en costos y 85% en tiempo de espera.
+Es como guardar una plantilla para no tener que reescribirla.
+
+Aparece en: ch21, ch22
+
+
+
+
+                                                 834                                    @soyenriquerocha
+                                                                               APÉNDICE D: GLOSARIO
+
+
+
+
+Prefill / Pre-rellenado (deprecado)
+Una técnica donde se pre-rellenaba el inicio de la respuesta de Claude para forzar un formato o evitar
+preámbulos. Deprecada a partir de Claude 4.6. Las alternativas actuales son Structured Outputs,
+instrucciones directas en el system prompt ("Responde directamente sin preámbulo"), o post-
+procesamiento.
+
+Aparece en: ch21
+
+
+Priority Tier / Nivel Prioritario
+Un nivel de servicio mejorado para la API de Claude con mayor disponibilidad y límites más altos.
+Requiere un compromiso de gasto (committed spend) con Anthropic. Es como la clase business de un
+avión: pagas más pero tienes acceso garantizado y mejor servicio.
+
+Aparece en: ch21, ch25
+
+
+Rate Limit / Límite de Tasa
+El número máximo de peticiones que puedes hacer a la API en un período de tiempo. Es como un
+límite de velocidad: si lo superas, la API te pide que esperes. Los límites aumentan conforme gastas
+más (subes de nivel de uso).
+
+Aparece en: ch21, ch25
+
+
+RESTful API
+Un estilo de diseño de API que usa URLs para identificar recursos y métodos HTTP (GET, POST, etc.)
+para las operaciones. La API de Claude sigue este estilo. Por ejemplo, POST /v1/messages envía un
+mensaje y GET /v1/models lista los modelos disponibles. Las respuestas vienen en formato JSON.
+
+Aparece en: ch21
+
+
+Streaming
+Recibir la respuesta de Claude palabra por palabra mientras se genera, en lugar de esperar a que
+termine toda. Es como ver a alguien escribir en tiempo real. Mejora la experiencia de usuario porque
+sientes que la respuesta llega más rápido.
+
+Aparece en: ch12, ch21
+
+
+
+
+                                                 835                                    @soyenriquerocha
+APÉNDICE D: GLOSARIO
+
+
+
+
+Server-Sent Events (SSE)
+Una tecnología que permite al servidor enviar datos al cliente de forma continua en una sola
+conexión. La API de Claude usa SSE para el streaming: en lugar de esperar a que Claude termine toda
+su respuesta, la recibes palabra por palabra. Los eventos incluyen                  message_start ,
+content_block_delta y message_stop .
+
+Aparece en: ch21
+
+
+Snapshot Date / Fecha de Snapshot
+La fecha incluida en el nombre técnico de un modelo (por ejemplo, 20250929 en claude-
+sonnet-4-5-20250929 ) que identifica una versión exacta. Modelos con la misma fecha son idénticos
+en todas las plataformas (API directa, Bedrock, Vertex). Es como el número de serie de un producto:
+garantiza que tienes exactamente la misma versión.
+
+Aparece en: ch03, ch21
+
+
+stop_reason
+Un campo en la respuesta de la API que indica por qué Claude dejó de generar texto. Los valores más
+comunes son: end_turn (terminó normalmente), max_tokens (llegó al límite de tokens), y
+tool_use (necesita ejecutar una herramienta). Es como la razón por la que alguien deja de hablar:
+terminó, se le acabó el tiempo, o necesita hacer algo primero.
+
+Aparece en: ch21
+
+
+Structured Output / Salida Estructurada
+Una función que fuerza a Claude a responder en un formato JSON que cumple con un esquema
+predefinido. Garantiza que la respuesta siempre tenga los campos correctos. Es como darle a Claude
+un formulario para llenar en lugar de dejarlo escribir libremente.
+
+Aparece en: ch21, ch22
+
+
+Temperature / Temperatura
+Un número de 0 a 1 que controla qué tan creativas son las respuestas. Temperatura 0 = respuestas
+consistentes y predecibles (ideal para código y datos). Temperatura 1 = respuestas variadas y
+creativas (ideal para escritura). Es como un dial que va de "serio" a "creativo".
+
+Aparece en: ch03, ch12, ch21, ch22
+
+
+
+
+                                                   836                                 @soyenriquerocha
+                                                                                APÉNDICE D: GLOSARIO
+
+
+
+
+Token Bucket / Cubo de Tokens
+El algoritmo que usa la API de Claude para controlar los rate limits. Imagina un cubo que se llena
+continuamente con tokens. Cada petición consume tokens del cubo. Si el cubo se vacía, debes esperar
+a que se rellene. La capacidad del cubo depende de tu nivel de uso (tier).
+
+Aparece en: ch21, ch25
+
+
+Top-k
+Un parámetro que limita el número de palabras candidatas que Claude considera para la siguiente
+posición. Solo mira las k palabras más probables e ignora el resto. Se usa junto con temperature y top-
+p para controlar qué tan creativas o predecibles son las respuestas.
+
+Aparece en: ch21, ch22
+
+
+Top-p (Nucleus Sampling)
+Un parámetro que controla la diversidad de las respuestas seleccionando palabras cuya probabilidad
+acumulada alcance el valor p. Un valor bajo (ej: 0.5) da respuestas más enfocadas. Un valor alto (ej:
+0.95) da más diversidad. Es una alternativa a temperature para controlar la creatividad.
+
+Aparece en: ch21, ch22
+
+
+Training Data Cutoff / Corte de Datos de Entrenamiento
+La fecha hasta la cual se usaron datos para entrenar el modelo. Claude no "sabe" nada que haya
+ocurrido después de esta fecha, a menos que use búsqueda web u otra herramienta. Por ejemplo,
+Opus 4.6 tiene corte en agosto 2025 y Sonnet 4.6 en enero 2026.
+
+Aparece en: ch03
+
+
+Throughput / Rendimiento
+La cantidad de peticiones o tokens que se pueden procesar por unidad de tiempo. Mayor throughput =
+más trabajo en menos tiempo. Es como el caudal de una tubería: más ancha, más agua pasa.
+
+Aparece en: ch03, ch21
+
+
+Tool Use / Uso de Herramientas
+La capacidad de Claude para llamar funciones externas. Tú defines las herramientas disponibles (con
+nombre, descripción y parámetros). Claude decide cuándo usarlas. Tú ejecutas la función y le
+devuelves el resultado. Es como darle a Claude un cinturón de herramientas que puede usar cuando
+las necesite.
+
+
+
+
+                                                  837                                      @soyenriquerocha
+APÉNDICE D: GLOSARIO
+
+
+
+
+Aparece en: ch21, ch22
+
+
+TTFT (Time to First Token)
+El tiempo que tarda Claude en generar el primer token de su respuesta. Es la velocidad percibida. Un
+TTFT bajo significa que Claude "empieza a hablar" rápido, aunque tarde en terminar toda la respuesta.
+
+Aparece en: ch03, ch21
+
+
+Usage Tier / Nivel de Uso
+Tu nivel de acceso a la API basado en cuánto has gastado. Niveles más altos permiten más peticiones
+por minuto. Subes de nivel automáticamente al gastar más. Es como un programa de fidelidad: cuanto
+más usas, más capacidad obtienes.
+
+Aparece en: ch21, ch25
+
+
+Workbench
+Una herramienta interactiva en la consola de Claude (platform.claude.com) que permite probar
+prompts y la API directamente en el navegador, sin escribir código. Puedes seleccionar modelo, ajustar
+parámetros y ver la respuesta en tiempo real. Incluye un generador de prompts y un mejorador de
+prompts automático.
+
+Aparece en: ch21
+
+
+Workspace / Espacio de Trabajo
+Un espacio en la consola de Claude que permite segmentar API keys y controlar el gasto por caso de
+uso o equipo. Por ejemplo, puedes tener un workspace de "Desarrollo" y otro de "Producción" con
+límites de gasto separados. Es como tener cuentas bancarias separadas para diferentes proyectos.
+
+Aparece en: ch21, ch24
+
+
+
+Enterprise (Seguridad y administración empresarial)
+
+Términos que importan cuando una empresa grande quiere usar Claude de forma segura y controlada.
+
+Admin Console / Consola de Administración
+Un panel de control web donde los administradores gestionan usuarios, permisos, facturación y
+políticas de uso de Claude. Es el centro de mando de la organización.
+
+Aparece en: ch24
+
+
+
+
+                                                 838                                    @soyenriquerocha
+                                                                                  APÉNDICE D: GLOSARIO
+
+
+
+
+Audit Log / Registro de Auditoría
+Un registro detallado de todas las acciones: quién hizo qué, cuándo y desde dónde. Es como una
+cámara de seguridad digital. Requerido por muchas regulaciones empresariales.
+
+Aparece en: ch24
+
+
+Compliance / Cumplimiento
+El cumplimiento de normas y regulaciones de seguridad. Anthropic cumple con SOC2, HIPAA y otros
+estándares que las empresas grandes exigen antes de usar un servicio externo.
+
+Aparece en: ch24
+
+
+Data Residency / Residencia de Datos
+La garantía de que tus datos se guardan y procesan en una región geográfica específica (por ejemplo,
+solo en Europa). Importante para empresas que deben cumplir con leyes locales de protección de
+datos.
+
+Aparece en: ch03, ch21, ch24
+
+
+HIPAA
+Una ley de EE.UU. que protege la privacidad de datos médicos. Las empresas de salud necesitan que
+sus proveedores de IA cumplan con HIPAA antes de usar datos de pacientes.
+
+Aparece en: ch24
+
+
+RBAC (Role-Based Access Control)
+Un sistema donde los permisos se asignan a roles (administrador, editor, lector) en lugar de a personas
+individuales. Es más fácil de gestionar: cambias el rol y los permisos se actualizan solos.
+
+Aparece en: ch24
+
+
+SAML (Security Assertion Markup Language)
+Un estándar que permite a las empresas usar su propio sistema de login corporativo para acceder a
+Claude. Los empleados no necesitan una contraseña separada. Es como entrar a Claude con tu gafete
+de la oficina.
+
+Aparece en: ch24
+
+
+
+
+                                                   839                                        @soyenriquerocha
+APÉNDICE D: GLOSARIO
+
+
+
+
+SCIM (System for Cross-domain Identity Management)
+Un estándar para automatizar la creación y eliminación de cuentas. Cuando la empresa contrata a
+alguien, SCIM le da acceso a Claude. Cuando lo despide, se lo quita. Todo automático.
+
+Aparece en: ch24
+
+
+SLA (Service Level Agreement)
+Un acuerdo que garantiza un nivel mínimo de servicio. Por ejemplo: "99.9% de disponibilidad". Si no
+se cumple, Anthropic da compensación. Los planes Enterprise incluyen SLAs.
+
+Aparece en: ch24
+
+
+SOC2
+Una certificación de seguridad que demuestra que una empresa maneja los datos de forma segura.
+Muchas empresas grandes exigen SOC2 antes de usar un servicio. Es como un sello de calidad para la
+seguridad de datos.
+
+Aparece en: ch24
+
+
+SSO (Single Sign-On)
+Un sistema que permite iniciar sesión una sola vez y acceder a múltiples aplicaciones. Los empleados
+usan su login corporativo para entrar a Claude sin necesitar otra contraseña. Es como una llave
+maestra.
+
+Aparece en: ch24
+
+
+Zero Data Retention (ZDR)
+Una política donde Anthropic no guarda ningún dato de tus peticiones. Los datos se procesan y se
+borran inmediatamente. Es como una conversación que se olvida en el momento. Disponible para
+clientes Enterprise.
+
+Aparece en: ch22, ch24
+
+
+Admin API
+Una API especial para administradores que permite gestionar usuarios, workspaces y configuraciones
+con código. Usa una API key que empieza con sk-ant-admin .
+
+Aparece en: ch24
+
+
+
+
+                                                 840                                    @soyenriquerocha
+                                                                              APÉNDICE D: GLOSARIO
+
+
+
+
+Domain Capture / Captura de Dominio
+Una función Enterprise que detecta automáticamente cuando alguien de tu empresa crea una cuenta
+en Claude y la incorpora a tu organización.
+
+Aparece en: ch24
+
+
+IP Allowlisting / Lista Blanca de IPs
+Una restricción que solo permite acceder a Claude desde direcciones IP específicas. Es como un
+guardia que solo deja pasar a quienes están en la lista.
+
+Aparece en: ch24
+
+
+
+Desarrollo (Herramientas y patrones)
+
+Términos técnicos de desarrollo de software que aparecen cuando trabajas con Claude Code o la API.
+
+Chunking / Fragmentación
+Dividir un documento largo en pedazos más pequeños (chunks). Los modelos de IA procesan mejor
+textos cortos. Es un paso clave en sistemas RAG. Es como cortar un pastel en rebanadas para poder
+comerlo.
+
+Aparece en: ch22
+
+
+CI/CD (Continuous Integration / Continuous Deployment)
+Prácticas donde los cambios en el código se integran y despliegan automáticamente. Claude Code
+puede integrarse aquí para revisar código, ejecutar pruebas o generar documentación. Es como una
+fábrica automatizada de software.
+
+Aparece en: ch23
+
+
+Cosine Similarity / Similitud del Coseno
+Una medida de qué tan "parecidos" son dos textos cuando se convierten en números. Un valor de 1.0
+significa idénticos. Un 0.0 significa completamente diferentes. Se usa en sistemas RAG para encontrar
+documentos relevantes.
+
+Aparece en: ch22
+
+
+
+
+                                                   841                                 @soyenriquerocha
+APÉNDICE D: GLOSARIO
+
+
+
+
+Evaluaciones / Evals
+Pruebas sistemáticas para medir qué tan bien funciona tu implementación con Claude. Son como
+tests unitarios pero para IA. Pueden medir precisión, coherencia y si Claude sigue instrucciones.
+
+Aparece en: ch22
+
+
+F1 Score
+Una métrica que combina precisión y recall en un solo número. Un F1 de 1.0 es perfecto. Se usa para
+evaluar sistemas RAG y clasificación. Es como una calificación general que toma en cuenta dos
+aspectos del rendimiento.
+
+Aparece en: ch22
+
+
+Formatter / Formateador
+Una herramienta que reorganiza el código para que siga un estilo consistente (indentación, espacios,
+saltos de línea). Ejemplos: Prettier, Black. Se usa a menudo en hooks PostToolUse de Claude Code.
+
+Aparece en: ch17
+
+
+GitHub Actions
+Un sistema de automatización de GitHub. Ejecuta tareas automáticamente cuando ocurren eventos en
+tu repositorio (como un push o un pull request). Claude Code puede integrarse aquí para revisar
+código automáticamente.
+
+Aparece en: ch23
+
+
+JSON Schema
+Un estándar que define la estructura esperada de un documento JSON: qué campos debe tener, de
+qué tipo, cuáles son obligatorios. Se usa con Claude para forzar respuestas con formato exacto
+(structured outputs).
+
+Aparece en: ch21, ch22
+
+
+Linter
+Una herramienta que analiza código buscando errores, bugs potenciales y violaciones de estilo. Es
+como un corrector ortográfico pero para código. Se usa frecuentemente en hooks de Claude Code.
+
+Aparece en: ch17
+
+
+
+
+                                                  842                                     @soyenriquerocha
+                                                                                APÉNDICE D: GLOSARIO
+
+
+
+
+Mermaid
+Un lenguaje de texto para crear diagramas. Escribes texto estructurado y se convierte en diagramas de
+flujo, de secuencia, gráficos de Gantt, etc. Claude puede generar Mermaid en artifacts.
+
+Aparece en: ch07
+
+
+MRR (Mean Reciprocal Rank)
+Una métrica que evalúa la calidad del ranking de resultados. Mide en qué posición aparece el primer
+resultado correcto. Mientras más arriba, mejor. Se usa para evaluar sistemas de búsqueda.
+
+Aparece en: ch22
+
+
+Pipeline
+Una secuencia de pasos automatizados que se ejecutan en orden. Cada paso transforma o procesa
+algo antes de pasarlo al siguiente. Es como una línea de ensamblaje en una fábrica.
+
+Aparece en: ch22, ch23
+
+
+Precisión
+En evaluaciones, mide qué porcentaje de los resultados devueltos son realmente relevantes. Alta
+precisión = pocos resultados basura. Es como un buscador que solo te muestra lo que realmente
+buscas.
+
+Aparece en: ch22
+
+
+Pull Request (PR)
+Una propuesta de cambios en un repositorio de código que otros pueden revisar antes de aceptar. Es
+como pedir aprobación antes de publicar cambios. Claude Code puede crear PRs automáticamente.
+
+Aparece en: ch23
+
+
+RAG (Retrieval-Augmented Generation)
+Una técnica que mejora las respuestas de Claude dándole documentos externos como referencia.
+Primero se buscan los documentos más relevantes, luego se pasan a Claude con la pregunta. Reduce
+alucinaciones porque Claude basa sus respuestas en información real. Es como dejarle consultar un
+libro antes de responder un examen.
+
+Aparece en: ch22
+
+
+
+
+                                                  843                                     @soyenriquerocha
+APÉNDICE D: GLOSARIO
+
+
+
+
+React
+Una biblioteca de JavaScript para crear interfaces de usuario. Claude puede generar componentes
+React completos dentro de Artifacts, creando apps web interactivas directamente en el chat.
+
+Aparece en: ch07
+
+
+Recall
+En evaluaciones, mide qué porcentaje de todos los resultados relevantes fueron encontrados. Alto
+recall = no se pierde información importante. Es como un detective que no deja ninguna pista sin
+revisar.
+
+Aparece en: ch22
+
+
+ROUGE-L
+Una métrica que mide qué tan parecida es una respuesta generada comparada con una de referencia.
+Se usa para evaluar la calidad de resúmenes y respuestas.
+
+Aparece en: ch22
+
+
+Vector Database / Base de Datos Vectorial
+Una base de datos especializada en guardar y buscar embeddings (vectores de números). Se usa en
+sistemas RAG para encontrar los documentos más parecidos a una pregunta. Ejemplos: Pinecone,
+Weaviate, ChromaDB.
+
+Aparece en: ch22
+
+
+
+Benchmarks (Pruebas de rendimiento)
+
+Pruebas estandarizadas que se usan para comparar modelos de IA. Son como los exámenes que
+miden qué tan listo es cada modelo.
+
+ARC-AGI
+Un benchmark que mide la capacidad de razonamiento abstracto. Evalúa si el modelo puede resolver
+patrones visuales nuevos que nunca ha visto. Es como un test de IQ para IA.
+
+Aparece en: ch03
+
+
+
+
+                                                 844                                   @soyenriquerocha
+                                                                              APÉNDICE D: GLOSARIO
+
+
+
+
+Benchmark
+Una prueba estandarizada para medir qué tan bueno es un modelo de IA. Es como un examen que se
+les pone a todos los modelos para compararlos. Diferentes benchmarks miden diferentes habilidades.
+
+Aparece en: ch01, ch03
+
+
+Elo Rating
+Un sistema de puntuación (originalmente del ajedrez) usado para clasificar modelos de IA. Humanos
+votan por la mejor respuesta entre dos modelos, y se calcula un ranking. Se usa en arenas como
+Chatbot Arena.
+
+Aparece en: ch03
+
+
+GPQA (Graduate-Level Google-Proof Q&A)
+Un benchmark que mide si un modelo puede responder preguntas de nivel de posgrado en ciencias.
+Son preguntas tan difíciles que no se pueden responder simplemente buscando en Google.
+
+Aparece en: ch03
+
+
+MMLU (Massive Multitask Language Understanding)
+Un benchmark que evalúa el conocimiento de un modelo en 57 materias académicas (matemáticas,
+derecho, medicina, etc.). Es uno de los benchmarks más citados para comparar modelos. Como un
+examen de conocimiento general muy completo.
+
+Aparece en: ch01, ch03
+
+
+SWE-bench
+Un benchmark que evalúa si un modelo puede resolver problemas reales de ingeniería de software,
+como corregir bugs en repositorios de código abierto. Es el examen práctico de programación para
+modelos de IA.
+
+Aparece en: ch03
+
+
+
+Plataformas y Despliegue
+
+Formas alternativas de acceder a Claude a través de grandes plataformas en la nube.
+
+
+
+
+                                                845                                   @soyenriquerocha
+APÉNDICE D: GLOSARIO
+
+
+
+
+AWS Bedrock
+Un servicio de Amazon Web Services que permite usar Claude a través de la infraestructura de
+Amazon. Útil para empresas que ya usan AWS y quieren mantener todo en un solo proveedor.
+
+Aparece en: ch03, ch21, ch24
+
+
+Google Vertex AI
+Un servicio de Google Cloud que permite usar Claude a través de la infraestructura de Google. La
+alternativa para empresas que usan Google Cloud en lugar de AWS.
+
+Aparece en: ch03, ch21, ch24
+
+
+
+Conceptos Generales
+
+Términos técnicos generales que necesitas conocer para entender la guía, aunque no son exclusivos
+de Claude.
+
+API (Application Programming Interface)
+Una forma de que dos programas se comuniquen entre sí. Es como un mesero en un restaurante: tú le
+dices lo que quieres (una petición), él va a la cocina y te trae la respuesta. La API de Claude permite
+que tu software le envíe mensajes y reciba respuestas.
+
+Aparece en: ch11, ch21, ch22, ch25
+
+
+API Key
+Una clave secreta única que identifica a tu aplicación cuando se conecta a la API. Es como una
+contraseña especial para tu programa. Sin ella, no puedes hacer peticiones. Se genera desde la
+consola de Anthropic y nunca debe compartirse.
+
+Aparece en: ch11, ch21, ch22
+
+
+Autocompletar / Autocomplete
+La capacidad de predecir y sugerir el texto que probablemente escribirás a continuación. Tu teléfono
+lo hace todo el tiempo. Los LLMs funcionan de forma similar: predicen la siguiente palabra más
+probable, pero mucho mejor.
+
+Aparece en: ch01
+
+
+
+
+                                                 846                                     @soyenriquerocha
+                                                                               APÉNDICE D: GLOSARIO
+
+
+
+
+Cache / Caching
+Guardar datos temporalmente para no procesarlos de nuevo. Es como escribir una receta: la primera
+vez la buscas, las siguientes veces la lees de tu nota. En Claude, el prompt caching ahorra hasta 90%
+en costos.
+
+Aparece en: ch21, ch22
+
+
+CLI (Command Line Interface)
+Una forma de usar un programa escribiendo comandos de texto en una terminal, en lugar de hacer clic
+en botones. Claude Code es una herramienta CLI. Es la forma "texto" de interactuar con un programa,
+en contraste con la forma "visual" (GUI).
+
+Aparece en: ch11, ch12
+
+
+Docker
+Una plataforma para ejecutar aplicaciones en contenedores aislados. Un contenedor es como una caja
+que incluye todo lo que necesita un programa para funcionar. Claude Code puede ejecutarse dentro
+de Docker para mayor seguridad.
+
+Aparece en: ch11, ch15
+
+
+Variable de Entorno / Environment Variable
+Un valor de configuración que se establece a nivel del sistema operativo. Es como dejar una nota
+pegada en el escritorio que cualquier programa puede leer. Claude Code usa varias:
+ANTHROPIC_API_KEY (tu clave), CLAUDE_MODEL (modelo por defecto), etc.
+
+Aparece en: ch11, ch13, apx-c
+
+
+Git
+Un sistema que rastrea los cambios en archivos de código. Es como un historial de versiones: puedes
+ver qué cambió, quién lo cambió y volver atrás si algo sale mal. Claude Code trabaja dentro de
+repositorios Git.
+
+Aparece en: ch11, ch20
+
+
+IDE (Integrated Development Environment)
+Un programa para escribir código que incluye editor de texto, terminal, depurador y otras
+herramientas en un solo lugar. Ejemplos: VS Code, JetBrains. Claude Code se integra con varios IDEs.
+
+Aparece en: ch11, ch19
+
+
+
+                                                 847                                    @soyenriquerocha
+APÉNDICE D: GLOSARIO
+
+
+
+
+Iframe
+Un elemento HTML que permite incrustar una página web dentro de otra. Los Artifacts publicados de
+Claude se pueden compartir en otros sitios web mediante iframes.
+
+Aparece en: ch07
+
+
+JSON (JavaScript Object Notation)
+Un formato de texto para organizar datos de forma estructurada. Fácil de leer para humanos y
+máquinas. Usa pares de clave-valor. Ejemplo: {"nombre": "Claude", "version": 4} . Muy usado
+en APIs y configuraciones.
+
+Aparece en: ch13, ch21, ch22
+
+
+Markdown
+Un lenguaje de formato de texto simple. Usa símbolos como # para títulos, ** para negritas y -
+para listas. Es como escribir con atajos: fácil de aprender y Claude lo entiende perfectamente. Los
+archivos CLAUDE.md usan este formato.
+
+Aparece en: ch07, ch14
+
+
+npm (Node Package Manager)
+Un gestor de paquetes para JavaScript/Node.js. Es la tienda de aplicaciones para programadores de
+JavaScript. Se usa para instalar Claude Code: npm install -g @anthropic-ai/claude-code .
+
+Aparece en: ch11
+
+
+Regex / Expresión Regular
+Un patrón de texto que describe un conjunto de cadenas. Se usa para búsquedas avanzadas y
+validaciones. Ejemplo: \d{3}-\d{4} busca números como "123-4567". Es como un comodín
+inteligente para encontrar texto.
+
+Aparece en: ch12, ch17
+
+
+SDK (Software Development Kit)
+Un conjunto de herramientas que facilitan el uso de una API. En lugar de construir todo desde cero, el
+SDK te da funciones listas para usar. Anthropic ofrece SDKs oficiales en 7 lenguajes: Python,
+TypeScript, Java, Go, Ruby, C# y PHP.
+
+Aparece en: ch21, ch22
+
+
+
+
+                                                 848                                    @soyenriquerocha
+                                                                                APÉNDICE D: GLOSARIO
+
+
+
+
+Terminal
+Una aplicación donde escribes comandos de texto para interactuar con tu computadora. En Mac se
+llama Terminal, en Windows Command Prompt o PowerShell. Claude Code funciona dentro de una
+terminal. Es la ventana negra (o blanca) donde escribes comandos.
+
+Aparece en: ch11, ch12
+
+
+tmux
+Un multiplexor de terminal. Permite dividir la pantalla en paneles y mantener sesiones activas en
+segundo plano. Claude Code puede usarlo para mostrar subagentes trabajando en paralelo. Es como
+tener varias ventanas dentro de una sola terminal.
+
+Aparece en: ch20
+
+
+WSL (Windows Subsystem for Linux)
+Una herramienta de Microsoft que permite ejecutar Linux dentro de Windows. Originalmente Claude
+Code necesitaba WSL para funcionar en Windows, pero ahora soporta instalación nativa vía
+PowerShell o CMD. WSL sigue siendo una opción válida si prefieres un entorno Linux.
+
+Aparece en: ch11
+
+
+Exponential Backoff / Retroceso Exponencial
+Una estrategia para reintentar peticiones fallidas esperando cada vez más tiempo. Primer intento: 1
+segundo. Segundo: 2 segundos. Tercero: 4 segundos. Se agrega "jitter" (variación aleatoria) para evitar
+avalanchas.
+
+Aparece en: ch25
+
+
+Circuit Breaker / Cortacircuitos
+Un patrón de programación que deja de enviar peticiones a un servicio cuando detecta fallos
+repetidos. Se "abre" para proteger el sistema y se cierra cuando todo vuelve a funcionar. Es como un
+fusible eléctrico.
+
+Aparece en: ch25
+
+
+OAuth
+Un estándar de autenticación que permite a una app acceder a tus datos en otro servicio sin necesitar
+tu contraseña. Es como darle a alguien una llave temporal en vez de tu llave maestra.
+
+Aparece en: ch11, ch18
+
+
+
+                                                 849                                     @soyenriquerocha
+APÉNDICE D: GLOSARIO
+
+
+
+
+Context Rot / Degradación de Contexto
+El fenómeno donde la calidad de las respuestas de Claude disminuye a medida que la conversación se
+hace muy larga. Al llenarse la ventana de contexto, el modelo pierde de vista información importante.
+
+Aparece en: ch22
+
+
+
+Librerías y herramientas visuales
+
+Herramientas de desarrollo que Claude puede usar dentro de Artifacts para crear contenido visual e
+interactivo.
+
+D3.js
+Una biblioteca de JavaScript para crear visualizaciones de datos complejas y personalizadas.
+Disponible en Artifacts de Claude para gráficos avanzados e interactivos.
+
+Aparece en: ch07
+
+
+Lucide React
+Una biblioteca de iconos para React. Disponible dentro de Artifacts de Claude para agregar iconos a las
+interfaces. Tiene cientos de iconos listos para usar.
+
+Aparece en: ch07
+
+
+Recharts
+Una biblioteca de React para crear gráficos de datos. Disponible en Artifacts para generar gráficos de
+barras, líneas, torta y más. Fácil de usar y con buen aspecto visual.
+
+Aparece en: ch07
+
+
+Shadcn/ui
+Una colección de componentes de interfaz de usuario para React. Disponible en Artifacts para crear
+interfaces con apariencia profesional rápidamente. Botones, menús, formularios y más, listos para
+usar.
+
+Aparece en: ch07
+
+
+SVG (Scalable Vector Graphics)
+Un formato de imagen basado en texto. Se puede escalar a cualquier tamaño sin perder calidad (no se
+pixelea). Claude puede generar SVG en Artifacts para iconos, diagramas e ilustraciones.
+
+
+
+
+                                                   850                                    @soyenriquerocha
+                                                                               APÉNDICE D: GLOSARIO
+
+
+
+
+Aparece en: ch07
+
+
+Tailwind CSS
+Un framework de CSS que usa clases predefinidas para diseñar interfaces. En lugar de escribir CSS
+personalizado, usas clases como text-blue-500 o p-4 . Claude lo usa en Artifacts para crear
+componentes con estilo profesional.
+
+Aparece en: ch07
+
+
+Three.js
+Una biblioteca de JavaScript para crear gráficos 3D en el navegador. Disponible en Artifacts de Claude
+para crear visualizaciones tridimensionales interactivas. Desde cubos giratorios hasta mundos 3D
+completos.
+
+Aparece en: ch07
+
+
+
+
+                                                 851                                    @soyenriquerocha
+APÉNDICE E: CHANGELOG / NOVEDADES DEL MES
+
+
+
+

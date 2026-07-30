@@ -1,0 +1,856 @@
+<article class="chapter" data-id="cap20" data-title="Agentes y Subagentes" data-part="3">
+  <header class="ch-head">
+    <p class="ch-kicker">Parte 3 · Claude Code · Capítulo 20</p>
+    <h1>Agentes y Subagentes</h1>
+    <p class="ch-sub">Cómo delegar trabajo a asistentes especializados dentro de Claude Code</p>
+    <p class="ch-level">Avanzado</p>
+    <p class="ch-lede">Imagina que tienes un asistente personal. Es bueno, pero una sola persona no puede hacer todo al mismo tiempo. Ahora imagina que ese asistente puede llamar a otros asistentes especializados: uno que solo lee código, otro que solo ejecuta tests, otro que revisa seguridad. Eso son los subagentes. En este capítulo vas a aprender cómo Claude Code delega tareas a estos asistentes especializados, cómo crear los tuyos propios y cómo coordinar equipos enteros de agentes trabajando en paralelo.</p>
+  </header>
+
+  <h2 id="cap20-que-son-los-subagentes">Qué son los subagentes</h2>
+  <p>Un subagente es un asistente de IA especializado que maneja un tipo específico de tarea. Piensa en una empresa. El jefe (Claude, el agente principal) no hace todo solo. Delega tareas a empleados especializados (los subagentes).</p>
+  <p>Cada subagente tiene tres cosas propias:</p>
+  <ul class="deflist">
+    <li><strong>Su propio prompt</strong> — instrucciones específicas de cómo comportarse.</li>
+    <li><strong>Sus propias herramientas</strong> — puede tener acceso solo a leer archivos, o también a editarlos.</li>
+    <li><strong>Su propia ventana de contexto</strong> — su memoria es independiente del agente principal.</li>
+  </ul>
+  <p>Cuando Claude encuentra una tarea que coincide con la descripción de un subagente, le pasa el trabajo. El subagente trabaja de forma independiente y devuelve solo el resultado final. Todo el trabajo intermedio se queda dentro del subagente.</p>
+  <p>Esto tiene dos ventajas enormes. Primero, el contexto principal no se llena con detalles que no necesitas ver. Segundo, puedes restringir lo que cada subagente puede hacer, como darle a un empleado acceso solo a ciertos archivos.</p>
+
+  <h3>Agente principal vs subagentes</h3>
+  <p>El agente principal es Claude en tu conversación. Es el jefe. Mantiene el hilo de la conversación contigo y decide cuándo delegar.</p>
+  <p>Los subagentes son los empleados. Reciben una tarea, la ejecutan y devuelven un resumen. No hablan contigo directamente. Solo le reportan al jefe.</p>
+  <p><strong>Subagentes anidados (desde v2.1.172, junio 2026).</strong> Antes, un subagente no podía crear otros subagentes. Eso cambió: hoy un subagente sí puede lanzar sus propios subagentes. Es útil cuando una tarea delegada se divide a su vez en subtareas paralelas (por ejemplo, un investigador que reparte la búsqueda entre varios ayudantes).</p>
+  <p>Pero no hay cadenas infinitas. El anidamiento tiene un límite fijo de 5 niveles de profundidad (no es configurable). La profundidad cuenta cuántos niveles de subagente hay por debajo de tu conversación principal. Un subagente que está en la profundidad 5 ya no recibe la herramienta Agent, así que no puede anidar más. El mismo límite aplica tanto a subagentes en foreground como en background.</p>
+  <p>El panel de subagentes muestra el árbol completo, con un contador (+N) en cada fila que indica cuántos descendientes tiene ese subagente. Solo el resumen del subagente de nivel superior vuelve a ti; todo el trabajo intermedio de los anidados se queda dentro de su rama.</p>
+
+  <h3>Cuándo usar subagentes vs conversación principal</h3>
+  <p>No todo necesita un subagente. Aquí tienes una guía rápida:</p>
+  <p>Usa la conversación principal cuando:</p>
+  <ul>
+    <li>Necesitas ida y vuelta frecuente con Claude.</li>
+    <li>El cambio es rápido y simple.</li>
+    <li>La latencia importa (los subagentes agregan un poco de tiempo extra).</li>
+  </ul>
+  <p>Usa subagentes cuando:</p>
+  <ul>
+    <li>La tarea genera mucho output (logs, resultados de tests).</li>
+    <li>Necesitas restringir herramientas (solo lectura, por ejemplo).</li>
+    <li>El trabajo es autocontenido y solo importa el resultado final.</li>
+    <li>Quieres ejecutar varias tareas en paralelo.</li>
+  </ul>
+  <p>También existe <code>/btw</code> para preguntas rápidas. Es como tocarle el hombro a Claude sin interrumpir el flujo. Ve todo el contexto pero no tiene herramientas y la respuesta se descarta.</p>
+
+  <h2 id="cap20-subagentes-integrados">Subagentes integrados (built-in)</h2>
+  <p>Claude Code viene con varios subagentes listos para usar. No necesitas configurar nada. Claude los usa automáticamente cuando la situación lo requiere.</p>
+
+  <h3>Explore</h3>
+  <p>Es el explorador del equipo. Su trabajo es buscar y analizar código sin modificar nada. Usa el modelo Haiku, que es rápido y barato.</p>
+  <p><strong>Qué hace:</strong> busca archivos, encuentra definiciones, analiza la estructura del codebase.</p>
+  <p><strong>Qué NO hace:</strong> no puede escribir ni editar archivos. Es de solo lectura.</p>
+  <p>Puedes pedirle tres niveles de profundidad:</p>
+  <ul class="deflist">
+    <li><strong><code>quick</code></strong> — búsquedas rápidas y dirigidas.</li>
+    <li><strong><code>medium</code></strong> — exploración balanceada.</li>
+    <li><strong><code>very thorough</code></strong> — análisis exhaustivo en múltiples ubicaciones.</li>
+  </ul>
+  <p>Claude lo usa automáticamente cuando necesita entender tu codebase antes de hacer cambios.</p>
+  <p>Para ir rápido y barato, Explore omite los archivos <code>CLAUDE.md</code> y el <code>git status</code>. Además es one-shot: hace su tarea y devuelve el resultado, pero no expone un agent ID, así que no se puede reanudar. Si necesitas continuar un trabajo de exploración, usa <code>general-purpose</code> o un subagente personalizado.</p>
+
+  <h3>Plan</h3>
+  <p>Es el arquitecto. Investiga el codebase para recopilar contexto antes de presentarte un plan de acción. También es de solo lectura.</p>
+  <p>Se activa cuando estás en plan mode (modo planificación). Claude le delega la investigación para que el contexto de búsqueda no llene tu conversación.</p>
+  <p>Igual que Explore, Plan omite los archivos <code>CLAUDE.md</code> y el <code>git status</code> para ir más rápido, y es one-shot: no devuelve agent ID, así que no se puede reanudar. Si quieres retomar el trabajo, usa <code>general-purpose</code> o un subagente personalizado.</p>
+
+  <h3>General-purpose</h3>
+  <p>Es el todoterreno. Tiene acceso a todas las herramientas. Puede leer, escribir, ejecutar comandos y más.</p>
+  <p>Claude lo usa cuando la tarea requiere tanto explorar como modificar código. Es el más versátil de los subagentes integrados.</p>
+
+  <h3>Otros subagentes integrados</h3>
+  <p>Hay algunos más especializados:</p>
+  <ul class="deflist">
+    <li><strong>Bash</strong> — ejecuta comandos de terminal en un contexto separado.</li>
+    <li><strong>statusline-setup</strong> — configura la línea de estado. Se activa con <code>/statusline</code>. Usa Sonnet porque la configuración suele requerir entender preferencias y editar archivos con precisión.</li>
+    <li><strong>Claude Code Guide</strong> — responde preguntas sobre las funciones de Claude Code. Usa Haiku para respuestas rápidas.</li>
+  </ul>
+
+  <h2 id="cap20-como-crear-subagentes-personalizados">Cómo crear subagentes personalizados</h2>
+  <p>Los subagentes integrados son útiles, pero la magia está en crear los tuyos. Es como contratar empleados especializados para tu proyecto.</p>
+  <p>Hay tres formas de crear subagentes:</p>
+  <ol>
+    <li>Con el comando <code>/agents</code> (la más fácil).</li>
+    <li>Creando un archivo Markdown manualmente.</li>
+    <li>Pasando un JSON al lanzar Claude Code con <code>--agents</code>.</li>
+  </ol>
+
+  <h3>Crear con /agents (recomendado)</h3>
+  <p>Escribe <code>/agents</code> en la conversación. Aparece un menú interactivo donde puedes:</p>
+  <ul>
+    <li>Ver todos los subagentes disponibles.</li>
+    <li>Crear uno nuevo paso a paso.</li>
+    <li>Elegir si es para este proyecto o para todos tus proyectos.</li>
+    <li>Seleccionar herramientas, modelo y color.</li>
+    <li>Dejar que Claude te ayude a generar la configuración.</li>
+  </ul>
+  <p>El subagente queda disponible inmediatamente. No necesitas reiniciar.</p>
+
+  <h3>Crear con archivo Markdown</h3>
+  <p>Un subagente es un archivo <code>.md</code> con dos partes: la configuración (llamada frontmatter) y las instrucciones.</p>
+  <p>El frontmatter es un bloque de YAML entre tres guiones (<code>---</code>). Ahí defines el nombre, la descripción, las herramientas y el modelo. Debajo va el prompt: las instrucciones que recibe el subagente.</p>
+  <pre><code class="lang-text">---
+name: code-reviewer
+description: Reviews code for quality and best practices
+tools: Read, Glob, Grep
+model: sonnet
+---
+
+You are a code reviewer. When invoked, analyze the code
+and provide specific, actionable feedback on quality,
+security, and best practices.</code></pre>
+  <p>Este subagente solo puede leer archivos (Read, Glob, Grep). No puede editar nada. Perfecto para revisiones seguras.</p>
+
+  <h3>Dónde guardar los archivos de subagentes</h3>
+  <p>La ubicación del archivo determina quién puede usarlo. Hay cinco niveles, ordenados de mayor a menor prioridad:</p>
+  <ol>
+    <li><strong>Managed settings (prioridad 1):</strong> subagentes organizacionales, desplegados por administradores de tu empresa. Tienen la prioridad máxima.</li>
+    <li><strong>Flag <code>--agents</code> (prioridad 2):</strong> solo existe durante esa sesión. Se pasa como JSON al lanzar Claude.</li>
+    <li><strong><code>.claude/agents/</code> (prioridad 3):</strong> subagentes del proyecto. Se pueden commitear al control de versiones para compartir con el equipo.</li>
+    <li><strong><code>~/.claude/agents/</code> (prioridad 4):</strong> subagentes personales. Disponibles en todos tus proyectos.</li>
+    <li><strong>Plugins (prioridad 5):</strong> vienen con plugins instalados.</li>
+  </ol>
+  <p>Si dos subagentes tienen el mismo nombre, gana el de mayor prioridad. Puedes verificar con <code>/agents</code> o <code>claude agents</code> desde la terminal.</p>
+  <p>Los subagentes de proyecto se descubren caminando hacia arriba desde el directorio actual. <strong>Importante:</strong> los directorios agregados con <code>--add-dir</code> NO se escanean para buscar subagentes.</p>
+
+  <h3>Crear con --agents (para sesiones temporales)</h3>
+  <p>Puedes definir subagentes como JSON al lanzar Claude. Útil para pruebas rápidas o scripts de automatización:</p>
+  <pre><code class="lang-bash">claude --agents '{
+   "code-reviewer": {
+       "description": "Expert code reviewer",
+       "prompt": "You are a senior code reviewer.",
+       "tools": ["Read", "Grep", "Glob"],
+       "model": "sonnet"
+   }
+}'</code></pre>
+  <p>Este subagente solo vive durante esa sesión. Al cerrar Claude, desaparece.</p>
+
+  <h2 id="cap20-referencia-completa-del-frontmatter">Referencia completa del frontmatter</h2>
+  <p>El frontmatter es la configuración de tu subagente. Aquí tienes todos los campos disponibles:</p>
+
+  <h3>Campos obligatorios</h3>
+  <ul class="deflist">
+    <li><strong><code>name</code></strong> — identificador único. Solo letras minúsculas y guiones. Ejemplo: <code>code-reviewer</code>.</li>
+    <li><strong><code>description</code></strong> — cuándo Claude debe usar este subagente. Claude lee esta descripción para decidir si delegar. Escribe algo claro. Truco: agrega "use proactively" si quieres que Claude lo use sin que se lo pidas.</li>
+  </ul>
+
+  <h3>Herramientas y permisos</h3>
+  <ul class="deflist">
+    <li><strong><code>tools</code></strong> — lista de herramientas permitidas. Si lo omites, hereda todas. Ejemplos: <code>Read</code>, <code>Glob</code>, <code>Grep</code>, <code>Bash</code>, <code>Write</code>, <code>Edit</code>, <code>Agent</code>. Para restringir qué subagentes puede crear, usa <code>Agent(worker, researcher)</code>.</li>
+    <li><strong><code>disallowedTools</code></strong> — lo opuesto. Herramientas que quieres prohibir. Útil cuando quieres heredar casi todo pero excluir unas pocas.</li>
+    <li><strong><code>permissionMode</code></strong> — controla los permisos. Opciones: <code>default</code> (verificación normal), <code>acceptEdits</code> (auto-acepta ediciones), <code>auto</code> (modo automático), <code>dontAsk</code> (auto-deniega), <code>bypassPermissions</code> (salta todo), <code>plan</code> (solo lectura).</li>
+  </ul>
+  <div class="callout warn">
+    <p class="callout-label">Cuidado</p>
+    <p>Cuidado con <code>bypassPermissions</code>. Si el agente padre lo usa, los subagentes lo heredan y no puedes cambiarlo. Lo mismo aplica para <code>auto</code>: si el padre usa auto mode, el subagente hereda auto mode y su <code>permissionMode</code> en el frontmatter se ignora.</p>
+  </div>
+
+  <h3>Modelo y límites</h3>
+  <ul class="deflist">
+    <li><strong><code>model</code></strong> — qué modelo usar. Acepta alias (<code>sonnet</code>, <code>opus</code>, <code>haiku</code>, <code>fable</code>) o IDs completos (a junio de 2026, por ejemplo <code>claude-opus-4-8</code> o <code>claude-sonnet-4-6</code>). Si lo omites, hereda el modelo del padre.</li>
+    <li><strong><code>maxTurns</code></strong> — límite de turnos antes de detenerse. Útil para evitar que un subagente trabaje de más. Ejemplo: <code>maxTurns: 10</code>.</li>
+    <li><strong><code>background</code></strong> — ponlo en <code>true</code> para que siempre corra en segundo plano.</li>
+  </ul>
+  <p>El modelo que realmente usa un subagente se resuelve con esta prioridad (de mayor a menor):</p>
+  <ol>
+    <li><strong>Variable de entorno <code>CLAUDE_CODE_SUBAGENT_MODEL</code>:</strong> sobreescribe el modelo de todos los subagentes. Útil para controlar costos globalmente. Ejemplo: <code>export CLAUDE_CODE_SUBAGENT_MODEL=haiku</code>.</li>
+    <li><strong>Parámetro per-invocation:</strong> el modelo que el agente principal pasa al invocar el subagente en esa llamada específica.</li>
+    <li><strong>Frontmatter <code>model</code>:</strong> el modelo definido en el archivo del subagente.</li>
+    <li><strong>Modelo del padre:</strong> si nada de lo anterior se define, hereda el modelo de la conversación principal.</li>
+  </ol>
+
+  <h3>Campos avanzados</h3>
+  <ul class="deflist">
+    <li><strong><code>isolation</code></strong> — ponlo en <code>worktree</code> para darle una copia aislada del repositorio (más detalles adelante).</li>
+    <li><strong><code>memory</code></strong> — memoria persistente entre conversaciones. Opciones: <code>user</code>, <code>project</code>, <code>local</code> (más detalles adelante).</li>
+    <li><strong><code>skills</code></strong> — skills que se cargan en el contexto del subagente. Los subagentes NO heredan skills del padre; hay que listarlos explícitamente.</li>
+    <li><strong><code>mcpServers</code></strong> — servidores MCP disponibles. Puede ser un nombre (comparte conexión del padre) o una definición inline (se conecta al iniciar y se desconecta al terminar).</li>
+    <li><strong><code>hooks</code></strong> — hooks del ciclo de vida. Soporta <code>PreToolUse</code>, <code>PostToolUse</code> y <code>Stop</code>.</li>
+    <li><strong><code>effort</code></strong> — nivel de esfuerzo del subagente. Opciones: <code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code>, <code>max</code>. Sobreescribe el nivel de esfuerzo de la sesión. Los niveles disponibles dependen del modelo: <code>max</code> solo está disponible para Opus (en la doc de junio de 2026, Opus 4.8) y <code>xhigh</code> es el nivel intermedio entre <code>high</code> y <code>max</code>.</li>
+    <li><strong><code>color</code></strong> — color de visualización en la lista de tareas y transcripts. Opciones: <code>red</code>, <code>blue</code>, <code>green</code>, <code>yellow</code>, <code>purple</code>, <code>orange</code>, <code>pink</code>, <code>cyan</code>.</li>
+    <li><strong><code>initialPrompt</code></strong> — prompt que se envía automáticamente como primer turno de usuario cuando el agente corre como agente principal de sesión (vía <code>--agent</code> o el setting <code>agent</code>). Los comandos y skills dentro del prompt se procesan normalmente. Ejemplo: <code>initialPrompt: /review-all</code>.</li>
+  </ul>
+
+  <h2 id="cap20-como-invocar-subagentes">Cómo invocar subagentes</h2>
+  <p>Hay varias formas de activar un subagente: automática, por nombre, con @-mention o con el flag <code>--agent</code>.</p>
+
+  <h3>Invocación automática</h3>
+  <p>Claude lee la <code>description</code> de cada subagente y decide cuándo usarlo. Si le pides "revisa este código", y tienes un subagente cuya descripción dice "Reviews code for quality", Claude lo invocará automáticamente.</p>
+  <p>Por eso la descripción es tan importante. Una descripción vaga = Claude no sabrá cuándo usarlo.</p>
+
+  <h3>Invocación explícita</h3>
+  <p>Puedes pedir un subagente por nombre:</p>
+  <pre><code class="lang-text">Use the code-reviewer subagent to check the auth module</code></pre>
+  <p>También puedes encadenar subagentes en secuencia:</p>
+  <pre><code class="lang-text">Use the code-reviewer to find problems,
+then use the optimizer to fix them</code></pre>
+  <p>Y ejecutar varios en paralelo:</p>
+  <pre><code class="lang-text">Research the authentication, database, and API
+modules in parallel using separate subagents</code></pre>
+
+  <h3>Invocación con @-mention</h3>
+  <p>Escribe <code>@</code> en tu mensaje y aparece un menú typeahead con todos los subagentes disponibles. Selecciona uno y Claude garantiza que ese subagente se ejecute. No es una sugerencia; es una instrucción directa.</p>
+  <p>Esto es más confiable que mencionarlo por nombre, porque elimina la ambigüedad. Claude no tiene que adivinar si quieres delegarle a ese subagente o no.</p>
+
+  <h3>Sesión completa como subagente (--agent)</h3>
+  <p>Con el flag <code>--agent</code>, toda la sesión adopta el system prompt, las herramientas y el modelo del subagente:</p>
+  <pre><code class="lang-bash">claude --agent code-reviewer</code></pre>
+  <p>Es como si Claude fuera ese subagente durante toda la sesión. El system prompt del subagente reemplaza el de Claude Code. Los archivos <code>CLAUDE.md</code> y la memoria del proyecto se siguen cargando normalmente.</p>
+  <p>Para subagentes de plugins, usa la sintaxis <code>&lt;plugin&gt;:&lt;agente&gt;</code>:</p>
+  <pre><code class="lang-bash">claude --agent my-plugin:code-reviewer</code></pre>
+  <p>También puedes hacer que un proyecto siempre arranque con un subagente específico. Agrega esto a <code>.claude/settings.json</code>:</p>
+  <pre><code class="lang-json">{
+    "agent": "code-reviewer"
+}</code></pre>
+  <p>El flag <code>--agent</code> en la línea de comandos siempre tiene prioridad sobre este setting.</p>
+
+  <h3>Reanudar un subagente</h3>
+  <p>Cada vez que se invoca un subagente, empieza desde cero. Pero puedes pedirle a Claude que reanude uno anterior:</p>
+  <pre><code class="lang-text">Continue that code review and now
+analyze the authorization logic</code></pre>
+  <p>Para reanudar, Claude usa la herramienta SendMessage apuntando al ID del agente anterior. El subagente reanudado conserva todo: tool calls, resultados, razonamiento. Es como retomar una conversación pausada.</p>
+  <div class="callout note">
+    <p class="callout-label">Importante</p>
+    <p>Esta capacidad requiere que tengas activada la variable <code>CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1</code>. Esa misma variable que habilita agent teams (más adelante en este capítulo) es la que expone la herramienta SendMessage. Sin ella, cada invocación de subagente arranca desde cero.</p>
+  </div>
+  <pre><code class="lang-bash">export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+claude</code></pre>
+  <p>Los transcripts de subagentes que se pueden reanudar viven en <code>~/.claude/projects/{proyecto}/{sesión}/subagents/agent-{id}.jsonl</code>.</p>
+
+  <h2 id="cap20-worktrees-aislamiento-de-repositorio">Worktrees: aislamiento de repositorio</h2>
+  <p>Imagina que tienes un documento de Word. No puedes tener dos personas editándolo al mismo tiempo sin que se pisen. Los worktrees de Git resuelven esto creando copias del repositorio donde cada persona trabaja por separado.</p>
+  <p>Un worktree es un directorio separado con sus propios archivos y su propia rama. Pero comparte el mismo historial de Git. Es como tener dos escritorios con copias del mismo proyecto.</p>
+
+  <h3>Worktrees en subagentes</h3>
+  <p>Pon <code>isolation: worktree</code> en el frontmatter y el subagente recibe su propia copia del repositorio:</p>
+  <pre><code class="lang-text">---
+name: feature-builder
+description: Build features in isolation
+isolation: worktree
+tools: Read, Write, Edit, Bash
+---
+
+Build the requested feature in your
+isolated worktree.</code></pre>
+  <p>Si el subagente no hace cambios, el worktree se limpia automáticamente. Si hace cambios, Claude te pregunta si quieres mantenerlos o borrarlos.</p>
+
+  <h3>Worktrees desde la línea de comandos</h3>
+  <p>Puedes lanzar Claude directamente en un worktree con el flag <code>--worktree</code> (o <code>-w</code>):</p>
+  <pre><code class="lang-bash">claude --worktree feature-auth
+claude -w bugfix-123
+claude --worktree       # nombre auto-generado</code></pre>
+  <p>Los worktrees se crean en <code>.claude/worktrees/&lt;nombre&gt;/</code>. La rama se llama <code>worktree-&lt;nombre&gt;</code>. Se recomienda agregar <code>.claude/worktrees/</code> a tu <code>.gitignore</code>.</p>
+  <p><strong>Worktree desde un PR.</strong> Si pones <code>#</code> seguido del número del PR, Claude fetcha esa pull request y crea el worktree con su rama:</p>
+  <pre><code class="lang-bash">claude --worktree '#1234'</code></pre>
+  <p>Eso ejecuta <code>git fetch origin pull/1234/head</code> y crea <code>.claude/worktrees/pr-1234/</code> con la rama del PR. Perfecto para revisar pull requests sin tocar tu checkout principal. Recuerda poner el <code>#1234</code> entre comillas para que la shell no lo interprete como comentario.</p>
+  <p><strong>Desde qué rama parte el worktree.</strong> Por defecto, los worktrees branchean desde <code>origin/HEAD</code> (la rama por defecto del remoto, normalmente <code>main</code>). Puedes cambiar esto con el setting <code>worktree.baseRef</code> en tu <code>settings.json</code>:</p>
+  <pre><code class="lang-json">{
+    "worktree": {
+        "baseRef": "head"
+    }
+}</code></pre>
+  <p>Acepta dos valores: <code>fresh</code> (default, branch desde <code>origin/HEAD</code>, ideal para empezar limpio) o <code>head</code> (branch desde tu HEAD actual, útil cuando quieres heredar trabajo en progreso). No acepta refs arbitrarios.</p>
+  <p><strong>Limitación en modo headless.</strong> Cuando combinas <code>--worktree</code> con <code>-p</code> (modo no-interactivo), los worktrees NO se limpian automáticamente. No hay prompt de salida que pregunte qué hacer. Tienes que removerlos a mano con <code>git worktree remove &lt;path&gt;</code>. Si automatizas mucho con <code>-p</code>, planifica una limpieza periódica o vigila <code>.claude/worktrees/</code>.</p>
+
+  <h3>Copiar archivos gitignored a worktrees (.worktreeinclude)</h3>
+  <p>Cuando se crea un worktree, los archivos que están en <code>.gitignore</code> no se copian (por ejemplo, <code>.env</code>). Pero muchas veces necesitas esos archivos para que tu proyecto funcione.</p>
+  <p>Crea un archivo llamado <code>.worktreeinclude</code> en la raíz de tu proyecto. Usa la misma sintaxis que <code>.gitignore</code> para listar los archivos gitignored que quieres copiar a cada worktree nuevo:</p>
+  <pre><code class="lang-text">.env
+.env.local
+config/secrets.json</code></pre>
+  <p>Solo se copian archivos que coincidan con un patrón Y que estén gitignored. Archivos que no están gitignored ya se incluyen automáticamente vía Git.</p>
+  <p>También puedes usar el hook <code>WorktreeCreate</code> en <code>settings.json</code> para tener control total sobre la creación de worktrees. Este hook reemplaza la lógica default de <code>git worktree</code>, permitiéndote ejecutar scripts personalizados de setup.</p>
+
+  <h2 id="cap20-memoria-persistente">Memoria persistente</h2>
+  <p>Normalmente, un subagente empieza sin recuerdos. Cada vez es una hoja en blanco. La memoria persistente cambia eso. Es como darle un cuaderno de notas que conserva entre conversaciones.</p>
+  <p>Actívalo con el campo <code>memory</code> en el frontmatter. Hay tres alcances:</p>
+  <ul class="deflist">
+    <li><strong><code>user</code></strong> — se guarda en <code>~/.claude/agent-memory/&lt;nombre&gt;/</code>. Disponible en todos tus proyectos.</li>
+    <li><strong><code>project</code></strong> — se guarda en <code>.claude/agent-memory/&lt;nombre&gt;/</code>. Específico de este proyecto. Se puede commitear.</li>
+    <li><strong><code>local</code></strong> — se guarda en <code>.claude/agent-memory-local/&lt;nombre&gt;/</code>. Local, no se commitea.</li>
+  </ul>
+  <p>Cuando la memoria está habilitada, el subagente recibe instrucciones automáticas para leer y escribir en su directorio de memoria. También se inyectan automáticamente las primeras 200 líneas o 25 KB de <code>MEMORY.md</code>, lo que ocurra primero. Si tu archivo de memoria es largo o tiene líneas muy extensas (por ejemplo, snippets de código grandes), te puedes quedar corto antes de las 200 líneas. La regla práctica: pon lo más importante arriba y mantén las entradas concisas.</p>
+  <pre><code class="lang-text">---
+name: code-reviewer
+description: Reviews code for quality
+memory: user
+---
+
+As you review code, update your memory with
+patterns, conventions, and recurring issues.</code></pre>
+  <p>Con el tiempo, el subagente aprende patrones de tu codebase. Cada revisión es mejor que la anterior.</p>
+
+  <h2 id="cap20-hooks-en-subagentes">Hooks en subagentes</h2>
+  <p>Los hooks son acciones automáticas que se ejecutan en momentos específicos. Como una alarma que suena cuando algo pasa. Los subagentes soportan hooks en dos lugares.</p>
+
+  <h3>Hooks en el frontmatter</h3>
+  <p>Dentro del archivo del subagente, puedes definir hooks para tres eventos:</p>
+  <ul class="deflist">
+    <li><strong><code>PreToolUse</code></strong> — antes de usar una herramienta.</li>
+    <li><strong><code>PostToolUse</code></strong> — después de usar una herramienta.</li>
+    <li><strong><code>Stop</code></strong> — cuando el subagente termina (se convierte automáticamente en <code>SubagentStop</code>).</li>
+  </ul>
+  <pre><code class="lang-text">---
+name: db-reader
+description: Execute read-only database queries
+tools: Bash
+hooks:
+   PreToolUse:
+      - matcher: "Bash"
+        hooks:
+           - type: command
+             command: "./scripts/validate-readonly-query.sh"
+---
+
+You are a database analyst with
+read-only access.</code></pre>
+  <p>En este ejemplo, cada vez que el subagente intenta ejecutar un comando Bash, un script valida que sea una operación de solo lectura. Si no lo es, el script bloquea la ejecución.</p>
+
+  <h3>Hooks en settings.json</h3>
+  <p>Desde el archivo <code>settings.json</code> del proyecto, puedes definir hooks globales para eventos de subagentes:</p>
+  <ul class="deflist">
+    <li><strong><code>SubagentStart</code></strong> — cuando un subagente inicia.</li>
+    <li><strong><code>SubagentStop</code></strong> — cuando un subagente termina.</li>
+  </ul>
+  <pre><code class="lang-json">{
+    "hooks": {
+        "SubagentStart": [
+            {
+                "matcher": "db-agent",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "./scripts/setup-db.sh"
+                    }
+                ]
+            }
+        ]
+    }
+}</code></pre>
+  <p>Esto permite preparar el entorno antes de que un subagente empiece o limpiar después de que termine.</p>
+
+  <h2 id="cap20-subagentes-con-servidores-mcp">Subagentes con servidores MCP</h2>
+  <p>Los subagentes pueden tener sus propios servidores MCP. Esto es poderoso. Puedes darle a un subagente acceso a un navegador sin que el agente principal lo tenga.</p>
+  <p>Hay dos formas de asignar un servidor MCP:</p>
+  <ul class="deflist">
+    <li><strong>Por nombre</strong> — comparte la conexión del padre. Solo pon el nombre del servidor.</li>
+    <li><strong>Inline</strong> — define la conexión completa. Se conecta al iniciar el subagente y se desconecta al terminar.</li>
+  </ul>
+  <pre><code class="lang-text">---
+name: browser-tester
+description: Tests features in a real browser
+mcpServers:
+    - playwright:
+            type: stdio
+            command: npx
+            args: ["-y", "@playwright/mcp@latest"]
+    - github
+---
+
+Use Playwright to navigate and test web pages.</code></pre>
+  <p>En este ejemplo, <code>playwright</code> es una definición inline (se crea para el subagente) y <code>github</code> es una referencia por nombre (usa la conexión existente del padre).</p>
+
+  <h2 id="cap20-forks-subagentes-que-heredan-tu-conversacion">Forks: subagentes que heredan tu conversación</h2>
+  <p>Hasta aquí, todos los subagentes que vimos arrancan con un contexto fresco: el system prompt del frontmatter más la tarea que les pasas. No ven nada de tu conversación.</p>
+  <p>Un fork es lo opuesto. Es un subagente que hereda toda tu conversación actual. Mismo system prompt, mismas herramientas, mismo modelo, mismos mensajes intercambiados hasta ese momento. Como si te clonaras a ti mismo en otra terminal para que siga trabajando mientras tú haces otra cosa.</p>
+  <p>Es una función experimental, requiere Claude Code v2.1.117 o superior.</p>
+
+  <h3>Fork vs subagente nombrado</h3>
+  <p>Las dos formas de delegar trabajan distinto. Esta comparación te ayuda a elegir:</p>
+  <ul class="deflist">
+    <li><strong>Subagente nombrado</strong> (lo de las secciones anteriores) — contexto fresco. Recibe solo el prompt que le pasas. Tiene el system prompt, herramientas y modelo de su definición. Su cache de prompt es independiente del padre. En background, los prompts de permisos se auto-deniegan.</li>
+    <li><strong>Fork</strong> — contexto heredado. Recibe toda la conversación actual. Tiene el mismo system prompt, herramientas y modelo que tú en ese momento. Comparte el prompt cache con el padre (más barato y rápido). Sus prompts de ejecución se ven en tu terminal mientras corre.</li>
+  </ul>
+  <p><strong>Regla simple:</strong> usa subagente nombrado cuando quieres encapsular una tarea con su propia experticia y restricciones. Usa fork cuando quieres seguir el mismo hilo de trabajo pero en paralelo, sin tener que re-explicar el contexto.</p>
+
+  <h3>Cómo activar fork mode</h3>
+  <p>Buenas noticias: desde Claude Code v2.1.161 el comando <code>/fork</code> está habilitado por defecto. Ya no necesitas exportar ninguna variable de entorno para usarlo. (Los forks en general requieren v2.1.117 o superior.)</p>
+  <p>La variable <code>CLAUDE_CODE_FORK_SUBAGENT</code> sigue existiendo, pero ahora vale <code>1</code> por defecto y sirve para lo contrario: si quieres deshabilitar fork mode explícitamente, ponla en <code>0</code>:</p>
+  <pre><code class="lang-bash"># Desactivar fork mode explícitamente:
+export CLAUDE_CODE_FORK_SUBAGENT=0
+claude</code></pre>
+  <p>La variable se honra en las tres formas de usar Claude Code: interactivo, headless (<code>-p</code>) y el SDK.</p>
+  <p>Cuando fork mode está activo pasan tres cosas:</p>
+  <ol>
+    <li><strong>Los spawns de general-purpose se vuelven forks.</strong> El subagente integrado <code>general-purpose</code> deja de comportarse como un subagente fresco y se convierte en un fork de tu conversación.</li>
+    <li><strong>Todos los spawns van a background.</strong> Los forks corren en segundo plano por defecto para que puedas seguir trabajando.</li>
+    <li><strong>El comando <code>/fork</code> queda disponible.</strong> Es la forma directa de crear un fork con una instrucción específica.</li>
+  </ol>
+
+  <h3>El comando /fork</h3>
+  <p>Con fork mode activo, escribe <code>/fork</code> seguido de una directiva:</p>
+  <pre><code class="lang-text">/fork draft unit tests for the parser changes</code></pre>
+  <p>Claude crea un fork con toda tu conversación actual y la directiva como instrucción inicial. El fork aparece en el panel inferior y corre en background. Cuando termina, te devuelve el resultado final sin saturar el contexto con sus tool calls intermedios.</p>
+  <p>Otros ejemplos útiles:</p>
+  <pre><code class="lang-text">/fork explore alternative implementations of
+the rate limiter
+
+/fork investigate why the integration tests
+are flaky on Windows</code></pre>
+  <p>Cada fork puede ir por un camino distinto. Tú sigues con la línea principal mientras ellos exploran.</p>
+
+  <h3>Limitaciones de los forks</h3>
+  <p>Los forks tienen dos limitaciones importantes:</p>
+  <ul class="deflist">
+    <li><strong>Un fork no puede spawnear más forks.</strong> No hay forks de forks. Si necesitas más paralelismo, lánzalos desde el agente principal.</li>
+    <li><strong>En background, los prompts interactivos fallan.</strong> Si un fork necesita preguntarte algo (por ejemplo, confirmación de un permiso que no está pre-aprobado), ese tool call falla y el fork continúa sin esa herramienta. Pre-aprueba lo que vaya a necesitar antes de lanzar.</li>
+  </ul>
+
+  <h2 id="cap20-agent-teams-experimental">Agent Teams (experimental)</h2>
+  <p>Los subagentes trabajan dentro de una sesión. Los agent teams son algo diferente: coordinan múltiples sesiones de Claude Code como un equipo real.</p>
+  <p>Piensa en la diferencia así:</p>
+  <ul class="deflist">
+    <li><strong>Subagentes</strong> — el jefe le da tareas a empleados y recibe reportes. Comunicación de ida y vuelta con el jefe solamente.</li>
+    <li><strong>Agent teams</strong> — un equipo donde todos se comunican entre sí. Tienen una lista de tareas compartida.</li>
+  </ul>
+
+  <h3>Cómo activar agent teams</h3>
+  <p>Los agent teams son experimentales. Para habilitarlos:</p>
+  <pre><code class="lang-bash">export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1</code></pre>
+  <p>Necesitas Claude Code v2.1.32 o superior.</p>
+  <p>Hay dos modos de visualización:</p>
+  <ul class="deflist">
+    <li><strong>in-process</strong> — todos corren en el mismo terminal. Usa Shift+Down para ciclar entre teammates.</li>
+    <li><strong>split panes (tmux)</strong> — cada teammate tiene su propio panel. Necesitas tener tmux instalado.</li>
+  </ul>
+  <p>Configura el modo en <code>settings.json</code> con <code>teammateMode</code> (<code>in-process</code>, <code>auto</code>, <code>tmux</code>) o con el flag <code>--teammate-mode</code>. Ojo con el default: desde v2.1.179 el valor por defecto cambió de <code>auto</code> a <code>in-process</code>. Si actualizaste y tus sesiones ya no abren split panes solos, es por esto: ahora hay que pedir <code>tmux</code> (o <code>auto</code>) explícitamente.</p>
+  <p><strong>Creación automática (desde v2.1.178).</strong> Ya no tienes que crear el equipo a mano. Los tools <code>TeamCreate</code> y <code>TeamDelete</code> fueron eliminados: cuando le pides a Claude que lance teammates, el equipo se arma solo, y la limpieza es automática al salir de la sesión. También cambió el nombre del equipo en los hooks: el campo <code>team_name</code> quedó deprecado y ahora se deriva de la sesión como <code>session-</code> seguido de los primeros 8 caracteres del session ID.</p>
+  <p>Al spawnear teammates, puedes referenciar definiciones de subagentes de cualquier scope. El teammate respeta el allowlist de herramientas y modelo de la definición. El body se agrega como instrucciones adicionales (no reemplaza) al system prompt del teammate. Las herramientas de coordinación (<code>SendMessage</code>, task tools) siempre están disponibles. <strong>Importante:</strong> los campos <code>skills</code> y <code>mcpServers</code> del frontmatter NO se aplican cuando la definición corre como teammate.</p>
+  <p><strong>Tamaño recomendado:</strong> empieza con 3-5 teammates. Asigna 5-6 tareas por teammate para mantener la productividad. Tres teammates enfocados suelen superar a cinco dispersos.</p>
+  <p><strong>Dónde vive un team.</strong> La configuración y el estado de cada team se guarda en tu directorio de usuario, no en el proyecto. La estructura es:</p>
+  <ul class="deflist">
+    <li><strong><code>~/.claude/teams/{team-name}/config.json</code></strong> — configuración del team (líder, teammates, modo).</li>
+    <li><strong><code>~/.claude/tasks/{team-name}/</code></strong> — lista de tareas compartida (con file locking para evitar carreras entre teammates).</li>
+  </ul>
+  <p>Esto significa que no existe un equivalente a nivel proyecto: no puedes commitear un team al repo para que todos los devs hereden la misma configuración. Si quieres reproducir un team en otra máquina, copia esos directorios manualmente o documenta los comandos de creación.</p>
+
+  <h3>Ejemplo de agent teams</h3>
+  <p>Puedes pedir una revisión paralela en lenguaje natural. Desde v2.1.178 ya no se crea el equipo manualmente: basta con pedir teammates y el equipo se arma solo.</p>
+  <pre><code class="lang-text">Spawn three teammates to review PR #142:
+- One focused on security
+- One checking performance
+- One validating test coverage</code></pre>
+  <p>El líder asigna tareas y sintetiza los hallazgos. Cada reviewer trabaja independientemente con su propio contexto.</p>
+  <p>Otro patrón interesante: debate científico.</p>
+  <pre><code class="lang-text">Users report the app exits after one message.
+Spawn 5 teammates to investigate different
+hypotheses. Have them debate each other.</code></pre>
+  <p>Múltiples investigadores independientes intentan refutar las teorías de los demás. Esto evita el sesgo de anclarse en una sola explicación.</p>
+
+  <h3>Hooks específicos de agent teams</h3>
+  <p>Los agent teams tienen tres hooks especiales que puedes configurar en <code>settings.json</code>:</p>
+  <ul class="deflist">
+    <li><strong><code>TeammateIdle</code></strong> — se dispara cuando un teammate está a punto de quedar inactivo. Si tu script devuelve exit code 2, puedes enviar feedback al teammate para que siga trabajando en lugar de detenerse.</li>
+    <li><strong><code>TaskCreated</code></strong> — se dispara cuando se crea una tarea en la lista compartida. Exit code 2 previene la creación de la tarea. Útil para validar o filtrar tareas.</li>
+    <li><strong><code>TaskCompleted</code></strong> — se dispara cuando se marca una tarea como completada. Exit code 2 previene que se marque como completa. Útil para agregar pasos de verificación.</li>
+  </ul>
+
+  <h3>Plan approval para teammates</h3>
+  <p>Puedes requerir que los teammates planifiquen antes de implementar. El teammate trabaja en modo read-only hasta que el líder aprueba su plan.</p>
+  <p>Si el líder rechaza el plan, el teammate revisa su enfoque basándose en el feedback y re-envía. El líder toma las decisiones de aprobación de forma autónoma.</p>
+  <p>La lista de tareas compartida soporta dependencias entre tareas. El sistema usa file locking para prevenir race conditions cuando varios teammates reclaman tareas al mismo tiempo. Las tareas con dependencias no resueltas no se pueden reclamar.</p>
+
+  <h3>Limitaciones de agent teams</h3>
+  <p>Recuerda: esta función es experimental. Tiene limitaciones conocidas:</p>
+  <ul>
+    <li>No hay reanudación de sesión con teammates en proceso.</li>
+    <li>El estado de tareas puede retrasarse.</li>
+    <li>El apagado puede ser lento.</li>
+    <li>Solo un equipo por sesión.</li>
+    <li>No se pueden anidar equipos.</li>
+    <li>El líder es fijo (no se puede cambiar).</li>
+    <li>Los split panes no funcionan en VS Code terminal integrado, Windows Terminal ni Ghostty.</li>
+    <li>Una fila de teammate que lleva 30 segundos inactivo (idle) se oculta del panel y reaparece en su siguiente turno (v2.1.181). Si crees que un teammate desapareció, mándale un mensaje por nombre para reactivar su fila.</li>
+  </ul>
+
+  <h2 id="cap20-agent-view-panel-central">Agent view: panel central para sesiones en background</h2>
+  <p>Hasta ahora hablamos de subagentes dentro de una sesión. Pero a veces necesitas varias sesiones independientes trabajando en paralelo: una arreglando un test flaky, otra investigando un bug en producción, otra refactorizando un módulo. ¿Cómo las despachas y monitoreas sin tener veinte terminales abiertas?</p>
+  <p>Para eso existe agent view. Es una pantalla única donde puedes lanzar, ver y controlar todas tus sesiones en background. Se abre con un comando:</p>
+  <pre><code class="lang-bash">claude agents</code></pre>
+  <p>Agent view es research preview y requiere Claude Code v2.1.139 o superior. Si tu <code>claude agents</code> te lista subagentes en vez de abrir la vista, corre <code>claude update</code>.</p>
+
+  <h3>Estados y filtros</h3>
+  <p>Cada sesión en agent view tiene un estado visible:</p>
+  <ul class="deflist">
+    <li><strong>Working</strong> — está ejecutando tareas activamente (animado).</li>
+    <li><strong>Needs input</strong> — pidió tu intervención (amarillo).</li>
+    <li><strong>Idle</strong> — está esperando sin trabajo (atenuado).</li>
+    <li><strong>Completed</strong> — terminó con éxito (verde).</li>
+    <li><strong>Failed</strong> — terminó con error (rojo).</li>
+    <li><strong>Stopped</strong> — detenida manualmente (gris).</li>
+  </ul>
+  <p>Y unos iconos al lado del nombre te dicen el estado del proceso:</p>
+  <ul class="deflist">
+    <li><strong>✻ o ✽</strong> — proceso vivo trabajando.</li>
+    <li><strong>∙</strong> — proceso terminado pero resumible.</li>
+    <li><strong>✢</strong> — <code>/loop</code> en sleep entre iteraciones.</li>
+  </ul>
+  <p>Si tienes muchas sesiones, filtra con un prefijo:</p>
+  <ul class="deflist">
+    <li><strong><code>a:&lt;name&gt;</code></strong> — filtra por nombre. Ejemplo: <code>a:flaky-test</code>.</li>
+    <li><strong><code>s:&lt;state&gt;</code></strong> — filtra por estado. Ejemplo: <code>s:working</code>.</li>
+    <li><strong><code>#&lt;number&gt;</code></strong> — filtra por número de PR.</li>
+  </ul>
+
+  <h3>Despachar sesiones desde agent view</h3>
+  <p>Dentro de agent view tienes un prompt para lanzar nuevas sesiones. La sintaxis es flexible:</p>
+  <ul class="deflist">
+    <li><strong><code>&lt;agent-name&gt; &lt;prompt&gt;</code></strong> — la primera palabra se interpreta como nombre de subagente, el resto como prompt. Ejemplo: <code>code-reviewer revisa los cambios del último commit</code>.</li>
+    <li><strong><code>@&lt;agent-name&gt;</code> en cualquier parte</strong> — garantiza que ese subagente corra.</li>
+    <li><strong><code>@&lt;repo&gt;</code></strong> — apunta la sesión a un directorio o repo específico.</li>
+    <li><strong><code>/&lt;skill&gt;</code></strong> — invoca un skill como tarea.</li>
+    <li><strong><code>#&lt;number&gt;</code></strong> — selecciona una sesión asociada al PR con ese número.</li>
+  </ul>
+  <p>Si escribes algo muy corto (menos de 4 caracteres) el sistema lo rechaza con 'Too short'. Escribe descripciones de tarea, no saludos.</p>
+  <p>Cada sesión despachada se ejecuta automáticamente en su propio worktree. No te tienes que preocupar por que se pisen los archivos: cada una vive en su rama.</p>
+
+  <h3>Atajos dentro de agent view</h3>
+  <p>Atajos esenciales:</p>
+  <ul class="deflist">
+    <li><strong>Enter</strong> — hace attach a la sesión seleccionada (te metes a su terminal).</li>
+    <li><strong>Space</strong> — hace peek (vista rápida del estado sin attach completo).</li>
+    <li><strong>Ctrl+X</strong> — detiene la sesión seleccionada. Si presionas Ctrl+X dos veces en menos de 2 segundos, elimina la sesión y su worktree (incluyendo cambios sin commit). Útil pero peligroso: haz <code>git push</code> antes si quieres preservar trabajo.</li>
+    <li><strong>Flecha izquierda en prompt vacío</strong> — backgroundea la sesión actual y vuelve a agent view. Es el equivalente desde dentro a salir sin matar.</li>
+  </ul>
+
+  <h3>Subcomandos CLI sin abrir agent view</h3>
+  <p>A veces no quieres abrir el panel, solo controlar una sesión específica desde la terminal o un script. Para eso hay subcomandos:</p>
+  <ul class="deflist">
+    <li><strong><code>claude attach &lt;id&gt;</code></strong> — conecta a una sesión en background. Desconectas con flecha izquierda en prompt vacío.</li>
+    <li><strong><code>claude logs &lt;id&gt;</code></strong> — imprime el output reciente de la sesión sin entrar.</li>
+    <li><strong><code>claude stop &lt;id&gt;</code></strong> (alias <code>claude kill &lt;id&gt;</code>) — detiene la sesión.</li>
+    <li><strong><code>claude respawn &lt;id&gt;</code></strong> — reinicia una sesión detenida con su conversación intacta. <code>claude respawn --all</code> reinicia todas.</li>
+    <li><strong><code>claude rm &lt;id&gt;</code></strong> — elimina la sesión del listado y limpia su worktree si no tiene cambios sin commit.</li>
+  </ul>
+  <p>El <code>&lt;id&gt;</code> es el short ID que ves en agent view (los primeros caracteres del UUID, ej. <code>7c5dcf5d</code>).</p>
+
+  <h3>Lanzar sesiones en background directamente</h3>
+  <p>No necesitas abrir agent view para lanzar una sesión en background. Usa el flag <code>--bg</code>:</p>
+  <pre><code class="lang-bash">claude --bg 'investigate the flaky SettingsChangeDetector test'</code></pre>
+  <p>Eso crea una sesión en background con un nombre auto-generado e imprime su short ID. Después puedes verla con <code>claude agents</code>.</p>
+  <p>Para darle un nombre legible:</p>
+  <pre><code class="lang-bash">claude --bg --name 'flaky-test-fix' \
+   'investigate the flaky test'</code></pre>
+  <p>Combinable con <code>--agent</code> para arrancar la sesión como un subagente específico:</p>
+  <pre><code class="lang-bash">claude --bg --name 'security-audit' \
+   --agent code-reviewer \
+   'audit auth module for the latest PR'</code></pre>
+  <p>Si la sesión va a editar archivos, se crea automáticamente su propio worktree.</p>
+
+  <h3>Limitaciones de agent view</h3>
+  <p>Agent view es research preview. Antes de depender de él para trabajo crítico, ten en mente:</p>
+  <ul class="deflist">
+    <li><strong>Las sesiones corren localmente.</strong> No son procesos en la nube. Si pones tu laptop a dormir o lo apagas, las sesiones se interrumpen. Al volver, aparecen como failed. Solución: <code>claude respawn --all</code> o haz attach/peek/reply a cualquiera para que el supervisor las reinicie desde donde quedaron.</li>
+    <li><strong>Requieren workspace trust.</strong> Antes de poder usar <code>--worktree</code> o agent view en un directorio, debes correr <code>claude</code> una vez ahí y aceptar el diálogo de confianza del workspace. Si saltas este paso, verás 'workspace not trusted'.</li>
+    <li><strong>Consumen rate limits independientemente.</strong> Cada sesión cuenta como una sesión propia. Si lanzas diez en paralelo, pueden agotar tu cuota más rápido.</li>
+    <li><strong>Los worktrees se borran cuando borras la sesión.</strong> Si tienes cambios sin commit en un worktree y haces <code>claude rm</code>, se pierden. Commit o push antes.</li>
+    <li><strong>Cannot open agents - N background tasks running.</strong> Si la sesión actual tiene tareas en background (subagentes, monitors, comandos bash), no puedes abrir agent view desde ahí. Usa <code>/tasks</code> para revisarlas o termina las que sobren.</li>
+    <li><strong>No disponible en algunos entornos.</strong> En Bedrock, Vertex AI o Foundry puede que <code>claude agents</code> liste subagentes en vez de abrir la vista.</li>
+  </ul>
+
+  <h2 id="cap20-controles-globales">Controles globales: slash commands, atajos, variables y settings</h2>
+  <p>Esta sección agrupa todos los controles que aplican fuera de la definición de cada subagente: comandos de chat para mandar trabajo al background, atajos de teclado, variables de entorno para activar o desactivar funciones, y settings que cambian comportamiento global.</p>
+
+  <h3>Slash commands para background</h3>
+  <p>Dos comandos clave que aparecen junto con agent view:</p>
+  <ul class="deflist">
+    <li><strong><code>/bg [prompt]</code></strong> (alias <code>/background</code>) — manda la conversación actual al background. Aceptas un prompt opcional como última instrucción antes de soltarla. Ejemplo: <code>/bg run the test suite and fix failures</code>. La sesión se reinicia desde el transcript en un proceso aparte. Importante: subagentes y monitors que estuvieran corriendo no se transfieren al background; arrancan limpios.</li>
+    <li><strong><code>/tasks</code></strong> — lista todas las tareas en background de la sesión actual (subagentes, monitors, comandos bash con <code>run_in_background</code>). Útil para entender qué tienes corriendo antes de salir o de despachar más trabajo. Para la vista global de todas tus sesiones en background usa <code>claude agents</code>.</li>
+  </ul>
+
+  <h3>Atajos de teclado</h3>
+  <ul class="deflist">
+    <li><strong>Ctrl+B</strong> — manda al background la tarea actualmente corriendo (un Bash en ejecución, un subagente en foreground, etc.). Una sola tecla para liberar la conversación.</li>
+    <li><strong>Ctrl+X</strong> — dentro de agent view, detiene la sesión seleccionada. Presionar Ctrl+X dos veces en 2 segundos la elimina junto con su worktree (incluso si hay cambios sin commit).</li>
+    <li><strong>Flecha izquierda en prompt vacío</strong> — dentro de una sesión en foreground, te lleva de vuelta a agent view dejando la sesión en background.</li>
+  </ul>
+
+  <h3>Bloquear subagentes específicos</h3>
+  <p>Puedes impedir que Claude use subagentes específicos. Agrégalo al array <code>deny</code> en tus permisos:</p>
+  <pre><code class="lang-json">{
+     "permissions": {
+         "deny": ["Agent(Explore)", "Agent(my-custom-agent)"]
+     }
+}</code></pre>
+  <p>O desde la línea de comandos:</p>
+  <pre><code class="lang-bash">claude --disallowedTools "Agent(Explore)"</code></pre>
+  <p>Funciona tanto con subagentes built-in como con personalizados.</p>
+
+  <h3>Variables de entorno</h3>
+  <p>Las variables relevantes a agentes y subagentes:</p>
+  <ul class="deflist">
+    <li><strong><code>CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1</code></strong> — deshabilita todas las tareas en background. Desactiva <code>run_in_background</code>, el auto-backgrounding, el atajo Ctrl+B y los slash <code>/bg</code> y <code>/tasks</code> dejan de tener sentido.</li>
+    <li><strong><code>CLAUDE_CODE_DISABLE_AGENT_VIEW=1</code></strong> — deshabilita agent view y los background agents. Útil si quieres forzar a tu equipo a no depender de la función mientras esté en research preview. También existe el setting equivalente <code>disableAgentView: true</code>.</li>
+    <li><strong><code>CLAUDE_CODE_FORK_SUBAGENT</code></strong> — controla el modo fork (sección anterior). Desde v2.1.161 vale <code>1</code> por defecto (<code>/fork</code> habilitado). Ponla en <code>0</code> para deshabilitarlo explícitamente. Los forks requieren v2.1.117+.</li>
+    <li><strong><code>CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1</code></strong> — habilita agent teams y la herramienta <code>SendMessage</code> (necesaria para reanudar subagentes).</li>
+    <li><strong><code>CLAUDE_CODE_SUBAGENT_MODEL=&lt;modelo&gt;</code></strong> — sobreescribe el modelo de todos los subagentes para controlar costos globalmente. Ejemplo: <code>CLAUDE_CODE_SUBAGENT_MODEL=haiku</code>.</li>
+    <li><strong><code>CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=&lt;n&gt;</code></strong> — cambia el umbral de auto-compaction del agente principal y los subagentes. Default 95 (auto-compacta al 95% del contexto). Bájalo si tus subagentes producen mucho output verbose y quieres comprimir antes. Ejemplo: <code>CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=70</code>.</li>
+  </ul>
+
+  <h3>Settings relevantes</h3>
+  <p>En tu <code>settings.json</code> (proyecto o usuario) puedes configurar:</p>
+  <ul class="deflist">
+    <li><strong><code>agent</code></strong> — nombre del subagente que actuará como agente principal por defecto en cada sesión del proyecto. Ejemplo: <code>{ "agent": "code-reviewer" }</code>. El flag <code>--agent</code> en CLI lo sobreescribe.</li>
+    <li><strong><code>teammateMode</code></strong> — modo de display de teammates en agent teams. Valores: <code>in-process</code>, <code>auto</code>, <code>tmux</code>. El default cambió de <code>auto</code> a <code>in-process</code> en v2.1.179, así que ahora los split panes hay que pedirlos explícitamente.</li>
+    <li><strong><code>worktree.baseRef</code></strong> — desde qué ref hace branch al crear worktrees. Valores: <code>fresh</code> (default, branch desde <code>origin/HEAD</code>) o <code>head</code> (branch desde tu HEAD actual).</li>
+    <li><strong><code>disableAgentView</code></strong> — si es <code>true</code>, desactiva agent view y los background agents. Equivalente al env var <code>CLAUDE_CODE_DISABLE_AGENT_VIEW</code>.</li>
+    <li><strong><code>cleanupPeriodDays</code></strong> — días antes de que se limpien los transcripts de subagentes y worktrees huérfanos. Default 30. Bájalo si tu <code>~/.claude/</code> crece rápido; súbelo si quieres conservar historial más tiempo. Ejemplo: <code>{ "cleanupPeriodDays": 14 }</code>.</li>
+    <li><strong><code>permissions.deny</code></strong> — array para bloquear subagentes específicos con la sintaxis <code>Agent(&lt;name&gt;)</code>.</li>
+  </ul>
+
+  <h2 id="cap20-errores-comunes-y-soluciones">Errores comunes y soluciones</h2>
+  <p>Aquí tienes los problemas más frecuentes al trabajar con subagentes:</p>
+  <ul class="deflist">
+    <li><strong>El subagente no se encuentra</strong> — si creaste el archivo manualmente después de iniciar la sesión, reinicia Claude Code o usa <code>/agents</code> para cargarlo.</li>
+    <li><strong>El subagente no puede crear más subagentes</strong> — desde v2.1.172 los subagentes sí pueden anidar otros subagentes, pero hay un tope fijo de 5 niveles de profundidad. Un subagente en el nivel 5 ya no recibe la herramienta Agent. Si tocaste el tope, reorganiza el trabajo para que la cadena de delegación sea menos profunda, o lanza más subagentes desde un nivel superior.</li>
+    <li><strong>Subagente en background falla por permisos</strong> — los subagentes en background auto-deniegan permisos no pre-aprobados. Reanúdalo en foreground con resume o pre-aprueba los permisos antes de lanzar.</li>
+    <li><strong>El contexto principal se llena rápido</strong> — si usas muchos subagentes, sus resultados consumen contexto. Usa agent teams para trabajo que excede la ventana de contexto.</li>
+    <li><strong>Conflictos de archivos en paralelo</strong> — múltiples subagentes editando el mismo archivo causan problemas. Usa <code>isolation: worktree</code> o divide el trabajo para que cada subagente trabaje en archivos diferentes.</li>
+    <li><strong>Nombre duplicado</strong> — si dos subagentes tienen el mismo nombre, gana el de mayor prioridad (managed settings &gt; CLI &gt; proyecto &gt; usuario &gt; plugin). Usa nombres únicos.</li>
+    <li><strong>Modelo del subagente no es el esperado</strong> — verifica el orden de precedencia: (1) <code>CLAUDE_CODE_SUBAGENT_MODEL</code>, (2) parámetro per-invocation, (3) frontmatter, (4) modelo del padre.</li>
+    <li><strong>Plugin subagent ignora hooks, mcpServers o permissionMode</strong> — por seguridad, los subagentes que vienen empaquetados en plugins no soportan esos tres campos. Si necesitas que un subagente de plugin use hooks o servidores MCP propios, cópialo a <code>.claude/agents/</code> (proyecto) o <code>~/.claude/agents/</code> (usuario). Alternativa: añade reglas equivalentes en <code>permissions.allow</code> de tu <code>settings.json</code>.</li>
+    <li><strong><code>--worktree</code> falla con 'workspace not trusted'</strong> — antes de usar <code>--worktree</code> en un directorio nuevo, debes ejecutar <code>claude</code> ahí una vez (sin flags) y aceptar el diálogo de confianza del workspace. Sal, y luego ya puedes usar <code>--worktree</code>.</li>
+    <li><strong>Sesiones de agent view aparecen como failed tras dormir el laptop</strong> — las sesiones en background corren localmente y no sobreviven a sleep o shutdown. Solución: haz attach, peek o reply a cualquiera para que el supervisor las reinicie desde donde quedaron, o corre <code>claude respawn --all</code>.</li>
+    <li><strong><code>claude agents</code> lista subagentes en vez de abrir agent view</strong> — o tienes una versión antigua, o estás en un entorno donde agent view no está disponible (Bedrock, Vertex AI, Foundry). Corre <code>claude update</code> y verifica que no esté desactivado con <code>disableAgentView</code> o <code>CLAUDE_CODE_DISABLE_AGENT_VIEW</code>.</li>
+    <li><strong>Prompt rechazado como 'Too short' en agent view</strong> — el dispatch input espera una descripción de tarea de al menos 4 caracteres, no saludos. Escribe algo concreto como <code>investigate the flaky test</code>.</li>
+    <li><strong>'Cannot open agents - N background tasks running'</strong> — hay subagentes, monitors o comandos en background corriendo en la sesión actual. Corre <code>/tasks</code> para verlos. Usa <code>/bg</code> para confirmar y abandonar la sesión actual, o termina las tareas primero.</li>
+    <li><strong>Worktree no se limpia al salir en modo <code>-p</code></strong> — en modo headless no hay prompt de salida, así que los worktrees creados con <code>--worktree</code> quedan. Remuévelos a mano con <code>git worktree remove &lt;path&gt;</code> o automatiza la limpieza en tu pipeline.</li>
+    <li><strong><code>.claude/worktrees/</code> llenándose</strong> — sesiones que terminaron sin limpiar, o sleep que dejó worktrees huérfanos. Lista con <code>git worktree list</code>, remueve con <code>git worktree remove &lt;path&gt;</code>, y baja <code>cleanupPeriodDays</code> en tu <code>settings.json</code> si quieres que se limpien automáticamente más rápido.</li>
+  </ul>
+
+  <h2 id="cap20-ejemplos-practicos">Ejemplos Prácticos</h2>
+
+  <h3>Crear un subagente revisor de código</h3>
+  <pre><code class="lang-text">---
+name: code-reviewer
+description: Reviews code for quality and best practices
+tools: Read, Glob, Grep
+model: sonnet
+---
+
+You are a code reviewer. Analyze the code and provide
+specific, actionable feedback on quality, security,
+and best practices.</code></pre>
+  <p>Guarda este archivo como <code>.claude/agents/code-reviewer.md</code>. Claude lo usará automáticamente cuando le pidas revisar código. Solo puede leer archivos, no modificarlos.</p>
+
+  <h3>Subagente temporal vía CLI</h3>
+  <pre><code class="lang-bash">claude --agents '{"quick-tester": {"description": "Run tests and
+report failures", "prompt": "Run the test suite and report only
+failing tests with error messages.", "tools": ["Bash", "Read"],
+"model": "haiku"}}'</code></pre>
+  <p>Crea un subagente que solo vive durante esta sesión. Usa Haiku para ser rápido y barato. Solo puede ejecutar comandos y leer archivos.</p>
+
+  <h3>Ejecutar subagentes en paralelo con worktrees</h3>
+  <pre><code class="lang-text">Research authentication, database, and API modules
+in parallel using separate subagents with worktree
+isolation</code></pre>
+  <p>Cada subagente recibe su propia copia del repositorio. No hay conflictos de archivos. Los resultados regresan al agente principal cuando terminan.</p>
+
+  <h3>Subagente con memoria persistente</h3>
+  <pre><code class="lang-text">---
+name: project-expert
+description: Answers questions about the codebase. Use proactively.
+memory: project
+tools: Read, Glob, Grep, Bash
+model: haiku
+---
+
+You are a codebase expert. Read files, understand
+patterns, and save insights to your memory.
+Over time, build a knowledge base of this project.</code></pre>
+  <p>Este subagente aprende con el tiempo. Cada vez que lo usas, guarda lo que descubre en <code>.claude/agent-memory/project-expert/</code>. La próxima vez que se invoque, ya sabe cosas del proyecto.</p>
+
+  <h3>Subagente con hook de validación</h3>
+  <pre><code class="lang-text">---
+name: db-reader
+description: Execute read-only database queries
+tools: Bash
+hooks:
+   PreToolUse:
+      - matcher: "Bash"
+        hooks:
+           - type: command
+             command: "./scripts/validate-readonly-query.sh"
+---
+
+You are a database analyst. Only execute SELECT queries.</code></pre>
+  <p>Cada vez que el subagente intenta ejecutar un comando, el script valida que sea de solo lectura. Si intenta un DELETE o UPDATE, el hook bloquea la ejecución. Seguridad extra.</p>
+
+  <h3>Iniciar Claude en un worktree aislado</h3>
+  <pre><code class="lang-bash">claude --worktree feature-auth</code></pre>
+  <p>Claude arranca en una copia aislada del repo en <code>.claude/worktrees/feature-auth/</code> con la rama <code>worktree-feature-auth</code>. Puedes trabajar sin afectar la rama principal.</p>
+
+  <h3>Ejecutar sesión completa como subagente</h3>
+  <pre><code class="lang-bash">claude --agent code-reviewer</code></pre>
+  <p>Toda la sesión adopta el system prompt, herramientas y modelo del subagente code-reviewer. <code>CLAUDE.md</code> y la memoria del proyecto se cargan normalmente. Para plugins: <code>claude --agent &lt;plugin&gt;:&lt;agente&gt;</code>.</p>
+
+  <h3>Configurar agente default por proyecto</h3>
+  <pre><code class="lang-json">{
+    "agent": "code-reviewer"
+}</code></pre>
+  <p>Agrega esto a <code>.claude/settings.json</code>. Cada sesión en este proyecto usará code-reviewer por defecto. El flag <code>--agent</code> en CLI tiene prioridad sobre este setting.</p>
+
+  <h3>Archivo .worktreeinclude para copiar archivos gitignored</h3>
+  <pre><code class="lang-text">.env
+.env.local
+config/secrets.json</code></pre>
+  <p>Crea este archivo en la raíz del proyecto. Lista los archivos gitignored que deben copiarse a cada worktree nuevo. Solo copia archivos que coincidan con un patrón Y estén gitignored.</p>
+
+  <h3>Crear un worktree desde un PR para revisarlo</h3>
+  <pre><code class="lang-bash">claude --worktree '#1234'</code></pre>
+  <p>Fetcha <code>pull/1234/head</code> desde origin y crea <code>.claude/worktrees/pr-1234/</code> con la rama del PR. Ideal para revisar pull requests locales sin tocar tu checkout. Comillas obligatorias para que la shell no interprete el <code>#</code> como comentario.</p>
+
+  <h3>Lanzar una sesión en background con nombre</h3>
+  <pre><code class="lang-bash">claude --bg --name 'flaky-test-fix' \
+   'investigate the flaky SettingsChangeDetector test'</code></pre>
+  <p>Crea una sesión en background con nombre legible. Imprime el short ID. Después la ves con <code>claude agents</code> o le haces attach con <code>claude attach &lt;id&gt;</code>. Si va a editar archivos, se crea automáticamente su propio worktree.</p>
+
+  <h3>Crear un fork (habilitado por defecto)</h3>
+  <pre><code class="lang-bash">claude
+
+# Dentro de la sesión (sin ninguna variable de entorno):
+/fork draft unit tests for the parser changes</code></pre>
+  <p>Desde v2.1.161 el comando <code>/fork</code> está habilitado por defecto: no necesitas exportar <code>CLAUDE_CODE_FORK_SUBAGENT</code>. El fork hereda toda tu conversación actual (mismo system prompt, herramientas, modelo, mensajes) y corre en background. Comparte prompt cache con el padre, así que es más barato que un subagente fresco. Los forks requieren v2.1.117+.</p>
+
+  <h3>Configurar worktree.baseRef para branchear desde HEAD</h3>
+  <pre><code class="lang-json">// settings.json
+{
+    "worktree": {
+        "baseRef": "head"
+    }
+}</code></pre>
+  <p>Por defecto los worktrees nuevos branchean desde <code>origin/HEAD</code>. Con <code>baseRef: head</code>, branchean desde tu HEAD actual y heredan el trabajo en progreso. Solo acepta 'fresh' o 'head', no refs arbitrarios.</p>
+
+  <h3>Bajar el umbral de auto-compaction para subagentes verbosos</h3>
+  <pre><code class="lang-bash">CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=70 claude</code></pre>
+  <p>Default es 95% del contexto antes de auto-compactar. Con subagentes que producen mucho output (logs, resultados de tests), bajarlo a 70% comprime antes y deja espacio. Aplica tanto al main como a subagentes.</p>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Escribe descripciones claras y específicas para tus subagentes. Claude usa la descripción para decidir cuándo delegar. Una descripción vaga significa que Claude no sabrá cuándo usarlo.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa 'use proactively' en la descripción si quieres que Claude invoque al subagente sin que tú se lo pidas explícitamente.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa Haiku como modelo para subagentes de solo lectura (exploración, búsqueda). Es más rápido y más barato que Sonnet u Opus.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa @-mention (<code>@nombre-del-subagente</code>) para garantizar que Claude delegue a un subagente específico. Es más confiable que mencionarlo por nombre en lenguaje natural.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Para controlar costos globalmente, usa <code>CLAUDE_CODE_SUBAGENT_MODEL=haiku</code>. Fuerza a todos los subagentes a usar Haiku sin importar lo que diga su frontmatter.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Desde v2.1.172 un subagente sí puede crear otros subagentes (anidamiento), hasta un máximo fijo de 5 niveles de profundidad. Un subagente en el nivel 5 ya no recibe la herramienta Agent. El panel muestra el árbol completo con un contador (+N) de descendientes por fila.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Cuidado con <code>bypassPermissions</code>. Si el agente padre lo tiene, todos los subagentes lo heredan y no puedes restringirlo.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Los subagentes en background auto-deniegan permisos no pre-aprobados. Pre-aprueba lo necesario antes de lanzar o reanuda en foreground si falla.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Si el agente padre usa auto mode, los subagentes heredan auto mode y su <code>permissionMode</code> en el frontmatter se ignora.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>El Agent tool antes se llamaba Task tool (renombrado en v2.1.63). Las referencias a <code>Task(...)</code> siguen funcionando como alias.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Las transcripciones de subagentes se guardan en <code>~/.claude/projects/{proyecto}/{sesión}/subagents/</code> y se limpian automáticamente después de 30 días.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Agrega <code>.claude/worktrees/</code> a tu <code>.gitignore</code> para evitar commitear worktrees accidentalmente.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Los directorios agregados con <code>--add-dir</code> NO se escanean para buscar subagentes. Solo se descubren subagentes caminando hacia arriba desde el directorio actual.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa <code>/tasks</code> dentro de una sesión para ver qué tienes corriendo en background (subagentes, monitors, comandos bash). Para la vista global de todas tus sesiones, usa <code>claude agents</code>.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Para revisar un PR localmente sin afectar tu checkout: <code>claude --worktree '#1234'</code>. Las comillas son obligatorias para que la shell no interprete el <code>#</code> como comentario.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Si te preocupa que <code>.claude/worktrees/</code> crezca, baja <code>cleanupPeriodDays</code> en <code>settings.json</code> (default 30). También usa <code>git worktree list</code> y <code>git worktree remove</code> para limpiar manualmente.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Las sesiones de agent view corren localmente: no sobreviven a sleep ni shutdown del laptop. Si las ves como failed después de dormir el laptop, corre <code>claude respawn --all</code> o haz attach/peek a cualquiera para reanudarlas.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>En agent view, Ctrl+X dos veces en 2 segundos elimina la sesión Y su worktree, incluso si hay cambios sin commit. Haz <code>git push</code> o commit antes si quieres preservar trabajo.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Plugin subagents NO soportan hooks, mcpServers ni permissionMode (por seguridad). Si necesitas esos campos, copia el archivo del agente a <code>.claude/agents/</code> o <code>~/.claude/agents/</code>.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Un fork no puede spawnear más forks. Si necesitas más paralelismo, lanza los forks desde el agente principal.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Para reanudar un subagente con SendMessage necesitas <code>CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1</code>. Esa misma variable habilita agent teams y la herramienta de mensajería que permite continuar conversaciones de subagentes.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p><code>MEMORY.md</code> se inyecta hasta las primeras 200 líneas O 25 KB, lo que ocurra primero. Si tu memoria tiene snippets de código largos, te puedes quedar corto antes de 200 líneas. Pon lo más importante arriba.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Los agent teams viven en <code>~/.claude/teams/{name}/config.json</code> con tareas compartidas en <code>~/.claude/tasks/{name}/</code>. No hay equivalente a nivel proyecto: no puedes commitear un team al repo.</p>
+  </div>
+
+  <section class="recap">
+    <h2 id="cap20-resumen-del-capitulo">Resumen del Capítulo</h2>
+    <p>Los subagentes son asistentes especializados que Claude usa para delegar tareas. Cada uno tiene su propio contexto, herramientas y permisos. Puedes crear subagentes personalizados con archivos Markdown, usar worktrees para aislamiento y configurar memoria persistente para que aprendan con el tiempo. Para proyectos grandes, los agent teams (experimentales) permiten coordinar múltiples sesiones como un equipo completo.</p>
+  </section>
+</article>

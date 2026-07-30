@@ -1,0 +1,1732 @@
+Skills y Slash Commands
+Cómo extender Claude Code con comandos personalizados y skills reutilizables
+
+
+    INTERMEDIO                                                    @soyenriquerocha
+
+
+
+
+                                     376                          @soyenriquerocha
+                                                                           SKILLS Y SLASH COMMANDS
+
+
+
+
+    Claude Code viene con muchos comandos listos para usar. Pero lo mejor es que puedes
+    crear los tuyos. Las skills son como recetas que le enseñas a Claude. Escribes las
+    instrucciones una vez y las usas siempre que quieras. En este capítulo vas a aprender
+    todos los comandos que ya vienen incluidos, cómo crear tus propias skills, y cómo
+    instalar skills que otros compartieron.
+
+
+
+
+Qué son las Skills y los Slash Commands
+
+Imagina que Claude Code es un chef. Los slash commands son las recetas que ya sabe cocinar. Escribes
+/ seguido del nombre y Claude ejecuta la receta.
+
+Hay tres tipos de comandos / en Claude Code:
+
+   • Built-in commands: Comandos del sistema. Hacen cosas fijas como limpiar la pantalla o cambiar
+    el modelo. Son como los botones de tu microondas.
+   • Bundled skills: Skills que vienen incluidas con Claude Code. Son más inteligentes: pueden leer
+    archivos, lanzar agentes y adaptarse a tu proyecto. Son como electrodomésticos programables.
+   • Custom skills: Las que tú creas o instalas de terceros. Son como recetas que tú escribes en un
+    cuaderno.
+
+Las skills son una evolución de los slash commands. Antes existían los "custom commands" (archivos
+.md sueltos). Ahora las skills son carpetas completas con un archivo SKILL.md como punto de
+entrada. Los comandos viejos siguen funcionando, pero las skills tienen más poderes.
+
+Fusión oficial en 2026: La documentación de Anthropic ahora dice textualmente que "custom
+commands have been merged into skills". Un archivo en .claude/commands/deploy.md y un skill en
+.claude/skills/deploy/SKILL.md generan ambos el mismo /deploy y se comportan igual.
+Hasta la URL antigua /slash-commands ahora redirige a /skills . Conceptualmente ya no son dos
+cosas separadas: son la misma cosa, y skills es la única vía recomendada para casos nuevos porque
+acepta archivos de soporte (templates, scripts, referencias) dentro de su carpeta.
+
+El estándar abierto Agent Skills
+Las skills siguen un formato estándar llamado Agent Skills. Lo publicó Anthropic en diciembre de 2025.
+Está disponible en agentskills.io .
+
+¿Por qué importa? Porque es un formato que funciona en varias herramientas. No solo Claude Code.
+OpenAI lo adoptó para Codex CLI y ChatGPT. Es como el formato USB: un solo conector para muchos
+dispositivos.
+
+
+
+                                                  377                                    @soyenriquerocha
+SKILLS Y SLASH COMMANDS
+
+
+
+
+El principio clave de este estándar se llama progressive disclosure (divulgación progresiva). Funciona
+en tres niveles:
+
+  1. Metadata (~100 tokens): El nombre y la descripción. Se cargan siempre al inicio.
+  2. Instructions (hasta 5000 tokens): El contenido completo del SKILL.md. Se carga cuando el skill se
+    activa.
+  3. Resources (bajo demanda): Archivos extra como scripts, ejemplos o datos. Se cargan solo cuando
+    se necesitan.
+
+Es como un restaurante. Primero ves el menú (metadata). Luego pides un plato y el mesero te trae la
+receta detallada (instructions). Si necesitas algo más, pides los ingredientes extra (resources).
+
+
+
+Comandos Built-in del Sistema
+
+Estos comandos vienen integrados en Claude Code. No necesitas instalar nada. Solo escribe / y el
+nombre del comando.
+
+Los vamos a organizar por lo que hacen.
+
+Sesión y navegación
+   • /help — Muestra la ayuda y todos los comandos disponibles.
+   • /clear — Limpia el historial de conversación. Borra todo y empiezas de cero. Aliases: /
+    reset , /new .
+
+   • /compact [instrucciones] — Compacta la conversación. Claude resume lo que llevas
+    hablando para liberar espacio. Puedes darle instrucciones de qué conservar.
+   • /context — Muestra cuánto contexto estás usando. Te da una cuadrícula de colores y
+    sugerencias para optimizar.
+   • /exit — Sale de Claude Code. Alias: /quit .
+   • /branch [nombre] — Crea una bifurcación de la conversación. Como guardar tu partida en un
+    videojuego antes de tomar una decisión. Alias: /fork . Con la variable
+     CLAUDE_CODE_FORK_SUBAGENT seteada, lanza un subagente forkeado en lugar de una rama de
+    conversación.
+   • /resume [sesion] — Retoma una conversación anterior. Alias: /continue .
+   • /rewind — Rebobina la conversación a un punto anterior. Alias: /checkpoint .
+   • /rename [nombre] — Le pone nombre a tu sesión actual.
+   • /cd <ruta> — Mueve la sesión actual a otro directorio preservando el prompt cache. Disponible
+    desde v2.1.169.
+   • /export [archivo] — Exporta la conversación como texto plano.
+
+
+
+                                                   378                                      @soyenriquerocha
+                                                                             SKILLS Y SLASH COMMANDS
+
+
+
+
+  • /copy [N] — Copia la última respuesta al portapapeles. Pasa un número N para copiar la N-
+   ésima respuesta más reciente. Cuando hay bloques de código, muestra un picker interactivo para
+   seleccionar bloques individuales o la respuesta completa. Presiona w en el picker para escribir la
+   selección a un archivo (útil sobre SSH).
+  • /color [color|default] — Cambia el color de la barra de prompt para la sesión actual.
+   Colores disponibles: red, blue, green, yellow, purple, orange, pink, cyan. Usa default para
+   resetear.
+  • /focus — Alterna la vista enfocada: solo el último prompt, un resumen de una línea por tool call
+   (con diffstats) y la respuesta final. Persiste entre sesiones. Solo en modo fullscreen.
+  • /goal [condicion|clear] — Setea un objetivo: Claude sigue trabajando turno tras turno
+   hasta cumplir la condición. Ejemplo: /goal all tests pass . Sin argumento muestra el goal
+   actual. clear , stop , off , reset , none o cancel lo quita.
+  • /recap — Genera un resumen de una línea de la sesión actual on-demand. También aparece
+   automáticamente tras una ausencia larga.
+  • /scroll-speed — Ajusta interactivamente la velocidad del scroll de la rueda del mouse con un
+   previo visual. Solo en fullscreen y no en la terminal de JetBrains.
+  • /teleport — Trae una sesión de Claude Code on the web a este terminal: abre un picker para
+   buscar branch y conversación. Alias: /tp . Requiere suscripción a claude.ai.
+  • /tui [default|fullscreen] — Cambia el renderer de UI del terminal y relanza con la
+   conversación intacta. fullscreen activa el renderer alt-screen sin flicker. Sin argumento
+   imprime el activo.
+  • /background [prompt] — Desacopla la sesión actual para que corra como background agent y
+   libera el terminal. Alias: /bg . Monitorea con claude agents .
+  • /stop — Detiene la sesión background actual. Solo aparece cuando estás acoplado a una. El
+   transcript y los worktrees se conservan. Para solo desacoplar sin detener, usa /exit o la flecha
+   izquierda.
+  • /heapdump — Escribe un snapshot del heap de JavaScript y un desglose de memoria en ~/
+   Desktop (o el home en Linux). Útil para diagnosticar consumo alto de RAM.
+
+
+
+Modelo y rendimiento
+  • /model [modelo] — Cambia el modelo de IA. Usa flechas izquierda/derecha para ajustar el nivel
+   de esfuerzo. El cambio es inmediato.
+  • /effort [low|medium|high|xhigh|max|auto] — Establece el nivel de esfuerzo del modelo.
+   Los niveles low , medium , high y xhigh persisten entre sesiones. max aplica solo a la sesión
+   actual. auto resetea al default del modelo. Sin argumento, muestra el nivel actual o abre un
+   slider interactivo. Toma efecto inmediatamente sin esperar a que termine la respuesta actual.
+
+
+
+
+                                                  379                                        @soyenriquerocha
+SKILLS Y SLASH COMMANDS
+
+
+
+
+   Importante: los niveles disponibles dependen del modelo en uso, no todos los modelos soportan
+   los cinco.
+  • /fast [on|off] — Activa o desactiva el modo rápido.
+  • /cost — Muestra cuántos tokens llevas gastando.
+  • /usage — Muestra los límites de tu plan y el estado de rate limits.
+  • /usage-credits — Configura uso extra si llegas al límite de tu plan. Antes se llamaba /extra-
+   usage ; el nombre viejo sigue funcionando como alias.
+
+  • /plan [descripcion] — Entra en modo planificación. Claude piensa antes de actuar. Puedes
+   pasar una descripción opcional para iniciar directamente con esa tarea.
+
+
+Proyecto y código
+  • /init — Crea un archivo CLAUDE.md para tu proyecto. Es como darle a Claude un manual de
+   instrucciones sobre tu código. Tip: establece CLAUDE_CODE_NEW_INIT=1 para un flujo interactivo
+   extendido que también configura skills, hooks y archivos de memoria personal.
+  • /add-dir <ruta> — Agrega un directorio extra a tu sesión.
+  • /diff — Abre un visor interactivo de cambios. Muestra qué archivos modificaste.
+  • /security-review — Analiza tus cambios buscando vulnerabilidades de seguridad.
+  • /review — Deprecado, pero sigue existiendo. Usa /code-review en su lugar: ya viene incluido
+   como bundled skill (no necesitas instalar ningún plugin). Lo describimos en la sección de skills
+   incluidas.
+  • /autofix-pr [prompt] — Lanza una sesión de Claude Code on the web que vigila el PR de tu
+   rama actual y empuja arreglos cuando CI falla o llegan comentarios de revisión. Detecta el PR vía
+    gh pr view . Requiere gh CLI y acceso a Claude Code on the web. Ejemplo:
+    /autofix-pr only fix lint and type errors .
+
+
+
+Configuración y sistema
+  • /config — Abre la pantalla de configuración. Alias: /settings . Desde v2.1.181 también acepta
+   pares clave=valor para setear cualquier ajuste directo desde el prompt, sin abrir la interfaz.
+   Ejemplo: /config thinking=false . Funciona en modo interactivo, en -p y en Remote
+   Control. Usa /config help (o /config --help desde v2.1.183) para ver la lista de claves
+   disponibles.
+  • /advisor [modelo] — Pide una segunda opinión a otro modelo sobre lo que estás haciendo.
+   Acepta varios modelos, incluido fable .
+  • /permissions — Ve o cambia los permisos. Alias: /allowed-tools .
+  • /memory — Edita tus archivos de memoria CLAUDE.md .
+
+
+
+
+                                                 380                                     @soyenriquerocha
+                                                                           SKILLS Y SLASH COMMANDS
+
+
+
+
+  • /theme — Cambia el tema de colores. Incluye temas para daltonismo.
+  • /hooks — Muestra las configuraciones de hooks para eventos de herramientas.
+  • /statusline — Configura la línea de estado de Claude Code. Puedes describir lo que quieres, o
+   ejecutar sin argumentos para auto-configurar desde tu shell prompt.
+  • /terminal-setup — Configura keybindings del terminal para Shift+Enter y otros atajos. Solo
+   visible en terminales que lo necesitan (VS Code, Alacritty, Warp).
+  • /keybindings — Abre tu archivo de atajos de teclado.
+  • /doctor — Diagnostica tu instalación de Claude Code.
+  • Flag de CLI --safe-mode (desde v2.1.169) — No es un comando / , sino un flag que pasas al
+   arrancar: claude --safe-mode . Desactiva TODAS las personalizaciones (skills, comandos,
+   hooks, plugins, settings) para diagnosticar si un problema viene de tu configuración. Equivale a la
+   variable de entorno CLAUDE_CODE_SAFE_MODE .
+  • /status — Muestra versión, modelo, cuenta y conexión.
+  • /stats — Muestra tu uso diario, rachas y preferencias.
+  • /release-notes — Ve el changelog de actualizaciones.
+  • /feedback — Envía comentarios al equipo de Claude. Alias: /bug .
+  • /setup-vertex — Configura autenticación, proyecto, región y pins de modelo para Google
+   Vertex AI mediante un wizard. Solo visible cuando CLAUDE_CODE_USE_VERTEX=1 está
+   establecido (paralelo al /setup-bedrock ).
+  • /radio — Abre Claude FM, la radio lo-fi de Claude Code, en el navegador. Si no hay navegador
+   disponible, imprime la URL del stream. No disponible en Bedrock, Vertex ni Foundry.
+  • /team-onboarding — Genera una guía de onboarding para tu equipo a partir de tu historial de
+   los últimos 30 días (sesiones, comandos y MCPs usados). Suscriptores de claude.ai en Pro, Max,
+   Team o Enterprise también reciben un share link.
+
+
+Integraciones y extras
+  • /ide — Gestiona integraciones con editores de código.
+  • /mcp — Gestiona conexiones con servidores MCP.
+  • /chrome — Configura Claude en Chrome.
+  • /desktop — Continúa la sesión en la app de escritorio. Alias: /app .
+  • /mobile — Muestra un QR para descargar la app móvil. Aliases: /ios , /android .
+  • /install-github-app — Configura la app de GitHub Actions.
+  • /install-slack-app — Instala la app de Slack.
+  • /login / /logout — Inicia o cierra sesión.
+
+
+
+
+                                                 381                                     @soyenriquerocha
+SKILLS Y SLASH COMMANDS
+
+
+
+
+   • /upgrade — Abre la página para cambiar de plan.
+   • /privacy-settings — Configuración de privacidad (solo Pro y Max).
+   • /remote-control — Habilita control remoto desde claude.ai. Alias: /rc .
+   • /remote-env — Configura el entorno remoto por defecto para sesiones web iniciadas con --
+    remote .
+
+   • /sandbox — Activa o desactiva el modo sandbox.
+   • /plugin — Gestiona plugins de Claude Code.
+   • /reload-plugins — Recarga todos los plugins sin reiniciar.
+   • /tasks — Lista y gestiona tareas en background. Alias: /bashes .
+   • /agents — Gestiona configuraciones de subagentes.
+   • /skills — Lista las skills disponibles.
+   • /insights — Genera un reporte de tus sesiones.
+   • /ultrareview [PR] — Corre un review profundo multi-agente del PR en un sandbox cloud.
+    Incluye 3 ejecuciones gratis en Pro y Max; después requiere extra usage. Es el primo "pesado" de
+    /review y /security-review .
+
+   • /web-setup — Conecta tu cuenta de GitHub a Claude Code on the web usando las credenciales
+    locales del gh CLI. /schedule lo invoca automáticamente si GitHub no está conectado todavía.
+   • /schedule [descripcion] — Crea, actualiza, lista o ejecuta tareas programadas en la nube.
+    Claude te guía en la configuración conversacionalmente.
+   • /voice — Alterna dictado por voz push-to-talk. Requiere una cuenta de claude.ai.
+   • /powerup — Descubre features de Claude Code con lecciones interactivas rápidas y demos
+    animadas.
+   • /passes — Comparte una semana gratis de Claude Code con amigos. Solo visible si tu cuenta es
+    elegible.
+   • /stickers — Ordena stickers de Claude Code.
+   • /ultraplan <prompt> — Redacta un plan en una sesión ultraplan, revísalo en tu navegador, y
+    luego ejecútalo remotamente o envíalo de vuelta a tu terminal.
+   • /setup-bedrock — Configura Amazon Bedrock con un wizard interactivo. Solo visible cuando
+    CLAUDE_CODE_USE_BEDROCK=1 está establecido.
+
+
+
+Prefijos especiales: /, ! y @
+Además de los comandos / , Claude Code tiene dos prefijos más:
+
+   • ! al inicio — Modo bash. Ejecuta comandos de terminal sin pasar por Claude. Por ejemplo: !git
+    status . La salida se agrega al contexto de la conversación.
+
+
+
+
+                                                 382                                    @soyenriquerocha
+                                                                             SKILLS Y SLASH COMMANDS
+
+
+
+
+   • @ en cualquier parte — Mención de archivo. Activa autocompletado de rutas. Escribe @src/ y
+    verás las opciones.
+
+El comando /btw merece mención especial. Es una pregunta lateral rápida. Funciona incluso
+mientras Claude está procesando. No tiene acceso a herramientas. Es como susurrarle algo al oído sin
+interrumpir lo que está haciendo.
+
+
+
+Skills Incluidas con Claude Code
+
+Estas skills vienen preinstaladas. Son más poderosas que los built-in commands porque pueden usar
+herramientas, lanzar agentes y adaptarse a tu proyecto.
+
+Dos cosas importantes sobre las bundled skills:
+
+   • Las puedes reemplazar. Si creas un skill propio con el mismo nombre (en .claude/skills/ o
+     ~/.claude/skills/ ), tu versión gana y reemplaza a la incluida. Por ejemplo, un code-review
+    en tu proyecto reemplaza al /code-review de fábrica.
+   • Las puedes desactivar todas. Pon "disableBundledSkills": true en tu settings.json (o
+    la variable de entorno CLAUDE_CODE_DISABLE_BUNDLED_SKILLS ) para quitar de un golpe todas
+    las skills incluidas. Útil si prefieres tus propias versiones sin choques de nombres.
+
+/simplify — Limpia tu código
+Revisa los archivos que modificaste recientemente buscando oportunidades de limpieza: código
+duplicado, simplificaciones, eficiencia y reutilización. Luego aplica las correcciones.
+
+Cambio importante desde v2.1.154: /simplify es ahora un review de SOLO limpieza (calidad y
+reutilización). NO busca bugs. Para cazar bugs de corrección usa su primo /code-review , que es la
+herramienta dedicada a eso. Piensa en ellos como dos pasadas complementarias: /simplify deja el
+código más limpio, /code-review busca que esté correcto.
+
+
+
+   /simplify
+   /simplify focus on memory efficiency
+
+
+
+Puedes darle instrucciones adicionales para enfocarse en algo específico.
+
+
+/batch — Cambios masivos en paralelo
+Imagina que necesitas renombrar algo en 50 archivos. O migrar un framework completo. /batch
+hace eso.
+
+
+
+
+                                                   383                                      @soyenriquerocha
+SKILLS Y SLASH COMMANDS
+
+
+
+
+Primero investiga tu código. Luego divide el trabajo en 5 a 30 unidades independientes. Te muestra el
+plan para que lo apruebes. Después lanza un agente por cada unidad, cada uno en su propia copia del
+código. Al terminar, cada agente abre un pull request.
+
+
+
+   /batch migrate src/ from Solid to React
+   /batch rename all instances of UserManager to UserService
+
+
+
+Requiere que tu proyecto sea un repositorio git.
+
+
+Otras skills incluidas
+   • /code-review [nivel] — Revisa tus cambios buscando bugs de corrección. Acepta un nivel de
+    profundidad: low y medium dan pocos hallazgos de alta confianza; high , xhigh y max
+    amplían la cobertura (y pueden incluir hallazgos inciertos); ultra hace un review profundo
+    multi-agente en la nube. Con el flag --fix aplica las correcciones al working tree y con --
+    comment publica los hallazgos como comentarios en el PR. Es la alternativa recomendada al
+    deprecado /review , y ahora viene incluido por defecto (no requiere instalar el plugin).
+   • /run <descripcion> — Lanza y conduce la app del proyecto para verla funcionando. Requiere
+    v2.1.145+.
+   • /verify <descripcion> — Verifica que un cambio realmente hace lo que debe corriendo la
+    app y observando el comportamiento. Requiere v2.1.145+.
+   • /run-skill-generator — Asistente para generar skills nuevos guiándote por el proceso.
+    Requiere v2.1.145+.
+   • /debug [descripcion] — Diagnostica la sesión actual leyendo el log de depuración. Puedes
+    describir el problema para enfocar el análisis.
+   • /loop [intervalo] <prompt> — Ejecuta algo repetidamente. Por ejemplo: /loop 5m check
+    if the deploy finished . Ideal para monitorear procesos. Alias: /proactive . Sin prompt,
+    hace un check de mantenimiento autónomo o usa el prompt en .claude/loop.md si existe.
+   • /claude-api — Carga documentación de referencia de la API de Claude para tu lenguaje
+    (Python, TypeScript, etc.). Se activa automáticamente cuando tu código importa anthropic o
+     @anthropic-ai/sdk .
+
+   • /fewer-permission-prompts — Escanea tus transcripts en busca de llamadas Bash y MCP
+    comunes de solo lectura y agrega un allowlist priorizado a .claude/settings.json del
+    proyecto. Reduce los prompts de permiso que interrumpen tu flujo. Útil después de unas semanas
+    de uso, cuando ya tienes patrón claro de comandos que usas todo el tiempo.
+
+
+
+
+                                                   384                                  @soyenriquerocha
+                                                                         SKILLS Y SLASH COMMANDS
+
+
+
+
+Cómo Crear tus Propias Skills
+
+Crear un skill es como escribir una receta. Necesitas un directorio y un archivo SKILL.md adentro.
+Eso es todo lo mínimo.
+
+Estructura de un skill
+Un skill es una carpeta con esta estructura:
+
+
+
+   mi-skill/
+        SKILL.md             # Archivo principal (requerido)
+        template.md          # Plantilla para que Claude rellene (opcional)
+        examples/            # Ejemplos de salida esperada (opcional)
+        scripts/             # Scripts que Claude puede ejecutar (opcional)
+        references/          # Documentacion adicional (opcional)
+        assets/              # Templates, imagenes, datos (opcional)
+
+
+
+El archivo SKILL.md tiene dos partes:
+
+  1. Frontmatter YAML: Metadata entre marcadores --- . Le dice a Claude cuándo y cómo usar el
+    skill.
+  2. Contenido Markdown: Las instrucciones que Claude sigue cuando el skill se activa.
+
+
+Dónde guardar tus skills
+Tienes varias opciones según quién quieres que use el skill:
+
+   • Personal: ~/.claude/skills/mi-skill/SKILL.md — Disponible en todos tus proyectos. Solo
+    tú lo ves.
+   • Proyecto: .claude/skills/mi-skill/SKILL.md — Solo para este proyecto. Si haces commit,
+    tu equipo también lo puede usar.
+   • Plugin: Dentro de un plugin en skills/mi-skill/SKILL.md — Disponible donde el plugin esté
+    habilitado.
+   • Enterprise: Vía managed settings — Para toda la organización.
+
+También siguen funcionando los comandos legacy en              ~/.claude/commands/nombre.md            y
+.claude/commands/nombre.md . Si un skill y un command legacy tienen el mismo nombre, el skill
+gana.
+
+La prioridad es: enterprise > personal > proyecto.
+
+
+
+
+                                                     385                                 @soyenriquerocha
+SKILLS Y SLASH COMMANDS
+
+
+
+
+Tu primer skill paso a paso
+Vamos a crear un skill que explique código con analogías. Paso 1: crea el directorio.
+
+
+
+   mkdir -p ~/.claude/skills/explain-code
+
+
+
+Paso 2: crea el archivo SKILL.md con este contenido:
+
+
+
+   ---
+   name: explain-code
+   description: Explains code with visual diagrams and analogies. Use when
+   explaining how code works or when the user asks "how does this work?"
+   ---
+
+
+   When explaining code, always include:
+
+
+   1. **Start with an analogy**: Compare the code to something from everyday
+   life
+   2. **Draw a diagram**: Use ASCII art to show the flow
+   3. **Walk through the code**: Explain step-by-step what happens
+   4. **Highlight a gotcha**: What's a common mistake?
+
+
+
+Paso 3: ya está. Escribe /explain-code en Claude Code y funciona.
+
+Tip: no necesitas memorizar el formato. Puedes pedirle a Claude que cree el skill por ti. Dile: "Crea un
+skill que haga X" y él genera el archivo completo.
+
+
+Campos del frontmatter
+El frontmatter es la sección entre --- al inicio del archivo. Controla el comportamiento del skill.
+Todos los campos son opcionales.
+
+   • name — Nombre del skill. Máximo 64 caracteres. Solo letras minúsculas, números y guiones.
+    Debe coincidir con el nombre de la carpeta.
+   • description — Qué hace el skill. Claude usa esto para decidir cuándo activarlo
+    automáticamente. Incluye palabras clave que describan las situaciones donde se usa. El listado
+    de skills trunca description + when_to_use combinados a 1536 caracteres por defecto
+    (configurable con maxSkillDescriptionChars ).
+   • when_to_use — Contexto adicional sobre cuándo Claude debe invocar el skill: frases trigger,
+    ejemplos típicos, situaciones de uso. Se anexa a description en el listado. Cuenta para el cap
+
+
+
+
+                                                     386                                  @soyenriquerocha
+                                                                            SKILLS Y SLASH COMMANDS
+
+
+
+
+    de 1536 caracteres. Útil cuando description ya está bien sintetizada y solo quieres darle más
+    pistas a Claude.
+   • argument-hint — Pista visual de qué argumentos espera. Aparece en el autocompletado.
+    Ejemplo: [issue-number] .
+   • arguments — Lista de argumentos posicionales nombrados que mapean a sustituciones $name
+    en el contenido. Acepta string separado por espacios o lista YAML. Ejemplo:
+     arguments: [issue, branch] . Al invocar /skill 123 main tendrás $issue=123 y
+     $branch=main . Equivalente legible a $0 y $1 .
+
+   • disable-model-invocation — Si es true , Claude NO puede activar este skill
+    automáticamente. Solo el usuario puede usarlo con /nombre . Ideal para skills con efectos
+    secundarios como deploy o enviar mensajes.
+   • user-invocable — Si es false , el skill no aparece en el menú / . Pero Claude sí puede usarlo.
+    Ideal para conocimiento de fondo.
+   • allowed-tools — Herramientas que Claude puede usar sin pedir permiso durante este skill.
+    Ejemplo: Read, Grep, Glob .
+   • disallowed-tools (desde v2.1.152) — El complemento opuesto de allowed-tools :
+    herramientas removidas del pool mientras el skill está activo. Se limpia automáticamente al
+    enviar el siguiente mensaje. Útil para evitar que Claude use cierta herramienta durante el skill.
+    Ejemplo: disallowed-tools: AskUserQuestion .
+   • model — Modelo específico a usar cuando este skill está activo.
+   • effort — Nivel de esfuerzo cuando este skill está activo. Sobreescribe el nivel de la sesión.
+    Opciones: low , medium , high , xhigh , max . Los niveles disponibles dependen del modelo.
+   • context — Pon fork para ejecutar en un subagente aislado.
+   • agent — Tipo de subagente cuando usas context: fork . Opciones: Explore , Plan ,
+     general-purpose , o un agente personalizado.
+
+   • hooks — Hooks específicos para el ciclo de vida de este skill.
+   • paths — Patrones glob que limitan cuándo el skill se activa automáticamente. Si trabajas con
+    archivos que coinciden con estos patrones, Claude carga el skill. Acepta string separado por
+    comas o lista YAML. Ejemplo: src/components/**/*.tsx, src/styles/**/*.css .
+   • shell — Shell a usar para comandos !`command` y bloques ```! dentro del skill. Acepta
+     bash (default) o powershell . Para usar PowerShell se requiere
+     CLAUDE_CODE_USE_POWERSHELL_TOOL=1 .
+
+
+
+Variables y argumentos
+Los skills pueden recibir argumentos. Es como pasarle ingredientes a una receta.
+
+
+
+
+                                                  387                                      @soyenriquerocha
+SKILLS Y SLASH COMMANDS
+
+
+
+
+Variables de sustitución:
+
+   • $ARGUMENTS — Todos los argumentos que el usuario pasó. Se reemplazan en el contenido del
+    skill.
+   • $ARGUMENTS[0] , $ARGUMENTS[1] ... — Acceso a argumentos individuales por posición.
+   • $0 , $1 , $2 ... — Atajo para lo mismo.
+   • $name — Argumentos nombrados declarados en el campo arguments del frontmatter. Si pones
+    arguments: [issue, branch] , usas $issue y $branch directamente, mucho más legible
+    que $0 y $1 .
+   • ${CLAUDE_SESSION_ID} — El ID de la sesión actual. Útil para crear archivos de log por sesión.
+   • ${CLAUDE_SKILL_DIR} — La ruta al directorio del skill. Útil para referenciar scripts
+    empaquetados.
+   • ${CLAUDE_EFFORT} — El nivel de esfuerzo activo en la sesión: low , medium , high , xhigh o
+    max . Permite que el skill adapte sus instrucciones (por ejemplo, pedir análisis más profundo solo
+    si el effort es alto).
+
+Ejemplo con argumentos posicionales:
+
+
+
+   ---
+   name: migrate-component
+   description: Migrate a component from one framework to another
+   ---
+
+
+   Migrate the $0 component from $1 to $2.
+   Preserve all existing behavior and tests.
+
+
+
+Al escribir /migrate-component SearchBar React Vue , Claude recibe: "Migrate the SearchBar
+component from React to Vue."
+
+Escapar un $ literal: Si necesitas un signo de dólar seguido de un dígito (como un precio) y NO
+quieres que se interprete como argumento, escápalo con una barra invertida. Por ejemplo, escribe \
+$1.00 para que aparezca $1.00 en vez de tratar $1 como el segundo argumento.
+
+Lo mismo con argumentos nombrados (más legible al mantenerlo):
+
+
+
+
+                                                 388                                        @soyenriquerocha
+                                                                            SKILLS Y SLASH COMMANDS
+
+
+
+
+   ---
+   name: migrate-component
+   description: Migrate a component from one framework to another
+   arguments: [component, from, to]
+   ---
+
+
+   Migrate the $component component from $from to $to.
+   Preserve all existing behavior and tests.
+
+
+
+
+Inyección de contexto dinámico
+Esta es una feature poderosa. Puedes ejecutar comandos de terminal ANTES de que Claude vea el
+contenido del skill. La sintaxis es !`comando` .
+
+Claude no ve el comando. Solo ve el resultado. Es como preparar los ingredientes antes de que el chef
+entre a la cocina.
+
+Ojo con dónde va el ! : El ! de inyección solo se reconoce al inicio de una línea o justo después de
+un espacio. Si lo pegas a otro texto (por ejemplo KEY=!`comando` ), no se ejecuta y aparece literal.
+Déjalo al principio de la línea o tras un espacio.
+
+
+
+   ---
+   name: pr-summary
+   description: Summarize changes in a pull request
+   context: fork
+   agent: Explore
+   allowed-tools: Bash(gh *)
+   ---
+
+
+   ## Pull request context
+   - PR diff: !`gh pr diff`
+   - PR comments: !`gh pr view --comments`
+   - Changed files: !`gh pr diff --name-only`
+
+
+   ## Your task
+   Summarize this pull request focusing on impact and risks.
+
+
+
+Cuando invocas /pr-summary , los comandos gh pr diff y los demás se ejecutan primero. Sus
+salidas reemplazan los placeholders. Claude recibe los datos reales del PR listos para analizar.
+
+Sintaxis multi-línea: Para comandos de shell que necesitan varias líneas, usa un bloque de código
+abierto con ```! en lugar de la forma inline:
+
+
+
+
+                                                     389                                   @soyenriquerocha
+SKILLS Y SLASH COMMANDS
+
+
+
+
+   ## Environment
+   ```!
+   node --version
+   npm --version
+   git status --short
+   ```
+
+
+
+Cada línea del bloque se ejecuta y su salida reemplaza el bloque completo. Es la alternativa a
+encadenar múltiples !`comando` en líneas separadas.
+
+
+Ciclo de vida del contenido de un skill
+Cuando invocas un skill, su contenido renderizado entra en la conversación como un mensaje y se
+queda ahí el resto de la sesión. Claude NO relee el archivo en turnos posteriores. Esto tiene una
+implicación práctica: cada línea del skill cuesta tokens de manera recurrente, así que un SKILL.md
+gigante engorda toda la sesión.
+
+Por eso la recomendación oficial es: mantener el SKILL.md bajo 500 líneas y 1500-2000 palabras. Lo
+detallado (ejemplos largos, especificaciones, referencias de API) va en archivos separados que el skill
+referencia, como reference.md , examples/ o scripts/ . Esos archivos solo se cargan cuando
+Claude decide leerlos.
+
+Qué pasa tras auto-compaction: Cuando el contexto se llena y Claude compacta la conversación, los
+skills invocados se re-anexan con un presupuesto: cada skill mantiene solo los primeros 5000 tokens y
+entre todos comparten un budget combinado de 25000 tokens. La cola empieza por el más
+recientemente invocado, así que si invocaste muchos skills durante la sesión, los más viejos pueden
+desaparecer del contexto tras la compactación.
+
+Si notas que un skill "deja de influir" después de varias compactaciones, simplemente vuelve a
+invocarlo: su contenido se reanima en el contexto actual.
+
+
+
+Controlar quién Invoca los Skills
+
+Por defecto, tanto tú como Claude pueden usar cualquier skill. Pero a veces quieres controlar eso. Hay
+tres combinaciones:
+
+  1. Default (sin campos especiales): Tú puedes invocarlo con /nombre . Claude también puede
+    activarlo automáticamente cuando detecta que es relevante.
+  2. disable-model-invocation: true : Solo tú puedes invocarlo. Claude no lo activa solo. La
+    descripción ni siquiera se carga en el contexto de Claude. Usa esto para skills con efectos
+    secundarios como deploy o enviar correos.
+
+
+
+                                                  390                                      @soyenriquerocha
+                                                                          SKILLS Y SLASH COMMANDS
+
+
+
+
+  3. user-invocable: false : No aparece en tu menú / . Pero Claude sí puede activarlo. Usa esto
+    para conocimiento de fondo que quieres que Claude aplique sin que tú lo pidas.
+
+Permisos para skills
+Puedes gestionar permisos de skills desde /permissions :
+
+   • Agregar Skill a las reglas de denegación bloquea TODOS los skills.
+   • Skill(commit) permite solo el skill exacto "commit".
+   • Skill(review-pr *) permite "review-pr" con cualquier argumento.
+   • Skill(deploy *) en denegación bloquea el skill "deploy".
+
+Recuerda: user-invocable: false solo oculta el skill del menú. No impide que Claude lo use vía la
+herramienta         Skill.   Para   bloquear      la     invocación       programática,        necesitas
+disable-model-invocation: true .
+
+
+
+skillOverrides: controlar visibilidad sin editar SKILL.md
+A veces no quieres tocar el archivo de un skill (porque viene en un repo compartido, o porque lo
+provee un MCP) pero sí quieres cambiar su visibilidad. Para eso existe el setting skillOverrides .
+
+Es un objeto en tu settings.json donde cada llave es el nombre del skill y cada valor controla
+cómo aparece:
+
+   • on — Visible normal: nombre y descripción cargan en el listado.
+   • name-only — Solo el nombre se carga. La descripción no entra al contexto (ahorra tokens).
+   • user-invocable-only — Oculto para Claude, pero sigue apareciendo en el menú / cuando tú
+    lo necesitas.
+   • off — Oculto completamente.
+
+
+
+   // .claude/settings.local.json
+   {
+       "skillOverrides": {
+           "legacy-context": "name-only",
+           "deploy": "off",
+           "experimental-tool": "user-invocable-only"
+       }
+   }
+
+
+
+
+                                                 391                                      @soyenriquerocha
+SKILLS Y SLASH COMMANDS
+
+
+
+
+Vía rápida desde el menú: El comando /skills abre un menú interactivo. Presiona t para ordenar
+por token count y descubrir qué skills consumen más contexto. Con Space alternas la visibilidad de
+un skill y con Enter guardas; los cambios se escriben automáticamente a skillOverrides en
+settings.local.json .
+
+Importante: skillOverrides NO afecta los skills de plugins. Para esos hay que usar /plugin
+disable y /plugin enable .
+
+
+
+
+Skills con Subagentes
+
+Cuando pones context: fork en el frontmatter, el skill se ejecuta en un subagente aislado. Imagina
+que clonas a Claude, le das las instrucciones del skill, y cuando termina te entrega un resumen.
+
+El subagente tiene todas las herramientas pero empieza sin contexto de conversación. Solo ve las
+instrucciones del skill y el CLAUDE.md del proyecto.
+
+Tipos de agente disponibles
+   • general-purpose — El agente por defecto. Tiene acceso a todas las herramientas.
+   • Explore — Especializado en buscar y leer archivos. Rápido para investigar código.
+   • Plan — Especializado en diseñar planes de implementación. Piensa antes de actuar.
+   • Agentes personalizados definidos en .claude/agents/ .
+
+Ejemplo de skill con subagente Explore:
+
+
+
+   ---
+   name: deep-research
+   description: Research a topic thoroughly
+   context: fork
+   agent: Explore
+   ---
+
+
+   Research $ARGUMENTS thoroughly:
+
+
+   1. Find relevant files using Glob and Grep
+   2. Read and analyze the code
+   3. Summarize findings with specific file references
+
+
+
+
+                                                  392                                    @soyenriquerocha
+                                                                                SKILLS Y SLASH COMMANDS
+
+
+
+
+Skills de referencia vs skills de tarea
+Hay dos tipos de skills según su propósito:
+
+   • Skills de referencia: Agregan conocimiento. Ejemplo: convenciones de tu API, reglas de estilo. Se
+    ejecutan inline (sin context: fork ) para que Claude aplique las reglas en la conversación
+    actual.
+   • Skills de tarea: Ejecutan una acción. Ejemplo: deploy, generar reportes. Usan context: fork
+    porque necesitan un entorno aislado.
+
+Si usas context: fork en un skill de referencia, el subagente recibe las guías pero no tiene tarea
+que hacer. Retorna sin resultado útil. Así que: referencia = inline, tarea = fork.
+
+
+
+Skills de Plugins y Terceros
+
+Los plugins pueden incluir skills. Funcionan igual que las skills normales, pero viven dentro de un
+plugin y usan un namespace (nombre con prefijo).
+
+Instalar y usar plugins con skills
+El marketplace oficial se llama claude-plugins-official . Viene activado por defecto en cada
+instalación de Claude Code y tiene auto-update encendido, así que sus plugins se actualizan solos.
+
+Instalar y gestionar plugins desde la sesión:
+
+
+
+   # Instalar un plugin del marketplace oficial
+   /plugin install github@claude-plugins-official
+
+
+   # Desactivar sin desinstalar (mantiene la configuracion)
+   /plugin disable github@claude-plugins-official
+
+
+   # Volver a activar
+   /plugin enable github@claude-plugins-official
+
+
+   # Borrar por completo
+   /plugin uninstall github@claude-plugins-official
+
+
+
+Gestionar marketplaces:
+
+
+
+
+                                                    393                                    @soyenriquerocha
+SKILLS Y SLASH COMMANDS
+
+
+
+
+   # Anadir un marketplace nuevo (GitHub, URL git, path local o URL remota)
+   /plugin marketplace add anthropics/claude-code
+
+
+   # Listar los marketplaces configurados
+   /plugin marketplace list
+
+
+   # Refrescar el catalogo de un marketplace
+   /plugin marketplace update claude-plugins-official
+
+
+   # Quitar un marketplace (ojo: tambien desinstala sus plugins)
+   /plugin marketplace remove my-team-tools
+
+
+
+Scopes de instalación: Cuando instalas un plugin puedes elegir el alcance:
+
+   • user (default) — Disponible en todos tus proyectos.
+   • project — Compartido con tu equipo vía .claude/settings.json del repo.
+   • local — Solo tú en este repo, vía .claude/settings.local.json .
+   • managed — Impuesto por administradores en entornos enterprise.
+
+Para elegir el scope usa el menú interactivo de /plugin > Discover > Enter sobre el plugin, o desde
+CLI con --scope project .
+
+Probar plugins locales o remotos sin instalar:
+
+
+
+   # Probar un directorio local (acepta .zip desde v2.1.128)
+   claude --plugin-dir ./mi-plugin
+   claude --plugin-dir ./mi-plugin.zip
+
+
+   # Probar varios plugins a la vez
+   claude --plugin-dir ./plugin-uno --plugin-dir ./plugin-dos
+
+
+   # Cargar un plugin desde una URL .zip remota
+   claude --plugin-url https://example.com/mi-plugin.zip
+
+
+
+Los skills de plugins usan namespace para evitar conflictos. Si instalas un plugin llamado "greet" con
+un skill "hello", el comando será /greet:hello . Para recargar plugins sin reiniciar Claude Code: /
+reload-plugins .
+
+
+
+
+                                                 394                                    @soyenriquerocha
+                                                                       SKILLS Y SLASH COMMANDS
+
+
+
+
+Estructura de un plugin con skills
+
+
+   mi-plugin/
+     .claude-plugin/
+        plugin.json           # Manifiesto: name, description, version, author
+     skills/
+        mi-skill/
+          SKILL.md            # Skills del plugin
+     commands/                 # Comandos legacy (tambien funciona)
+     agents/                   # Definiciones de agentes personalizados
+     hooks/
+        hooks.json             # Configuracion de hooks
+     monitors/
+        monitors.json          # Monitores en background
+     bin/                      # Ejecutables que se anaden al PATH
+     .mcp.json                 # Servidores MCP
+     .lsp.json                 # Servidores LSP
+     settings.json             # Settings por defecto
+
+
+
+Atención: solo plugin.json va dentro de .claude-plugin/ . Todo lo demás va en la raíz del plugin.
+Si pones las carpetas skills/ o agents/ dentro de .claude-plugin/ , no funcionarán.
+
+Los dos nuevos directorios merecen una nota: bin/ agrega sus ejecutables al PATH cuando el plugin
+está activo (útil para distribuir herramientas CLI junto con los skills), y monitors/monitors.json
+declara monitores que corren en background y notifican a Claude cuando ocurre algo (por ejemplo,
+cuando termina un build).
+
+
+Marketplaces y configuración del equipo
+Si tu equipo usa un marketplace propio, no quieres que cada persona tenga que correr /plugin
+marketplace add a mano. Para eso existe el setting extraKnownMarketplaces en el .claude/
+settings.json del proyecto. Cuando un compañero confía en la carpeta, Claude Code le ofrece
+instalar el marketplace automáticamente.
+
+
+
+
+                                               395                                   @soyenriquerocha
+SKILLS Y SLASH COMMANDS
+
+
+
+
+   // .claude/settings.json del proyecto
+   {
+        "extraKnownMarketplaces": {
+            "my-team-tools": {
+                "source": {
+                  "source": "github",
+                  "repo": "your-org/claude-plugins"
+                },
+                "autoUpdate": true
+            }
+        }
+   }
+
+
+
+Cada entrada acepta autoUpdate: true para mantener el catálogo refrescado automáticamente,
+sin que nadie tenga que correr /plugin marketplace update .
+
+Controlar el auto-update global: Hay dos variables de entorno que regulan cómo se comportan las
+actualizaciones:
+
+   • DISABLE_AUTOUPDATER=1 — Desactiva TODOS los auto-updates de Claude Code y de plugins.
+    Útil cuando quieres pinear versiones manualmente.
+   • FORCE_AUTOUPDATE_PLUGINS=1 — Mantiene los auto-updates de plugins activos aunque
+       DISABLE_AUTOUPDATER esté seteada. Combo ideal cuando quieres controlar las versiones del
+    CLI a mano pero seguir recibiendo updates de plugins automáticamente.
+
+
+Compartir y distribuir skills
+Puedes compartir skills de varias formas:
+
+   • En tu proyecto: Haz commit de .claude/skills/ al repositorio. Tu equipo las tendrá
+    automáticamente.
+   • Como plugin: Crea un plugin con directorio skills/ y distribúyelo en el marketplace.
+   • Marketplace oficial: Envía tu plugin en claude.ai/settings/plugins/submit .
+   • Enterprise: Deploy para toda la organización vía managed settings.
+
+
+
+Comandos desde Servidores MCP
+
+Los servidores MCP pueden exponer prompts que aparecen como comandos en Claude Code. Usan el
+formato /mcp__<servidor>__<prompt> .
+
+
+
+
+                                                396                                   @soyenriquerocha
+                                                                           SKILLS Y SLASH COMMANDS
+
+
+
+
+Estos comandos se descubren dinámicamente. Cuando conectas un servidor MCP, sus prompts
+aparecen automáticamente en tu lista de comandos / .
+
+Por ejemplo, si tienes un servidor MCP de Gmail conectado, podrías ver comandos como /
+mcp__gmail__compose para componer un correo.
+
+
+
+
+Descubrimiento Automático de Skills
+
+Claude Code es inteligente para encontrar skills. No solo busca en las ubicaciones obvias.
+
+   • Monorepos: Cuando trabajas con archivos en subdirectorios, Claude descubre skills en
+    directorios .claude/skills/ anidados. Si editas un archivo en packages/frontend/ ,
+    también busca en packages/frontend/.claude/skills/ .
+   • Directorios adicionales: Skills definidos en carpetas agregadas vía --add-dir (o el comando /
+    add-dir ) se cargan automáticamente. Puedes editarlos durante la sesión sin reiniciar. Ojo: el
+    setting permissions.additionalDirectories NO carga skills. Solo --add-dir y /add-dir
+    escanean los .claude/skills/ de directorios extra.
+   • Plugins sin marketplace: Desde v2.1.157, los plugins y skills que pongas en .claude/skills/
+    se cargan automáticamente sin necesidad de un marketplace. Y para arrancar un plugin desde
+    cero, claude plugin init <name> genera el scaffold (la estructura de carpetas y archivos
+    base) por ti.
+   • Presupuesto del listado: Las descripciones de skills ocupan espacio en el contexto. El
+    presupuesto total se controla con skillListingBudgetFraction en settings.json (default:
+     0.01 , o sea 1% de la ventana de contexto). Como alternativa fija en caracteres puedes usar la
+    variable de entorno SLASH_COMMAND_TOOL_CHAR_BUDGET .
+   • Cap por entrada: Cada skill ocupa como mucho 1536 caracteres en el listado (con description
+    + when_to_use combinados), configurable vía maxSkillDescriptionChars . Si los pasas, se
+    truncan al final.
+   • Diagnóstico: Ejecuta /doctor para ver si el listado está desbordado y qué skills quedaron
+    cortados. /context también te muestra cuánto del contexto se está yendo en metadata de skills.
+
+Si te sobran skills y el listado se llena, la solución típica es: subir skillListingBudgetFraction (por
+ejemplo a 0.02 ), o bajar entradas de baja prioridad a name-only en skillOverrides .
+
+
+
+Patrones Avanzados
+
+Una vez que dominas los skills básicos, puedes combinarlos de formas más sofisticadas. Estos
+patrones te permiten crear flujos de trabajo especializados y seguros.
+
+
+
+
+                                                  397                                    @soyenriquerocha
+SKILLS Y SLASH COMMANDS
+
+
+
+
+Skill de solo lectura
+Restringe las herramientas para crear un modo seguro:
+
+
+
+   ---
+   name: safe-reader
+   description: Read files without making changes
+   allowed-tools: Read, Grep, Glob
+   ---
+
+
+   Read and analyze the requested files.
+   Do NOT make any changes.
+
+
+
+Claude solo podrá leer archivos. No podrá editar ni ejecutar comandos.
+
+
+Skill con scripts empaquetados
+Puedes empaquetar scripts dentro de tu skill:
+
+
+
+   ---
+   name: codebase-visualizer
+   description: Generate an interactive tree visualization of your codebase
+   allowed-tools: Bash(python *)
+   ---
+
+
+   # Codebase Visualizer
+   Run the visualization script from your project root:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/visualize.py .
+   ```
+
+
+
+La variable ${CLAUDE_SKILL_DIR} apunta a la carpeta del skill. Así Claude puede encontrar y
+ejecutar scripts que vienen dentro del skill.
+
+
+Activar pensamiento extendido
+Si quieres que Claude piense más profundamente dentro de un skill, incluye la palabra ultrathink
+en cualquier parte del contenido. Esto activa el modo de pensamiento extendido.
+
+
+
+
+                                                398                                @soyenriquerocha
+                                                                            SKILLS Y SLASH COMMANDS
+
+
+
+
+Logger de sesión
+
+
+   ---
+   name: session-logger
+   description: Log activity for this session
+   ---
+
+
+   Log the following to logs/${CLAUDE_SESSION_ID}.log:
+
+
+   $ARGUMENTS
+
+
+
+Crea archivos de log únicos por sesión usando ${CLAUDE_SESSION_ID} .
+
+
+
+Ecosistema de Skills de la Comunidad
+
+La comunidad ha creado colecciones de skills listas para usar. Antes de crear algo desde cero, vale la
+pena revisar si alguien ya lo hizo.
+
+Directorios y colecciones destacadas
+   • anthropics/skills ( github.com/anthropics/skills ) — Repositorio oficial de Anthropic con
+    skills mantenidos directamente por el equipo. Empieza por aquí: tienes la garantía de que están
+    alineados con la dirección del producto y se mantienen actualizados.
+   • awesome-claude-code ( github.com/hesreallyhim/awesome-claude-code ) — Lista curada
+    de skills, hooks, slash commands, plugins y orquestadores de agentes. El mejor punto de partida
+    para descubrir lo que hay en la comunidad.
+   • awesome-claude-skills ( github.com/travisvn/awesome-claude-skills ) — Lista curada
+    alterna, complementaria a awesome-claude-code, con foco específico en skills.
+   • Trail of Bits Security Skills ( github.com/trailofbits/skills ) — Skills profesionales de
+    seguridad de la firma Trail of Bits. Incluyen auditoría de código, detección de vulnerabilidades y
+    análisis con CodeQL y Semgrep.
+   • Superpowers ( github.com/obra/superpowers ) — Competencias de ingeniería de software de
+    Jesse Vincent. Cubren planificación, revisión, testing y debugging.
+   • Fullstack Dev Skills ( github.com/jeffallan/claude-skills ) — 65 skills especializados para
+    desarrollo full-stack con 9 comandos de workflow de proyecto.
+   • Context Engineering Kit ( github.com/NeoLabHQ/context-engineering-kit ) — Técnicas
+    avanzadas de context engineering con mínimo footprint de tokens.
+
+
+
+
+                                                  399                                     @soyenriquerocha
+SKILLS Y SLASH COMMANDS
+
+
+
+
+Cómo instalar skills de la comunidad
+La mayoría de skills de la comunidad se instalan clonando el repositorio y copiando la carpeta del skill
+a tu directorio personal o de proyecto:
+
+
+
+   # Clonar el repositorio
+   git clone https://github.com/trailofbits/skills /tmp/tob-skills
+
+
+   # Copiar el skill que te interese
+   cp -r /tmp/tob-skills/security-audit ~/.claude/skills/
+
+
+   # O como plugin si tiene estructura de plugin
+   claude --plugin-dir /tmp/tob-skills
+
+
+
+Verifica siempre el contenido del skill antes de instalarlo. Revisa el SKILL.md y cualquier script
+incluido. Un skill puede ejecutar comandos en tu terminal.
+
+
+
+Errores Comunes y Cómo Resolverlos
+
+   • El skill no se activa automáticamente: Revisa que la description incluya palabras clave
+    relevantes. Prueba con /skills para ver si aparece. Si no aparece, invócalo directamente con /
+    nombre .
+
+   • El skill se activa demasiado: Tu description es muy genérica. Hazla más específica o agrega
+     disable-model-invocation: true .
+
+   • Claude no ve todos mis skills: Tienes demasiados skills y el listado se está desbordando. Corre /
+    doctor para ver qué skills quedaron cortados. Soluciones: sube
+     skillListingBudgetFraction (ej. 0.02 ) o setea SLASH_COMMAND_TOOL_CHAR_BUDGET , baja
+    entradas de baja prioridad a name-only en skillOverrides , o recorta description y
+     when_to_use dejando el caso clave primero.
+
+   • El directorio debe ser commands (plural): Un error típico es escribir command en singular. No
+    funciona.
+   • La extensión debe ser .md : Los archivos .txt o sin extensión no se reconocen.
+   • $ARGUMENTS no funciona: Debe escribirse exactamente así, todo en mayúsculas.
+   • Subagente retorna sin resultado: Estás usando context: fork en un skill de referencia. Los
+    skills de referencia deben ejecutarse inline.
+   • Skills de plugin no aparecen: Verifica que las carpetas estén a nivel raíz del plugin, no dentro de
+     .claude-plugin/ . Si la estructura está bien, corre /reload-plugins ; si persiste, borra el
+    caché con rm -rf ~/.claude/plugins/cache , reinicia Claude Code y reinstala.
+
+
+
+                                                    400                                    @soyenriquerocha
+                                                                          SKILLS Y SLASH COMMANDS
+
+
+
+
+• "Plugin not found in any marketplace": El marketplace no está añadido o el listado está
+ desactualizado. Refresca con /plugin marketplace update claude-plugins-official . Si
+ nunca lo añadiste, hazlo con /plugin marketplace add .
+• "Files not found after plugin installation": El plugin referencia archivos que están fuera de su
+ directorio. Los plugins se copian a un caché, así que paths externos no funcionan. Mantén todos
+ los recursos dentro del directorio del plugin y usa ${CLAUDE_SKILL_DIR} para las rutas.
+• /pr-comments no funciona: Fue removido en la versión 2.1.91. Pide directamente a Claude que
+ vea los comentarios del PR.
+• /vim no funciona: Fue removido en la versión 2.1.92. Ahora puedes alternar entre modo Vim y
+ Normal desde /config → Editor mode.
+• "Unknown command: /cd": Tu versión de Claude Code es anterior a la 2.1.169, cuando se agregó
+ /cd . Actualiza a v2.1.169 o posterior.
+
+• Un skill nuevo en disco no aparece en la sesión: Creaste o copiaste el skill mientras Claude Code
+ ya estaba corriendo. Corre /reload-skills (desde v2.1.152) para re-escanear skills, o
+ /reload-plugins si fue un cambio en plugins. Las ediciones a un SKILL.md existente se
+ detectan en vivo; solo necesitas reiniciar Claude Code si creaste un directorio de skills de nivel
+ superior que no existía al arrancar la sesión.
+• Quiero deshabilitar la ejecución de shell en skills: Agrega disableSkillShellExecution:
+ true en tu settings.json . Esto reemplaza cada comando !`...` y bloque ```! con un
+ mensaje de política. Los skills bundled y managed no se ven afectados por esta configuración.
+
+
+
+
+                                                  401                                    @soyenriquerocha
+SKILLS Y SLASH COMMANDS
+
+
+
+
+Ejemplos Prácticos
+
+
+
+   Crear un skill personal para explicar código
+
+
+
+       mkdir -p ~/.claude/skills/explain-code
+       cat > ~/.claude/skills/explain-code/SKILL.md << 'EOF'
+       ---
+       name: explain-code
+       description: Explains code with visual diagrams and analogies. Use
+       when explaining how code works or when the user asks "how does this
+       work?"
+       ---
+
+
+       When explaining code, always include:
+       1. Start with an analogy from everyday life
+       2. Draw an ASCII diagram showing the flow
+       3. Walk through the code step-by-step
+       4. Highlight a common mistake or gotcha
+       EOF
+
+
+
+   Creas la carpeta del skill en tu directorio personal. Luego escribes el SKILL.md con el frontmatter
+   (name y description) y las instrucciones. Ahora puedes escribir /explain-code en cualquier
+   proyecto.
+
+
+
+
+                                                   402                                        @soyenriquerocha
+                                                                           SKILLS Y SLASH COMMANDS
+
+
+
+
+Crear un skill de proyecto para deploy seguro
+
+
+
+   mkdir -p .claude/skills/deploy
+   cat > .claude/skills/deploy/SKILL.md << 'EOF'
+   ---
+   name: deploy
+   description: Deploy the application to production
+   context: fork
+   disable-model-invocation: true
+   ---
+
+
+   Deploy the application:
+   1. Run the test suite: npm test
+   2. Build the application: npm run build
+   3. Push to production: npm run deploy
+   4. Verify the deployment is healthy
+   EOF
+
+
+
+Este skill usa context: fork para ejecutarse en un subagente aislado. Usa disable-model-invocation
+para que solo el usuario pueda ejecutarlo (Claude no lo activa solo). Ideal para acciones con
+efectos secundarios.
+
+
+
+
+                                                403                                       @soyenriquerocha
+SKILLS Y SLASH COMMANDS
+
+
+
+
+   Skill con inyección dinámica para revisar PRs
+
+
+
+      mkdir -p .claude/skills/pr-review
+      cat > .claude/skills/pr-review/SKILL.md << 'EOF'
+      ---
+      name: pr-review
+      description: Review the current pull request with detailed analysis
+      context: fork
+      agent: Explore
+      allowed-tools: Bash(gh *)
+      ---
+
+
+      ## Context
+      - Diff: !`gh pr diff`
+      - Comments: !`gh pr view --comments`
+
+
+      ## Task
+      Review this PR for:
+      1. Code quality issues
+      2. Security vulnerabilities
+      3. Performance concerns
+      EOF
+
+
+
+   Los comandos !`gh pr diff` y !`gh pr view --comments` se ejecutan ANTES de que Claude vea el
+   contenido. Claude recibe los datos reales del PR ya insertados en el prompt.
+
+
+
+
+                                                  404                                   @soyenriquerocha
+                                                                            SKILLS Y SLASH COMMANDS
+
+
+
+
+Instalar un plugin desde el marketplace oficial
+
+
+
+    # El marketplace oficial 'claude-plugins-official' viene activo por
+    defecto
+    /plugin install code-review@claude-plugins-official
+
+
+    # Recargar para que aparezcan los skills del plugin
+    /reload-plugins
+
+
+    # Usar un skill del plugin (siempre con namespace)
+    /code-review:review
+
+
+
+Instala el plugin code-review desde el marketplace oficial 'claude-plugins-official' (siempre activo,
+con auto-update encendido). Los skills del plugin estarán disponibles con namespace: /code-
+review:nombre-del-skill.
+
+
+
+
+Ver todos los skills disponibles
+
+
+
+    /skills
+
+
+
+Muestra una lista de todos los skills disponibles: built-in, bundled, personales, de proyecto y de
+plugins. Útil para verificar que tus skills se cargaron correctamente.
+
+
+
+
+                                                 405                                       @soyenriquerocha
+SKILLS Y SLASH COMMANDS
+
+
+
+
+   Skill con frontmatter avanzado: effort, paths y shell
+
+
+
+       mkdir -p .claude/skills/lint-components
+       cat > .claude/skills/lint-components/SKILL.md << 'EOF'
+       ---
+       name: lint-components
+       description: Lint and fix React components following project
+       conventions
+       effort: high
+       paths:
+         - src/components/**/*.tsx
+         - src/components/**/*.jsx
+       shell: bash
+       allowed-tools: Read, Grep, Glob, Edit
+       ---
+
+
+       ## Environment
+       ```!
+       npm ls eslint 2>/dev/null | head -3
+       cat .eslintrc.json 2>/dev/null | head -20
+       ```
+
+
+       Lint the components matching the changed files.
+       Fix issues automatically where possible.
+       EOF
+
+
+
+   Este skill usa effort: high para forzar análisis detallado, paths para activarse solo con
+   archivos .tsx/.jsx en src/components/, shell: bash explícito, y un bloque ```! multi-línea para
+   inyectar contexto del entorno.
+
+
+
+
+                                                     406                                       @soyenriquerocha
+                                                                           SKILLS Y SLASH COMMANDS
+
+
+
+
+Skill con argumentos nombrados (frontmatter arguments)
+
+
+
+   mkdir -p .claude/skills/fix-issue
+   cat > .claude/skills/fix-issue/SKILL.md << 'EOF'
+   ---
+   name: fix-issue
+   description: Fix a GitHub issue on a specific branch
+   when_to_use: User mentions fixing issue numbers, hotfixes, or wants
+   to address a GitHub bug report.
+   arguments: [issue, branch]
+   allowed-tools: Bash(gh *), Read, Edit
+   ---
+
+
+   Fix GitHub issue #$issue on branch $branch following our coding
+   standards.
+
+
+   Steps:
+   1. Fetch issue details: gh issue view $issue
+   2. Switch to branch: git checkout $branch
+   3. Implement the fix
+   4. Run tests
+   5. Open a PR linking back to issue #$issue
+   EOF
+
+
+
+El campo 'arguments: [issue, branch]' declara dos argumentos posicionales nombrados. Al
+invocar /fix-issue 142 hotfix-auth, $issue=142 y $branch=hotfix-auth. Es más legible que $0 y $1,
+sobre todo en skills largos. El campo 'when_to_use' refuerza cuándo Claude debe activar el skill
+automáticamente.
+
+
+
+
+                                                407                                       @soyenriquerocha
+SKILLS Y SLASH COMMANDS
+
+
+
+
+   Reducir prompts de permiso con /fewer-permission-prompts
+
+
+
+      # Tras unas semanas de uso en un proyecto, corre:
+      /fewer-permission-prompts
+
+
+      # El skill escanea tus transcripts y sugiere un allowlist como:
+      # {
+      #     "permissions": {
+      #         "allow": [
+      #             "Bash(npm test*)",
+      #             "Bash(npm run lint*)",
+      #             "Bash(git status*)",
+      #             "Bash(git diff*)"
+      #         ]
+      #     }
+      # }
+      #
+      # Y lo escribe a .claude/settings.json del proyecto.
+
+
+
+   El bundled skill /fewer-permission-prompts analiza qué comandos Bash y MCP de solo lectura te
+   aprueban una y otra vez, y los agrega como allowlist al settings.json del proyecto. Resultado:
+   menos interrupciones en tu flujo, manteniendo el control sobre los comandos riesgosos.
+
+
+
+
+                                                   408                                       @soyenriquerocha
+                                                                           SKILLS Y SLASH COMMANDS
+
+
+
+
+Usar slash commands vía el Agent SDK (TypeScript)
+
+
+
+   import { query } from "@anthropic-ai/claude-agent-sdk";
+
+
+   // Enviar un slash command
+   for await (const message of query({
+       prompt: "/compact",
+       options: { maxTurns: 1 }
+   })) {
+       if (message.type === "result") {
+           console.log("Command executed:", message.result);
+       }
+   }
+
+
+   // Descubrir comandos disponibles
+   for await (const message of query({
+       prompt: "Hello",
+       options: { maxTurns: 1 }
+   })) {
+       if (message.type === "system" && message.subtype === "init") {
+           console.log("Available slash commands:", message.slash_commands);
+       }
+   }
+
+
+
+Los slash commands se pueden enviar programáticamente a través del Agent SDK. El mensaje de
+inicialización del sistema incluye la lista de comandos disponibles. El SDK soporta TypeScript y
+Python.
+
+
+
+
+  Consejo
+
+  No necesitas memorizar el formato de SKILL.md. Pídele a Claude: "Crea un skill que haga X" y él
+  genera el archivo completo con frontmatter y todo.
+
+
+
+
+  Consejo
+
+  Usa /context para verificar cuánto espacio ocupan tus skills en la ventana de contexto. Si tienes
+  muchos, algunas descripciones podrían no cargarse.
+
+
+
+
+                                                409                                        @soyenriquerocha
+SKILLS Y SLASH COMMANDS
+
+
+
+
+    Advertencia
+
+    Si usas context: fork en un skill que solo contiene guías de referencia (sin tarea concreta), el
+    subagente no tendrá nada que hacer y retornará vacío. Usa fork solo para skills de tarea.
+
+
+
+
+    Advertencia
+
+    El campo user-invocable: false solo oculta el skill del menú. Claude aún puede invocarlo
+    programáticamente. Para bloquearlo completamente, usa disable-model-invocation: true.
+
+
+
+
+    Nota
+
+    Los skills de plugins SIEMPRE llevan namespace (como /greet:hello). Esto evita conflictos si dos
+    plugins tienen skills con el mismo nombre.
+
+
+
+
+    Nota
+
+    Incluir la palabra 'ultrathink' en un skill activa el pensamiento extendido de Claude, útil para
+    tareas que requieren análisis profundo.
+
+
+
+
+    Consejo
+
+    Comparte skills con tu equipo haciendo commit de la carpeta .claude/skills/ al repositorio. Tu
+    equipo los tendrá automáticamente sin instalar nada.
+
+
+
+
+    Consejo
+
+    Usa el campo paths en el frontmatter para que un skill se active automáticamente solo cuando
+    trabajas con archivos específicos. Es ideal para skills de linting o convenciones por carpeta.
+
+
+
+
+                                                    410                                        @soyenriquerocha
+                                                                           SKILLS Y SLASH COMMANDS
+
+
+
+
+ Advertencia
+
+ Los comandos /pr-comments y /vim fueron removidos. Si los usas y no funcionan, revisa la
+ sección de errores comunes para las alternativas.
+
+
+
+
+ Consejo
+
+ Antes de crear un skill desde cero, revisa awesome-claude-code en GitHub. La comunidad tiene
+ cientos de skills listos para instalar.
+
+
+
+
+Resumen del Capítulo
+
+Claude Code tiene tres tipos de comandos /: built-in (del sistema), bundled (incluidos) y custom
+(tuyos). Las skills son carpetas con un archivo SKILL.md que contiene frontmatter YAML e
+instrucciones Markdown. Puedes controlar quién las invoca, ejecutarlas en subagentes aislados,
+inyectar contexto dinámico con comandos shell (inline o multi-línea), y compartirlas con tu equipo
+o el mundo vía plugins. El ecosistema de la comunidad ofrece cientos de skills listos para instalar.
+
+
+
+
+                                                411                                        @soyenriquerocha
+17

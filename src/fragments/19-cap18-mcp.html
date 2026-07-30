@@ -1,0 +1,989 @@
+<article class="chapter" data-id="cap18" data-title="MCP Servers" data-part="3">
+  <header class="ch-head">
+    <p class="ch-kicker">Parte 3 · Claude Code · Capítulo 18</p>
+    <h1>MCP Servers</h1>
+    <p class="ch-lede">Conecta Claude Code con el mundo exterior usando el Model Context Protocol</p>
+    <p class="ch-level">INTERMEDIO</p>
+  </header>
+
+  <p>Claude Code es muy poderoso por sí solo. Pero imagina que pudiera hablar con GitHub, Notion, tu base de datos, Slack y cientos de herramientas más. Eso es exactamente lo que hace MCP: el Model Context Protocol. En este capítulo vas a aprender qué es MCP, cómo conectar servidores a Claude Code, cuáles son los más populares y cómo crear el tuyo propio.</p>
+
+  <h2 id="cap18-que-es-mcp">Qué es MCP (Model Context Protocol)</h2>
+
+  <p>Piensa en tu teléfono. Tiene un puerto USB-C. Con ese único puerto puedes conectar cargadores, audífonos, memorias USB y pantallas externas. No necesitas un puerto diferente para cada cosa.</p>
+
+  <p>MCP (Model Context Protocol) funciona igual, pero para aplicaciones de IA. Es un estándar abierto que permite conectar Claude Code con sistemas externos. Un solo protocolo para conectarse a todo: GitHub, bases de datos, Slack, Notion y más.</p>
+
+  <p>Sin MCP, cada integración necesitaría su propio conector especial. Con MCP, todos hablan el mismo idioma.</p>
+
+  <h3>Cómo funciona: la arquitectura</h3>
+
+  <p>MCP tiene tres participantes principales. Piensa en un restaurante:</p>
+
+  <ul class="deflist">
+    <li><strong>MCP Host</strong> — Es el restaurante completo. En nuestro caso, es Claude Code. Coordina todo.</li>
+    <li><strong>MCP Client</strong> — Es el mesero. Claude Code crea un mesero dedicado para cada servicio externo. El mesero va y viene entre tú y la cocina.</li>
+    <li><strong>MCP Server</strong> — Es la cocina. Es el programa externo que hace el trabajo real: consultar GitHub, leer archivos, buscar en Slack.</li>
+  </ul>
+
+  <p>Cuando abres Claude Code y tienes 3 servidores MCP configurados, Claude Code crea 3 clientes (meseros). Cada uno habla exclusivamente con su servidor (cocina).</p>
+
+  <h3>Qué ofrecen los servidores MCP</h3>
+
+  <p>Un servidor MCP puede ofrecer tres tipos de cosas:</p>
+
+  <ol>
+    <li><strong>Tools (Herramientas)</strong>: Acciones que Claude puede ejecutar. Ejemplo: "crear un issue en GitHub", "enviar un mensaje en Slack", "consultar la base de datos". Claude decide cuándo usarlas.</li>
+    <li><strong>Resources (Recursos)</strong>: Datos de solo lectura. Ejemplo: el contenido de un archivo, un documento de Notion, un issue de GitHub. Se referencian con <code>@servidor:recurso</code>.</li>
+    <li><strong>Prompts</strong>: Plantillas de instrucciones reutilizables. Aparecen como comandos tipo <code>/mcp__github__pr_review</code>.</li>
+  </ol>
+
+  <p>El camino también va al revés. El cliente (Claude Code) puede ofrecer sus propias primitivas para que el servidor le pida cosas a él. Las tres principales son:</p>
+
+  <ul class="deflist">
+    <li><strong>Sampling</strong> — el servidor le pide al cliente que ejecute una completion del LLM (vía <code>sampling/createMessage</code>). Así un servidor puede usar un modelo de IA sin tener que cargar su propio SDK ni gestionar claves de API.</li>
+    <li><strong>Elicitation</strong> — el servidor le pide información al usuario a mitad de una tarea. Lo cubrimos en detalle más adelante en este capítulo.</li>
+    <li><strong>Logging</strong> — el servidor envía mensajes de log al cliente para debug y monitoreo.</li>
+  </ul>
+
+  <p>También existe una primitiva utilitaria experimental llamada <strong>Tasks</strong>: permite ejecución durable, es decir, lanzar una operación costosa o de varios pasos, seguir su estado y recuperar el resultado más tarde sin tener que esperar bloqueado. Al ser experimental, puede cambiar.</p>
+
+  <h3>Cómo se comunican: los transportes</h3>
+
+  <p>El cliente y el servidor necesitan un canal para hablar. MCP ofrece dos opciones:</p>
+
+  <ul class="deflist">
+    <li><strong>stdio (local)</strong> — Claude Code lanza el servidor como un programa en tu computadora. Se comunican directamente, sin internet. Es rápido y seguro. Ideal para herramientas locales.</li>
+    <li><strong>HTTP (remoto)</strong> — El servidor vive en internet. Claude Code le envía peticiones HTTP. Ideal para servicios en la nube como GitHub o Notion.</li>
+  </ul>
+
+  <p>Existe un tercer transporte llamado SSE, pero está deprecado (obsoleto). Si lo ves en algún tutorial viejo, usa HTTP en su lugar.</p>
+
+  <p>Hay un cuarto transporte, WebSocket (<code>ws</code>), que Claude Code soporta pero es poco común. Tiene tres limitaciones que conviene conocer: solo se configura a mano en <code>.mcp.json</code> o con <code>claude mcp add-json</code> (no funciona con el flag <code>--transport</code>), y solo se autentica por headers (no soporta OAuth). Para la mayoría de casos, stdio o HTTP son mejores opciones.</p>
+
+  <h2 id="cap18-configurar-servidores-mcp">Configurar servidores MCP en Claude Code</h2>
+
+  <p>Configurar un servidor MCP es como instalar una app en tu teléfono. Le dices a Claude Code: "quiero conectarme a este servicio" y listo.</p>
+
+  <p>El comando principal es <code>claude mcp add</code>. Veamos cómo usarlo.</p>
+
+  <h3>Agregar un servidor remoto (HTTP)</h3>
+
+  <p>Para servicios en la nube como GitHub, Notion o Sentry. Es la opción más común:</p>
+
+  <pre><code class="lang-bash">claude mcp add --transport http github https://api.githubcopilot.com/mcp/</code></pre>
+
+  <p>Desglose del comando:</p>
+
+  <ul class="deflist">
+    <li><strong><code>claude mcp add</code></strong> — agrega un nuevo servidor</li>
+    <li><strong><code>--transport http</code></strong> — usa conexión por internet</li>
+    <li><strong><code>github</code></strong> — el nombre que le das al servidor (tú eliges)</li>
+    <li><strong><code><a href="https://" target="_blank" rel="noopener">https://</a>...</code></strong> — la dirección del servidor</li>
+  </ul>
+
+  <p>Muchos servidores remotos necesitan autenticación. Después de agregar el servidor, escribe <code>/mcp</code> dentro de Claude Code. Verás la opción de autenticarte con OAuth (login via navegador).</p>
+
+  <h3>Agregar un servidor local (stdio)</h3>
+
+  <p>Para herramientas que corren en tu propia computadora:</p>
+
+  <pre><code class="lang-bash">claude mcp add --transport stdio filesystem -- npx -y @modelcontextprotocol/server-filesystem /ruta/al/directorio</code></pre>
+
+  <p>Nota el doble guion (<code>--</code>). Es muy importante. Todo lo que va antes del doble guion son opciones para Claude Code. Todo lo que va después es el comando que arranca el servidor.</p>
+
+  <p>Otro ejemplo con variables de entorno:</p>
+
+  <pre><code class="lang-bash">claude mcp add --transport stdio --env AIRTABLE_API_KEY=tu_clave airtable -- npx -y airtable-mcp-server</code></pre>
+
+  <p>Aquí <code>--env</code> le pasa la API key al servidor. Puedes usar <code>--env</code> varias veces si necesitas múltiples variables.</p>
+
+  <h3>Regla de oro: el orden importa</h3>
+
+  <p>Este es un error muy común. Todas las opciones (<code>--transport</code>, <code>--env</code>, <code>--scope</code>, <code>--header</code>) van antes del nombre del servidor. Mira la estructura:</p>
+
+  <pre><code class="lang-bash">claude mcp add [opciones] nombre-servidor [-- comando args]</code></pre>
+
+  <p><strong>Correcto:</strong></p>
+
+  <pre><code class="lang-bash">claude mcp add --transport http --scope project paypal https://mcp.paypal.com/mcp</code></pre>
+
+  <p><strong>Incorrecto (va a fallar):</strong></p>
+
+  <pre><code class="lang-bash">claude mcp add paypal --transport http https://mcp.paypal.com/mcp</code></pre>
+
+  <h3>Dónde se guarda la configuración: scopes</h3>
+
+  <p>Cuando agregas un servidor, Claude Code lo guarda en un archivo. Pero tienes tres opciones de dónde guardarlo:</p>
+
+  <ul class="deflist">
+    <li><strong>local (por defecto)</strong> — Solo para ti, solo en este proyecto. Se guarda en <code>~/.claude.json</code>. Perfecto para configuraciones personales.</li>
+    <li><strong>project</strong> — Compartido con tu equipo via git. Se guarda en <code>.mcp.json</code> en la raíz del proyecto. Todos los miembros del equipo tendrán acceso.</li>
+    <li><strong>user</strong> — Solo para ti, pero en todos tus proyectos. Se guarda en <code>~/.claude.json</code>. Ideal para herramientas que usas siempre.</li>
+  </ul>
+
+  <p>Para elegir el scope, usa <code>--scope</code>:</p>
+
+  <pre><code class="lang-bash">claude mcp add --transport http --scope project paypal https://mcp.paypal.com/mcp</code></pre>
+
+  <p>Si hay servidores con el mismo nombre en diferentes scopes, la prioridad es: local &gt; project &gt; user.</p>
+
+  <h3>Otros comandos útiles de MCP</h3>
+
+  <p>Además de <code>add</code>, tienes estos comandos:</p>
+
+  <ul class="deflist">
+    <li><strong><code>claude mcp list</code></strong> — Ver todos los servidores configurados</li>
+    <li><strong><code>claude mcp get github</code></strong> — Ver detalles de un servidor específico</li>
+    <li><strong><code>claude mcp remove github</code></strong> — Eliminar un servidor</li>
+    <li><strong><code>claude mcp add-json nombre '{...}'</code></strong> — Agregar servidor desde un JSON completo</li>
+    <li><strong><code>claude mcp add-from-claude-desktop</code></strong> — Importar servidores de Claude Desktop (solo macOS/WSL)</li>
+    <li><strong><code>claude mcp reset-project-choices</code></strong> — Resetear aprobaciones de servidores de proyecto</li>
+  </ul>
+
+  <p>Y dentro de Claude Code, el comando <code>/mcp</code> te muestra el estado de todos los servidores, permite autenticarte y gestionar conexiones.</p>
+
+  <h3>Headers dinámicos con headersHelper</h3>
+
+  <p>Algunos entornos corporativos usan autenticación que no es OAuth: Kerberos, SSO interno o tokens de corta vida. Para estos casos existe <code>headersHelper</code>.</p>
+
+  <p>En tu <code>.mcp.json</code>, en vez de poner headers estáticos, defines un comando shell que genera los headers en tiempo real:</p>
+
+  <pre><code class="lang-json">{
+    "mcpServers": {
+        "api-interna": {
+            "type": "http",
+            "url": "https://mcp.internal.example.com",
+            "headersHelper": "/opt/bin/get-mcp-auth-headers.sh"
+        }
+    }
+}</code></pre>
+
+  <p>El script debe escribir un objeto JSON de pares clave-valor a stdout. Ejemplo de lo que debe imprimir:</p>
+
+  <pre><code class="lang-json">{"Authorization": "Bearer eyJhbG..."}</code></pre>
+
+  <p>Reglas importantes:</p>
+
+  <ul>
+    <li>El comando tiene un timeout de 10 segundos. Si tarda más, falla.</li>
+    <li>Los headers dinámicos sobreescriben headers estáticos con el mismo nombre.</li>
+    <li>Se ejecuta fresco en cada conexión (al iniciar sesión y al reconectar).</li>
+    <li>El script recibe las variables de entorno <code>CLAUDE_CODE_MCP_SERVER_NAME</code> y <code>CLAUDE_CODE_MCP_SERVER_URL</code>.</li>
+  </ul>
+
+  <h3>Cargar configuración MCP desde la línea de comandos</h3>
+
+  <p>Puedes cargar servidores MCP desde archivos JSON al iniciar Claude Code, sin necesidad de configurarlos previamente:</p>
+
+  <pre><code class="lang-bash">claude --mcp-config ./mcp.json</code></pre>
+
+  <p>Acepta múltiples archivos separados por espacio. Los servidores se agregan a los que ya tengas configurados.</p>
+
+  <p>Si quieres que Claude Code use exclusivamente los servidores de ese archivo (ignorando cualquier otra configuración MCP), usa <code>--strict-mcp-config</code>:</p>
+
+  <pre><code class="lang-bash">claude --strict-mcp-config --mcp-config ./mcp.json</code></pre>
+
+  <p>Esto es muy útil para entornos controlados, CI/CD o cuando quieres asegurarte de que solo se usen servidores específicos.</p>
+
+  <h3>Reconexión automática cuando un servidor se cae</h3>
+
+  <p>Las conexiones de red fallan. Un servidor HTTP puede desconectarse por un reinicio, una caída momentánea o un timeout. Claude Code intenta reconectarse solo, así que no tienes que estar pendiente.</p>
+
+  <p>Cómo funciona la reconexión para servidores HTTP y SSE:</p>
+
+  <ul>
+    <li>Hasta 5 intentos con backoff exponencial: 1s, 2s, 4s, 8s y 16s entre cada intento.</li>
+    <li>Mientras reconecta, el servidor aparece como <code>pending</code> en <code>/mcp</code>.</li>
+    <li>Si los 5 intentos fallan, queda marcado como <code>failed</code> y tienes que reintentar manualmente desde <code>/mcp</code>.</li>
+  </ul>
+
+  <p>Desde v2.1.121, la conexión inicial también reintenta hasta 3 veces cuando hay errores transitorios (códigos 5xx, connection refused, timeout). Antes, un fallo inicial significaba rendirse al primer intento.</p>
+
+  <p>Hay errores que no reintentan, porque indican un problema de configuración que ningún reintento va a arreglar:</p>
+
+  <ul>
+    <li><strong>401 o 403</strong> (autenticación o permisos): hay que reautenticar o ampliar scopes.</li>
+    <li><strong>Not found</strong>: la URL está mal.</li>
+  </ul>
+
+  <div class="callout warn">
+    <p class="callout-label">Importante</p>
+    <p>Los servidores stdio son procesos locales y no se reconectan. Si el proceso muere, hay que reiniciar la sesión o volver a arrancar el servidor.</p>
+  </div>
+
+  <h2 id="cap18-autenticacion">Autenticación: conectarte de forma segura</h2>
+
+  <p>Muchos servidores remotos necesitan saber quién eres antes de dejarte entrar. Hay varias formas de autenticarte.</p>
+
+  <h3>OAuth: login con tu navegador</h3>
+
+  <p>La forma más común. Funciona así:</p>
+
+  <ol class="steps">
+    <li>Agregas el servidor: <code>claude mcp add --transport http github <a href="https://api.githubcopilot.com/mcp/" target="_blank" rel="noopener">https://api.githubcopilot.com/mcp/</a></code></li>
+    <li>Dentro de Claude Code, escribes <code>/mcp</code></li>
+    <li>Seleccionas "Authenticate" junto al servidor</li>
+    <li>Se abre tu navegador. Haces login como siempre.</li>
+    <li>El navegador te redirige de vuelta. Listo.</li>
+  </ol>
+
+  <p>Los tokens se guardan de forma segura. Se refrescan solos. No tienes que volver a autenticarte cada vez.</p>
+
+  <p>Dos detalles útiles del flujo OAuth en Claude Code:</p>
+
+  <ul class="deflist">
+    <li><strong><code>offline_access</code> automático</strong> — si el servidor anuncia el scope <code>offline_access</code> en su <code>scopes_supported</code>, Claude Code lo añade solo a la petición. Eso permite obtener un refresh token y renovar credenciales sin que tengas que volver a hacer login cuando expira el access token.</li>
+    <li><strong>Descubrimiento vía <code>WWW-Authenticate</code></strong> — si el servidor responde con el header <code>WWW-Authenticate</code> apuntando al authorization server, Claude Code lo usa para descubrir automáticamente la metadata OAuth. No tienes que configurar <code>authServerMetadataUrl</code> a mano cuando el servidor lo soporta.</li>
+  </ul>
+
+  <div class="callout warn">
+    <p class="callout-label">Excepción importante</p>
+    <p>Algunos conectores hospedados por Anthropic —Microsoft 365, Gmail y Google Calendar— no soportan el login OAuth local desde Claude Code. Para usarlos tienes que conectarlos primero en <code><a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a></code>, en Settings → Connectors (disponible desde la v2.1.162). Una vez conectados ahí, aparecen en Claude Code como servidores de <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>.</p>
+  </div>
+
+  <h3>Bearer token o API key en headers</h3>
+
+  <p>Algunos servidores usan tokens directos. Los pasas con <code>--header</code>:</p>
+
+  <pre><code class="lang-bash">claude mcp add --transport http mi-api https://api.example.com/mcp --header "Authorization: Bearer tu-token-aqui"</code></pre>
+
+  <p>O con una API key:</p>
+
+  <pre><code class="lang-bash">claude mcp add --transport http privado https://api.company.com/mcp --header "X-API-Key: tu-clave"</code></pre>
+
+  <h3>OAuth avanzado: credenciales pre-configuradas</h3>
+
+  <p>Algunos servidores no soportan registro automático de OAuth. Si ves el error "does not support dynamic client registration", necesitas registrar tu app manualmente:</p>
+
+  <ol class="steps">
+    <li>Ve al portal del servicio y registra una app OAuth</li>
+    <li>Obtendrás un client ID y un client secret</li>
+    <li>Usa ambos al agregar el servidor:</li>
+  </ol>
+
+  <pre><code class="lang-bash">claude mcp add --transport http --client-id tu-id --client-secret --callback-port 8080 mi-server https://mcp.example.com/mcp</code></pre>
+
+  <p>El flag <code>--client-secret</code> te pedirá el secreto de forma segura (no se muestra en pantalla). El secreto se guarda en el keychain del sistema, no en archivos de texto.</p>
+
+  <p>Para automatización (CI/CD), pasa el secreto via variable de entorno:</p>
+
+  <pre><code class="lang-bash">MCP_CLIENT_SECRET=tu-secreto claude mcp add --transport http --client-id tu-id --client-secret mi-server https://mcp.example.com/mcp</code></pre>
+
+  <h2 id="cap18-el-archivo-mcp-json">El archivo .mcp.json: compartir servidores con tu equipo</h2>
+
+  <p>Cuando usas <code>--scope project</code>, la configuración se guarda en un archivo llamado <code>.mcp.json</code> en la raíz de tu proyecto. Este archivo se puede subir a git para que todo tu equipo use los mismos servidores.</p>
+
+  <h3>Formato del archivo</h3>
+
+  <p>Así se ve un <code>.mcp.json</code> típico:</p>
+
+  <pre><code class="lang-json">{
+    "mcpServers": {
+        "github": {
+            "type": "http",
+            "url": "https://api.githubcopilot.com/mcp/"
+        },
+        "db": {
+            "command": "npx",
+            "args": ["-y", "@bytebase/dbhub", "--dsn", "postgresql://user:pass@host:5432/db"],
+            "env": {}
+        }
+    }
+}</code></pre>
+
+  <p>Cada servidor tiene un nombre ("github", "db") y su configuración. Los servidores HTTP tienen <code>type</code> y <code>url</code>. Los servidores stdio tienen <code>command</code>, <code>args</code> y opcionalmente <code>env</code>.</p>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>El valor <code>type: "streamable-http"</code> es un alias de <code>type: "http"</code>. Existe por compatibilidad con la especificación oficial de MCP. Si ves cualquiera de los dos en un tutorial, hacen exactamente lo mismo.</p>
+  </div>
+
+  <p>Cada servidor también acepta un campo <code>timeout</code> (en milisegundos): es el límite duro de tiempo que puede tardar cada llamada a una herramienta de ese servidor antes de cortarse. Por ejemplo, para darle 10 minutos a una tool pesada:</p>
+
+  <pre><code class="lang-json">{
+    "mcpServers": {
+        "reportes": {
+            "type": "http",
+            "url": "https://mcp.example.com/mcp",
+            "timeout": 600000
+        }
+    }
+}</code></pre>
+
+  <p>Detalles importantes del campo <code>timeout</code>:</p>
+
+  <ul>
+    <li>Es por tool call, no por sesión. Mide tiempo de reloj real (wall-clock).</li>
+    <li>Valores menores a 1000 ms se ignoran (se considera que es un error de configuración).</li>
+    <li>Las notificaciones de progreso que envíe el servidor no extienden el límite: si pasa el tiempo, se corta aunque el servidor siga reportando avance.</li>
+    <li>Sobreescribe, solo para ese servidor, el valor global de <code>MCP_TOOL_TIMEOUT</code> (ver más adelante).</li>
+  </ul>
+
+  <h3>Variables de entorno en .mcp.json</h3>
+
+  <p>No quieres poner tus claves secretas en un archivo que va a git. Para eso existen las variables de entorno:</p>
+
+  <pre><code class="lang-json">{
+    "mcpServers": {
+        "api-server": {
+            "type": "http",
+            "url": "${API_BASE_URL:-https://api.example.com}/mcp",
+            "headers": {
+                "Authorization": "Bearer ${API_KEY}"
+            }
+        }
+    }
+}</code></pre>
+
+  <p>La sintaxis <code>${VAR}</code> se reemplaza por el valor de la variable. Si agregas <code>:-valor</code>, ese es el valor por defecto cuando la variable no existe.</p>
+
+  <p>Ejemplo: <code>${API_BASE_URL:-<a href="https://api.example.com}" target="_blank" rel="noopener">https://api.example.com}</a></code> usa la variable <code>API_BASE_URL</code> si existe. Si no, usa <code><a href="https://api.example.com" target="_blank" rel="noopener">https://api.example.com</a></code>.</p>
+
+  <div class="callout warn">
+    <p class="callout-label">Cuidado</p>
+    <p>Si una variable no está definida y no tiene valor por defecto, Claude Code no podrá leer el archivo y dará error.</p>
+  </div>
+
+  <h3>alwaysLoad: forzar la carga al inicio</h3>
+
+  <p>Por defecto, Tool Search difiere la carga de las herramientas de un servidor: solo aparecen cuando Claude las busca. Eso ahorra contexto, pero a veces quieres que un servidor concreto esté siempre disponible desde el primer turno.</p>
+
+  <p>Para eso existe <code>alwaysLoad: true</code> a nivel de servidor:</p>
+
+  <pre><code class="lang-json">{
+    "mcpServers": {
+        "github": {
+            "type": "http",
+            "url": "https://api.githubcopilot.com/mcp/",
+            "alwaysLoad": true
+        }
+    }
+}</code></pre>
+
+  <p>Con esto, todas las herramientas de <code>github</code> se cargan al iniciar la sesión sin pasar por Tool Search. Ideal para servidores con pocas herramientas que usas en cada turno.</p>
+
+  <p>Detalles importantes:</p>
+
+  <ul>
+    <li>Requiere Claude Code v2.1.121+.</li>
+    <li>Bloquea el startup hasta que el servidor conecte (timeout de 5 segundos), incluso si tienes activado <code>MCP_CONNECTION_NONBLOCKING=1</code>. Esto pasa porque las tools tienen que estar listas antes del primer prompt.</li>
+    <li>Si solo quieres que una herramienta específica se cargue siempre (y dejar las demás en Tool Search), el autor del servidor puede marcarla con <code>_meta.anthropic/alwaysLoad: true</code> en la definición de esa tool.</li>
+  </ul>
+
+  <h3>Bloque oauth en .mcp.json</h3>
+
+  <p>Además de configurar OAuth con flags desde la línea de comandos, puedes ponerlo directamente en <code>.mcp.json</code> con un objeto <code>oauth</code>:</p>
+
+  <pre><code class="lang-json">{
+    "mcpServers": {
+        "slack": {
+            "type": "http",
+            "url": "https://mcp.slack.com/mcp",
+            "oauth": {
+                "clientId": "tu-client-id",
+                "callbackPort": 8080,
+                "scopes": "channels:read chat:write",
+                "authServerMetadataUrl": "https://auth.example.com/.well-known/openid-configuration"
+            }
+        }
+    }
+}</code></pre>
+
+  <p>Subcampos disponibles:</p>
+
+  <ul class="deflist">
+    <li><strong><code>clientId</code></strong> — el client ID OAuth pre-registrado en el portal del servicio. Útil para servidores que no soportan registro dinámico.</li>
+    <li><strong><code>callbackPort</code></strong> — puerto fijo para el redirect (<code>http://localhost:PORT/callback</code>). Debe coincidir con el que registraste en el portal.</li>
+    <li><strong><code>scopes</code></strong> — lista de scopes separados por espacios (formato RFC 6749). Ejemplo: <code>"channels:read chat:write search:read"</code>.</li>
+    <li><strong><code>authServerMetadataUrl</code></strong> — URL https con la metadata del authorization server (típicamente termina en <code>.well-known/openid-configuration</code>). Requiere Claude Code v2.1.64+.</li>
+  </ul>
+
+  <p>Lo bueno de tenerlo en <code>.mcp.json</code>: la configuración OAuth se comparte con tu equipo via git. Cada miembro hace su propio login con <code>/mcp</code>, pero no tienen que conocer los detalles de configuración.</p>
+
+  <h2 id="cap18-servidores-mcp-populares">Servidores MCP populares</h2>
+
+  <p>A abril de 2026, hay más de 12,000 servidores MCP disponibles en GitHub, npm, PyPI y registros como Smithery y Glama. Aquí van los más útiles, organizados por categoría.</p>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Sobre los servidores de referencia oficiales del proyecto MCP: en 2026, los únicos servidores de referencia activos mantenidos en el repo <code><a href="https://github.com/modelcontextprotocol/servers" target="_blank" rel="noopener">github.com/modelcontextprotocol/servers</a></code> son: Everything, Fetch, Filesystem, Git, Memory, Sequential Thinking y Time. Los demás (GitHub, PostgreSQL, Sentry, Slack, Google Drive, Brave Search, etc.) fueron movidos al repo <code>archived</code>. Sus equivalentes hoy se ofrecen como endpoints HTTP de terceros mantenidos por las propias empresas, que son precisamente los que citamos abajo (GitHub Copilot, Sentry, Notion, Slack, HubSpot, etc.).</p>
+  </div>
+
+  <h3>Desarrollo y código</h3>
+
+  <p><strong>GitHub</strong> — El más popular. Gestiona PRs, issues, revisiones de código y releases.</p>
+
+  <pre><code class="lang-bash">claude mcp add --transport http github https://api.githubcopilot.com/mcp/</code></pre>
+
+  <p>Después autentícate con <code>/mcp</code> en Claude Code. Con GitHub conectado puedes decir cosas como: "Revisa el PR #42", "Crea un issue para el bug del login" o "Busca dónde se usa la función calcularTotal".</p>
+
+  <p><strong>Sentry</strong> — Monitoreo de errores en producción.</p>
+
+  <pre><code class="lang-bash">claude mcp add --transport http sentry https://mcp.sentry.dev/mcp</code></pre>
+
+  <p>Puedes preguntar: "¿Cuáles son los errores más comunes en las últimas 24 horas?"</p>
+
+  <p><strong>Playwright</strong> — Automatización de navegador para testing.</p>
+
+  <pre><code class="lang-bash">claude mcp add --transport stdio playwright -- npx -y @playwright/mcp@latest</code></pre>
+
+  <h3>Bases de datos</h3>
+
+  <p><strong>PostgreSQL (via DBHub)</strong> — Consulta tu base de datos con lenguaje natural.</p>
+
+  <pre><code class="lang-bash">claude mcp add --transport stdio db -- npx -y @bytebase/dbhub --dsn "postgresql://user:pass@host:5432/midb"</code></pre>
+
+  <p>Imagina decirle a Claude: "¿Cuántos usuarios se registraron esta semana?" y que él haga la consulta SQL por ti.</p>
+
+  <p><strong>Filesystem</strong> — Operaciones de archivos con controles de acceso.</p>
+
+  <pre><code class="lang-bash">claude mcp add --transport stdio filesystem -- npx -y @modelcontextprotocol/server-filesystem /ruta/permitida</code></pre>
+
+  <p>Solo puede acceder al directorio que le indiques. Nada más.</p>
+
+  <h3>Productividad y comunicación</h3>
+
+  <p><strong>Notion</strong> — Accede a tus documentos y bases de datos de Notion.</p>
+
+  <pre><code class="lang-bash">claude mcp add --transport http notion https://mcp.notion.com/mcp</code></pre>
+
+  <p><strong>Slack</strong> — Busca mensajes, lee canales, envía notificaciones. La configuración varía según el servidor específico que uses.</p>
+
+  <p><strong>HubSpot</strong> — CRM, contactos y marketing.</p>
+
+  <pre><code class="lang-bash">claude mcp add --transport http hubspot --scope user https://mcp.hubspot.com/anthropic</code></pre>
+
+  <p><strong>Jira / Atlassian</strong> — Gestión de proyectos, tickets y Confluence.</p>
+
+  <h3>Utilidades</h3>
+
+  <p><strong>Memory</strong> — Memoria persistente basada en grafos de conocimiento. Almacena información entre sesiones.</p>
+
+  <p><strong>Fetch</strong> — Obtiene contenido web y lo convierte a formato que la IA puede leer fácilmente.</p>
+
+  <p><strong>Sequential Thinking</strong> — Ayuda a Claude a resolver problemas complejos paso a paso.</p>
+
+  <p>Todos estos son servidores de referencia oficiales del proyecto MCP. Los encuentras en <code><a href="https://github.com/modelcontextprotocol/servers" target="_blank" rel="noopener">github.com/modelcontextprotocol/servers</a></code>.</p>
+
+  <h2 id="cap18-recursos-y-prompts-mcp">Recursos y prompts MCP: más allá de las herramientas</h2>
+
+  <p>Los servidores MCP no solo ofrecen herramientas. También pueden darte datos y comandos listos para usar.</p>
+
+  <h3>Recursos con @ mentions</h3>
+
+  <p>Puedes referenciar recursos de servidores MCP usando <code>@</code>, igual que cuando mencionas archivos:</p>
+
+  <pre><code class="lang-text">Puedes analizar @github:issue://123 y sugerir una solución?</code></pre>
+
+  <p>Claude obtiene automáticamente el contenido del issue #123 de GitHub y lo incluye en la conversación. Puedes mencionar múltiples recursos en un solo mensaje.</p>
+
+  <p>El formato es: <code>@nombre-servidor:protocolo://ruta</code></p>
+
+  <h3>Prompts MCP como comandos</h3>
+
+  <p>Los servidores pueden ofrecer prompts predefinidos. Aparecen como comandos con el formato:</p>
+
+  <pre><code class="lang-text">/mcp__nombre-servidor__nombre-prompt</code></pre>
+
+  <p>Ejemplo: para que GitHub revise un PR, escribe:</p>
+
+  <pre><code class="lang-text">/mcp__github__pr_review 456</code></pre>
+
+  <p>Para ver todos los comandos disponibles, escribe <code>/</code> en Claude Code y busca los que empiezan con <code>/mcp__</code>.</p>
+
+  <h2 id="cap18-tool-search">Tool Search: carga inteligente de herramientas</h2>
+
+  <p>Si tienes muchos servidores MCP, podrías tener cientos de herramientas disponibles. Cargar todas al mismo tiempo desperdicia la ventana de contexto (la cantidad de texto que Claude puede procesar a la vez).</p>
+
+  <p>Tool Search resuelve esto. Es como un índice en un libro: en vez de leer todo el libro para encontrar algo, consultas el índice primero.</p>
+
+  <h3>Cómo funciona</h3>
+
+  <p>Tool Search está activado por defecto en Claude Code. Las herramientas MCP se difieren (solo se cargan sus nombres al inicio) y Claude las busca cuando las necesita. Funciona así:</p>
+
+  <ol>
+    <li>Las herramientas MCP no se cargan todas al inicio</li>
+    <li>Cuando Claude necesita una herramienta, busca en el índice</li>
+    <li>Solo carga las herramientas que realmente necesita</li>
+  </ol>
+
+  <p>Resultado: Claude usa su memoria de forma mucho más eficiente.</p>
+
+  <h3>Configurar Tool Search</h3>
+
+  <p>Usa la variable de entorno <code>ENABLE_TOOL_SEARCH</code>:</p>
+
+  <ul class="deflist">
+    <li><strong><code>true</code></strong> (por defecto en hosts first-party) — Siempre activado. Las herramientas se difieren y Claude las busca cuando las necesita.</li>
+    <li><strong><code>auto</code></strong> — Se activa cuando las herramientas exceden el 10% del contexto</li>
+    <li><strong><code>auto:5</code></strong> — Se activa al 5% del contexto (threshold personalizado)</li>
+    <li><strong><code>false</code></strong> — Desactivado, todas las herramientas se cargan al inicio</li>
+  </ul>
+
+  <pre><code class="lang-bash">ENABLE_TOOL_SEARCH=auto:5 claude</code></pre>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Cuando <code>ANTHROPIC_BASE_URL</code> apunta a un host de terceros (proxy), Tool Search se desactiva por defecto porque la mayoría de proxies no reenvían los bloques <code>tool_reference</code> necesarios.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Importante</p>
+    <p>Tool Search requiere modelos Sonnet 4 u Opus 4 o superiores en la API directa de Anthropic. Si usas Claude via Vertex AI, el requisito sube a Sonnet 4.5+ u Opus 4.5+ (las versiones anteriores no incluyen el soporte de <code>tool_reference</code> en Vertex). Además, en Vertex AI Tool Search está desactivado por defecto; tienes que activarlo explícitamente con <code>ENABLE_TOOL_SEARCH=true</code>. Haiku no lo soporta en ningún caso.</p>
+  </div>
+
+  <h2 id="cap18-claude-code-como-servidor-mcp">Claude Code como servidor MCP</h2>
+
+  <p>Esto es interesante. Claude Code no solo usa servidores MCP. También puede ser un servidor MCP.</p>
+
+  <p>Imagina que usas Claude Desktop y quieres que tenga las herramientas de Claude Code (leer archivos, editar código, ejecutar comandos). Puedes conectarlos:</p>
+
+  <h3>Activar el modo servidor</h3>
+
+  <p>El comando es simple:</p>
+
+  <pre><code class="lang-bash">claude mcp serve</code></pre>
+
+  <p>Esto arranca Claude Code como servidor MCP stdio. Expone herramientas como:</p>
+
+  <ul class="deflist">
+    <li><strong>Bash</strong> — Ejecutar comandos</li>
+    <li><strong>Read / Write / Edit</strong> — Leer, escribir y editar archivos</li>
+    <li><strong>GrepTool / GlobTool</strong> — Buscar en código</li>
+    <li><strong>LS</strong> — Listar archivos</li>
+  </ul>
+
+  <h3>Conectar con Claude Desktop</h3>
+
+  <p>Agrega esto al archivo <code>claude_desktop_config.json</code> de Claude Desktop:</p>
+
+  <pre><code class="lang-json">{
+    "mcpServers": {
+        "claude-code": {
+            "type": "stdio",
+            "command": "claude",
+            "args": ["mcp", "serve"],
+            "env": {}
+        }
+    }
+}</code></pre>
+
+  <p>Si <code>claude</code> no está en tu PATH, usa la ruta completa. Ejecuta <code>which claude</code> en la terminal para encontrarla.</p>
+
+  <div class="callout note">
+    <p class="callout-label">Nota importante</p>
+    <p>Los servidores MCP que tengas configurados dentro de Claude Code no se exponen a los clientes externos. Solo se comparten las herramientas propias de Claude Code. No hay "passthrough".</p>
+  </div>
+
+  <h2 id="cap18-crear-tu-propio-servidor-mcp">Crear tu propio servidor MCP</h2>
+
+  <p>Si necesitas una integración que no existe, puedes crearla tú mismo. Hay SDKs oficiales en 10 lenguajes, organizados por nivel de madurez:</p>
+
+  <ul class="deflist">
+    <li><strong>Tier 1 (soporte completo)</strong> — TypeScript, Python, C#, Go</li>
+    <li><strong>Tier 2 (soporte avanzado)</strong> — Java, Rust</li>
+    <li><strong>Tier 3 (soporte básico)</strong> — Swift, Ruby, PHP</li>
+  </ul>
+
+  <p>Para la mayoría de los casos, TypeScript o Python son la mejor opción.</p>
+
+  <p>Vamos a crear uno básico en Python, que es lo más sencillo.</p>
+
+  <h3>Servidor MCP en Python paso a paso</h3>
+
+  <ol class="steps">
+    <li>
+      <p><strong>Paso 1:</strong> Instala las herramientas necesarias.</p>
+      <pre><code class="lang-bash">curl -LsSf https://astral.sh/uv/install.sh | sh
+uv init mi-servidor &amp;&amp; cd mi-servidor
+uv venv &amp;&amp; source .venv/bin/activate
+uv add 'mcp[cli]' httpx</code></pre>
+    </li>
+    <li>
+      <p><strong>Paso 2:</strong> Crea el archivo <code>server.py</code>:</p>
+      <pre><code class="lang-python">from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP('mi-servidor')
+
+@mcp.tool()
+def obtener_clima(ciudad: str) -&gt; str:
+    """Obtiene el clima actual de una ciudad."""
+    return f"El clima en {ciudad}: 22C, soleado"
+
+if __name__ == '__main__':
+    mcp.run()</code></pre>
+      <p>Eso es todo. El decorador <code>@mcp.tool()</code> convierte cualquier función en una herramienta MCP. FastMCP usa los type hints (<code>ciudad: str</code>) y el docstring para generar automáticamente la descripción de la herramienta.</p>
+    </li>
+    <li>
+      <p><strong>Paso 3:</strong> Conéctalo a Claude Code:</p>
+      <pre><code class="lang-bash">claude mcp add --transport stdio mi-clima -- uv run server.py</code></pre>
+    </li>
+  </ol>
+
+  <h3>Servidor MCP en TypeScript</h3>
+
+  <p>Si prefieres TypeScript:</p>
+
+  <pre><code class="lang-bash">npm init -y
+npm install @modelcontextprotocol/sdk zod</code></pre>
+
+  <p>Archivo <code>server.ts</code>:</p>
+
+  <pre><code class="lang-js">import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { z } from 'zod';
+
+const server = new McpServer({
+   name: 'mi-servidor',
+   version: '1.0.0'
+});
+
+server.tool(
+   'obtener-clima',
+   { ciudad: z.string() },
+   async ({ ciudad }) =&gt; ({
+      content: [{ type: 'text', text: `Clima en ${ciudad}: 22C, soleado` }]
+   })
+);
+
+const transport = new StdioServerTransport();
+await server.connect(transport);</code></pre>
+
+  <p>TypeScript usa <code>zod</code> para validar los parámetros en vez de type hints.</p>
+
+  <h3>Regla crítica: nunca escribas a stdout</h3>
+
+  <p>Si tu servidor usa transporte stdio, hay una regla que no puedes romper: <strong>nunca escribas a stdout</strong>.</p>
+
+  <p>¿Por qué? Porque stdout es el canal que MCP usa para enviar mensajes. Si tu código hace un <code>print("debug")</code> en Python, ese texto se mezcla con los mensajes MCP y todo se rompe.</p>
+
+  <p>En Python, usa stderr:</p>
+
+  <pre><code class="lang-python">import sys
+print('mensaje de debug', file=sys.stderr)</code></pre>
+
+  <p>O usa la librería <code>logging</code>, que escribe a stderr por defecto.</p>
+
+  <h3>Herramientas oficiales para scaffold y debug</h3>
+
+  <p>No tienes que arrancar tu servidor desde cero ni adivinar si funciona. Anthropic y el proyecto MCP mantienen dos herramientas oficiales que ayudan mucho.</p>
+
+  <p><strong>Plugin mcp-server-dev</strong>: hace el scaffold (esqueleto inicial) de un servidor MCP por ti. Lo instalas y ejecutas un comando:</p>
+
+  <pre><code class="lang-text">/plugin install mcp-server-dev@claude-plugins-official
+/mcp-server-dev:build-mcp-server</code></pre>
+
+  <p>El plugin te guía con preguntas (lenguaje, tools, transporte) y genera la estructura del proyecto con buenas prácticas incluidas. Útil tanto si empiezas en Python como en TypeScript.</p>
+
+  <p><strong>MCP Inspector</strong>: herramienta oficial para inspeccionar y probar servidores MCP sin tener que conectarlos a Claude Code. Te deja:</p>
+
+  <ul>
+    <li>Listar las tools, resources y prompts que tu servidor expone</li>
+    <li>Llamar a cada tool con argumentos arbitrarios y ver la respuesta</li>
+    <li>Ver el flujo de mensajes JSON-RPC en tiempo real</li>
+  </ul>
+
+  <p>Está en <code><a href="https://github.com/modelcontextprotocol/inspector" target="_blank" rel="noopener">github.com/modelcontextprotocol/inspector</a></code> y es la primera parada cuando tu servidor no funciona como esperas: separa los bugs de tu servidor de los bugs del cliente.</p>
+
+  <h2 id="cap18-variables-de-entorno-para-mcp">Variables de entorno para MCP</h2>
+
+  <p>Claude Code tiene varias variables de entorno que controlan el comportamiento de MCP:</p>
+
+  <ul class="deflist">
+    <li><strong><code>MCP_TIMEOUT=10000</code></strong> — Timeout de arranque del servidor en milisegundos (ej: 10 segundos). Es cuánto espera Claude Code a que el servidor conecte al iniciar.</li>
+    <li><strong><code>MCP_TOOL_TIMEOUT=600000</code></strong> — Timeout de ejecución de herramientas en milisegundos: cuánto puede tardar una sola llamada a una tool MCP antes de cortarse. Por defecto es muy alto (alrededor de 28 horas), así que en la práctica casi nunca se alcanza. Ojo: no confundir con <code>MCP_TIMEOUT</code>, que es solo el arranque; este es por cada llamada. Puedes sobreescribirlo para un servidor concreto con el campo <code>timeout</code> de <code>.mcp.json</code> (ver la sección del archivo .mcp.json).</li>
+    <li><strong><code>MAX_MCP_OUTPUT_TOKENS=50000</code></strong> — Límite máximo de tokens en la salida de herramientas MCP (por defecto: 25,000)</li>
+    <li><strong><code>ENABLE_TOOL_SEARCH=auto:5</code></strong> — Controla Tool Search (ver sección anterior)</li>
+    <li><strong><code>ENABLE_CLAUDEAI_MCP_SERVERS=false</code></strong> — Deshabilita servidores MCP que vienen de <a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a>. Por defecto los servidores configurados en <code><a href="https://claude.ai/settings/connectors" target="_blank" rel="noopener">claude.ai/settings/connectors</a></code> están disponibles automáticamente, pero solo si el método de autenticación activo es tu suscripción de <a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a>. Si estás usando una <code>ANTHROPIC_API_KEY</code>, un <code>ANTHROPIC_AUTH_TOKEN</code>, un <code>apiKeyHelper</code> o un proveedor de terceros (Bedrock o Vertex), estos conectores no se cargan.</li>
+    <li><strong><code>MCP_CLIENT_SECRET=secreto</code></strong> — Pasa el secreto OAuth en CI/CD sin prompt interactivo</li>
+    <li><strong><code>MCP_CONNECTION_NONBLOCKING=1</code></strong> — Por defecto está en <code>0</code>. Si lo pones en <code>1</code>, los servidores MCP se conectan en background sin bloquear el arranque de Claude Code. Así abres tu sesión enseguida y las herramientas van apareciendo a medida que cada servidor termina de conectar. Excepción: los servidores con <code>alwaysLoad: true</code> siguen bloqueando el arranque hasta 5 segundos, porque sus tools tienen que estar listas para el primer prompt.</li>
+  </ul>
+
+  <p>Para usarlas, ponlas antes del comando <code>claude</code>:</p>
+
+  <pre><code class="lang-bash">MAX_MCP_OUTPUT_TOKENS=50000 claude</code></pre>
+
+  <p><strong>Para autores de servidores MCP:</strong> si tu herramienta produce resultados muy grandes, puedes anotar <code>anthropic/maxResultSizeChars</code> en la metadata de tu tool (en la respuesta de <code>tools/list</code>). Esto permite resultados individuales de hasta 500,000 caracteres. Los resultados que exceden el umbral se persisten a disco y se reemplazan con una referencia de archivo en la conversación. Esta anotación no bypasea el límite global de <code>MAX_MCP_OUTPUT_TOKENS</code>.</p>
+
+  <h2 id="cap18-mcp-para-empresas">MCP para empresas: control centralizado</h2>
+
+  <p>Si eres administrador de IT, necesitas controlar qué servidores MCP pueden usar tus empleados. Hay dos opciones:</p>
+
+  <h3>Control exclusivo con managed-mcp.json</h3>
+
+  <p>Creas un archivo <code>managed-mcp.json</code> en el directorio del sistema:</p>
+
+  <ul class="deflist">
+    <li><strong>macOS</strong> — <code>/Library/Application Support/ClaudeCode/managed-mcp.json</code></li>
+    <li><strong>Linux/WSL</strong> — <code>/etc/claude-code/managed-mcp.json</code></li>
+    <li><strong>Windows</strong> — <code>C:\Program Files\ClaudeCode\managed-mcp.json</code></li>
+  </ul>
+
+  <p>Cuando este archivo existe, los usuarios no pueden agregar sus propios servidores. Solo pueden usar los que tú defines. Es como poner un candado: tú eliges qué herramientas están disponibles.</p>
+
+  <p>El formato es idéntico al <code>.mcp.json</code> estándar.</p>
+
+  <h3>Control flexible con allowlists y denylists</h3>
+
+  <p>Si quieres ser menos restrictivo, puedes dejar que los usuarios agreguen servidores pero limitar cuáles:</p>
+
+  <ul class="deflist">
+    <li><strong><code>allowedMcpServers</code></strong> — Lista de servidores permitidos</li>
+    <li><strong><code>deniedMcpServers</code></strong> — Lista de servidores prohibidos</li>
+  </ul>
+
+  <p>Cada entrada puede restringir por nombre (<code>serverName</code>), comando exacto (<code>serverCommand</code>) o patrón de URL (<code>serverUrl</code> con wildcards).</p>
+
+  <p><strong>Regla clave:</strong> la denylist siempre gana. Si un servidor está en ambas listas, queda bloqueado.</p>
+
+  <h3>Enterprise-Managed Authorization (EMA): OAuth centralizado</h3>
+
+  <p>Conectar cada servicio uno por uno con OAuth funciona, pero en una empresa grande es un dolor de cabeza: cada empleado tiene que hacer login en cada conector, y el equipo de IT no controla quién accede a qué.</p>
+
+  <p>Enterprise-Managed Authorization (EMA) resuelve esto. Desde el 18 de junio de 2026 es una funcionalidad estable para los planes Team y Enterprise. La idea es zero-touch OAuth: la autorización se gestiona de forma centralizada desde tu identity provider (el sistema que ya usa tu empresa para manejar identidades y accesos), en vez de que cada persona autorice los conectores a mano.</p>
+
+  <p>En la práctica, esto significa que un administrador define una sola vez qué conectores MCP puede usar la organización, y los empleados los tienen disponibles sin tener que pasar por el flujo de login de cada uno. Funciona igual en Claude chat, Claude Code y Cowork.</p>
+
+  <p>El primer identity provider soportado es Okta, a través de un estándar llamado Cross App Access (XAA). Los conectores compatibles con EMA al momento del lanzamiento son: Asana, Atlassian, Canva, Figma, Granola, Linear y Supabase. El soporte para Slack está en camino.</p>
+
+  <p>Si administras IT en una empresa que ya usa Okta, EMA es la forma recomendada de darle acceso seguro a estos conectores a todo tu equipo sin que cada persona tenga que autenticarse por su cuenta.</p>
+
+  <h2 id="cap18-features-avanzados-y-en-preview">Features avanzados y en preview</h2>
+
+  <p>MCP sigue evolucionando. Estas son funcionalidades más recientes que pueden ser útiles en casos específicos.</p>
+
+  <h3>Servidores MCP desde <a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a></h3>
+
+  <p>Si estás autenticado en Claude Code con una cuenta de <a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a>, los servidores MCP configurados en <code><a href="https://claude.ai/settings/connectors" target="_blank" rel="noopener">claude.ai/settings/connectors</a></code> están disponibles automáticamente. No necesitas configurar nada extra.</p>
+
+  <p><strong>Condición importante:</strong> estos conectores solo se cargan si el método de autenticación activo es tu suscripción de <a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a>. Si en cambio Claude Code está usando una <code>ANTHROPIC_API_KEY</code>, un <code>ANTHROPIC_AUTH_TOKEN</code>, un <code>apiKeyHelper</code> o un proveedor de terceros (Bedrock o Vertex), los conectores de <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a> no aparecen. Si esperabas ver uno y no está, revisa con <code>/status</code> qué método de autenticación tienes activo.</p>
+
+  <p>En planes Team y Enterprise, solo los administradores pueden agregar servidores desde <a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a>. Los servidores aparecen en <code>/mcp</code> con indicadores de origen.</p>
+
+  <p>Algunos conectores hospedados por Anthropic —Microsoft 365, Gmail y Google Calendar— solo se pueden conectar desde <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a> (en Settings → Connectors, disponible desde la v2.1.162). No soportan el login OAuth local desde Claude Code: una vez conectados en <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>, llegan a Claude Code como servidores de <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>.</p>
+
+  <p>Para desactivar esta funcionalidad:</p>
+
+  <pre><code class="lang-bash">ENABLE_CLAUDEAI_MCP_SERVERS=false claude</code></pre>
+
+  <h3>Servidores MCP en plugins</h3>
+
+  <p>Los plugins de Claude Code pueden empaquetar sus propios servidores MCP. Cuando activas un plugin, sus servidores MCP arrancan automáticamente y sus herramientas aparecen junto a las de tus servidores manuales.</p>
+
+  <p>Los plugins usan variables especiales en su configuración:</p>
+
+  <ul class="deflist">
+    <li><strong><code>${CLAUDE_PLUGIN_ROOT}</code></strong> — Ruta a los archivos del plugin</li>
+    <li><strong><code>${CLAUDE_PLUGIN_DATA}</code></strong> — Directorio para estado persistente entre actualizaciones</li>
+  </ul>
+
+  <p>Para recargar plugins y sus servidores MCP: <code>/reload-plugins</code></p>
+
+  <h3>Channels: mensajes push (research preview)</h3>
+
+  <p>Los Channels permiten que un servidor MCP envíe mensajes push directamente a tu sesión de Claude Code. Útil para reaccionar a eventos externos como resultados de CI, alertas de monitoreo o mensajes de chat.</p>
+
+  <p>Se habilitan con el flag <code>--channels</code> al iniciar:</p>
+
+  <pre><code class="lang-bash">claude --channels plugin:my-notifier@my-marketplace</code></pre>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Esta funcionalidad está en research preview y puede cambiar.</p>
+  </div>
+
+  <h3>Elicitation: input estructurado del usuario</h3>
+
+  <p>Elicitation permite que un servidor MCP le pida información al usuario a mitad de una tarea. Aparece como un diálogo con campos de formulario o como una URL que se abre en el navegador (para autenticación o aprobación).</p>
+
+  <p>No necesitas configurar nada del lado del usuario. Los diálogos aparecen automáticamente cuando un servidor los solicita.</p>
+
+  <h3>list_changed: refrescar herramientas sin desconectar</h3>
+
+  <p>A veces un servidor MCP añade, quita o modifica sus herramientas mientras está corriendo. Por ejemplo, un servidor de base de datos que descubre tablas nuevas, o un servidor que carga plugins en caliente.</p>
+
+  <p>Para estos casos existe la notificación <code>notifications/tools/list_changed</code>. El servidor le avisa al cliente: "oye, mi lista de tools cambió", y Claude Code llama de nuevo a <code>tools/list</code> para refrescar las capacidades. Sin desconectar el servidor.</p>
+
+  <p>Para que esto funcione, el servidor tiene que haber declarado <code>tools.listChanged: true</code> en el handshake inicial. Si no lo declara, Claude Code no espera notificaciones de cambio.</p>
+
+  <p>Existen notificaciones equivalentes para recursos (<code>notifications/resources/list_changed</code>) y prompts (<code>notifications/prompts/list_changed</code>).</p>
+
+  <h2 id="cap18-seguridad">Seguridad: lo que debes saber</h2>
+
+  <p>MCP es poderoso, pero con poder viene responsabilidad. Aquí van las reglas de seguridad:</p>
+
+  <ul>
+    <li><strong>Servidores de terceros no están verificados por Anthropic.</strong> Úsalos bajo tu propio riesgo.</li>
+    <li><strong>Cuidado con prompt injection:</strong> servidores que obtienen contenido de internet pueden inyectar instrucciones maliciosas.</li>
+    <li><strong>Aprobación de project-scoped:</strong> Claude Code te pide permiso antes de usar servidores definidos en <code>.mcp.json</code> de un proyecto.</li>
+    <li><strong>Secretos seguros:</strong> los tokens OAuth se guardan en el keychain del sistema, nunca en texto plano.</li>
+    <li><strong>Rota tokens cada 90 días</strong> como buena práctica.</li>
+    <li><strong>Usa variables de entorno para claves</strong>, nunca las pongas directamente en archivos de configuración.</li>
+  </ul>
+
+  <h2 id="cap18-errores-comunes">Errores comunes y cómo solucionarlos</h2>
+
+  <p>Estos son los problemas que más aparecen al trabajar con MCP:</p>
+
+  <ul class="deflist">
+    <li><strong>"Connection closed" en Windows</strong> — Los servidores stdio con npx necesitan el wrapper <code>cmd /c</code>. Solución: <code>claude mcp add --transport stdio mi-server -- cmd /c npx -y @some/package</code></li>
+    <li><strong>"spawn claude ENOENT"</strong> — Al usar Claude Code como servidor, <code>claude</code> no está en el PATH. Solución: usa <code>which claude</code> para encontrar la ruta completa.</li>
+    <li><strong>"does not support dynamic client registration"</strong> — El servidor no permite OAuth automático. Solución: registra tu app manualmente y usa <code>--client-id</code> y <code>--client-secret</code>.</li>
+    <li><strong>"Failed to parse .mcp.json"</strong> — Una variable de entorno no está definida. Solución: define la variable o agrega un valor por defecto con <code>${VAR:-default}</code>.</li>
+    <li><strong>Timeout al arrancar servidor</strong> — El servidor tarda mucho en iniciar. Solución: <code>MCP_TIMEOUT=10000 claude</code></li>
+    <li><strong>"stdout corruption"</strong> — Tu servidor stdio escribe a stdout. Solución: usa stderr para logs y mensajes de debug.</li>
+    <li><strong>Output excede límite de tokens</strong> — La respuesta del servidor es muy grande. Solución: <code>MAX_MCP_OUTPUT_TOKENS=50000 claude</code> o configura el servidor para paginar.</li>
+    <li><strong>"Warning: server name workspace is reserved"</strong> — Definiste un servidor MCP llamado <code>workspace</code>, pero ese nombre está reservado para uso interno de Claude Code. El servidor se ignora con ese warning. Solución: renómbralo en <code>.mcp.json</code> (o donde lo hayas definido) a cualquier otro nombre.</li>
+    <li><strong>Descripciones de tools truncadas en la respuesta</strong> — Claude Code trunca a 2KB tanto las descripciones de cada tool como las server instructions. Si tu descripción es más larga, el final desaparece. Solución: pon los detalles críticos al principio del texto y deja los ejemplos extensos para el final (o para un recurso aparte).</li>
+    <li><strong>La conexión falla en vez de caer a OAuth</strong> — configuraste un header <code>Authorization</code> (por ejemplo en <code>headers</code> de <code>.mcp.json</code>) con un token que el servidor rechaza. Cuando hay un header de autorización presente, Claude Code lo usa y reporta la conexión como fallida en lugar de intentar el flujo OAuth. Solución: verifica que el token sea válido para ese endpoint MCP, o quita el header para que Claude Code use OAuth automáticamente.</li>
+    <li><strong>No sé si el problema es de un servidor MCP o de otra cosa</strong> — arranca Claude Code con el flag <code>--safe-mode</code>. Desactiva todas las personalizaciones de golpe (CLAUDE.md, plugins, skills, hooks y servidores MCP) y te deja una sesión limpia. Si el problema desaparece en modo seguro, sabes que viene de alguna de tus personalizaciones; ve reactivándolas para encontrar la culpable. Es la herramienta más rápida para aislar problemas de MCP.</li>
+  </ul>
+
+  <h2 id="cap18-ejemplos-practicos">Ejemplos Prácticos</h2>
+
+  <h3>Conectar GitHub y revisar un PR</h3>
+
+  <pre><code class="lang-bash">claude mcp add --transport http github https://api.githubcopilot.com/mcp/
+# Luego dentro de Claude Code:
+# /mcp -&gt; Authenticate GitHub
+# Después puedes decir: "Revisa el PR #42 y dame un resumen"</code></pre>
+
+  <p>Agrega el servidor de GitHub, te autenticas via OAuth en tu navegador, y luego Claude puede interactuar con todos tus repositorios.</p>
+
+  <h3>Consultar una base de datos PostgreSQL</h3>
+
+  <pre><code class="lang-bash">claude mcp add --transport stdio db -- npx -y @bytebase/dbhub --dsn "postgresql://readonly:pass@prod.db.com:5432/analytics"</code></pre>
+
+  <p>Conecta Claude Code a tu base de datos. Ahora puedes hacer preguntas como '¿cuántos usuarios se registraron este mes?' y Claude genera y ejecuta la consulta SQL.</p>
+
+  <h3>Compartir servidores MCP con tu equipo via .mcp.json</h3>
+
+  <pre><code class="lang-bash">claude mcp add --transport http --scope project github https://api.githubcopilot.com/mcp/
+claude mcp add --transport http --scope project sentry https://mcp.sentry.dev/mcp
+git add .mcp.json &amp;&amp; git commit -m "Agregar servidores MCP del equipo"</code></pre>
+
+  <p>Al usar <code>--scope project</code>, la configuración se guarda en <code>.mcp.json</code>. Al subirlo a git, todo el equipo tendrá acceso a los mismos servidores.</p>
+
+  <h3>Crear un servidor MCP personalizado en Python</h3>
+
+  <pre><code class="lang-python">from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP('mi-servidor')
+
+@mcp.tool()
+def buscar_cliente(email: str) -&gt; str:
+    """Busca un cliente por su email en el CRM interno."""
+    # Aquí iría la lógica real de búsqueda
+    return f"Cliente encontrado: Juan Pérez ({email})"
+
+if __name__ == '__main__':
+    mcp.run()</code></pre>
+
+  <p>Un servidor MCP mínimo con una herramienta personalizada. El decorador <code>@mcp.tool()</code> registra la función. FastMCP genera automáticamente el esquema a partir de los type hints y el docstring.</p>
+
+  <h3>Usar Claude Code como servidor MCP en Claude Desktop</h3>
+
+  <pre><code class="lang-json">{
+    "mcpServers": {
+        "claude-code": {
+            "type": "stdio",
+            "command": "claude",
+            "args": ["mcp", "serve"],
+            "env": {}
+        }
+    }
+}</code></pre>
+
+  <p>Agrega esta configuración a <code>claude_desktop_config.json</code>. Ahora Claude Desktop puede usar las herramientas de Claude Code: editar archivos, ejecutar comandos, buscar en código.</p>
+
+  <h3>Configurar .mcp.json con variables de entorno para seguridad</h3>
+
+  <pre><code class="lang-json">{
+    "mcpServers": {
+        "api-interna": {
+            "type": "http",
+            "url": "${API_URL:-https://api.miempresa.com}/mcp",
+            "headers": {
+                "Authorization": "Bearer ${API_TOKEN}"
+            }
+        }
+    }
+}</code></pre>
+
+  <p>Las claves sensibles vienen de variables de entorno, no están en el archivo. <code>${VAR:-default}</code> usa un valor por defecto si la variable no existe. Así puedes subir <code>.mcp.json</code> a git sin exponer secretos.</p>
+
+  <h3>Configurar headersHelper para autenticación dinámica (Kerberos, SSO)</h3>
+
+  <pre><code class="lang-json">{
+    "mcpServers": {
+        "api-interna": {
+            "type": "http",
+            "url": "https://mcp.internal.example.com",
+            "headersHelper": "/opt/bin/get-mcp-auth-headers.sh"
+        }
+    }
+}</code></pre>
+
+  <p>El script <code><a href="https://get-mcp-auth-headers.sh" target="_blank" rel="noopener">get-mcp-auth-headers.sh</a></code> debe imprimir un JSON con los headers (ej: <code>{"Authorization": "Bearer eyJ..."}</code>). Se ejecuta en cada conexión con timeout de 10 segundos. Los headers dinámicos sobreescriben los estáticos.</p>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa <code>/mcp</code> dentro de Claude Code para ver el estado de todos tus servidores MCP de un vistazo. También puedes autenticarte y gestionar conexiones desde ahí.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Para probar si un servidor MCP funciona, usa <code>claude mcp list</code> después de agregarlo. Si aparece en la lista, está configurado correctamente.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Si construyes un servidor MCP, agrega un campo <code>instructions</code> descriptivo. Esto ayuda a Tool Search a encontrar tus herramientas cuando Claude las necesita.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Los servidores MCP de terceros NO han sido verificados por Anthropic. Revisa el código fuente antes de instalar servidores de fuentes desconocidas.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Nunca pongas tokens o claves directamente en <code>.mcp.json</code> si vas a subirlo a git. Usa variables de entorno con la sintaxis <code>${VAR}</code>.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Si tu servidor MCP usa transporte stdio, NUNCA escribas a stdout con <code>print()</code> o <code>console.log()</code>. Usa stderr. Stdout es exclusivo para mensajes MCP.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>El transporte SSE (Server-Sent Events) está deprecado desde la versión 2025-06-18 del protocolo. Usa HTTP (Streamable HTTP) para servidores remotos.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Claude Code pide aprobación antes de usar servidores definidos en <code>.mcp.json</code> de un proyecto. Usa <code>claude mcp reset-project-choices</code> si quieres cambiar una decisión anterior.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Tool Search se activa automáticamente cuando tienes muchas herramientas MCP. Requiere Sonnet 4+ u Opus 4+. Con Haiku no funciona.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa <code>--mcp-config</code> para cargar servidores MCP desde un archivo JSON al iniciar. Combínalo con <code>--strict-mcp-config</code> para entornos controlados donde solo quieres servidores específicos.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Si estás autenticado con <a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a>, los servidores MCP configurados en <code><a href="https://claude.ai/settings/connectors" target="_blank" rel="noopener">claude.ai/settings/connectors</a></code> están disponibles automáticamente en Claude Code. Usa <code>ENABLE_CLAUDEAI_MCP_SERVERS=false</code> para desactivarlo.</p>
+  </div>
+
+  <section class="recap">
+    <h2 id="cap18-resumen-del-capitulo">Resumen del Capítulo</h2>
+    <p>MCP es el protocolo estándar para conectar Claude Code con servicios externos como GitHub, bases de datos, Notion y más. Se configuran servidores con <code>claude mcp add</code>, eligiendo transporte HTTP (remoto) o stdio (local) y scope local/project/user. Puedes crear tus propios servidores con los SDKs oficiales en Python o TypeScript, y hasta usar Claude Code como servidor MCP para otras aplicaciones.</p>
+  </section>
+</article>

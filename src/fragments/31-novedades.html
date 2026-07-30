@@ -1,0 +1,512 @@
+<article class="chapter" data-id="novedades" data-title="Novedades del Mes" data-part="extra">
+  <header class="ch-head">
+    <p class="ch-kicker">Material adicional</p>
+    <h1>Changelog / Novedades del Mes</h1>
+    <p class="ch-lede">Este apéndice es tu bitácora. Registra todos los cambios importantes en el mundo de Claude entre una edición de la guía y la siguiente. Esta es la cuarta edición (junio 2026, v1.3). Encontrarás los cambios ordenados de lo más reciente a lo más antiguo: primero las novedades de junio (incluido el lanzamiento de Claude Fable 5), luego mayo, abril y, al final, el estado base de la primera edición. Si es tu primera edición, puedes saltarte este apéndice: el resto del libro ya está actualizado. En futuras ediciones, este registro seguirá creciendo con cada actualización.</p>
+  </header>
+
+  <h2 id="novedades-para-que-sirve">Para qué sirve este changelog</h2>
+  <p>Piensa en este apéndice como un diario de cambios. Es como el registro de mantenimiento de un carro. Cada vez que algo cambia en el motor (los modelos de Claude), en el tablero (la interfaz de <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>) o en las herramientas (Claude Code, la API), lo anotamos aquí.</p>
+  <p>Esto te sirve para tres cosas:</p>
+  <ul class="deflist">
+    <li><strong>Saber qué es nuevo</strong> — Si actualizas tu guía de un mes a otro, puedes ver exactamente qué cambió.</li>
+    <li><strong>No perderte nada</strong> — Claude evoluciona muy rápido. Este registro te mantiene al día.</li>
+    <li><strong>Encontrar los capítulos afectados</strong> — Cada cambio indica qué capítulos de la guía se actualizaron.</li>
+  </ul>
+
+  <h2 id="novedades-donde-publica-anthropic">Dónde publica Anthropic sus cambios</h2>
+  <p>Anthropic anuncia sus novedades en tres lugares principales. Piensa en ellos como tres tablones de anuncios diferentes:</p>
+  <ol>
+    <li><strong>Platform Release Notes</strong> — En <code><a href="https://platform.claude.com/docs/en/release-notes" target="_blank" rel="noopener">platform.claude.com/docs/en/release-notes</a></code>. Aquí aparecen los cambios en la API, los SDKs y la consola de desarrollo. Es el tablón para programadores.</li>
+    <li><strong>Claude Apps Release Notes</strong> — En <code><a href="https://support.claude.com" target="_blank" rel="noopener">support.claude.com</a></code>. Aquí se anuncian los cambios en <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>, las apps de celular, la app de escritorio y Cowork. Es el tablón para usuarios finales.</li>
+    <li><strong>Claude Code Changelog</strong> — En <code><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">code.claude.com/docs/en/changelog</a></code>. Aquí aparecen todas las versiones de Claude Code. Es el tablón para desarrolladores que usan el CLI.</li>
+  </ol>
+  <p>Si quieres verificar algo por tu cuenta, esos son los tres sitios que debes visitar.</p>
+
+  <h2 id="novedades-como-leer-un-changelog">Cómo leer un changelog (sin perderte)</h2>
+  <p>Un changelog no se lee de corrido como un capítulo. Se lee como un índice de cambios. Aquí tienes las cuatro ideas que te ayudan a entenderlo de un vistazo:</p>
+  <p><strong>1. El número de versión te dice cuánto cambió.</strong> Cada edición de la guía tiene un número del tipo MAYOR.MENOR (1.0, 1.1, 1.2, 1.3). El segundo número sube en cada actualización mensual normal, donde se añaden o corrigen cosas. El primer número solo cambiaría con una reescritura grande del libro. Así, un salto de 1.2 a 1.3 es una actualización del mes; un salto de 1.x a 2.0 sería una nueva gran edición. Mirar el número ya te adelanta el tamaño del cambio.</p>
+  <p><strong>2. Lo nuevo siempre está arriba.</strong> Las entradas se ordenan de la más reciente a la más antigua (cronología inversa). Por eso la edición de junio aparece antes que la de abril. Si solo te interesa lo último, no tienes que bajar hasta el final.</p>
+  <p><strong>3. Los cambios se agrupan por tipo.</strong> Para leer rápido, conviene pensar en cuatro categorías:</p>
+  <ul class="deflist">
+    <li><strong>Nuevo</strong> — algo que antes no existía (un modelo, una función, una sección).</li>
+    <li><strong>Actualizado</strong> — algo que ya existía pero ahora es distinto o está ampliado (un precio, un límite, un dato).</li>
+    <li><strong>Corregido</strong> — un error o un dato desactualizado que se arregló.</li>
+    <li><strong>Eliminado</strong> — algo que dejó de existir y se quitó (por ejemplo, un modelo retirado).</li>
+  </ul>
+  <p>Es el mismo esquema que usan los changelogs profesionales de software. La regla de oro detrás de todo esto es sencilla: <strong>un changelog es para personas, no para máquinas</strong>. Está hecho para que entiendas en segundos qué pasó, no para comparar dos versiones línea por línea.</p>
+  <p><strong>4. Las fechas van en formato año-mes-día.</strong> Verás fechas como <code>2026-06-19</code>. Ese orden (año, luego mes, luego día) se usa porque es claro en todo el mundo y no se confunde: nunca hay duda entre el día y el mes.</p>
+
+  <h2 id="novedades-proximamente">Próximamente: lo que viene en la próxima edición</h2>
+  <p>Muchos changelogs reservan un apartado para los cambios que ya están en camino pero todavía no salieron en una edición publicada. Es una forma de avisarte: «esto viene pronto».</p>
+  <p>Ten en cuenta que <strong>Próximamente es una intención, no una promesa</strong>. Algo que está planeado puede retrasarse o cambiar antes de llegar. Cuando una de estas novedades por fin se publica, deja de estar en «Próximamente» y pasa a la entrada de la edición correspondiente, con su fecha y su número de versión.</p>
+  <p>Para la próxima edición (julio 2026) esperamos seguir de cerca la familia Fable / clase Mythos, la expansión de los conectores MCP gestionados por empresa más allá de Okta, y las nuevas versiones de Claude Code. Lo que se confirme aparecerá aquí arriba en la siguiente actualización.</p>
+
+  <h2 id="novedades-v1-3-junio-2026">v1.3 — Junio 2026 (Actualización)</h2>
+  <p>Esta es la cuarta edición de la guía y cubre los cambios del ecosistema Claude durante mayo y junio de 2026 (la entrada de mayo está justo debajo). Junio fue un mes grande: llegó un modelo completamente nuevo, Claude Fable 5, de una familia distinta a la de Opus y Sonnet, y Claude Code reforzó su seguridad en modo automático.</p>
+  <p>Como siempre, cada cambio te dice qué capítulos se actualizaron para que vayas directo a lo que te interesa.</p>
+
+  <h3>Modelos</h3>
+  <ul class="deflist">
+    <li><strong>LANZADO: Claude Fable 5 (9 jun)</strong> — Anthropic presentó Claude Fable 5, el primer modelo de una nueva clase llamada 'Mythos'. No es un Opus ni un Sonnet: es una familia distinta, con su propio nombre y su propia numeración. Piénsalo como una marca nueva dentro del catálogo, no como una versión más alta de los modelos que ya conocías. Llegó junto con Claude Code v2.1.170. — Capítulo actualizado: ch03</li>
+    <li><strong>LANZADO: Claude Opus 4.8 (28 may)</strong> — Nueva versión del modelo más capaz de la familia Opus. Pasó a ser el Opus por defecto (desde Claude Code v2.1.154) y arranca con nivel de esfuerzo <code>high</code>. Se publicó justo después de la edición de mayo (v1.2 salió el 17 de mayo), por eso queda registrada en esta edición de junio. — Capítulos actualizados: ch03, ch10</li>
+    <li><strong>1M tokens por plan</strong> — La ventana de 1 millón de tokens (ya GA en la API para Opus 4.6 y Sonnet 4.6) está disponible en los planes Max, Team y Enterprise. Es el mismo contexto de 1M, ahora visto desde el lado de los planes. — Capítulos actualizados: ch03, ch10</li>
+  </ul>
+
+  <h3>Claude Code</h3>
+  <p>Claude Code siguió publicando versiones casi a diario y llegó hasta la v2.1.183 (19 jun). Lo más importante de mayo y junio:</p>
+  <ul class="deflist">
+    <li><strong>v2.1.170 (9 jun)</strong> — Soporte para Claude Fable 5, el nuevo modelo clase Mythos. — Capítulo actualizado: ch03</li>
+    <li><strong>attribution.sessionUrl (v2.1.183, 19 jun)</strong> — Nuevo ajuste que permite incluir el enlace a la sesión en la atribución de los commits. Útil para rastrear de qué sesión salió cada cambio. — Capítulos actualizados: ch13, apx-b-settings</li>
+    <li><strong>Seguridad reforzada en modo automático (v2.1.183, 19 jun)</strong> — El modo automático ahora es más estricto con los comandos de git que borran o reescriben cosas (como <code>git reset --hard</code> o <code>git push --force</code>). Pide confirmación antes de ejecutar acciones destructivas, aunque estés en modo auto. — Capítulos actualizados: ch12, ch15</li>
+    <li><strong>Fix de errores 400 en thinking.disabled (v2.1.183, 19 jun)</strong> — Se corrigió un error que devolvía un código 400 cuando se usaba <code>thinking.disabled</code>. Ahora funciona como debe. — Capítulos actualizados: ch21, ch25</li>
+  </ul>
+
+  <h3>MCP y conectores</h3>
+  <ul class="deflist">
+    <li><strong>Conectores MCP gestionados por empresa</strong> — Las empresas ahora pueden gestionar de forma centralizada qué conectores MCP usan sus equipos. El primero en habilitarse fue Okta. Es como darle al administrador de la empresa un panel de control para aprobar y configurar conectores en nombre de todos. — Capítulo actualizado: ch18</li>
+  </ul>
+
+  <h3>Cambios en la guía</h3>
+  <p>Esta actualización repasó y refrescó los 25 capítulos de la guía. Los dos grandes temas del mes fueron el nuevo modelo Claude Opus 4.8 (y la aparición de la clase Mythos) y un buen puñado de mejoras de seguridad y comandos en Claude Code. Aquí va el resumen capítulo por capítulo:</p>
+  <ul class="deflist">
+    <li><strong>ch01 — Qué es Claude</strong>: Opus 4.8 pasa a ser el modelo recomendado; reescrita la sección de la clase Mythos (Fable 5 y Mythos 5), suspendidos a nivel mundial el 12 de junio por una norma de control de exportaciones de EE. UU.</li>
+    <li><strong>ch02 — Primeros Pasos</strong>: el modelo Opus del plan Max ahora es 4.8.</li>
+    <li><strong>ch03 — Modelos</strong>: Opus 4.8 es el nuevo tope de la familia Opus y se agregó la clase Mythos (Fable 5 disponible desde el 9 de junio, Mythos 5 por acceso limitado); precios y tablas al día.</li>
+    <li><strong>ch04 — Prompting</strong>: actualizadas las menciones de modelos; las técnicas de prompting siguen funcionando igual.</li>
+    <li><strong>ch05 — Interfaz</strong>: Opus 4.8 encabeza el selector de modelos y los artefactos ahora se pueden exportar a Figma.</li>
+    <li><strong>ch07 — Artifacts</strong>: llegaron los Artifacts dentro de Claude Code (beta para Team y Enterprise) y se documentó la API de almacenamiento persistente.</li>
+    <li><strong>ch08 — Memoria</strong>: las Skills empiezan a reemplazar a los estilos de respuesta y se sumó el estilo «Learning».</li>
+    <li><strong>ch09 — Archivos y Búsqueda</strong>: el límite por archivo en el chat subió a 500 MB y la búsqueda web ya funciona con Opus 4.8 y Fable 5.</li>
+    <li><strong>ch10 — Planes y Precios</strong>: agregados Opus 4.8 ($5/$25, 1M de contexto) y Fable 5 ($10/$50) a la lista de precios.</li>
+    <li><strong>ch11 — Empezar con Claude Code</strong>: nuevos errores comunes de instalación en Windows (confundir PowerShell con CMD) y cómo resolverlos.</li>
+    <li><strong>ch12 — Comandos y Flags</strong>: nuevo modo seguro (<code>--safe-mode</code>), modelo de respaldo automático (<code>--fallback-model</code>), alias «fable», el comando <code>/cd</code> y más.</li>
+    <li><strong>ch13 — Settings</strong>: el modelo por defecto global pasa a Opus 4.8; permisos más finos por parámetro de herramienta y ajustes al vuelo con <code>/config</code>.</li>
+    <li><strong>ch14 — CLAUDE.md</strong>: corregida la profundidad máxima de imports a 4 saltos y aclarado que CLAUDE.md es solo contexto (para bloquear de verdad, usa hooks o permisos).</li>
+    <li><strong>ch15 — Permisos y Seguridad</strong>: el modo automático ya funciona en Bedrock, Vertex y Foundry; más rutas protegidas y arreglos de seguridad de junio.</li>
+    <li><strong>ch16 — Skills y Slash Commands</strong>: <code>/code-review</code> ahora viene incluido, llegaron <code>/cd</code>, <code>/advisor</code> y <code>/config key=value</code>, y se renombró <code>/extra-usage</code> a <code>/usage-credits</code>.</li>
+    <li><strong>ch17 — Hooks</strong>: nuevo evento MessageDisplay (oculta o transforma texto en pantalla), tope de bloqueos para Stop y nuevos campos de salida en SessionStart.</li>
+    <li><strong>ch18 — MCP</strong>: conectores gestionados por la empresa (zero-touch vía Okta), transporte WebSocket y nuevo control de tiempo de espera por herramienta.</li>
+    <li><strong>ch19 — IDEs</strong>: Windsurf pasó a llamarse Devin Desktop y <code>/usage</code> ahora muestra el gasto desglosado por skill, subagente, plugin y MCP.</li>
+    <li><strong>ch20 — Subagentes</strong>: ahora un subagente sí puede lanzar a sus propios subagentes (hasta 5 niveles) y el modo fork viene activado por defecto.</li>
+    <li><strong>ch21 — API</strong>: el modelo por defecto pasa a Opus 4.8; Extended Thinking adaptativo con niveles de esfuerzo y mejoras en salidas estructuradas.</li>
+    <li><strong>ch22 — Construir con Claude</strong>: matriz de disponibilidad de salidas estructuradas y aclaración de que Anthropic no ofrece modelo de embeddings propio (recomienda Voyage AI).</li>
+    <li><strong>ch23 — Cowork y Automatización</strong>: Cowork usa Sonnet 4.6 por defecto, sumó plugins y modo automático, y presets de horario para tareas programadas.</li>
+    <li><strong>ch24 — Enterprise</strong>: conectores MCP gestionados, roles personalizados, residencia de datos en Europa y Asia-Pacífico, y Artifacts a nivel de organización.</li>
+    <li><strong>ch25 — Troubleshooting</strong>: flagship actualizado a Opus 4.8, nuevo precio del fast mode, error 504 documentado y detalles de los límites de uso compartidos.</li>
+    <li><strong>Apéndices A–C</strong> — Referencias de flags, settings y variables de entorno actualizadas con todas las novedades de Claude Code de junio.</li>
+  </ul>
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>ch06 (Proyectos) no tuvo cambios este mes; su última actualización fue en mayo de 2026.</p>
+  </div>
+
+  <h2 id="novedades-v1-2-mayo-2026">v1.2 — Mayo 2026 (Actualización)</h2>
+  <p>Esta fue la tercera edición de la guía (17 de mayo de 2026). Cubre los cambios desde principios de abril hasta mediados de mayo. Fue un mes más tranquilo que abril, dedicado sobre todo a consolidar funciones y a hacer efectivos varios retiros que ya estaban anunciados.</p>
+
+  <h3>Modelos</h3>
+  <ul class="deflist">
+    <li><strong>RETIRADO: Claude Haiku 3 (efectivo 19 abr)</strong> — Se hizo efectivo el retiro anunciado. Las llamadas a Haiku 3 ahora devuelven error. Si todavía lo usabas, migra a Haiku 4.5. — Capítulos actualizados: ch03</li>
+    <li><strong>RETIRADO: 1M beta para Sonnet 4.5 y Sonnet 4 (efectivo 30 abr)</strong> — Se retiró el soporte de 1 millón de tokens en beta para estos dos modelos. Para 1M context, usa Sonnet 4.6 u Opus 4.6, donde ya es GA. — Capítulos actualizados: ch03, ch21</li>
+  </ul>
+
+  <h3>Claude Code</h3>
+  <p>Claude Code continuó con su ritmo de varias versiones por semana a lo largo de abril y mayo, sumando funciones de modo automático y mejoras de rendimiento. Las versiones detalladas de este período están en la sección Versiones de Claude Code más abajo. — Capítulos actualizados: ch12, ch13</p>
+
+  <h3>Cambios en la guía</h3>
+  <p>La actualización v1.2 fue principalmente de mantenimiento: se confirmaron los retiros de modelos como efectivos en el capítulo de modelos (ch03), se actualizó el estado de la API (ch21) tras el fin del 1M beta de Sonnet 4.5/4, y se afinaron los capítulos de comandos y settings de Claude Code (ch12, ch13).</p>
+
+  <h2 id="novedades-v1-1-abril-2026">v1.1 — Abril 2026 (Actualización)</h2>
+  <p>Esta es la primera actualización de la guía. Cubre los cambios del ecosistema Claude desde el 13 de marzo hasta el 6 de abril de 2026. Fue un mes con muchísima actividad: la ventana de 1 millón de tokens pasó a ser oficial, Claude Code tuvo 11 nuevas versiones, y Anthropic hizo varios anuncios corporativos importantes.</p>
+  <p>Aquí tienes todo organizado por categoría. Cada cambio te dice qué capítulos se actualizaron para que puedas ir directo a lo que te interesa.</p>
+
+  <h3>Modelos</h3>
+  <ul class="deflist">
+    <li><strong>1M tokens GA (13 mar)</strong> — La ventana de contexto de 1 millón de tokens dejó de ser beta. Ahora es oficial para Opus 4.6 y Sonnet 4.6, sin necesidad de header beta. Es como si un servicio que estaba en prueba ahora se ofrece a todos sin restricciones. — Capítulos actualizados: ch03, ch21</li>
+    <li><strong>Límite de medios a 600 (13 mar)</strong> — Ahora puedes enviar hasta 600 imágenes o páginas de PDF por request (antes eran 100). — Capítulos actualizados: ch21</li>
+    <li><strong>thinking.display: 'omitted' (16 mar)</strong> — Nuevo campo para extended thinking. Permite omitir el contenido de pensamiento en la respuesta, lo que hace el streaming más rápido. — Capítulos actualizados: ch21, ch22</li>
+    <li><strong>Models API con capacidades (18 mar)</strong> — La API de modelos ahora devuelve campos <code>max_input_tokens</code>, <code>max_tokens</code> y un objeto <code>capabilities</code> que te dice qué puede hacer cada modelo. — Capítulo actualizado: ch21</li>
+    <li><strong>max_tokens 300k en Batches (30 mar)</strong> — Para Opus 4.6 y Sonnet 4.6, el límite de tokens de salida subió a 300,000 en la Batches API. Se activa con el header <code>output-300k-2026-03-24</code>. — Capítulos actualizados: ch03, ch21</li>
+    <li><strong>Retiro de 1M beta para Sonnet 4.5 y Sonnet 4 (anunciado 30 mar)</strong> — El 30 de abril de 2026 se retirará el soporte de 1M tokens en beta para Sonnet 4.5 y Sonnet 4. Si los usas con 1M, migra a Sonnet 4.6 u Opus 4.6. — Capítulos actualizados: ch03, ch21</li>
+  </ul>
+
+  <h3><a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a> y Apps</h3>
+  <ul class="deflist">
+    <li><strong>Computer use en preview (23 mar)</strong> — Los usuarios de los planes Pro y Max ahora pueden probar computer use (Claude controlando la computadora) en modo preview. También incluye mejoras en Dispatch. — Capítulo actualizado: ch10</li>
+    <li><strong>Apps interactivas en iOS/Android (25 mar)</strong> — Las apps móviles de Claude ahora pueden mostrar gráficos en vivo, diagramas interactivos y assets que puedes compartir. — Capítulos actualizados: ch05, ch07</li>
+    <li><strong>Hilo persistente en Cowork desde móviles (17 mar)</strong> — Ahora puedes controlar hilos de Cowork desde tu celular sin perder el contexto. Disponible en Pro y Max como research preview. — Capítulo actualizado: ch23</li>
+  </ul>
+
+  <h3>Claude Code</h3>
+  <p>Se publicaron 11 nuevas versiones (de la 2.1.81 a la 2.1.92) en solo tres semanas. Los cambios más importantes:</p>
+  <ul class="deflist">
+    <li><strong>PowerShell tool para Windows (v2.1.84, 26 mar)</strong> — Claude Code ahora puede usar PowerShell en Windows como opt-in preview. Ya no necesitas WSL para todo. — Capítulo actualizado: ch11</li>
+    <li><strong>/powerup lecciones interactivas (v2.1.90, 1 abr)</strong> — Nuevo comando que te enseña funciones de Claude Code con demos animadas. Como un tutorial integrado. — Capítulo actualizado: ch16</li>
+    <li><strong>Named subagents con @ (v2.1.89, 1 abr)</strong> — Ahora puedes mencionar subagentes por nombre con <code>@</code> y aparecen en un menú de autocompletado. — Capítulo actualizado: ch20</li>
+    <li><strong>5+ nuevos hooks</strong> — Se agregaron los eventos <code>TaskCreated</code>, <code>WorktreeCreate</code> (v2.1.84), <code>CwdChanged</code>, <code>FileChanged</code> (v2.1.83), y <code>PermissionDenied</code> (v2.1.89). También se agregó la decisión 'defer' para posponer permisos en PreToolUse. — Capítulo actualizado: ch17</li>
+    <li><strong>Campo condicional if en hooks (v2.1.85, 26 mar)</strong> — Puedes agregar condiciones a tus hooks para que solo se ejecuten cuando se cumple una regla. — Capítulo actualizado: ch17</li>
+    <li><strong>managed-settings.d/ (v2.1.83, 25 mar)</strong> — Nuevo directorio drop-in para configuraciones gestionadas. Los administradores pueden poner archivos de settings modulares. — Capítulo actualizado: ch13</li>
+    <li><strong>--bare flag (v2.1.81, 20 mar)</strong> — Nuevo flag para <code>-p</code> en modo scripted. Produce salida limpia sin decoración, ideal para pipelines. — Capítulos actualizados: ch12, apx-a-cli-flags</li>
+    <li><strong>MCP persistence override hasta 500K (v2.1.91, 2 abr)</strong> — Las respuestas de herramientas MCP ahora pueden persistir hasta 500K tokens en vez del límite anterior. — Capítulo actualizado: ch18</li>
+    <li><strong>Wizard interactivo de Bedrock (v2.1.92, 4 abr)</strong> — Setup guiado para configurar Bedrock como proveedor. — Capítulo actualizado: ch11</li>
+    <li><strong>Desglose por modelo en /cost (v2.1.92, 4 abr)</strong> — El comando <code>/cost</code> ahora muestra el gasto separado por modelo y por cache. — Capítulo actualizado: ch12</li>
+  </ul>
+  <p>Nuevas variables de entorno agregadas: <code>CLAUDE_CODE_NO_FLICKER</code>, <code>MCP_CONNECTION_NONBLOCKING</code>, <code>CLAUDE_CODE_MCP_SERVER_NAME</code>, <code>CLAUDE_CODE_MCP_SERVER_URL</code>, <code>CLAUDE_CODE_PLUGIN_KEEP_MARKETPLACE_ON_FAILURE</code>. — Capítulo actualizado: apx-c-env-vars</p>
+
+  <h3>API y Plataforma</h3>
+  <ul class="deflist">
+    <li><strong>1M tokens GA (13 mar)</strong> — La ventana de 1M dejó de requerir header beta para Opus 4.6 y Sonnet 4.6. Simplemente se usa. — Capítulo actualizado: ch21</li>
+    <li><strong>Límite de medios: 100 → 600 (13 mar)</strong> — Ahora puedes enviar hasta 600 imágenes o páginas PDF en un solo request. — Capítulo actualizado: ch21</li>
+    <li><strong>thinking.display (16 mar)</strong> — Nuevo campo 'omitted' para omitir el contenido de pensamiento extendido. Reduce latencia de streaming. — Capítulos actualizados: ch21, ch22</li>
+    <li><strong>Models API con campos de capacidad (18 mar)</strong> — Los endpoints de modelos ahora incluyen <code>max_input_tokens</code>, <code>max_tokens</code> y un objeto <code>capabilities</code> con las funciones de cada modelo. — Capítulo actualizado: ch21</li>
+    <li><strong>max_tokens 300k en Batches (30 mar)</strong> — Opus 4.6 y Sonnet 4.6 soportan hasta 300,000 tokens de salida en la Batches API con header <code>output-300k-2026-03-24</code>. — Capítulo actualizado: ch21</li>
+    <li><strong>Retiro 1M beta Sonnet 4.5/4 (anunciado 30 mar, efectivo 30 abr)</strong> — La ventana de 1M en beta para Sonnet 4.5 y Sonnet 4 dejará de funcionar el 30 de abril. Migra a Sonnet 4.6 u Opus 4.6. — Capítulos actualizados: ch03, ch21</li>
+  </ul>
+
+  <h3>Noticias de Anthropic</h3>
+  <ul class="deflist">
+    <li><strong>MOU con gobierno australiano (31 mar)</strong> — Anthropic firmó un acuerdo de cooperación con Australia para seguridad e investigación en IA.</li>
+    <li><strong>Anthropic Institute (11 mar)</strong> — Se lanzó un instituto dedicado a la investigación de seguridad en IA.</li>
+    <li><strong>Oficina en Sydney (10 mar)</strong> — Cuarta oficina de Anthropic en Asia-Pacífico.</li>
+    <li><strong>Partnership con Mozilla (6 mar)</strong> — Colaboración para mejorar la seguridad de Firefox con IA.</li>
+    <li><strong>Adquisición de Vercept (25 feb)</strong> — Anthropic adquirió Vercept para avanzar en computer use.</li>
+    <li><strong>RSP v3.0 (24 feb)</strong> — Nueva versión de la Responsible Scaling Policy, la política de escalamiento responsable.</li>
+    <li><strong>Serie G: $30B (12 feb)</strong> — Ronda de financiamiento de $30 mil millones de dólares a una valuación de $380B.</li>
+    <li><strong>Anthropic Labs (13 ene)</strong> — Lanzamiento de una división de laboratorio experimental.</li>
+    <li><strong>Nueva constitución de Claude (22 ene)</strong> — Actualización de los principios que guían el comportamiento de Claude.</li>
+  </ul>
+
+  <h3>Cambios en la guía</h3>
+  <p>Esta actualización (v1.1) tocó 23 de los 28 capítulos de la guía. Estos son los cambios por capítulo:</p>
+  <ul class="deflist">
+    <li><strong>ch02 — Primeros Pasos</strong>: límites del plan Free corregidos, nuevas features (Memory, Extended Thinking, Code Execution).</li>
+    <li><strong>ch03 — Modelos</strong>: 1M GA, retiro 1M beta Sonnet 4.5/4, max_tokens 300k Batches.</li>
+    <li><strong>ch04 — Prompting</strong>: sensibilidad de Opus 4.5 a 'think', técnica de anclar respuestas en citas.</li>
+    <li><strong>ch06 — Proyectos</strong>: RAG solo planes de pago, Activity Feed para equipos.</li>
+    <li><strong>ch08 — Memoria</strong>: modo incógnito corregido, Auto Dream (Memory 2.0), jerarquía de personalización.</li>
+    <li><strong>ch09 — Archivos</strong>: compartir conversaciones, creación de archivos por Claude, Research expandido.</li>
+    <li><strong>ch10 — Planes</strong>: computer use preview Pro/Max, Prompt Caching 2 niveles, Fast Mode.</li>
+    <li><strong>ch11 — Empezar Claude Code</strong>: RAM 8 GB, /status, PowerShell Windows, Bedrock wizard.</li>
+    <li><strong>ch12 — Comandos</strong>: --bare, --effort, modo auto, ~20 slash commands nuevos.</li>
+    <li><strong>ch13 — Settings</strong>: modo auto, niveles de esfuerzo, contexto 1M, managed-settings.d/.</li>
+    <li><strong>ch14 — CLAUDE.md</strong>: CLAUDE.local.md, AGENTS.md, init interactivo, MEMORY.md 200 líneas.</li>
+    <li><strong>ch15 — Permisos</strong>: Auto Mode como 6to modo, Protected Paths, clasificador IA.</li>
+    <li><strong>ch16 — Skills</strong>: ~15 comandos nuevos, /powerup, ecosistema de la comunidad.</li>
+    <li><strong>ch17 — Hooks</strong>: 5+ nuevos eventos, campo if, decisión defer.</li>
+    <li><strong>ch18 — MCP</strong>: 12,000+ servidores, persistence 500K, headersHelper.</li>
+    <li><strong>ch19 — IDEs</strong>: URI handler VS Code, Remote Development JetBrains.</li>
+    <li><strong>ch20 — Subagentes</strong>: @-mention, --agent flag, Agent Teams hooks.</li>
+    <li><strong>ch21 — API</strong>: 1M GA, thinking.display, Models API capabilities, max_tokens 300k, Skills API.</li>
+    <li><strong>ch22 — Construir</strong>: Citations API expandida, SDKs adicionales, anti-overthinking.</li>
+    <li><strong>ch23 — Cowork</strong>: computer use, Projects persistentes, Cloud Scheduled Tasks.</li>
+    <li><strong>ch24 — Enterprise</strong>: Console API, Admin API, GDPR, SLA 99.99%, BYOK.</li>
+    <li><strong>ch25 — Troubleshooting</strong>: error 402, errores de instalación, fast mode pricing.</li>
+    <li><strong>apx-a — CLI Flags</strong>: nuevo flag --bare.</li>
+    <li><strong>apx-b — Settings</strong>: 8 eventos de hooks, 15+ settings nuevos, Channels y Worktree.</li>
+    <li><strong>apx-c — Variables</strong>: ~30 variables nuevas, Windows, debug, plugins, OpenTelemetry.</li>
+  </ul>
+
+  <h2 id="novedades-v1-0-marzo-2026">v1.0 — Marzo 2026 (Primera Edición)</h2>
+  <p>Esta es la primera edición de la guía. No hay cambios que reportar porque todo es nuevo. Lo que sí hacemos es dejar constancia del estado base: una foto del ecosistema Claude tal como existe hoy.</p>
+  <p>Piensa en esto como el «kilómetro cero» del odómetro. A partir de aquí mediremos todos los cambios futuros.</p>
+
+  <h3>Modelos activos a marzo 2026</h3>
+  <p>Estos son los modelos de Claude que puedes usar hoy:</p>
+  <ul class="deflist">
+    <li><strong>Claude Fable 5</strong> — El recién llegado. Lanzado el 9 de junio de 2026. Es el primer modelo de una familia nueva llamada clase 'Mythos': no es ni un Opus ni un Sonnet, sino una marca distinta dentro del catálogo, con su propio nombre y su propia numeración. Llegó junto con Claude Code v2.1.170. (Agregado en la edición de junio 2026, v1.3.)</li>
+    <li><strong>Claude Opus 4.6</strong> — El más inteligente. Lanzado el 5 de febrero de 2026. Tiene Adaptive Thinking (piensa automáticamente cuando lo necesita). Soporta hasta 1 millón de tokens (GA desde el 13 de marzo de 2026, ya no requiere header beta). Tiene un Fast Mode que lo hace 2.5 veces más rápido.</li>
+    <li><strong>Claude Sonnet 4.6</strong> — El equilibrado. Lanzado el 17 de febrero de 2026. Buen balance entre velocidad e inteligencia. Ideal para tareas de código y agentes. Soporta 1 millón de tokens (GA desde el 13 de marzo de 2026).</li>
+    <li><strong>Claude Haiku 4.5</strong> — El rápido y económico. Lanzado el 15 de octubre de 2025. Perfecto cuando necesitas respuestas rápidas sin gastar mucho.</li>
+    <li><strong>Claude Opus 4.5</strong> — El modelo frontera anterior. Lanzado el 24 de noviembre de 2025. Aún disponible.</li>
+    <li><strong>Claude Sonnet 4.5</strong> — Predecesor del Sonnet 4.6. Lanzado el 29 de septiembre de 2025. Aún disponible. Nota: su soporte de 1M tokens en beta se retira el 30 de abril de 2026.</li>
+    <li><strong>Claude Sonnet 4</strong> — Disponible. Lanzado el 22 de mayo de 2025. Nota: su soporte de 1M tokens en beta se retira el 30 de abril de 2026.</li>
+    <li><strong>Claude Opus 4</strong> — Disponible como legacy (modelo antiguo). Lanzado el 22 de mayo de 2025.</li>
+    <li><strong>Claude Haiku 3</strong> — Deprecado. Se retirará el 19 de abril de 2026. Si lo usas, migra pronto.</li>
+  </ul>
+  <p>Opus 4.6 y Sonnet 4.6 soportan una ventana de contexto de 1 millón de tokens de forma oficial (GA). Los demás modelos activos tienen una ventana estándar de 200,000 tokens.</p>
+
+  <h3>Modelos ya retirados</h3>
+  <p>Estos modelos ya no funcionan. Si intentas usarlos, recibirás un error:</p>
+  <ul class="deflist">
+    <li><strong>Claude 1 / Instant</strong> — Retirado en noviembre 2024</li>
+    <li><strong>Claude 2.0 y 2.1</strong> — Retirados en julio 2025</li>
+    <li><strong>Claude Sonnet 3</strong> — Retirado en julio 2025</li>
+    <li><strong>Claude Sonnet 3.5 (ambas versiones)</strong> — Retirado en octubre 2025</li>
+    <li><strong>Claude Opus 3</strong> — Retirado en enero 2026</li>
+    <li><strong>Claude Sonnet 3.7</strong> — Retirado en febrero 2026</li>
+    <li><strong>Claude Haiku 3.5</strong> — Retirado en febrero 2026</li>
+  </ul>
+  <p>Si tu código usa alguno de estos modelos, necesitas actualizarlo. Consulta el capítulo de modelos para ver las alternativas recomendadas.</p>
+
+  <h3>Estado de la API y plataforma</h3>
+  <p>Las herramientas disponibles para desarrolladores a abril 2026:</p>
+  <ul class="deflist">
+    <li><strong>Structured Outputs</strong> — Ya es GA (disponible para todos, sin header beta). Funciona con Sonnet 4.5, Opus 4.5 y Haiku 4.5.</li>
+    <li><strong>Web Search, Web Fetch, Code Execution</strong> — Todos GA. Code Execution es gratis cuando usas web search o web fetch.</li>
+    <li><strong>Automatic Caching</strong> — Nuevo. Un solo campo <code>cache_control</code> y el sistema se encarga del resto.</li>
+    <li><strong>Compaction API</strong> — Beta. Permite resumir conversaciones largas del lado del servidor.</li>
+    <li><strong>Data Residency</strong> — Puedes elegir dónde se ejecuta la inferencia con el parámetro <code>inference_geo</code>.</li>
+    <li><strong>Effort parameter</strong> — GA. Controla qué tanto «piensa» Claude antes de responder.</li>
+    <li><strong>Fast Mode</strong> — Research preview. Opus 4.6 hasta 2.5x más rápido a precio premium.</li>
+    <li><strong>Agent Skills</strong> — GA. PowerPoint, Excel, Word, PDF y skills personalizados vía API.</li>
+    <li><strong>SDKs oficiales</strong> — GA: Python, TypeScript, Java, Go, Ruby. Beta: C#, PHP.</li>
+    <li><strong>1M token context</strong> — GA para Opus 4.6 y Sonnet 4.6 desde el 13 de marzo de 2026 (ya no requiere header beta). Todavía en beta para Sonnet 4.5 y Sonnet 4, pero se retira el 30 de abril.</li>
+    <li><strong>Files API</strong> — Beta. Sube archivos y referéncialos en conversaciones.</li>
+    <li><strong>MCP Connector</strong> — Beta. Conecta servidores MCP desde la Messages API.</li>
+    <li><strong>Batch Processing</strong> — 50% menos costo para procesamientos masivos. Ahora soporta max_tokens hasta 300k para Opus 4.6 y Sonnet 4.6 con header <code>output-300k-2026-03-24</code>.</li>
+    <li><strong>thinking.display</strong> — Nuevo campo 'omitted' para extended thinking. Permite omitir el contenido de pensamiento en las respuestas, lo que hace el streaming más rápido.</li>
+    <li><strong>Models API con capacidades</strong> — Nuevo. Los endpoints de modelos ahora devuelven <code>max_input_tokens</code>, <code>max_tokens</code> y un objeto <code>capabilities</code> que describe qué puede hacer cada modelo.</li>
+    <li><strong>Límite de medios: 600</strong> — Aumentado de 100 a 600 imágenes/páginas PDF por request desde el 13 de marzo.</li>
+  </ul>
+
+  <h3>Estado de <a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a> y apps</h3>
+  <p>Lo que puedes hacer hoy en <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a> y las apps:</p>
+  <ul class="deflist">
+    <li><strong>Visualizaciones inline</strong> — Gráficos y diagramas directamente en las respuestas.</li>
+    <li><strong>Memoria para todos</strong> — Expandida a usuarios gratuitos desde marzo 2026.</li>
+    <li><strong>Plugin Marketplace</strong> — Lanzado con controles de administrador para Team y Enterprise.</li>
+    <li><strong>Cowork</strong> — Tareas programadas. Disponible en Pro (macOS) y Max. Ahora con control de hilo persistente desde dispositivos móviles (research preview).</li>
+    <li><strong>Claude en Chrome</strong> — Beta para suscriptores de pago. Multi-tab y workflows.</li>
+    <li><strong>Claude para Office</strong> — Excel (pivot tables, gráficos) y PowerPoint (nuevo add-in). Ambos comparten contexto.</li>
+    <li><strong>Enterprise self-serve</strong> — Planes Enterprise sin contactar ventas.</li>
+    <li><strong>Búsqueda de chat histórico</strong> — Para Max, Team y Enterprise.</li>
+    <li><strong>Incognito chats</strong> — Disponible en todos los planes.</li>
+    <li><strong>Computer use preview</strong> — Disponible en planes Pro y Max desde el 23 de marzo. Claude puede controlar la computadora en modo supervisado.</li>
+    <li><strong>Apps interactivas en móvil</strong> — Desde el 25 de marzo, gráficos en vivo, diagramas interactivos y assets compartibles en iOS y Android.</li>
+  </ul>
+
+  <h3>Estado de Claude Code</h3>
+  <p>Versión actual: 2.1.92 (4 de abril de 2026). Se publicaron más de 50 versiones en el primer trimestre de 2026 y principios de abril. Las funciones más destacadas:</p>
+  <ul class="deflist">
+    <li><strong>Agent Teams (research preview)</strong> — Múltiples instancias de Claude trabajando juntas.</li>
+    <li><strong>Auto-memory</strong> — Claude guarda contexto útil automáticamente. Gestionar con <code>/memory</code>.</li>
+    <li><strong>/loop command</strong> — Ejecuta prompts en intervalos regulares.</li>
+    <li><strong>Worktrees</strong> — Trabaja en copias aisladas de tu repositorio con <code>--worktree</code>.</li>
+    <li><strong>Remote Control</strong> — Controla Claude Code desde builds externos con <code>claude remote-control</code>.</li>
+    <li><strong>Plugin Marketplace</strong> — Instala plugins con SHA pinning para seguridad.</li>
+    <li><strong>HTTP Hooks</strong> — Envía datos a URLs y recibe respuestas JSON.</li>
+    <li><strong>Keybindings personalizables</strong> — Configura atajos de teclado con <code>/keybindings</code>.</li>
+    <li><strong>Fast mode</strong> — Opus 4.6 más rápido dentro de Claude Code.</li>
+    <li><strong>Effort simplificado</strong> — Tres niveles: low (○), medium (◐), high (●).</li>
+    <li><strong>Soporte Windows ARM64 y winget.</strong></li>
+    <li><strong>Vim motions extendidas</strong> — Más comandos Vim disponibles.</li>
+    <li><strong>PowerShell tool</strong> — Opt-in preview para Windows nativo (v2.1.84+).</li>
+    <li><strong>/powerup</strong> — Lecciones interactivas con demos animadas (v2.1.90+).</li>
+    <li><strong>Named subagents</strong> — Menciona subagentes con <code>@</code> y autocompletado (v2.1.89+).</li>
+    <li><strong>managed-settings.d/</strong> — Directorio drop-in para settings gestionados (v2.1.83+).</li>
+    <li><strong>--bare flag</strong> — Salida limpia sin decoración para scripts (v2.1.81+).</li>
+    <li><strong>MCP persistence 500K</strong> — Resultados de herramientas MCP hasta 500K tokens (v2.1.91+).</li>
+    <li><strong>Bedrock wizard</strong> — Setup interactivo guiado para Bedrock (v2.1.92+).</li>
+    <li><strong>5+ nuevos hooks</strong> — TaskCreated, WorktreeCreate, CwdChanged, FileChanged, PermissionDenied, decisión 'defer'.</li>
+  </ul>
+
+  <h2 id="novedades-linea-de-tiempo">Línea de tiempo: Hitos del ecosistema Claude</h2>
+  <p>Esta línea de tiempo muestra los momentos más importantes del ecosistema Claude. Es como una línea del tiempo histórica, pero de IA:</p>
+
+  <h3>2024 — Los fundamentos</h3>
+  <ul class="deflist">
+    <li><strong>Junio 2024</strong> — Nace Claude Sonnet 3.5. El primer modelo de la era moderna de Claude.</li>
+    <li><strong>Octubre 2024</strong> — Sonnet 3.5 v2 + Computer Use. Claude aprende a usar computadoras.</li>
+    <li><strong>Noviembre 2024</strong> — Haiku 3.5 (solo texto). Modelo rápido y económico.</li>
+    <li><strong>Diciembre 2024</strong> — Múltiples APIs llegan a GA. Los SDKs de Java y Go entran en alpha.</li>
+  </ul>
+
+  <h3>2025 — El año de la expansión</h3>
+  <ul class="deflist">
+    <li><strong>Febrero 2025</strong> — Sonnet 3.7 con Extended Thinking. Claude aprende a «pensar en voz alta».</li>
+    <li><strong>Mayo 2025</strong> — Opus 4 y Sonnet 4. Salto generacional. Files API, Code Execution, MCP Connector.</li>
+    <li><strong>Julio 2025</strong> — Retiro de Claude 2.0, 2.1 y Sonnet 3. Fin de una era.</li>
+    <li><strong>Agosto 2025</strong> — Opus 4.1. Mejoras incrementales.</li>
+    <li><strong>Septiembre 2025</strong> — Sonnet 4.5. Unificación de marca bajo <a href="https://claude.com" target="_blank" rel="noopener">claude.com</a>. Code Execution v2.</li>
+    <li><strong>Octubre 2025</strong> — Haiku 4.5. Agent Skills beta. Retiro de Sonnet 3.5.</li>
+    <li><strong>Noviembre 2025</strong> — Opus 4.5. Structured Outputs beta. Claude en Microsoft Foundry.</li>
+  </ul>
+
+  <h3>Q1 2026 — La consolidación</h3>
+  <ul class="deflist">
+    <li><strong>Enero 2026</strong> — Retiro de Opus 3. Structured Outputs GA. Redirección a <a href="https://platform.claude.com" target="_blank" rel="noopener">platform.claude.com</a> completada. HIPAA Enterprise plans. Anthropic Labs. Nueva constitución de Claude.</li>
+    <li><strong>Febrero 2026</strong> — Opus 4.6 con Adaptive Thinking. Sonnet 4.6. Fast Mode. Automatic Caching. Retiro de Sonnet 3.7 y Haiku 3.5. Agent Teams en Claude Code. Worktrees. Serie G $30B. RSP v3.0. Adquisición Vercept.</li>
+    <li><strong>Marzo 2026</strong> — 1M tokens GA para Opus 4.6 y Sonnet 4.6. Límite de medios a 600. thinking.display. Models API con capacidades. max_tokens 300k Batches. Computer use preview Pro/Max. Apps interactivas móvil. PowerShell tool en Claude Code. managed-settings.d/. Anthropic Institute. Oficina Sydney. Partnership Mozilla. MOU gobierno australiano.</li>
+  </ul>
+
+  <h3>Abril 2026 — Las primeras semanas</h3>
+  <ul class="deflist">
+    <li><strong>1 abril</strong> — Claude Code v2.1.89 y v2.1.90: named subagents con @, /powerup lecciones interactivas, decisión 'defer' en hooks, PermissionDenied hook.</li>
+    <li><strong>2 abril</strong> — Claude Code v2.1.91: MCP tool result persistence hasta 500K tokens.</li>
+    <li><strong>4 abril</strong> — Claude Code v2.1.92: wizard interactivo para Bedrock, desglose por modelo en /cost, Write tool 60% más rápido.</li>
+    <li><strong>19 abril</strong> — Retiro efectivo de Claude Haiku 3. Las llamadas a este modelo ahora devuelven error.</li>
+    <li><strong>30 abril</strong> — Retiro efectivo del 1M beta para Sonnet 4.5 y Sonnet 4.</li>
+  </ul>
+
+  <h3>Mayo 2026 — Consolidación</h3>
+  <ul class="deflist">
+    <li><strong>28 mayo</strong> — Lanzamiento de Claude Opus 4.8, nuevo Opus por defecto (esfuerzo <code>high</code>). Se registra en la edición de junio (v1.3) por publicarse después de la edición de mayo.</li>
+    <li><strong>Mayo 2026</strong> — Claude Code mantuvo su ritmo de varias versiones por semana (serie 2.1.1xx): mejoras del motor de render sin parpadeo, sistema de aprendizaje interactivo y sandbox de seguridad empresarial. Mes de consolidación tras la intensa actividad de abril.</li>
+  </ul>
+
+  <h3>Junio 2026 — Llega una familia nueva</h3>
+  <ul class="deflist">
+    <li><strong>9 junio</strong> — Lanzamiento de Claude Fable 5, el primer modelo de la nueva clase 'Mythos' (una familia distinta de Opus y Sonnet). Llega junto con Claude Code v2.1.170.</li>
+    <li><strong>19 junio</strong> — Claude Code v2.1.183: <code>attribution.sessionUrl</code>, seguridad reforzada en modo automático para comandos git destructivos, fix de errores 400 en <code>thinking.disabled</code>.</li>
+    <li><strong>Junio 2026</strong> — Conectores MCP gestionados por empresa (empezando por Okta). La ventana de 1M tokens disponible en los planes Max, Team y Enterprise.</li>
+  </ul>
+
+  <h2 id="novedades-noticias-destacadas">Noticias destacadas de Anthropic (Q1 2026 + Abril)</h2>
+  <p>Además de productos y modelos, algunas noticias importantes de Anthropic:</p>
+  <ul class="deflist">
+    <li><strong>MOU con gobierno australiano (31 mar)</strong> — Acuerdo de cooperación para seguridad e investigación en IA entre Anthropic y el gobierno de Australia.</li>
+    <li><strong>Anthropic Institute (11 mar)</strong> — Nuevo instituto dedicado a la investigación de seguridad en IA.</li>
+    <li><strong>Oficina en Sydney (10 mar)</strong> — Cuarta oficina de Anthropic en Asia-Pacífico.</li>
+    <li><strong>Partnership con Mozilla (6 mar)</strong> — Colaboración para mejorar seguridad de Firefox con IA.</li>
+    <li><strong>Claude en Marte (17 feb)</strong> — Claude asistió la navegación del rover Perseverance de la NASA. Sí, en serio.</li>
+    <li><strong>Adquisición de Vercept (25 feb)</strong> — Anthropic adquirió Vercept para avanzar en computer use.</li>
+    <li><strong>RSP v3.0 (24 feb)</strong> — Nueva versión de la Responsible Scaling Policy.</li>
+    <li><strong>Serie G: $30B (12 feb)</strong> — Ronda de financiamiento de $30 mil millones a valuación de $380B.</li>
+    <li><strong>Ensayo de Dario Amodei</strong> — El CEO publicó "The Adolescence of Technology" sobre riesgos de IA.</li>
+    <li><strong>Microsoft 365 Copilot</strong> — Los modelos de Anthropic están habilitados por defecto en Microsoft 365 Copilot.</li>
+    <li><strong>Oficina en Bengaluru</strong> — Anthropic abrió oficina en India y formó alianza con Infosys.</li>
+    <li><strong>Claude Partner Network</strong> — Inversión de $100 millones para el ecosistema de socios.</li>
+    <li><strong>Consolidación de marca</strong> — Todo vive ahora bajo <code><a href="https://claude.com" target="_blank" rel="noopener">claude.com</a></code>: <code><a href="https://platform.claude.com" target="_blank" rel="noopener">platform.claude.com</a></code>, <code><a href="https://support.claude.com" target="_blank" rel="noopener">support.claude.com</a></code>, <code><a href="https://code.claude.com" target="_blank" rel="noopener">code.claude.com</a></code>.</li>
+    <li><strong>Anthropic Labs (13 ene)</strong> — División de laboratorio experimental lanzada.</li>
+    <li><strong>Nueva constitución de Claude (22 ene)</strong> — Actualización de los principios que guían el comportamiento de Claude.</li>
+    <li><strong>Claude será siempre sin publicidad (4 feb)</strong> — Anthropic confirmó que Claude nunca tendrá anuncios.</li>
+  </ul>
+
+  <h2 id="novedades-versiones-claude-code">Versiones de Claude Code (Q1 2026 a Junio 2026)</h2>
+  <p>Claude Code se actualizó más de 100 veces desde enero hasta mediados de junio de 2026, pasando de la v2.1.0 (enero) a la v2.1.183 (19 de junio). Es como un auto de carreras al que le hacen ajustes constantemente. Aquí están las versiones más importantes, de la más reciente a la más antigua:</p>
+
+  <h3>Junio 2026</h3>
+  <ul class="deflist">
+    <li><strong>2.1.183 (19 jun)</strong> — Ajuste <code>attribution.sessionUrl</code> para incluir el enlace de la sesión en la atribución de commits, seguridad reforzada en modo automático para comandos git destructivos (como <code>git reset --hard</code> o <code>git push --force</code>), y fix de errores 400 al usar <code>thinking.disabled</code>.</li>
+    <li><strong>2.1.170 (9 jun)</strong> — Soporte para Claude Fable 5, el nuevo modelo de clase Mythos.</li>
+  </ul>
+
+  <h3>Mayo 2026</h3>
+  <ul class="deflist">
+    <li><strong>Serie 2.1.1xx (abril–mayo)</strong> — Claude Code mantuvo su ritmo de varias versiones por semana, consolidando funciones de modo automático, mejoras de rendimiento del motor de render (menos parpadeo), el sistema de aprendizaje interactivo y el sandbox de seguridad empresarial. Estas versiones prepararon el terreno para la llegada de Fable 5 en junio.</li>
+  </ul>
+
+  <h3>Abril 2026</h3>
+  <ul class="deflist">
+    <li><strong>2.1.92 (4 abr)</strong> — <code>forceRemoteSettingsRefresh</code>, wizard interactivo Bedrock, desglose por modelo y cache en <code>/cost</code>, <code>/release-notes</code> interactivo, mejora 60% en Write tool diffs.</li>
+    <li><strong>2.1.91 (2 abr)</strong> — MCP tool result persistence override (hasta 500K), <code>disableSkillShellExecution</code> setting, deep links multi-línea, plugins con ejecutables <code>bin/</code>.</li>
+    <li><strong>2.1.90 (1 abr)</strong> — <code>/powerup</code> lecciones interactivas con demos animadas, <code>CLAUDE_CODE_PLUGIN_KEEP_MARKETPLACE_ON_FAILURE</code> env var, <code>.husky</code> protegido.</li>
+    <li><strong>2.1.89 (1 abr)</strong> — Decisión 'defer' en PreToolUse hooks, <code>CLAUDE_CODE_NO_FLICKER=1</code>, PermissionDenied hook, named subagents en @ mention, <code>MCP_CONNECTION_NONBLOCKING</code>, auto mode denied commands en <code>/permissions</code>.</li>
+  </ul>
+
+  <h3>Marzo 2026</h3>
+  <ul class="deflist">
+    <li><strong>2.1.87 (29 mar)</strong> — Fix: mensajes en Cowork Dispatch no se entregaban.</li>
+    <li><strong>2.1.86 (27 mar)</strong> — <code>X-Claude-Code-Session-Id</code> header, <code>.jj</code> y <code>.sl</code> en exclusión VCS, mejora cache hit rate Bedrock/Vertex/Foundry, Read tool formato compacto.</li>
+    <li><strong>2.1.85 (26 mar)</strong> — <code>CLAUDE_CODE_MCP_SERVER_NAME/URL</code> env vars, campo condicional <code>if</code> en hooks, MCP OAuth RFC 9728, mejora rendimiento scroll (WASM yoga-layout a TypeScript).</li>
+    <li><strong>2.1.84 (26 mar)</strong> — PowerShell tool para Windows (opt-in preview), <code>TaskCreated</code> y <code>WorktreeCreate</code> hooks, <code>allowedChannelPlugins</code> setting, idle-return prompt 75+ min, global system-prompt caching con ToolSearch.</li>
+    <li><strong>2.1.83 (25 mar)</strong> — <code>managed-settings.d/</code> directorio drop-in, <code>CwdChanged</code> y <code>FileChanged</code> hooks, <code>sandbox.failIfUnavailable</code> setting, transcript search (<code>/</code> en Ctrl+O), Ctrl+X Ctrl+E editor externo, imágenes pegadas insertan [Image #N] chip.</li>
+    <li><strong>2.1.81 (20 mar)</strong> — <code>--bare</code> flag para scripted <code>-p</code>, <code>--channels</code> permission relay, mejoras MCP OAuth.</li>
+    <li><strong>2.1.74 (12 mar)</strong> — Sugerencias en <code>/context</code>, <code>autoMemoryDirectory</code>, audio-input en macOS.</li>
+    <li><strong>2.1.73 (11 mar)</strong> — <code>modelOverrides</code> setting para mapear modelos personalizados.</li>
+    <li><strong>2.1.72 (10 mar)</strong> — Effort simplificado a low/medium/high. ExitWorktree tool.</li>
+    <li><strong>2.1.71 (7 mar)</strong> — <code>/loop</code> command y cron scheduling.</li>
+    <li><strong>2.1.70 (6 mar)</strong> — 74% menos re-renders. Mejoras de compaction.</li>
+    <li><strong>2.1.69 (5 mar)</strong> — <code>/claude-api</code> skill. 10 nuevos idiomas para voz.</li>
+    <li><strong>2.1.68 (4 mar)</strong> — Opus 4.6 usa effort medium por defecto.</li>
+  </ul>
+
+  <h3>Febrero 2026</h3>
+  <ul class="deflist">
+    <li><strong>2.1.63 (28 feb)</strong> — <code>/simplify</code> y <code>/batch</code> commands. HTTP hooks.</li>
+    <li><strong>2.1.59 (26 feb)</strong> — Auto-memory para todos. <code>/copy</code> command.</li>
+    <li><strong>2.1.51 (24 feb)</strong> — <code>claude remote-control</code>. Managed settings para macOS/Windows.</li>
+    <li><strong>2.1.50 (20 feb)</strong> — Opus 4.6 fast mode con 1M context.</li>
+    <li><strong>2.1.49 (19 feb)</strong> — Flag <code>--worktree</code>. <code>isolation: worktree</code> para subagentes.</li>
+    <li><strong>2.1.47 (18 feb)</strong> — Plan preview en VS Code.</li>
+    <li><strong>2.1.45 (17 feb)</strong> — Soporte para Sonnet 4.6.</li>
+    <li><strong>2.1.41 (13 feb)</strong> — Windows ARM64 nativo.</li>
+    <li><strong>2.1.36 (7 feb)</strong> — Fast mode para Opus 4.6.</li>
+    <li><strong>2.1.32 (5 feb)</strong> — Opus 4.6 disponible. Agent Teams preview. Auto-memory.</li>
+  </ul>
+
+  <h3>Enero 2026</h3>
+  <ul class="deflist">
+    <li><strong>2.1.19 (23 ene)</strong> — Task management system con tracking de dependencias.</li>
+    <li><strong>2.1.18 (23 ene)</strong> — Keybindings personalizables con <code>/keybindings</code>.</li>
+    <li><strong>2.1.14 (20 ene)</strong> — History autocomplete en bash mode. Plugin SHA pinning.</li>
+    <li><strong>2.1.9 (16 ene)</strong> — MCP tool search automático.</li>
+    <li><strong>2.1.2 (9 ene)</strong> — OSC 8 hyperlinks. Soporte winget.</li>
+    <li><strong>2.1.0 (7 ene)</strong> — Skill hot-reload. Vim motions extendidas. <code>isolation: worktree</code>. Cambio breaking: <code>$ARGUMENTS.0</code> pasa a ser <code>$ARGUMENTS[0]</code>.</li>
+  </ul>
+
+  <h2 id="novedades-plantilla">Plantilla para futuras actualizaciones</h2>
+  <p>Cuando la guía se actualice (por ejemplo, de v1.1 a v1.2), este apéndice usará el siguiente formato. Es como un formulario estándar que se llena cada mes:</p>
+  <pre><code class="lang-text">v1.2 — Mayo 2026 (Actualizacion)
+
+Modelos:
+- LANZADO: [Nombre del modelo]
+- DEPRECADO: [Nombre del modelo]
+- RETIRADO: [Nombre del modelo]
+- Capitulos actualizados: ch03
+
+API:
+- [Descripcion del cambio]
+- Capitulos actualizados: ch21
+
+Claude.ai y Apps:
+- [Descripcion del cambio]
+- Capitulos actualizados: ch05, ch06
+
+Claude Code:
+- Versiones 2.1.XX a 2.1.XX publicadas
+- [Funciones nuevas importantes]
+- Capitulos actualizados: ch12, ch16
+
+Cowork:
+- [Cambios en Cowork]
+- Capitulos actualizados: ch09
+
+Precios:
+- Sin cambios (o descripcion del cambio)
+
+Guia:
+- Erratas corregidas en: [capitulos]
+- Nuevos ejemplos en: [capitulos]</code></pre>
+  <p>Este formato tiene algo importante: cada cambio dice qué capítulos se actualizaron. Así puedes ir directo a lo que te interesa sin leer toda la guía de nuevo.</p>
+
+  <h3>Registro de versiones</h3>
+  <p>Los cambios entre ediciones se registran con un formato estándar que incluye la fecha, la versión y un resumen de los cambios principales. Esto permite llevar un historial claro de la evolución de la guía.</p>
+  <p>Así se ve el registro de versiones hasta ahora:</p>
+  <pre><code class="lang-text">Versión 1.0 — Marzo 2026: Primera edición
+Versión 1.1 — Abril 2026: 1M GA, 11 releases de Claude Code, computer use preview, apps interactivas
+Versión 1.2 — Mayo 2026: Opus 4.7 flagship, retiros de Haiku 3 y del 1M beta, modo automático consolidado
+Versión 1.3 — Junio 2026: Opus 4.8 flagship, clase Mythos (Fable 5 y Mythos 5), seguridad reforzada en Claude Code</code></pre>
+  <p>Este apéndice es la versión completa y detallada de ese registro, con todos los detalles que necesitas saber.</p>
+
+  <h2 id="novedades-errores-comunes">Errores comunes al seguir los cambios</h2>
+  <p>Estos son los errores que la gente comete al intentar mantenerse al día:</p>
+
+  <h3>Confundir versiones de modelos</h3>
+  <p>Con tantos modelos (Opus 4, 4.1, 4.5, 4.6 y Sonnet 4, 4.5, 4.6), es fácil confundirse. Es como tener muchos hermanos con nombres parecidos. Y desde junio de 2026 hay que sumar a la familia un primo de otra rama: Claude Fable 5, de la clase 'Mythos'. <strong>Ojo con esto: Fable 5 no es «un Opus más nuevo» ni «un Sonnet mejorado»</strong>. Es una familia distinta, con su propia numeración. Comparar el 5 de Fable con el 4.6 de Opus no tiene sentido, igual que no compararías el modelo de dos autos de marcas diferentes solo por el número.</p>
+  <p><strong>Solución:</strong> Usa siempre el ID canónico del modelo. Por ejemplo, <code>claude-opus-4-6-20260205</code> en vez de solo «Opus». Y ten claro a qué familia pertenece cada nombre (Opus, Sonnet, Haiku y ahora Fable/Mythos). Consulta la tabla de modelos activos en este apéndice.</p>
+
+  <h3>Usar un modelo retirado</h3>
+  <p>Si tu código llama a un modelo que ya no existe, recibirás un error. Es como llamar a un número de teléfono que ya fue desconectado.</p>
+  <p><strong>Solución:</strong> Revisa la lista de modelos retirados. Migra al modelo recomendado antes de la fecha de retiro.</p>
+
+  <h3>Usar beta headers innecesarios</h3>
+  <p>Muchas funciones pasaron de beta a GA en Q1 2026. Un beta header es una etiqueta especial que le dices a la API para usar funciones experimentales. Si la función ya es GA (disponible para todos), el header sobra.</p>
+  <p><strong>Solución:</strong> Verifica el estado actual de cada función. Los beta headers extra no causan errores, pero es mejor quitarlos para mantener tu código limpio.</p>
+
+  <h3>Claude Code desactualizado</h3>
+  <p>Claude Code se actualiza casi a diario. Una versión de hace dos semanas puede no tener funciones importantes. Es como usar un mapa de hace un mes en una ciudad donde construyen calles nuevas cada semana.</p>
+  <p><strong>Solución:</strong> Verifica tu versión con <code>claude --version</code>. Actualiza con:</p>
+  <pre><code class="lang-bash">npm install -g @anthropic-ai/claude-code</code></pre>
+  <p>O desde el menú <code>/config</code> dentro de Claude Code.</p>
+
+  <h2 id="novedades-como-mantenerte-al-dia">Cómo mantenerte al día</h2>
+  <p>El ecosistema Claude cambia rápido. Muy rápido. Aquí tienes un plan simple para no perderte nada:</p>
+  <ol class="steps">
+    <li><strong>Descarga la edición más reciente cada mes</strong> — Cada edición incluye los cambios del mes en todos los capítulos afectados.</li>
+    <li><strong>Revisa este apéndice primero</strong> — Cuando tengas una nueva edición, lee este changelog. Te dirá qué cambió y dónde.</li>
+    <li><strong>Mantén Claude Code actualizado</strong> — Ejecuta <code>claude --version</code> y actualiza si hay una versión nueva.</li>
+    <li><strong>Visita las fuentes oficiales</strong> — Los tres sitios de novedades: <code><a href="https://platform.claude.com" target="_blank" rel="noopener">platform.claude.com</a></code>, <code><a href="https://support.claude.com" target="_blank" rel="noopener">support.claude.com</a></code> y <code><a href="https://code.claude.com" target="_blank" rel="noopener">code.claude.com</a></code>.</li>
+  </ol>
+  <p>No necesitas revisar todo a diario. Con una revisión mensual es suficiente. Este apéndice hace el trabajo pesado por ti.</p>
+</article>

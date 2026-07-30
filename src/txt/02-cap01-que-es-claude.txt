@@ -1,0 +1,733 @@
+Qué es Claude
+Conoce al asistente de IA creado por Anthropic y entiende cómo funciona
+
+
+    PRINCIPIANTE                                                   @soyenriquerocha
+
+
+
+
+                                      13                           @soyenriquerocha
+QUÉ ES CLAUDE
+
+
+
+
+    Claude es un asistente de inteligencia artificial. Lo creó una empresa llamada Anthropic.
+    En este capítulo vas a entender qué es Claude, cómo funciona por dentro y por qué es
+    diferente a otros asistentes como ChatGPT o Gemini. No necesitas saber nada de
+    tecnología para seguir leyendo.
+
+
+
+
+La empresa detrás de Claude: Anthropic
+
+Antes de hablar de Claude, hay que conocer a sus creadores. Anthropic es la empresa que construye
+Claude. Fue fundada en 2021 en San Francisco, California.
+
+Piensa en Anthropic como un laboratorio. No es una fábrica que produce muchos productos. Es un
+equipo de científicos enfocados en una sola misión: crear inteligencia artificial que sea segura y útil.
+
+La fundaron siete personas que antes trabajaban en OpenAI (la empresa detrás de ChatGPT). Se
+fueron porque querían hacer las cosas diferente. Querían poner la seguridad primero.
+
+Los más conocidos son los hermanos Dario Amodei (el CEO) y Daniela Amodei (la presidenta). Dario
+era el vicepresidente de investigación en OpenAI. Daniela lideraba el área de seguridad y políticas.
+
+Los otros cinco co-fundadores también vienen de OpenAI: Tom Brown, Sam McCandlish (chief
+architect), Jared Kaplan (chief science officer), Jack Clark, Christopher Olah (referente en
+interpretabilidad de IA) y Benjamin Mann. Todos dejaron OpenAI por la misma razón: querían
+construir IA con la seguridad como prioridad real, no como un añadido.
+
+Anthropic no es una empresa cualquiera. Está constituida como Public Benefit Corporation
+(corporación de beneficio público). Eso significa que por ley está obligada a perseguir un objetivo de
+interés general además de ganar dinero. Para reforzar esto tiene un Long-Term Benefit Trust: un
+grupo de fideicomisarios independientes que tienen poder sobre decisiones clave de gobierno
+corporativo. La idea es evitar que la presión por ingresos a corto plazo gane sobre la misión de
+seguridad.
+
+La misión de Anthropic
+Anthropic se define como una "empresa de investigación y seguridad en IA". Su propósito oficial es el
+desarrollo responsable de inteligencia artificial avanzada para el beneficio de la humanidad.
+
+Suena grande, pero en la práctica significa algo simple: quieren que la IA sea poderosa y segura al
+mismo tiempo. No una cosa o la otra. Las dos juntas.
+
+Es como construir un auto muy rápido que también tenga los mejores frenos del mercado. La
+velocidad importa, pero los frenos importan más.
+
+
+
+                                                   14                                       @soyenriquerocha
+                                                                                        QUÉ ES CLAUDE
+
+
+
+
+El crecimiento de Anthropic
+Anthropic ha crecido de forma impresionante. Para que te hagas una idea:
+
+   • En 2023 valía 4 mil millones de dólares.
+   • En 2024 llegó a 41 mil millones.
+   • El 12 de febrero de 2026 cerró su Serie G de 30 mil millones de dólares a una valoración de 380
+    mil millones post-money. La ronda fue liderada por GIC y Coatue.
+
+Empresas como Amazon, Google, Microsoft y Nvidia han invertido en Anthropic:
+
+   • Amazon ha comprometido alrededor de 8 mil millones de dólares, y en abril de 2026 anunció 5
+    mil millones adicionales con la opción de aportar hasta 20 mil millones más ligados a hitos.
+   • Google ha invertido 10 mil millones de dólares en la valoración actual, con compromiso de hasta
+    30 mil millones más ligados a hitos.
+
+Este crecimiento muestra algo claro: las empresas más grandes del mundo confían en que Anthropic
+está haciendo algo importante.
+
+
+
+Entonces, ¿qué es Claude exactamente?
+
+Claude es un asistente de inteligencia artificial. Puedes hablarle con texto y él te responde con
+texto. También puede ver imágenes que le envíes.
+
+Piensa en Claude como un compañero de trabajo muy leído. Ha estudiado millones de libros, artículos
+y páginas web. Puede ayudarte a escribir, analizar datos, programar, resumir documentos y mucho
+más.
+
+Pero ojo: Claude no "sabe" cosas como tú y yo. No tiene experiencias ni recuerdos. Es una máquina
+muy sofisticada que detecta patrones en el lenguaje. Más adelante explicamos cómo funciona esto.
+
+Dónde puedes usar Claude
+Claude está disponible en varios lugares:
+
+   • claude.ai — La página web oficial. Es gratis para empezar. Solo necesitas crear una cuenta.
+   • Aplicación móvil — Disponible para celulares (iOS y Android) y aplicaciones de escritorio.
+   • Claude API — Para desarrolladores que quieren integrar Claude en sus propios programas. Se
+    paga por uso.
+   • Claude Code — Una herramienta especial para programadores que funciona en la terminal.
+   • Cowork — Un espacio de trabajo colaborativo donde varios miembros de un equipo pueden
+    trabajar con Claude sobre los mismos proyectos.
+
+
+
+
+                                                   15                                    @soyenriquerocha
+QUÉ ES CLAUDE
+
+
+
+
+   • AWS Bedrock, Google Vertex AI y Microsoft Foundry — Para empresas que ya usan los servicios
+    cloud de Amazon, Google o Microsoft. Permite consumir Claude desde la misma cuenta y factura
+    del proveedor cloud.
+
+Además de estos puntos de acceso, Claude tiene integraciones nativas con varias herramientas que
+usas todos los días:
+
+   • Chrome — Extensión oficial que pone a Claude dentro del navegador.
+   • Slack — Conector nativo para preguntarle a Claude desde tus canales.
+   • Microsoft 365 — Integración con Outlook, Word, Excel y compañía.
+
+Para conectar Claude a herramientas que no tienen integración nativa, existe MCP (lo explicamos más
+adelante).
+
+
+Planes y precios básicos
+Claude tiene varios planes:
+
+   • Free — Gratis. Acceso básico con uso limitado.
+   • Pro — $20 al mes. Cinco veces más uso que el plan gratis.
+   • Max — $100 a $200 al mes. Uso casi ilimitado.
+   • Team — Desde $25 por persona al mes. Para equipos de trabajo.
+   • Enterprise — Precio personalizado. Para empresas grandes.
+
+Si solo quieres probar Claude, el plan gratuito es más que suficiente para empezar.
+
+
+
+Cómo funciona Claude por dentro (explicado simple)
+
+Claude es un tipo de tecnología llamada LLM. Esas siglas significan Large Language Model, o "Modelo
+de Lenguaje Grande" en español.
+
+Vamos a explicarlo con una analogía.
+
+La analogía del autocompletado
+Cuando escribes un mensaje en tu celular, el teclado te sugiere la siguiente palabra. Si escribes
+"Buenos", probablemente te sugiere "días".
+
+Un LLM funciona igual, pero llevado al extremo. En lugar de sugerir una palabra, puede sugerir
+párrafos enteros. Y lo hace con una calidad sorprendente porque ha leído millones de textos.
+
+Ejemplo simple:
+
+
+
+
+                                                     16                                @soyenriquerocha
+                                                                                      QUÉ ES CLAUDE
+
+
+
+
+   Tu escribes: "El gato se sento en el ___"
+
+
+   El LLM calcula probabilidades:
+   - "sofa" → 30% de probabilidad
+   - "piso" → 25%
+   - "tejado" → 15%
+   - "auto" → 5%
+
+
+   Elige la mas probable y repite el proceso
+   para la siguiente palabra. Y la siguiente.
+   Y asi construye una respuesta completa.
+
+
+
+Este proceso se llama inferencia. Cada vez que Claude te responde, está haciendo millones de cálculos
+para predecir las mejores palabras.
+
+
+Qué son los transformers
+Los LLM están construidos sobre una tecnología llamada transformer. No tiene nada que ver con los
+robots de las películas.
+
+Un transformer es una forma especial de organizar las matemáticas dentro del modelo. Es como una
+receta de cocina muy eficiente que le permite al modelo entender el contexto de las palabras.
+
+Por ejemplo, la palabra "banco" puede significar un lugar para sentarse o un lugar para guardar
+dinero. El transformer ayuda al modelo a entender cuál significado es correcto según las palabras que
+lo rodean.
+
+
+Qué son los tokens
+Los modelos no leen palabras como tú y yo. Leen tokens. Un token es un pedacito de texto. Puede ser
+una palabra completa, parte de una palabra o incluso un signo de puntuación.
+
+Como referencia rápida:
+
+   • 1 token ≈ 3/4 de una palabra en inglés
+   • 100 tokens ≈ 75 palabras
+   • Una página típica ≈ 300-400 tokens
+
+Cuando escuchas que Claude tiene una ventana de contexto de 200,000 tokens, significa que puede
+leer y recordar aproximadamente 150,000 palabras a la vez. Eso es como un libro entero de 500
+páginas.
+
+
+
+
+                                                 17                                     @soyenriquerocha
+QUÉ ES CLAUDE
+
+
+
+
+Nota: Desde Claude Opus 4.7, el tokenizer cambió y un mismo texto produce aproximadamente 30%
+más tokens que en modelos anteriores. Esto afecta dos cosas: cuánto pagas (se cobra por token) y
+cuánto texto cabe en la ventana de contexto.
+
+
+Claude no piensa de verdad
+Esto es importante. Claude suena muy humano cuando habla. Pero no piensa, no siente y no tiene
+consciencia.
+
+Es una máquina estadística. Muy avanzada, sí. Pero al final del día, lo que hace es calcular
+probabilidades de qué palabra va después de otra.
+
+Cuando Claude dice "yo creo que...", no está expresando una creencia real. Está usando un patrón de
+lenguaje que aprendió de textos escritos por humanos. Es una diferencia sutil pero fundamental.
+
+
+
+Qué hace especial a Claude: la IA Constitucional
+
+Todos los asistentes de IA necesitan reglas. Sin reglas, un modelo podría generar contenido dañino o
+peligroso. La pregunta es: ¿cómo le pones reglas a una IA?
+
+La mayoría de empresas usan un método simple: humanos revisan las respuestas del modelo y le
+dicen "esto está bien" o "esto está mal". El modelo aprende de esa retroalimentación.
+
+Anthropic inventó algo diferente: la IA Constitucional. Es el ingrediente secreto de Claude.
+
+La constitución de Claude
+Imagina que entrenas a un empleado nuevo. Puedes hacer dos cosas:
+
+  1. Pararte junto a él todo el día y corregirlo cada vez que hace algo mal.
+  2. Darle un manual de reglas claras y enseñarle a autocorregirse.
+
+La IA Constitucional es la opción 2. Claude tiene una "constitución" con más de 50 principios que
+guían su comportamiento.
+
+El proceso funciona así:
+
+  1. Claude genera una respuesta.
+  2. Claude lee sus propios principios.
+  3. Claude se pregunta: "¿Mi respuesta respeta mis principios?"
+  4. Si no los respeta, reescribe la respuesta.
+  5. Este ciclo se repite millones de veces durante el entrenamiento.
+
+
+
+
+                                                    18                                     @soyenriquerocha
+                                                                                       QUÉ ES CLAUDE
+
+
+
+
+Los principios vienen de varias fuentes: la Declaración Universal de los Derechos Humanos,
+perspectivas culturales no-occidentales, e investigación propia de Anthropic.
+
+
+Por qué esto importa
+La IA Constitucional tiene tres ventajas grandes:
+
+   • Transparencia — Los principios son públicos. Puedes leerlos. Sabes por qué Claude se comporta
+    de cierta manera.
+   • Escalabilidad — No necesitas miles de humanos revisando respuestas todo el día.
+   • Protección — Los humanos que entrenan la IA no tienen que leer contenido perturbador o
+    peligroso. La IA se autocorrige sola.
+
+
+
+Los tres niveles de Claude: Opus, Sonnet y Haiku
+
+Claude no es un solo modelo. Es una familia de modelos con tres niveles. Cada nivel tiene un nombre
+inspirado en formas poéticas.
+
+Opus, Sonnet y Haiku explicados
+Piensa en los tres niveles como tres tipos de vehículo:
+
+   • Opus — Es el camión de carga pesada. El más inteligente y potente. Ideal para tareas complejas
+    que requieren mucho razonamiento. Cuesta más y es más lento.
+   • Sonnet — Es el auto familiar. Buen equilibrio entre potencia y velocidad. Es el más recomendado
+    para la mayoría de tareas.
+   • Haiku — Es la motocicleta. Rápido, ágil y económico. Perfecto para tareas simples o cuando
+    necesitas respuestas inmediatas.
+
+Los modelos actuales (junio 2026) son:
+
+   • Claude Opus 4.8 — El más inteligente y el modelo top actual. Lanzado en junio de 2026. $5 por
+    millón de tokens de entrada y $25 por millón de tokens de salida. Contexto de hasta 1 millón de
+    tokens y pensamiento adaptativo (adaptive thinking).
+   • Claude Sonnet 4.6 — El más equilibrado. Lanzado el 17 de febrero de 2026. $3 por millón de
+    tokens de entrada y $15 por millón de tokens de salida. El más rápido de los dos modelos
+    grandes.
+   • Claude Haiku 4.5 — El más económico. $1 por millón de tokens de entrada y $5 por millón de
+    tokens de salida. Ideal para alto volumen.
+
+
+
+
+                                                    19                                  @soyenriquerocha
+QUÉ ES CLAUDE
+
+
+
+
+Nota sobre Opus 4.7 y 4.6: Ambos pasaron a ser modelos legacy (ya no son los actuales). Siguen
+disponibles para quienes ya los usaban y todavía no han migrado. Sus precios son iguales a Opus 4.8
+($5 / $25 por MTok). Si empiezas de cero, usa Opus 4.8.
+
+
+Cuál modelo elegir
+
+
+    Tarea simple (chatbot, preguntas rapidas):
+    → Claude Haiku 4.5 — $1 / $5 por MTok
+
+
+    Tarea media (escribir, analizar, programar):
+    → Claude Sonnet 4.6 — $3 / $15 por MTok
+
+
+    Tarea compleja (agentes, razonamiento profundo):
+    → Claude Opus 4.8 — $5 / $25 por MTok
+
+
+
+Si estás empezando, usa Sonnet. Es el punto de partida ideal para casi todo.
+
+
+Qué significan los números
+Los números después del nombre (4.5, 4.6, 4.7) indican la generación del modelo. Números más altos
+significan modelos más recientes y generalmente más capaces.
+
+La historia es así:
+
+   • Claude 1 (marzo 2023) — El primero. Bueno en lenguaje, limitado en todo lo demás.
+   • Claude 2 (julio 2023) — Salto grande. Pasó de 9,000 a 100,000 tokens de contexto.
+   • Claude 3 (marzo 2024) — Introdujo los tres niveles (Opus, Sonnet, Haiku) y la capacidad de ver
+    imágenes.
+   • Claude 3.5 (junio-octubre 2024) — Sonnet 3.5 superó a Opus 3 siendo un modelo más pequeño.
+   • Claude 4 a 4.6 (mayo 2025 a finales de 2025) — Cada versión mejoró en código, razonamiento y
+    velocidad.
+   • Claude Sonnet 4.6 (17 de febrero de 2026) — Sonnet de nueva generación con contexto de 1
+    millón de tokens.
+   • Claude Opus 4.7 (marzo 2026) — Mejora notable sobre Opus 4.6 en código agéntico. Hoy es un
+    modelo legacy: ya no es el actual.
+   • Claude Opus 4.8 (junio 2026) — La versión más reciente y el modelo top actual.
+
+Cambio de formato en los IDs: Desde la generación 4.6, los identificadores de modelo en la API ya no
+llevan fecha. Antes era claude-opus-4-1-20250805 ; ahora es simplemente claude-opus-4-8 .
+Aunque el ID parece más corto, sigue apuntando a un snapshot fijo: el modelo no cambia bajo tus pies.
+
+
+
+                                                  20                                     @soyenriquerocha
+                                                                                         QUÉ ES CLAUDE
+
+
+
+
+Claude comparado con otros asistentes de IA
+
+Claude no es el único asistente de IA. Hay varios competidores. Aquí va una comparación honesta:
+
+Claude vs ChatGPT vs Gemini vs Copilot
+ChatGPT (de OpenAI): Es el más popular. Lo usan más de 200 millones de personas por semana. Es
+muy versátil y tiene la mayor cantidad de integraciones con otras apps. Puede generar imágenes.
+
+Gemini (de Google): Su fuerte es la integración con todo el ecosistema de Google (Gmail, Drive, Docs).
+Excelente para tareas que combinan texto e imágenes.
+
+Copilot (de Microsoft): Está integrado en Office 365 y GitHub. Es ideal si ya usas productos de Microsoft
+todo el día.
+
+Claude (de Anthropic): Destaca en razonamiento, programación y manejo de textos largos. Es la
+referencia en seguridad. Puede procesar documentos de cientos de páginas de una sola vez.
+
+
+Dónde brilla Claude
+Claude tiene ventajas claras en estas áreas:
+
+   • Textos largos — Puede leer y analizar hasta 1 millón de tokens (unas 750,000 palabras). Es como
+    darle un libro completo y que lo resuma.
+   • Seguridad — Gracias a la IA Constitucional, Claude tiende a ser más cuidadoso con contenido
+    sensible.
+   • Programación — La generación Opus alcanza alrededor de 87.6% en SWE-bench Verified, un
+    benchmark de programación muy exigente, y Sonnet 4.6 saca 79.6%. Opus 4.8 es hoy el modelo
+    recomendado para tareas de código complejas.
+   • Honestidad — Claude está entrenado para decir "no sé" cuando no sabe algo, en lugar de
+    inventar una respuesta.
+
+
+Dónde Claude tiene limitaciones
+   • No genera imágenes (a diferencia de ChatGPT con DALL-E).
+   • No tiene acceso a internet en tiempo real por defecto.
+   • Tiene una fecha de corte de conocimiento. No sabe cosas que pasaron después de esa fecha.
+   • No recuerda conversaciones anteriores en el plan gratuito.
+   • Puede cometer errores o "alucinar" datos. Siempre verifica información importante.
+   • La ventana de contexto no es igual en todas las plataformas. Por ejemplo, en Microsoft Foundry,
+    Opus 4.8 está limitado a 200,000 tokens en lugar de 1 millón.
+
+
+
+
+                                                   21                                      @soyenriquerocha
+QUÉ ES CLAUDE
+
+
+
+
+   • Los modelos de la clase Mythos (Claude Fable 5 y Claude Mythos 5) están suspendidos a nivel
+    mundial desde el 12 de junio de 2026 y no se pueden usar por ahora. La alternativa recomendada
+    es Opus 4.8.
+
+
+
+Productos y capacidades de Claude
+
+Claude no es solo un chat. Es un ecosistema de herramientas. Aquí las más importantes:
+
+Artifacts: crea cosas dentro de la conversación
+Artifacts son como mini-aplicaciones que Claude crea mientras hablas con él. Puede generar gráficos,
+dashboards, visualizaciones interactivas y más. Todo dentro de la misma ventana de chat.
+
+Es como si le pidieras a un asistente que te haga una presentación y la proyectara en la pared al
+instante.
+
+
+Computer Use: Claude controla tu computadora
+Computer Use es una capacidad en beta. Claude puede ver tu pantalla, mover el cursor, hacer click y
+escribir texto. Literalmente puede usar una computadora como un humano.
+
+En un benchmark llamado OSWorld, Claude logró 61.4% de efectividad. El siguiente competidor logró
+7.8%. Eso es una ventaja de 8 veces.
+
+
+MCP: conectar Claude con otras herramientas
+El Model Context Protocol (MCP) es un estándar abierto para conectar Claude con herramientas
+externas. Piensa en él como un enchufe universal.
+
+Con MCP puedes conectar Claude a Google Calendar, Gmail, Slack y muchas otras herramientas.
+Puedes configurar una integración nueva en menos de 30 minutos.
+
+
+Extended Thinking y Adaptive Thinking
+Hay dos formas en las que Claude puede dedicar más tiempo a razonar antes de responderte:
+Extended Thinking y Adaptive Thinking. No están en todos los modelos por igual.
+
+Extended Thinking (pensamiento extendido) permite que Claude "piense paso a paso" antes de darte
+una respuesta. Es como cuando un estudiante muestra todo su procedimiento en un examen de
+matemáticas. Tú activas el modo y Claude tarda un poco más, pero responde con más cuidado.
+
+Adaptive Thinking (pensamiento adaptativo) es más sutil: el propio Claude decide cuánto pensar
+según la dificultad de tu pregunta. Para algo simple, responde rápido. Para algo complejo, dedica más
+razonamiento por dentro sin que tú tengas que activar nada.
+
+
+
+                                                    22                                   @soyenriquerocha
+                                                                                       QUÉ ES CLAUDE
+
+
+
+
+No todos los modelos tienen las dos capacidades:
+
+   • Claude Opus 4.8 — Adaptive thinking sí. Extended thinking no: lo reemplaza por el adaptive, que
+    decide automáticamente.
+   • Claude Sonnet 4.6 — Adaptive thinking sí. Extended thinking sí. Es el único modelo actual con las
+    dos.
+   • Claude Haiku 4.5 — Adaptive thinking no. Extended thinking sí (lo activas tú cuando lo necesitas).
+
+
+La clase Mythos: Fable 5 y Mythos 5
+Por encima de Opus, Sonnet y Haiku, Anthropic creó una nueva clase de modelos de frontera llamada
+Mythos. Son los modelos más capaces que ha construido, pensados para razonamiento muy exigente y
+trabajo agéntico de largo horizonte.
+
+Lo que en abril de 2026 se anunció como Claude Mythos Preview evolucionó en dos modelos lanzados
+el 9 de junio de 2026:
+
+   • Claude Fable 5 ( claude-fable-5 ) — El modelo de disponibilidad general más capaz de
+    Anthropic. Disponible para clientes (no solo por invitación). Precio $10 por millón de tokens de
+    entrada y $50 por millón de salida. Contexto de 1 millón de tokens, salida de hasta 128k. Tiene
+    pensamiento adaptativo (adaptive thinking) siempre activo y no tiene extended thinking.
+   • Claude Mythos 5 ( claude-mythos-5 ) — Sucesor de Mythos Preview. Es solo por invitación a
+    través del programa Project Glasswing, reservado a socios estratégicos. Mismas características
+    técnicas y precio que Fable 5.
+
+Importante (estado a junio de 2026): El 12 de junio de 2026, apenas tres días después de su
+lanzamiento, tanto Fable 5 como Mythos 5 fueron suspendidos a nivel mundial. La causa fue una
+directiva de control de exportación del US Commerce Department (Departamento de Comercio de
+EE.UU.) por motivos de seguridad nacional, ligada a un supuesto método de jailbreak. Plataformas
+como AWS, Google Vertex AI, Microsoft Foundry y GitHub Copilot suspendieron el acceso. A la fecha (19
+de junio de 2026) ambos siguen suspendidos.
+
+Si necesitas un modelo muy capaz mientras tanto, la alternativa recomendada es Claude Opus 4.8. No
+es algo que vayas a usar en tu día a día, pero conviene saber que existe y por qué hoy no está
+disponible.
+
+
+
+El marco de seguridad de Anthropic: RSP y niveles ASL
+
+Anthropic se toma la seguridad muy en serio. Tan en serio que tiene un documento público que dice
+qué cosas se compromete a no hacer hasta que esté listo. Ese documento se llama Responsible
+Scaling Policy (Política de Escalado Responsable), o RSP para abreviar.
+
+
+
+
+                                                   23                                    @soyenriquerocha
+QUÉ ES CLAUDE
+
+
+
+
+La versión más reciente, la RSP v3.0, se publicó el 24 de febrero de 2026.
+
+Los niveles ASL explicados simple
+La RSP define unos niveles llamados AI Safety Levels (niveles de seguridad de IA), o ASL. Están
+inspirados en los niveles de bioseguridad que usan los laboratorios de biología (BSL-1, BSL-2, BSL-3,
+BSL-4).
+
+La idea es simple: a mayor capacidad del modelo, mayores medidas de seguridad obligatorias. Hay
+cuatro niveles:
+
+   • ASL-1 — Modelos sin riesgo catastrófico. Por ejemplo, un programa de ajedrez o un modelo de
+    lenguaje pequeño de 2018. No hace falta protección especial.
+   • ASL-2 — Modelos con señales tempranas de capacidades peligrosas, pero no fiables aún. Claude
+    está en este nivel hoy. Implica controles básicos de seguridad y políticas de uso.
+   • ASL-3 — Modelos que podrían ayudar materialmente a alguien con base técnica a crear armas
+    biológicas, químicas, radiológicas o nucleares (CBRN). Requiere proteger los pesos del modelo
+    con seguridad reforzada y limitar despliegues.
+   • ASL-4+ — Niveles aún por definir del todo. Anthropic se ha comprometido a definirlos antes de
+    tener un modelo que los dispare, no después.
+
+
+Por qué este marco importa
+Lo importante de la RSP es que es un compromiso público y verificable. Anthropic se ata las manos a
+sí mismo. Si su próximo modelo entra en ASL-3, no puede simplemente lanzarlo sin antes cumplir un
+conjunto de requisitos de seguridad que ya están escritos.
+
+Para ti como usuario significa dos cosas:
+
+   • Hay un freno explícito antes de que un modelo más peligroso llegue al mercado.
+   • Cuando ves "Claude está en ASL-2", sabes que no es marketing: es una declaración formal de la
+    empresa sobre lo que su modelo puede y no puede hacer.
+
+
+
+
+                                                   24                                    @soyenriquerocha
+                                                                                        QUÉ ES CLAUDE
+
+
+
+
+Ejemplos Prácticos
+
+
+
+  Tu primera conversación con Claude
+
+
+
+     1. Ve a claude.ai
+     2. Crea una cuenta gratuita
+     3. Escribe: "Explícame qué es la fotosíntesis como si tuviera 5 años"
+     4. Lee la respuesta
+     5. Escribe: "Ahora dame 3 datos curiosos sobre las plantas"
+
+
+
+  Este ejemplo te muestra lo básico: abrir Claude, hacer una pregunta y continuar la conversación.
+  Claude recuerda lo que le dijiste antes dentro de la misma conversación.
+
+
+
+
+  Elegir el modelo correcto
+
+
+
+     Tarea: resumir un email corto
+     → Usa Haiku 4.5 (rápido y barato)
+
+
+     Tarea: escribir un artículo de blog
+     → Usa Sonnet 4.6 (buena calidad, buen precio)
+
+
+     Tarea: analizar un contrato legal de 200 páginas
+     → Usa Opus 4.8 (máximo razonamiento)
+
+
+
+  No necesitas siempre el modelo más potente. Elegir el modelo correcto te ahorra dinero y tiempo.
+
+
+
+
+                                                  25                                      @soyenriquerocha
+QUÉ ES CLAUDE
+
+
+
+
+   Ver cómo funciona la predicción de texto
+
+
+
+      Escribe en Claude:
+      "Completa esta oración de 5 formas diferentes: El perro corrió
+      hacia..."
+
+
+      Claude generará algo como:
+      1. El perro corrió hacia el parque.
+      2. El perro corrió hacia su dueño.
+      3. El perro corrió hacia la pelota.
+      4. El perro corrió hacia la puerta.
+      5. El perro corrió hacia el gato del vecino.
+
+
+
+   Esto demuestra en acción cómo Claude predice texto. Cada opción tiene diferente probabilidad.
+   Claude genera la que considera más apropiada según el contexto.
+
+
+
+
+    Consejo
+
+    Empieza con el plan gratuito de claude.ai. No necesitas pagar para aprender a usar Claude.
+
+
+
+
+    Consejo
+
+    Para la mayoría de tareas del día a día, Claude Sonnet 4.6 es la mejor opción. Solo usa Opus 4.8
+    para tareas realmente complejas.
+
+
+
+
+    Advertencia
+
+    Claude puede sonar muy seguro de sí mismo, pero puede cometer errores. Siempre verifica la
+    información importante con otras fuentes.
+
+
+
+
+                                                  26                                        @soyenriquerocha
+                                                                                       QUÉ ES CLAUDE
+
+
+
+
+ Advertencia
+
+ Claude tiene una fecha de corte de conocimiento. No sabe cosas que pasaron después de su
+ fecha de entrenamiento.
+
+
+
+
+ Advertencia
+
+ Claude Sonnet 4 y Claude Opus 4 (los originales de mayo de 2025) serán retirados el 15 de junio
+ de 2026. Además, Claude Opus 4.1 está marcado como obsoleto (deprecated) y se retira el 5 de
+ agosto de 2026. Si todavía los usas, migra a Sonnet 4.6 y Opus 4.8 antes de esas fechas para evitar
+ que tu integración deje de funcionar.
+
+
+
+
+ Nota
+
+ El nombre 'Claude' posiblemente es un homenaje a Claude Shannon, considerado el padre de la
+ teoría de la información.
+
+
+
+
+ Nota
+
+ La constitución de Claude no es definitiva. Anthropic planea hacerla más democrática con el
+ tiempo, permitiendo que más personas participen en definir sus principios.
+
+
+
+
+Resumen del Capítulo
+
+Claude es un asistente de IA creado por Anthropic, una empresa enfocada en seguridad. Funciona
+prediciendo texto palabra por palabra usando patrones aprendidos de millones de textos. Lo que
+hace único a Claude es su IA Constitucional: un sistema de principios que le permite
+autocorregirse. Viene en tres niveles (Opus, Sonnet, Haiku) para diferentes necesidades y
+presupuestos.
+
+
+
+
+                                                27                                       @soyenriquerocha
+2

@@ -1,0 +1,517 @@
+<article class="chapter" data-id="cap14" data-title="CLAUDE.md y Memoria del Proyecto" data-part="3">
+  <header class="ch-head">
+    <p class="ch-kicker">Parte 3 · Claude Code · Capítulo 14</p>
+    <h1>CLAUDE.md y Memoria del Proyecto</h1>
+    <p class="ch-sub">Cómo darle instrucciones permanentes a Claude Code y cómo él aprende de ti</p>
+    <p class="ch-level">INTERMEDIO</p>
+    <p class="ch-lede">Cada vez que abres Claude Code, él empieza desde cero. No recuerda nada de la sesión anterior. Eso suena terrible, pero tiene solución. Existen dos sistemas de memoria que le permiten recordar tus instrucciones y aprender de ti. En este capítulo vas a aprender a usar ambos para que Claude Code trabaje exactamente como tú quieres.</p>
+  </header>
+
+  <h2 id="cap14-los-dos-sistemas-de-memoria">Los dos sistemas de memoria</h2>
+  <p>Claude Code tiene dos formas de recordar cosas entre sesiones. Piensa en ellas como dos cuadernos diferentes:</p>
+  <ul class="deflist">
+    <li><strong>CLAUDE.md</strong> — Un cuaderno que tú escribes. Ahí pones instrucciones, reglas y contexto del proyecto. Es como dejarle una nota al empleado nuevo con las reglas de la oficina.</li>
+    <li><strong>Auto memory (MEMORY.md)</strong> — Un cuaderno que Claude escribe solo. Cuando descubre algo importante mientras trabaja, lo anota ahí. Es como el cuaderno personal donde el empleado nuevo apunta trucos que va descubriendo.</li>
+  </ul>
+  <p>Ambos se cargan al inicio de cada sesión. Claude los lee antes de hacer cualquier otra cosa.</p>
+
+  <h3>La diferencia clave</h3>
+  <p>CLAUDE.md contiene <strong>instrucciones y reglas</strong>. Tú decides qué va ahí. Auto memory contiene <strong>aprendizajes y patrones</strong>. Claude decide qué va ahí.</p>
+  <div class="callout note">
+    <p class="callout-label">Dato importante</p>
+    <p>Estos archivos son contexto, no configuración forzada. Claude los lee e intenta seguirlos. Pero si escribes instrucciones vagas o contradictorias, puede que no las cumpla al 100%.</p>
+  </div>
+  <p>La buena noticia: instrucciones claras y específicas se cumplen en un ~92% de los casos. Las vagas bajan a ~73%. Así que la clave es ser directo y preciso.</p>
+  <div class="callout warn">
+    <p class="callout-label">Importante</p>
+    <p>Como CLAUDE.md es solo contexto que guía a Claude, no sirve para bloquear una acción de verdad. Si necesitas que algo nunca ocurra pase lo que pase (por ejemplo, impedir un <code>git push</code> a main), usa un hook PreToolUse o managed settings (<code>permissions.deny</code>), no una regla en CLAUDE.md.</p>
+  </div>
+  <div class="callout note">
+    <p class="callout-label">Nota técnica</p>
+    <p>El contenido de CLAUDE.md se inyecta como un mensaje de usuario después del system prompt, no como parte del system prompt mismo. Esto significa que Claude lo trata como instrucciones importantes, pero no tienen el mismo peso que el system prompt. Si necesitas instrucciones a nivel de system prompt (por ejemplo, en scripts de automatización), usa el flag <code>--append-system-prompt</code>. Este flag agrega texto directamente al system prompt, lo que le da más peso. Debe pasarse en cada invocación, así que es más práctico para scripts que para uso interactivo.</p>
+  </div>
+
+  <h2 id="cap14-claude-md-tus-instrucciones-permanentes">CLAUDE.md: tus instrucciones permanentes</h2>
+  <p>Un archivo CLAUDE.md es un documento de texto plano en formato Markdown. Ahí escribes las reglas que Claude debe seguir en tu proyecto.</p>
+  <p>Imagina que contratas a un asistente temporal cada día. Cada mañana le dejas una hoja con las reglas del proyecto. Eso es exactamente lo que hace CLAUDE.md.</p>
+
+  <h3>Qué poner en un CLAUDE.md</h3>
+  <p>Un buen CLAUDE.md incluye:</p>
+  <ul class="deflist">
+    <li><strong>Comandos de build y test</strong> — cómo compilar, ejecutar tests y hacer linting.</li>
+    <li><strong>Estándares de código</strong> — indentación, convenciones de nombres, lenguajes preferidos.</li>
+    <li><strong>Arquitectura</strong> — dónde viven las cosas en el proyecto.</li>
+    <li><strong>Decisiones importantes</strong> — por qué usamos X en vez de Y.</li>
+  </ul>
+  <p>Aquí tienes un ejemplo real:</p>
+  <pre><code class="lang-text"># Mi Proyecto
+
+## Comandos de Build
+- `npm run build` para compilar
+- `npm test` para ejecutar tests
+- `npm run lint` para linting
+
+## Estandares de Codigo
+- Usar 2 espacios de indentacion
+- Componentes React con TypeScript
+- Tests unitarios para toda logica de negocio
+
+## Arquitectura
+- API handlers en src/api/handlers/
+- Componentes React en src/components/
+- Utilidades compartidas en src/utils/</code></pre>
+
+  <h3>Cómo escribir instrucciones efectivas</h3>
+  <p>No todas las instrucciones funcionan igual de bien. Hay trucos para que Claude las siga con más precisión:</p>
+  <ul class="deflist">
+    <li><strong>Usa bullets</strong> — las listas con viñetas tienen un 35% más de cumplimiento que párrafos largos.</li>
+    <li><strong>Sé imperativo</strong> — escribe "Usa 2 espacios de indentación" en vez de "El proyecto usa 2 espacios". Los imperativos tienen un 25% más de precisión.</li>
+    <li><strong>Sé específico</strong> — "Usa Node 20" es mejor que "usa una versión reciente de Node".</li>
+    <li><strong>Incluye ejemplos de código</strong> — un snippet vale más que mil palabras.</li>
+    <li><strong>Mantén el archivo corto</strong> — menos de 200 líneas. Los archivos más largos pierden efectividad drásticamente (~71% de cumplimiento vs ~92% para archivos cortos).</li>
+  </ul>
+  <p>Evita estos errores comunes:</p>
+  <ul>
+    <li>No dupliques reglas entre diferentes archivos CLAUDE.md.</li>
+    <li>No pongas detalles de implementación (eso pertenece al código).</li>
+    <li>No escribas solo prohibiciones ("no hagas X") sin dar alternativas.</li>
+  </ul>
+
+  <h3>Generar un CLAUDE.md automáticamente con /init</h3>
+  <p>No tienes que empezar desde cero. El comando <code>/init</code> analiza tu proyecto y genera un CLAUDE.md inicial.</p>
+  <p>Simplemente abre Claude Code en tu proyecto y escribe <code>/init</code>. Claude mirará tu código, descubrirá los comandos de build, las convenciones y la estructura. Luego creará un archivo CLAUDE.md con todo eso.</p>
+  <p>Si ya tienes un CLAUDE.md, <code>/init</code> sugiere mejoras en vez de sobreescribirlo. Es un buen punto de partida. Después puedes refinarlo con instrucciones que Claude no descubriría por su cuenta.</p>
+  <p>Además del código, <code>/init</code> también lee archivos de configuración de otros agentes si existen en tu repositorio:</p>
+  <ul class="deflist">
+    <li><strong><code>AGENTS.md</code></strong> — el formato común para agentes de código.</li>
+    <li><strong><code>.cursorrules</code></strong> — reglas de Cursor.</li>
+    <li><strong><code>.windsurfrules</code></strong> — reglas de Windsurf.</li>
+    <li><strong><code>.devin/rules/</code></strong> — reglas de Devin.</li>
+  </ul>
+  <p>Si encuentra alguno, incorpora las partes relevantes al CLAUDE.md generado. Esto es útil cuando migras desde otro agente y no quieres reescribir todas tus convenciones a mano.</p>
+  <p>Existe una variante interactiva más completa. Si estableces la variable de entorno <code>CLAUDE_CODE_NEW_INIT=1</code> antes de ejecutar <code>/init</code>, se habilita un flujo de múltiples fases:</p>
+  <ol class="steps">
+    <li>Claude te pregunta qué artefactos quieres configurar: archivos CLAUDE.md, skills, hooks.</li>
+    <li>Explora el codebase con un subagente para entender la estructura.</li>
+    <li>Te hace preguntas de seguimiento para llenar vacíos.</li>
+    <li>Te presenta una propuesta revisable antes de escribir nada.</li>
+  </ol>
+  <p>Este flujo es ideal para proyectos grandes donde quieres un CLAUDE.md más completo desde el inicio.</p>
+
+  <h2 id="cap14-donde-poner-los-archivos-claude-md">Dónde poner los archivos CLAUDE.md</h2>
+  <p>CLAUDE.md puede vivir en varios lugares. Cada ubicación tiene un alcance diferente. Piensa en esto como las reglas de una empresa:</p>
+  <ul>
+    <li>La empresa tiene reglas generales (nivel organización).</li>
+    <li>Cada persona tiene sus preferencias (nivel usuario).</li>
+    <li>Cada proyecto tiene sus convenciones (nivel proyecto).</li>
+    <li>Cada persona tiene sus notas personales por proyecto (nivel local).</li>
+    <li>Cada módulo puede tener reglas especiales (nivel subdirectorio).</li>
+  </ul>
+  <p>Las reglas más específicas ganan sobre las más generales. Si la empresa dice "usa tabs" pero el proyecto dice "usa espacios", gana el proyecto.</p>
+
+  <h3>Nivel 1: Managed policy (organización)</h3>
+  <p>Es el nivel más amplio. Lo gestiona el equipo de IT o DevOps de tu empresa. Aplica a todos los usuarios de la organización.</p>
+  <p>Ubicaciones según sistema operativo:</p>
+  <ul class="deflist">
+    <li><strong>macOS</strong> — <code>/Library/Application Support/ClaudeCode/CLAUDE.md</code></li>
+    <li><strong>Linux / WSL</strong> — <code>/etc/claude-code/CLAUDE.md</code></li>
+    <li><strong>Windows</strong> — <code>C:\Program Files\ClaudeCode\CLAUDE.md</code></li>
+  </ul>
+  <div class="callout note">
+    <p class="callout-label">Dato clave</p>
+    <p>Este archivo nunca puede ser excluido. Ni siquiera con <code>claudeMdExcludes</code>. Es la ley de la empresa, nadie la puede saltarse.</p>
+  </div>
+  <p>Se despliega con herramientas de gestión como MDM, Group Policy, Ansible o similares.</p>
+  <p>Alternativa para IT/DevOps: en vez de desplegar un archivo CLAUDE.md físico, puedes incrustar su contenido directamente dentro del <code>managed-settings.json</code> usando el setting <code>claudeMd</code>:</p>
+  <pre><code class="lang-json">{
+    "claudeMd": "Always run `make lint` before committing.\nNever push directly to main."
+}</code></pre>
+  <p>Carga con la misma prioridad que un CLAUDE.md gestionado en disco: aplica antes que las instrucciones de usuario y proyecto.</p>
+  <div class="callout warn">
+    <p class="callout-label">Importante</p>
+    <p>Este setting solo se honra en managed/policy settings. Si lo pones en settings de usuario, de proyecto o local, se ignora.</p>
+  </div>
+
+  <h3>Nivel 2: Usuario (personal)</h3>
+  <p>Tus preferencias personales. Aplican a todos los proyectos en tu máquina.</p>
+  <p>Ubicación: <code>~/.claude/CLAUDE.md</code></p>
+  <p>Aquí pondrías cosas como tu estilo de código favorito o atajos de herramientas que usas siempre. Este archivo no se versiona en git porque es solo tuyo.</p>
+
+  <h3>Nivel 3: Proyecto (equipo)</h3>
+  <p>Instrucciones compartidas con tu equipo. Se guardan en control de versiones.</p>
+  <p>Tienes dos opciones de ubicación:</p>
+  <ul class="deflist">
+    <li><strong><code>./CLAUDE.md</code></strong> — en la raíz del proyecto.</li>
+    <li><strong><code>./.claude/CLAUDE.md</code></strong> — dentro del directorio <code>.claude</code>.</li>
+  </ul>
+  <p>Ambas funcionan igual. Elige la que prefieras. Aquí van los comandos de build, estándares de código y decisiones de arquitectura del proyecto.</p>
+
+  <h3>Nivel 3.5: Local (personal por proyecto)</h3>
+  <p>A veces necesitas instrucciones que son solo tuyas pero específicas de un proyecto. Por ejemplo, tus URLs de sandbox, datos de prueba que prefieres, o configuraciones personales que no quieres imponer al equipo.</p>
+  <p>Para eso existe <code>CLAUDE.local.md</code>. Se crea en la raíz del proyecto, junto a CLAUDE.md.</p>
+  <p>Diferencias clave con CLAUDE.md:</p>
+  <ul>
+    <li>Debe ir en <code>.gitignore</code>. Es personal, no se comparte con el equipo.</li>
+    <li>Se carga después de CLAUDE.md en cada nivel de directorio. Eso significa que cuando hay conflicto, las instrucciones de CLAUDE.local.md ganan porque son lo último que Claude lee en ese nivel.</li>
+    <li>Si ejecutas <code>/init</code> y eliges la opción personal, se agrega automáticamente a <code>.gitignore</code>.</li>
+  </ul>
+  <p>Dato sobre worktrees: un <code>CLAUDE.local.md</code> que está en <code>.gitignore</code> solo existe en el worktree donde lo creaste. Si trabajas con múltiples worktrees y quieres compartir instrucciones personales entre ellos, la solución es importar un archivo desde tu home:</p>
+  <pre><code class="lang-text"># En CLAUDE.local.md de cada worktree:
+@~/.claude/my-project-instructions.md</code></pre>
+  <p>Así mantienes un solo archivo de instrucciones personales y lo importas desde cualquier worktree.</p>
+
+  <h3>Nivel 4: Subdirectorio (módulo)</h3>
+  <p>Instrucciones específicas para partes del proyecto. Por ejemplo, <code>src/api/CLAUDE.md</code> con reglas solo para la API.</p>
+  <p>Diferencia importante: estos archivos <strong>no se cargan al inicio</strong>. Se cargan bajo demanda, solo cuando Claude lee archivos en ese subdirectorio. Es como un manual que solo se abre cuando trabajas en esa área.</p>
+
+  <h2 id="cap14-reglas-modulares-con-claude-rules">Reglas modulares con .claude/rules/</h2>
+  <p>Si tu CLAUDE.md se está haciendo muy largo, puedes dividir las instrucciones en archivos separados. Para eso existe el directorio <code>.claude/rules/</code>.</p>
+  <p>Imagina que en vez de un manual gigante, tienes carpetas separadas: una para testing, otra para seguridad, otra para estilo de código. Eso es <code>.claude/rules/</code>.</p>
+  <p>Una distinción importante: las <strong>rules</strong> (reglas en <code>.claude/rules/</code>) se cargan en el contexto automáticamente cada sesión (o cuando se abren archivos coincidentes si tienen frontmatter <code>paths</code>). Los <strong>skills</strong> (en <code>.claude/skills/</code>) son diferentes: solo se cargan cuando los invocas explícitamente o cuando Claude determina que son relevantes para tu prompt. Esto ahorra contexto porque los skills no ocupan espacio hasta que se necesitan.</p>
+
+  <h3>Estructura básica</h3>
+  <p>Crea archivos <code>.md</code> dentro de <code>.claude/rules/</code>. Cada archivo cubre un tema:</p>
+  <pre><code class="lang-text">tu-proyecto/
+├── .claude/
+│     ├── CLAUDE.md                # Instrucciones principales
+│     └── rules/
+│           ├── code-style.md      # Estilo de codigo
+│           ├── testing.md         # Convenciones de testing
+│           └── security.md        # Requisitos de seguridad</code></pre>
+  <p>Claude descubre estos archivos de forma recursiva. Puedes crear subdirectorios como <code>rules/frontend/</code> y <code>rules/backend/</code> para organizar mejor.</p>
+  <p>Los archivos sin frontmatter (texto especial al inicio) se cargan al arrancar, igual que el CLAUDE.md principal.</p>
+
+  <h3>Reglas que solo aplican a ciertos archivos</h3>
+  <p>Puedes crear reglas que solo se activan cuando Claude trabaja con archivos específicos. Para eso usas un frontmatter al inicio del archivo de regla.</p>
+  <p>El frontmatter es un bloque de texto entre tres guiones (<code>---</code>) que va al principio del archivo. Ahí defines patrones de archivos:</p>
+  <pre><code class="lang-text">---
+paths:
+  - "src/api/**/*.ts"
+---
+
+# Reglas para la API
+
+- Todos los endpoints deben validar su entrada
+- Usar el formato estandar de error
+- Incluir comentarios de documentacion OpenAPI</code></pre>
+  <p>Esta regla solo se activa cuando Claude lee un archivo TypeScript dentro de <code>src/api/</code>. No se carga al inicio ni se activa al escribir archivos.</p>
+  <p>Patrones glob comunes:</p>
+  <ul class="deflist">
+    <li><strong><code>**/*.ts</code></strong> — todos los TypeScript en cualquier carpeta.</li>
+    <li><strong><code>src/**/*</code></strong> — todo bajo <code>src/</code>.</li>
+    <li><strong><code>*.md</code></strong> — archivos Markdown solo en la raíz.</li>
+    <li><strong><code>src/**/*.{ts,tsx}</code></strong> — TypeScript y TSX bajo <code>src/</code>.</li>
+  </ul>
+
+  <h3>Reglas personales</h3>
+  <p>También puedes tener reglas personales en <code>~/.claude/rules/*.md</code>. Aplican a todos tus proyectos.</p>
+  <p>Estas reglas se cargan antes que las del proyecto. Eso significa que si hay conflicto, las reglas del proyecto ganan. Las del proyecto tienen más prioridad.</p>
+
+  <h3>Compartir reglas entre proyectos con symlinks</h3>
+  <p>Si tienes reglas que aplican a varios proyectos, puedes usar symlinks (enlaces simbólicos). Un symlink es como un atajo que apunta a otro archivo.</p>
+  <pre><code class="lang-bash"># Enlazar un directorio completo de reglas
+ln -s ~/shared-claude-rules .claude/rules/shared
+
+# Enlazar un archivo individual
+ln -s ~/company-standards/security.md .claude/rules/security.md</code></pre>
+  <p>Los symlinks se resuelven normalmente. Claude los lee como si fueran archivos normales. Si hay symlinks circulares (A apunta a B que apunta a A), Claude los detecta y los ignora.</p>
+
+  <h2 id="cap14-importar-archivos-con-arroba">Importar archivos con @</h2>
+  <p>Tu CLAUDE.md puede importar otros archivos usando la sintaxis <code>@ruta/al/archivo</code>. Es como poner un enlace que se expande automáticamente.</p>
+  <pre><code class="lang-text">See @README for project overview and @package.json for available npm
+commands.
+
+# Instrucciones adicionales
+- Flujo de git: @docs/git-instructions.md
+
+# Preferencias personales
+- @~/.claude/my-project-instructions.md</code></pre>
+  <p>Los archivos importados se cargan junto con el CLAUDE.md que los referencia. Las rutas relativas se resuelven desde la ubicación del archivo que contiene el import, no desde tu directorio actual.</p>
+
+  <h3>Límites de los imports</h3>
+  <p>Los imports tienen algunas restricciones:</p>
+  <ul>
+    <li>Profundidad máxima de 4 niveles. Es decir, A importa B, B importa C... hasta 4 saltos.</li>
+    <li>La primera vez que Claude encuentra imports externos en un proyecto, te pide permiso. Aparece un diálogo mostrando los archivos.</li>
+    <li>Si rechazas el diálogo, los imports quedan deshabilitados para ese proyecto. No hay forma fácil de reactivarlos después.</li>
+  </ul>
+
+  <h3>Compatibilidad con AGENTS.md</h3>
+  <p>Algunos equipos usan un archivo <code>AGENTS.md</code> para dar instrucciones a agentes de código (como Copilot o Cursor). Claude Code no lee AGENTS.md. Solo lee CLAUDE.md.</p>
+  <p>Si tu repositorio ya tiene un AGENTS.md y quieres que Claude también siga esas instrucciones, la solución es simple: crea un CLAUDE.md que lo importe.</p>
+  <pre><code class="lang-text">@AGENTS.md
+
+## Instrucciones especificas de Claude Code
+
+- Usar plan mode para cambios bajo src/billing/
+- Ejecutar tests antes de cada commit</code></pre>
+  <p>Claude carga el contenido de AGENTS.md al inicio de la sesión y luego agrega las instrucciones específicas que pongas debajo.</p>
+  <p>Alternativa más simple: si no necesitas ninguna instrucción específica de Claude debajo, puedes usar un symlink en vez de un import:</p>
+  <pre><code class="lang-bash">ln -s AGENTS.md CLAUDE.md</code></pre>
+  <p>Funciona en Mac y Linux sin más. En Windows requiere privilegios de Administrador o tener activado Developer Mode, así que el import <code>@AGENTS.md</code> sigue siendo más portable entre sistemas operativos.</p>
+
+  <h2 id="cap14-como-se-cargan-los-claude-md">Cómo se cargan los CLAUDE.md</h2>
+  <p>Claude Code busca archivos CLAUDE.md caminando hacia arriba desde tu directorio actual. Si ejecutas Claude en <code>foo/bar/</code>, carga:</p>
+  <ol>
+    <li><code>foo/bar/CLAUDE.md</code> (y <code>foo/bar/CLAUDE.local.md</code> si existe)</li>
+    <li><code>foo/CLAUDE.md</code> (y <code>foo/CLAUDE.local.md</code> si existe)</li>
+  </ol>
+  <p>Los CLAUDE.md en subdirectorios debajo de tu directorio actual se cargan bajo demanda (cuando Claude lee archivos en esas carpetas).</p>
+  <div class="callout tip">
+    <p class="callout-label">Dato útil</p>
+    <p>Los comentarios HTML de bloque (<code>&lt;!-- tu nota aquí --&gt;</code>) se eliminan automáticamente antes de inyectar el contenido en el contexto de Claude. Los que están dentro de bloques de código se preservan. Esto es práctico para dejar notas de mantenimiento en tu CLAUDE.md sin consumir tokens del contexto.</p>
+  </div>
+
+  <h3>Cargar CLAUDE.md de directorios adicionales</h3>
+  <p>El flag <code>--add-dir</code> da acceso a directorios extra. Pero por defecto, los CLAUDE.md de esos directorios no se cargan.</p>
+  <p>Para cargarlos, usa esta variable de entorno:</p>
+  <pre><code class="lang-bash">CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --add-dir ../shared-config</code></pre>
+  <p>Esto carga CLAUDE.md, <code>.claude/CLAUDE.md</code> y <code>.claude/rules/*.md</code> del directorio adicional.</p>
+
+  <h3>Excluir CLAUDE.md que no necesitas</h3>
+  <p>En proyectos grandes (como monorepos), puede haber CLAUDE.md de otros equipos que interfieren con tu trabajo. Puedes excluirlos con el setting <code>claudeMdExcludes</code>.</p>
+  <p>Ponlo en <code>.claude/settings.local.json</code> para que sea local a tu máquina:</p>
+  <pre><code class="lang-json">{
+    "claudeMdExcludes": [
+        "**/monorepo/CLAUDE.md",
+        "/home/user/monorepo/other-team/.claude/rules/**"
+    ]
+}</code></pre>
+  <p>Los patrones se comparan contra rutas absolutas de archivo. Los arrays se fusionan entre las diferentes capas de settings.</p>
+  <p>Recuerda: el CLAUDE.md de managed policy nunca puede ser excluido.</p>
+
+  <h3>CLAUDE.md sobrevive a /compact</h3>
+  <p>Si usas el comando <code>/compact</code> para resumir la conversación, no te preocupes. El CLAUDE.md de la raíz del proyecto sobrevive: Claude lo re-lee desde disco y lo vuelve a cargar fresco, sin importar lo que haya pasado en la conversación.</p>
+  <p>Matiz importante para proyectos con CLAUDE.md anidados en subdirectorios: esos archivos no se re-inyectan automáticamente tras un <code>/compact</code>. Se vuelven a cargar de forma on-demand, la siguiente vez que Claude lea un archivo dentro de ese subdirectorio. Si llevas un rato sin tocar esa parte del código, sus instrucciones específicas no van a estar activas hasta que vuelvas a entrar ahí.</p>
+  <p>Si una instrucción desapareció después de compactar, es porque la diste solo en la conversación. No estaba en CLAUDE.md. Solución: agrégala al archivo para que persista.</p>
+
+  <h2 id="cap14-auto-memory-el-cuaderno-personal-de-claude">Auto memory: el cuaderno personal de Claude</h2>
+  <p>Auto memory es el segundo sistema de memoria. Aquí Claude escribe por su cuenta. Cuando descubre algo útil mientras trabaja contigo, lo anota para recordarlo después.</p>
+  <p>Piensa en un chef que trabaja en tu cocina. Al principio no sabe dónde está nada. Pero cada día anota cosas: "el azúcar está en el cajón de arriba", "al dueño le gusta la comida sin sal". Eso es auto memory.</p>
+
+  <h3>Qué guarda Claude en auto memory</h3>
+  <p>Claude guarda cosas como:</p>
+  <ul>
+    <li>Comandos de build que descubrió.</li>
+    <li>Trucos de debugging que funcionaron.</li>
+    <li>Decisiones de arquitectura que encontró.</li>
+    <li>Tus preferencias de estilo de código.</li>
+    <li>Flujos de trabajo que detecta que prefieres.</li>
+  </ul>
+  <p>No guarda algo en cada sesión. Solo guarda cosas que serían útiles en una conversación futura. Cuando ves <code>"Writing memory"</code> o <code>"Recalled memory"</code> en la interfaz, Claude está escribiendo o leyendo de auto memory.</p>
+  <p>Los subagentes (agentes secundarios que Claude lanza para tareas paralelas) también pueden mantener su propia auto memory. Así que si un subagente descubre algo útil, también lo anota.</p>
+  <p>También puedes pedirle que recuerde algo directamente:</p>
+  <pre><code class="lang-text">Prompt: "siempre usa pnpm, no npm"
+Prompt: "recuerda que los tests de API requieren Redis local"</code></pre>
+  <p>Para agregar algo a CLAUDE.md en vez de auto memory, sé específico: <code>"add this to CLAUDE.md"</code>.</p>
+
+  <h3>Dónde vive la auto memory</h3>
+  <p>Cada proyecto tiene su carpeta de memoria en:</p>
+  <pre><code class="lang-text">~/.claude/projects/&lt;proyecto&gt;/memory/
+├── MEMORY.md                # Indice, se carga al inicio
+├── debugging.md             # Notas de debugging
+├── api-conventions.md       # Convenciones de API
+└── ...                      # Otros archivos por tema</code></pre>
+  <p>El nombre <code>&lt;proyecto&gt;</code> se deriva del repositorio git. Todos los worktrees y subdirectorios del mismo repo comparten la misma memoria.</p>
+  <div class="callout note">
+    <p class="callout-label">Detalle importante</p>
+    <p>Solo las primeras 200 líneas o 25KB (lo que venga primero) de MEMORY.md se cargan al inicio. El contenido más allá de ese umbral no se carga automáticamente. Los archivos de temas (como <code>debugging.md</code>) tampoco se cargan al inicio. Claude los lee bajo demanda cuando los necesita.</p>
+  </div>
+  <p>Auto memory es local a tu máquina. No se comparte entre computadoras ni entornos cloud.</p>
+
+  <h3>Configurar auto memory</h3>
+  <p>Auto memory viene habilitada por defecto. Puedes controlarla de varias formas:</p>
+  <ul class="deflist">
+    <li><strong>Toggle rápido</strong> — escribe <code>/memory</code> en una sesión para activarla o desactivarla.</li>
+    <li><strong>Settings del proyecto</strong> — pon <code>"autoMemoryEnabled": false</code> en los settings.</li>
+    <li><strong>Variable de entorno</strong> — <code>CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude</code></li>
+  </ul>
+  <p>Si quieres cambiar dónde se guardan los archivos, usa el setting <code>autoMemoryDirectory</code>:</p>
+  <pre><code class="lang-json">{
+    "autoMemoryDirectory": "~/mi-directorio-de-memoria"
+}</code></pre>
+  <p>Este setting se puede leer desde cualquier nivel de settings, pero hay un matiz de seguridad: cuando lo defines en <code>.claude/settings.json</code> o <code>.claude/settings.local.json</code> (settings del proyecto), solo se honra tras aceptar el <strong>diálogo de confianza del workspace</strong> (workspace trust). Esto evita que un proyecto compartido redirija tu memoria a un lugar no deseado sin tu aprobación explícita.</p>
+
+  <h3>Mantener la auto memory limpia</h3>
+  <p>Después de unas 10 sesiones, la auto memory puede acumular información duplicada u obsoleta. Aproximadamente un 30% de redundancia.</p>
+  <p>La solución es simple: edita los archivos a mano. Son markdown plano. Usa <code>/memory</code> para abrir la carpeta de memoria y revisar qué hay ahí. Borra lo que ya no aplica.</p>
+  <p>Claude también se cuida solo. Mantiene MEMORY.md conciso moviendo notas detalladas a archivos de temas separados.</p>
+
+  <h2 id="cap14-el-comando-memory">El comando /memory</h2>
+  <p>El comando <code>/memory</code> es tu herramienta para inspeccionar todo el sistema de memoria. Al ejecutarlo, te muestra:</p>
+  <ul>
+    <li>Todos los archivos CLAUDE.md y CLAUDE.local.md cargados en la sesión actual.</li>
+    <li>Todas las reglas de <code>.claude/rules/</code> activas.</li>
+    <li>Un toggle para activar o desactivar auto memory.</li>
+    <li>Un enlace para abrir la carpeta de auto memory.</li>
+  </ul>
+  <p>Puedes seleccionar cualquier archivo de la lista para abrirlo en tu editor. Es la forma más fácil de saber qué instrucciones están activas y qué ha guardado Claude en su memoria.</p>
+
+  <h2 id="cap14-hook-instructionsloaded">Hook InstructionsLoaded (avanzado)</h2>
+  <p>Si necesitas saber exactamente qué archivos de instrucciones se cargan y cuándo, existe un hook (un gancho que se dispara automáticamente) llamado <code>InstructionsLoaded</code>.</p>
+  <p>Este hook se dispara cada vez que un CLAUDE.md o un archivo de reglas se carga en contexto. Tanto al inicio de la sesión como cuando se cargan archivos bajo demanda.</p>
+  <p>Sirve para:</p>
+  <ul>
+    <li>Auditar qué instrucciones recibe Claude.</li>
+    <li>Tracking de cumplimiento en entornos empresariales.</li>
+    <li>Observabilidad del sistema de memoria.</li>
+  </ul>
+  <p>El hook recibe información como:</p>
+  <ul class="deflist">
+    <li><strong><code>file_path</code></strong> — ruta del archivo cargado.</li>
+    <li><strong><code>memory_type</code></strong> — si es User, Project, Local o Managed.</li>
+    <li><strong><code>load_reason</code></strong> — por qué se cargó (inicio de sesión, navegación de subdirectorio, patrón glob, o import).</li>
+  </ul>
+  <p>Limitaciones: este hook <strong>no puede bloquear ni modificar la carga</strong>. Solo notifica. Y solo soporta hooks de tipo <code>command</code> (no HTTP ni prompt).</p>
+
+  <h2 id="cap14-problemas-comunes-y-soluciones">Problemas comunes y soluciones</h2>
+  <p>Aquí van los problemas más frecuentes con el sistema de memoria:</p>
+
+  <h3>Claude no sigue las instrucciones del CLAUDE.md</h3>
+  <p>Posibles causas:</p>
+  <ul>
+    <li>Las instrucciones son vagas. "Formatea bien el código" no dice nada. "Usa 2 espacios de indentación" sí.</li>
+    <li>El archivo no se cargó. Verifica con <code>/memory</code>.</li>
+    <li>Hay instrucciones contradictorias entre varios archivos.</li>
+  </ul>
+  <p>Solución: ejecuta <code>/memory</code>, verifica que los archivos se cargan, haz las instrucciones más específicas y busca contradicciones.</p>
+
+  <h3>El CLAUDE.md es demasiado grande</h3>
+  <p>Si tu CLAUDE.md tiene más de 200 líneas, pierde efectividad. La tasa de cumplimiento baja de ~92% a ~71%.</p>
+  <p>Solución: divide el contenido. Mueve instrucciones detalladas a archivos en <code>.claude/rules/</code>. Usa imports <code>@path</code> para referenciar documentos extensos. Mantén CLAUDE.md como un resumen ejecutivo.</p>
+  <div class="callout warn">
+    <p class="callout-label">Advertencia importante</p>
+    <p>Dividir el contenido con imports <code>@path</code> ayuda a organizar los archivos, pero <strong>no reduce el contexto</strong>. Los archivos importados se expanden y cargan completos al arrancar la sesión, igual que si estuvieran inline en el CLAUDE.md original. Para reducir el contexto real que ocupan las instrucciones, lo que funciona es usar path-scoped rules en <code>.claude/rules/</code> con frontmatter <code>paths</code>: esas reglas solo se cargan cuando Claude trabaja con archivos que matchean el patrón.</p>
+  </div>
+
+  <h3>CLAUDE.md de otros equipos interfiere en monorepo</h3>
+  <p>Claude sube por el árbol de directorios cargando CLAUDE.md ancestrales. En un monorepo, eso puede traer reglas de otros equipos.</p>
+  <p>Solución: usa <code>claudeMdExcludes</code> en <code>.claude/settings.local.json</code> para excluir los archivos irrelevantes.</p>
+
+  <h3>Auto memory tiene información obsoleta</h3>
+  <p>Después de muchas sesiones, la auto memory acumula basura. Comandos que ya no existen, decisiones que cambiaron.</p>
+  <p>Solución: abre la carpeta con <code>/memory</code>, revisa los archivos y borra lo que ya no sirve. Son archivos de texto plano. Puedes editarlos con cualquier editor.</p>
+
+  <h2 id="cap14-tabla-resumen-de-ubicaciones">Tabla resumen de ubicaciones</h2>
+  <p>Aquí tienes todas las ubicaciones de memoria en un solo lugar:</p>
+  <ul class="deflist">
+    <li><strong>Managed policy</strong> — <code>/Library/Application Support/ClaudeCode/CLAUDE.md</code> (macOS), <code>/etc/claude-code/CLAUDE.md</code> (Linux). Alcance: organización. No excluible.</li>
+    <li><strong>Usuario</strong> — <code>~/.claude/CLAUDE.md</code>. Alcance: todos tus proyectos. Personal.</li>
+    <li><strong>Proyecto</strong> — <code>./CLAUDE.md</code> o <code>./.claude/CLAUDE.md</code>. Alcance: el proyecto. Compartido vía git.</li>
+    <li><strong>Local (personal por proyecto)</strong> — <code>./CLAUDE.local.md</code>. Alcance: el proyecto, solo tú. En <code>.gitignore</code>. Se carga después de CLAUDE.md.</li>
+    <li><strong>Subdirectorio</strong> — <code>./subdir/CLAUDE.md</code>. Alcance: ese módulo. Carga bajo demanda.</li>
+    <li><strong>Reglas</strong> — <code>.claude/rules/*.md</code>. Alcance: proyecto. Modulares por tema.</li>
+    <li><strong>Reglas de usuario</strong> — <code>~/.claude/rules/*.md</code>. Alcance: todos tus proyectos. Menor prioridad.</li>
+    <li><strong>Auto memory</strong> — <code>~/.claude/projects/&lt;proyecto&gt;/memory/</code>. Escrito por Claude. Local a la máquina.</li>
+  </ul>
+
+  <h2 id="cap14-ejemplos-practicos">Ejemplos Prácticos</h2>
+
+  <h3>Crear tu primer CLAUDE.md con /init</h3>
+  <pre><code class="lang-text">/init</code></pre>
+  <p>Ejecuta <code>/init</code> en tu proyecto. Claude analizará el código y generará un CLAUDE.md con los comandos de build, convenciones y estructura que descubra. Después, edita el archivo para agregar lo que Claude no descubrió.</p>
+
+  <h3>Estructura básica de CLAUDE.md para un proyecto web</h3>
+  <pre><code class="lang-text"># Mi App Web
+
+## Comandos
+- `pnpm dev` para desarrollo local
+- `pnpm test` para tests
+- `pnpm build` para producción
+
+## Estandares
+- TypeScript estricto, sin 'any'
+- Componentes React funcionales
+- 2 espacios de indentacion
+
+## Arquitectura
+- Pages en src/pages/
+- Componentes en src/components/
+- API en src/api/</code></pre>
+  <p>Un CLAUDE.md corto y efectivo. Tiene comandos, estándares y arquitectura. Todo en menos de 20 líneas. Usa bullets e imperativos para máximo cumplimiento.</p>
+
+  <h3>Crear una regla path-specific para la API</h3>
+  <pre><code class="lang-text">---
+paths:
+   - "src/api/**/*.ts"
+---
+
+# Reglas de API
+
+- Valida inputs con zod schemas
+- Retorna errores con formato { error: string, code: number }
+- Documenta cada endpoint con JSDoc</code></pre>
+  <p>Guarda esto en <code>.claude/rules/api.md</code>. Solo se activa cuando Claude lee archivos TypeScript en <code>src/api/</code>. Así no consume contexto innecesario cuando trabajas en otras partes.</p>
+
+  <h3>Pedirle a Claude que recuerde algo</h3>
+  <pre><code class="lang-text">siempre usa pnpm en vez de npm</code></pre>
+  <p>Escribe esto en el chat de Claude Code. Claude lo guardará en auto memory y lo recordará en sesiones futuras. No necesitas editar ningún archivo.</p>
+
+  <h3>Inspeccionar toda la memoria activa</h3>
+  <pre><code class="lang-text">/memory</code></pre>
+  <p>Muestra todos los archivos de instrucciones cargados, te permite abrir cualquiera en tu editor, y te da acceso a la carpeta de auto memory para revisar qué ha aprendido Claude.</p>
+
+  <h3>Excluir CLAUDE.md irrelevantes en un monorepo</h3>
+  <pre><code class="lang-json">{
+    "claudeMdExcludes": [
+        "**/other-team/CLAUDE.md",
+        "**/legacy-app/.claude/rules/**"
+    ]
+}</code></pre>
+  <p>Pon esto en <code>.claude/settings.local.json</code>. Excluye los CLAUDE.md de otros equipos para que no interfieran con tu trabajo. El <code>.local</code> hace que sea solo para tu máquina.</p>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Mantén tu CLAUDE.md debajo de 200 líneas. Los archivos cortos tienen ~92% de cumplimiento. Los largos bajan a ~71%.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa imperativos ('Usa X') en vez de descriptivos ('El proyecto usa X'). Los imperativos tienen un 25% más de precisión.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Ejecuta <code>/memory</code> regularmente para ver qué archivos están activos y qué ha guardado Claude en auto memory.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa <code>CLAUDE.local.md</code> para tus preferencias personales por proyecto (URLs de sandbox, datos de prueba, configuraciones propias) sin ensuciar el git del equipo. Agrégalo a <code>.gitignore</code> y listo.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Las instrucciones en CLAUDE.md son contexto, no configuración forzada. Si son vagas o contradictorias, Claude puede no seguirlas.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Auto memory solo carga las primeras 200 líneas o 25KB (lo que venga primero) de MEMORY.md al inicio. El contenido más allá de ese umbral no se carga automáticamente.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Si rechazas el diálogo de aprobación de imports (<code>@path</code>) la primera vez, los imports quedan deshabilitados permanentemente para ese proyecto.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Auto memory requiere Claude Code v2.1.59 o posterior.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Auto memory es local a tu máquina. No se comparte entre computadoras ni entornos cloud.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Las reglas con <code>paths</code> frontmatter solo se activan cuando Claude LEE archivos coincidentes, no cuando los escribe (issue conocido #23478).</p>
+  </div>
+
+  <section class="recap">
+    <h2 id="cap14-resumen-del-capitulo">Resumen del Capítulo</h2>
+    <p>Claude Code tiene dos sistemas de memoria: CLAUDE.md (instrucciones que tú escribes) y auto memory (notas que Claude escribe solo). Los archivos CLAUDE.md pueden vivir en múltiples ubicaciones con diferentes alcances, desde nivel organización hasta nivel subdirectorio, incluyendo CLAUDE.local.md para preferencias personales por proyecto. La clave para que funcionen bien es mantenerlos cortos (menos de 200 líneas), usar instrucciones específicas con bullets e imperativos, y revisar periódicamente la auto memory para limpiar información obsoleta.</p>
+  </section>
+</article>

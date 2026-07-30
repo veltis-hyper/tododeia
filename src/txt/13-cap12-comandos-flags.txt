@@ -1,0 +1,1715 @@
+Comandos y Flags del CLI
+Referencia completa de todos los comandos de Claude Code
+
+
+    INTERMEDIO                                             @soyenriquerocha
+
+
+
+
+                                   237                     @soyenriquerocha
+COMANDOS Y FLAGS DEL CLI
+
+
+
+
+    Claude Code tiene muchos comandos y opciones. Piensa en ellos como los botones de
+    un control remoto: cada uno hace algo diferente. En este capítulo vamos a ver TODOS
+    los botones disponibles. No necesitas memorizarlos todos. Usa este capítulo como
+    referencia. Vuelve aquí cuando necesites algo específico.
+
+
+
+
+Formas de iniciar Claude Code
+
+Hay varias formas de abrir Claude Code desde tu terminal. Es como abrir una app: puedes hacer doble
+clic (modo simple) o abrirla con opciones especiales.
+
+La forma más básica es escribir claude y presionar Enter. Esto abre una sesión interactiva. Tú
+escribes, Claude responde. Van y vienen como en un chat.
+
+Sesión interactiva
+Una sesión interactiva es como una conversación en persona. Tú hablas, Claude responde. Tú vuelves
+a hablar, y así.
+
+   • claude — Abre una sesión vacía. Claude espera tu primer mensaje.
+   • claude "explica este proyecto" — Abre una sesión y envía tu mensaje de inmediato. Es
+    como entrar a la oficina y decir algo desde la puerta.
+
+
+Modo print (no interactivo)
+El modo print es como enviar un mensaje de texto. Tú lo mandas, recibes la respuesta, y se acabó. No
+hay conversación. Perfecto para scripts y automatización.
+
+   • claude -p "explica esta función" — Ejecuta la consulta, imprime la respuesta y sale.
+   • cat archivo.txt | claude -p "resume esto" — Envía el contenido de un archivo como
+    contexto. Es como adjuntar un documento a tu mensaje.
+
+El flag -p es la versión corta de --print . Ambos hacen lo mismo.
+
+Nota sobre stdin: Desde la versión 2.1.128, el contenido recibido por pipe (stdin) está limitado a 10
+MB. Si tu archivo es más grande, pásalo por ruta dentro del prompt en vez de hacer cat archivo |
+claude -p . Verás un error tipo "Stdin exceeds 10MB limit" si te pasas.
+
+
+
+
+                                                  238                                  @soyenriquerocha
+                                                                       COMANDOS Y FLAGS DEL CLI
+
+
+
+
+Aviso de pricing (15 de junio de 2026): A partir de esa fecha, el uso de claude -p y del Agent SDK
+en planes de suscripción consumirá un crédito mensual separado de los límites interactivos. Si
+automatizas mucho desde scripts o CI, planea con tiempo: revisa /usage regularmente y considera
+usar --max-budget-usd para acotar gastos.
+
+
+Continuar y reanudar sesiones
+A veces cierras Claude Code y luego quieres seguir donde te quedaste. Es como pausar una película y
+retomarla después.
+
+   • claude -c — Continúa la conversación más reciente en este directorio. Atajo de --continue .
+   • claude -c -p "revisa errores" — Continúa la sesión anterior pero en modo print. Útil para
+    scripts que retoman trabajo.
+   • claude -r "auth-refactor" — Reanuda una sesión por su nombre. El -r es atajo de --
+    resume .
+
+   • claude -r "auth-refactor" "agrega validación" — Reanuda la sesión y envía un
+    mensaje nuevo.
+
+
+Otros comandos de terminal
+   • claude update — Actualiza Claude Code a la última versión.
+   • claude install [version] — Instala o reinstala el binario nativo. Acepta una versión exacta
+    ( claude install 2.1.118 ), stable o latest . Muy útil para fijar versiones en CI y que los
+    runs sean reproducibles.
+   • claude auth login — Inicia sesión. Subflags útiles: --sso fuerza autenticación SSO de
+    empresa, --console autentica contra Anthropic Console (facturación por API key, no por
+    suscripción), y --email <addr> pre-rellena el email.
+   • claude auth logout — Cierra sesión.
+   • claude auth status — Muestra si estás logueado o no. Agrega --text para formato legible.
+   • claude setup-token — Genera un token OAuth de larga vida y lo imprime en pantalla. Pensado
+    para CI: guárdalo como CLAUDE_CODE_OAUTH_TOKEN en los secretos de tu pipeline. Requiere
+    suscripción Claude activa.
+   • claude agents — Abre la vista de agentes y sesiones en paralelo. Acepta --cwd <path> para
+    filtrar solo las sesiones iniciadas desde ese directorio.
+   • claude attach <id> — Engancha una sesión en background a tu terminal actual. Como entrar
+    a la habitación donde Claude está trabajando.
+   • claude logs <id> — Imprime la salida reciente de una sesión en background. Útil para mirar el
+    progreso sin engancharte.
+
+
+
+
+                                                   239                               @soyenriquerocha
+COMANDOS Y FLAGS DEL CLI
+
+
+
+
+   • claude stop <id> — Detiene una sesión en background. claude kill es alias.
+   • claude respawn <id> — Reinicia una sesión en background detenida sin perder la
+    conversación. Con --all reinicia todas las detenidas.
+   • claude rm <id> — Elimina una sesión en background de la lista.
+   • claude daemon status — Diagnostica el proceso supervisor (daemon) que mantiene vivas las
+    sesiones en segundo plano. Te dice si está corriendo y en qué estado.
+   • claude daemon stop --any — Detiene ese proceso supervisor. Agrega --keep-workers para
+    detener el supervisor pero dejar las sesiones corriendo, de modo que puedas reconectarte
+    después. Útil cuando el daemon se queda colgado y quieres reiniciarlo sin perder el trabajo en
+    curso.
+   • claude project purge [path] — Borra TODO el estado local de un proyecto: transcripts,
+    listas de tareas, debug logs, historial de prompts y entrada en ~/.claude.json . Sin path
+    muestra una lista interactiva. Flags: --dry-run previsualiza sin borrar, -y / --yes salta
+    confirmación, -i / --interactive pregunta por cada item, --all limpia todos los proyectos.
+    Para una nueva máquina o cuando quieres empezar de cero.
+   • claude ultrareview [target] — Ejecuta un ultrareview en modo no interactivo. Imprime
+    hallazgos a stdout (exit 0 si pasa, 1 si falla). Flags: --json para payload crudo y --timeout
+    <minutos> para sobrescribir el límite por defecto de 30 minutos.
+
+   • claude mcp — Configura servidores MCP (Model Context Protocol).
+   • claude remote-control — Permite controlar Claude Code desde claude.ai o la app de Claude.
+   • claude plugin — Gestiona plugins de Claude Code. Puedes instalar, listar y configurar plugins.
+   • claude auto-mode defaults — Muestra las reglas del clasificador de seguridad del modo
+    auto. Usa claude auto-mode config para ver tu configuración efectiva.
+
+
+
+Flags de sesión y modelo
+
+Un flag es como un interruptor que cambias al arrancar Claude Code. Le dices: "arranca, pero con esta
+configuración especial". Los flags van después de claude y empiezan con -- (o con - para la
+versión corta).
+
+Elegir modelo
+--model te permite elegir qué cerebro usa Claude. Hay varios modelos, cada uno con diferentes
+capacidades.
+
+
+
+
+                                                 240                                     @soyenriquerocha
+                                                                           COMANDOS Y FLAGS DEL CLI
+
+
+
+
+   claude --model claude-sonnet-4-6
+   claude --model opus
+   claude --model haiku
+
+
+
+Puedes usar el nombre completo ( claude-sonnet-4-6 ) o el alias corto ( sonnet , opus , haiku ).
+
+Nuevo alias y default (2.1.x, Junio 2026): Existe también el alias fable (además de sonnet ,
+opus y haiku ). Y el modelo por defecto en las versiones 2.1.x pasó a ser Opus 4.8: si no pasas --
+model , esa es la opción que usa Claude Code. (Los detalles y precios de cada modelo están en el
+capítulo de modelos y precios.) Nota: los alias y defaults cambian rápido entre versiones; verifica con
+claude --version y la documentación oficial si dependes de uno en concreto.
+
+--fallback-model es tu plan B. Ahora acepta una lista separada por comas que Claude prueba en
+orden. El respaldo se activa cuando el modelo principal está sobrecargado o ha sido retirado, no solo
+cuando está saturado.
+
+
+
+   claude --fallback-model sonnet,haiku "analiza este codigo"
+   claude --model opus --fallback-model sonnet,haiku "diseña la arquitectura"
+
+
+
+En el ejemplo, si Opus no está disponible Claude baja a Sonnet y, si tampoco, a Haiku. La preferencia
+persiste vía la opción fallbackModel de tus settings, así que puedes dejarla configurada de forma
+permanente. Es especialmente útil en modo --print y automatización, donde no quieres que un
+script se caiga porque un modelo está ocupado.
+
+--advisor <model> (v2.1.98+) activa la herramienta advisor del lado servidor: una segunda opinión
+que Claude puede consultar durante la sesión. Le pasas un alias ( opus , sonnet y, desde v2.1.170+,
+fable ) o un ID completo de modelo. Equivale a la opción advisorModel de settings.
+
+
+
+   claude --advisor opus
+
+
+
+
+Control de sesiones
+   • --continue / -c — Carga la conversación más reciente.
+   • --resume / -r — Reanuda una sesión por ID o nombre. Sin valor, muestra un selector. Desde la
+    versión 2.1.144, las sesiones en segundo plano (background) aparecen en ese selector marcadas
+    con la etiqueta bg , para que las distingas de un vistazo de las normales.
+   • --session-id — Usa un UUID específico como ID de sesión. Útil para integraciones externas.
+
+
+
+
+                                                  241                                    @soyenriquerocha
+COMANDOS Y FLAGS DEL CLI
+
+
+
+
+   • --fork-session — Al reanudar, crea una copia de la sesión en vez de modificar la original. Es
+    como hacer una fotocopia antes de escribir encima.
+   • --from-pr 123 — Reanuda sesiones vinculadas a un Pull Request. Ya no es solo GitHub:
+    también soporta GitLab y Bitbucket. Acepta el número del PR o su URL completa.
+   • --name / -n — Nombre de display para la sesión. Aparece en /resume y en el título del
+    terminal. Puedes reanudar por nombre con claude -r "mi-nombre" .
+
+
+Worktrees: trabajo aislado
+Un worktree es como una mesa de trabajo separada. Puedes tener múltiples copias de tu proyecto,
+cada una en su mesa, sin que se mezclen.
+
+
+
+   claude -w feature-auth
+
+
+
+Esto crea un worktree en <repo>/.claude/worktrees/feature-auth . Si no das nombre, se genera
+uno automático. Ideal para trabajar en varias cosas a la vez.
+
+Empezar desde un PR: -w también acepta #<número> o una URL de PR. Claude Code hace fetch del
+PR desde origin y crea el worktree con esa rama ya checkeada.
+
+
+
+   claude -w "#1234"
+   claude -w https://github.com/org/repo/pull/1234
+
+
+
+Modo tmux: Agrega --tmux para abrir el worktree en una sesión tmux. En iTerm2 usa paneles
+nativos automáticamente. Si quieres forzar tmux clásico aunque haya iTerm2 disponible, usa --
+tmux=classic . Importante: --tmux requiere --worktree ; sin él, Claude te dice "--tmux requires --
+worktree" y aborta.
+
+
+
+   claude -w feature-auth --tmux
+   claude -w feature-auth --tmux=classic
+
+
+
+
+Modo bare: mínimo para CI
+--bare es el modo mínimo. Salta todo lo que no es esencial: hooks, skills, plugins, servidores MCP,
+auto-memoria y archivos CLAUDE.md. Solo quedan disponibles Bash, lectura y edición de archivos.
+
+
+
+
+                                                  242                                  @soyenriquerocha
+                                                                           COMANDOS Y FLAGS DEL CLI
+
+
+
+
+   claude --bare -p "resume este archivo"
+
+
+
+Es como arrancar en modo seguro. Ideal para CI/CD y scripts donde necesitas el mismo resultado en
+toda máquina. Salta OAuth y lecturas de keychain, así que la autenticación debe venir de
+ANTHROPIC_API_KEY o de apiKeyHelper en --settings .
+
+Internamente, --bare establece la variable de entorno CLAUDE_CODE_SIMPLE=1 . Si la exportas tú
+mismo en tu shell o pipeline, obtienes el mismo efecto sin necesidad del flag.
+
+Nota: En futuras versiones, --bare será el comportamiento por defecto de -p .
+
+
+Modo seguro: diagnosticar una config rota
+--safe-mode (v2.1.169+) arranca Claude Code con todas tus personalizaciones desactivadas. Es el
+botón de "empezar limpio" para cuando algo se comporta raro y no sabes qué lo causa.
+
+
+
+   claude --safe-mode
+
+
+
+Desactiva: archivos CLAUDE.md , skills, plugins, hooks, servidores MCP, tus comandos y agentes
+propios, output styles, temas, keybindings, status line, integración LSP y auto-memoria. En resumen,
+todo lo que tú hayas añadido encima de Claude Code.
+
+Lo que sí mantiene: tu autenticación, el modelo, las herramientas integradas (Bash, Read, Edit, etc.) y
+los permisos normales. Y respeta la política de configuración administrada (managed settings) que te
+imponga tu organización: esas no se saltan. Internamente activa la variable de entorno
+CLAUDE_CODE_SAFE_MODE .
+
+La idea: si Claude funciona bien con --safe-mode pero mal sin él, el problema está en una de tus
+personalizaciones (un CLAUDE.md contradictorio, un hook que falla, un plugin roto, etc.). Vas
+reactivando de a poco hasta encontrar al culpable.
+
+No lo confundas con --bare : aunque ambos desactivan personalizaciones, sirven para cosas
+distintas. --safe-mode es para diagnosticar (mantiene el comportamiento normal por defecto),
+mientras que --bare es para velocidad en scripts y CI (modo mínimo de arranque rápido). Si tu
+objetivo es encontrar una config rota, usa --safe-mode ; si es que un pipeline arranque rápido y
+consistente, usa --bare .
+
+
+
+
+                                                  243                                    @soyenriquerocha
+COMANDOS Y FLAGS DEL CLI
+
+
+
+
+Nivel de esfuerzo
+--effort controla cuánto esfuerzo pone Claude en cada respuesta. Es como el dial de intensidad.
+
+   • low — Respuestas rápidas y concisas.
+   • medium — Balance entre velocidad y profundidad.
+   • high — Análisis más profundo (por defecto).
+   • xhigh — Un escalón por encima de high. Más razonamiento sin llegar al tope.
+   • max — Máxima profundidad. Solo disponible con Opus 4.6.
+   • auto — Claude decide según la tarea.
+
+
+
+   claude --effort xhigh
+   claude --effort max
+
+
+
+Los niveles disponibles dependen del modelo: no todos los modelos exponen xhigh o max . Si pides
+un nivel que tu modelo no soporta, Claude usa el más cercano que sí pueda.
+
+También puedes cambiarlo durante la sesión con /effort o con flechas izquierda/derecha en /
+model .
+
+
+
+Versión
+--version o -v muestra qué versión de Claude Code tienes instalada.
+
+
+
+   claude -v
+
+
+
+
+Background agents con --bg
+--bg arranca la sesión como agente en background. Claude empieza a trabajar y te devuelve el
+control de la terminal inmediatamente. Imprime el session ID y un recordatorio de los comandos de
+gestión.
+
+
+
+   claude --bg "investiga el test flaky en tests/auth_test.py"
+
+
+
+Es como mandar a un becario a una tarea: él trabaja solo, tú sigues con lo tuyo. Después puedes:
+
+   • claude logs <id> — Ver el progreso sin engancharte.
+
+
+
+
+                                                 244                                    @soyenriquerocha
+                                                                           COMANDOS Y FLAGS DEL CLI
+
+
+
+
+   • claude attach <id> — Entrar a esa sesión y ver qué hace en tiempo real.
+   • claude stop <id> — Detenerla si quieres parar.
+   • claude rm <id> — Eliminarla cuando ya no la necesites.
+   • claude agents — Ver el dashboard de todas las sesiones background.
+
+Combinable con --agent para arrancar un subagente concreto en background:
+
+
+
+   claude --bg --agent investigador "busca todos los TODOs en src/"
+
+
+
+Perfecto para lanzar varias investigaciones en paralelo sin bloquear tu terminal.
+
+Correr un comando de shell, no una sesión Claude: con --exec le dices a --bg que ejecute un
+comando de terminal normal como job en segundo plano (respaldado por un PTY), en vez de arrancar
+una sesión de Claude. Útil para dejar corriendo tests o builds largos junto a tus agentes y verlos en el
+mismo dashboard.
+
+
+
+   claude --bg --exec 'pytest -x'
+
+
+
+Lo gestionas con los mismos comandos ( claude logs , claude attach , claude stop ) que un
+agente en background.
+
+
+
+Flags de herramientas y permisos
+
+Claude Code puede usar herramientas: leer archivos, ejecutar comandos, editar código. Estos flags
+controlan qué herramientas puede usar y cuáles necesitan tu permiso. Es como darle las llaves de
+ciertas habitaciones de tu casa.
+
+Permitir herramientas sin preguntar
+--allowedTools le dice a Claude: "usa estas herramientas sin preguntarme". Normalmente Claude
+te pide permiso. Con este flag, las herramientas listadas se ejecutan automáticamente.
+
+
+
+   claude --allowedTools "Bash(git log *)" "Bash(git diff *)" "Read"
+
+
+
+En este ejemplo, Claude puede ejecutar comandos de git log, git diff, y leer archivos sin pedirte
+confirmación.
+
+
+
+
+                                                  245                                     @soyenriquerocha
+COMANDOS Y FLAGS DEL CLI
+
+
+
+
+Soporta wildcards con * . Por ejemplo, Bash(git *) permite cualquier comando git.
+
+OJO con el espacio antes de * : la sintaxis de permission rules trata el espacio como parte del
+patrón.
+
+   • Bash(git diff *) (con espacio antes de * ) — Prefijo exacto. Matchea git diff
+    archivo.txt pero NO git diff-index .
+
+   • Bash(git diff*) (sin espacio) — Matchea cualquier cosa que empiece con git diff ,
+    incluido git diff-index y git difftool .
+
+Cuando pre-apruebas comandos, casi siempre quieres la versión con espacio. Es la diferencia entre
+dar acceso solo a git diff o a toda la familia de comandos que empiezan igual.
+
+
+Prohibir herramientas
+--disallowedTools es lo opuesto. Elimina herramientas por completo. Claude ni siquiera sabe que
+existen.
+
+
+
+   claude --disallowedTools "Bash(git push *)" "WebFetch"
+
+
+
+Es más fuerte que negar permisos. Con negar permisos, Claude sabe que la herramienta existe pero no
+puede usarla. Con --disallowedTools , la herramienta desaparece del mapa.
+
+
+Restringir herramientas disponibles
+--tools define exactamente cuáles herramientas built-in están disponibles. Todo lo que no esté en
+la lista se elimina del contexto del modelo.
+
+
+
+   claude --tools "Bash,Edit,Read"
+
+
+
+La sintaxis es una lista separada por comas sin paquete (no lleva nombres tipo Bash(git diff *) ,
+eso es de --allowedTools ). Solo nombres de herramientas: Bash , Read , Edit , Write , Grep ,
+Glob , etc.
+
+Dos palabras clave especiales:
+
+   • "" (cadena vacía) — Deshabilita TODAS las herramientas. Claude solo puede responder con
+    texto.
+   • "default" — Activa TODAS las herramientas built-in (el conjunto por defecto).
+
+
+
+
+                                                246                                  @soyenriquerocha
+                                                                         COMANDOS Y FLAGS DEL CLI
+
+
+
+
+La diferencia con      --disallowedTools :        --tools   define quién entra a la fiesta;          --
+disallowedTools echa a alguien específico de una fiesta abierta.
+
+
+
+Modos de permisos
+--permission-mode cambia cómo Claude pide permisos. Hay 6 modos:
+
+  1. default — Pide permiso la primera vez que usa cada herramienta.
+  2. acceptEdits — Acepta automáticamente ediciones de archivos. Sigue pidiendo permiso para
+    comandos bash.
+  3. plan — Solo análisis. Claude puede leer pero NO modificar nada.
+  4. auto — Auto-aprueba todo, pero un clasificador de seguridad revisa cada acción en background.
+    Si detecta algo peligroso, lo bloquea. Después de 3 bloqueos seguidos o 20 en total, Claude pausa
+    y te pregunta. Requiere plan Team, Enterprise o API, modelo Sonnet 4.6 u Opus 4.6, y Anthropic
+    API directa (no Bedrock ni Vertex).
+  5. dontAsk — Rechaza automáticamente, excepto herramientas pre-aprobadas.
+  6. bypassPermissions — Salta TODOS los permisos. Peligroso.
+
+
+
+   claude --permission-mode auto
+
+
+
+
+--enable-auto-mode (eliminado en v2.1.111)
+Este flag ya no existe. Fue eliminado en la versión 2.1.111 porque el modo auto pasó a estar
+disponible por defecto.
+
+Si tu script o documentación todavía usa --enable-auto-mode , actualízalo. Ahora tienes dos formas
+equivalentes:
+
+   • Arrancar directamente en modo auto: claude --permission-mode auto
+   • Ciclar a modo auto con Shift+Tab durante la sesión interactiva. El modo auto aparece en el
+    ciclo sin necesidad de habilitarlo aparte.
+
+Los requisitos del modo auto no cambiaron: plan Team/Enterprise/API, modelo Sonnet 4.6 u Opus 4.6
+y Anthropic API directa (no Bedrock ni Vertex).
+
+Dejamos esta entrada como nota histórica porque versiones anteriores de la guía y muchos artículos
+por internet aún lo mencionan.
+
+
+
+
+                                                  247                                   @soyenriquerocha
+COMANDOS Y FLAGS DEL CLI
+
+
+
+
+Saltar permisos (peligroso)
+--dangerously-skip-permissions salta TODOS los prompts de permisos. Es como dejar la puerta
+de tu casa abierta de par en par.
+
+
+
+   claude --dangerously-skip-permissions -p "corrige todos los errores de lint"
+
+
+
+Solo usa esto en entornos aislados: containers Docker, máquinas virtuales, o entornos de CI/CD
+desechables. Nunca en tu computadora personal.
+
+--allow-dangerously-skip-permissions es una versión más controlada. Habilita la opción sin
+activarla de inmediato. Permite combinar con --permission-mode .
+
+
+Herramienta de permisos personalizada
+--permission-prompt-tool delega las decisiones de permisos a una herramienta MCP. Útil para
+integraciones programáticas que necesitan gestionar permisos automáticamente.
+
+
+
+   claude -p --permission-prompt-tool mcp_auth_tool "query"
+
+
+
+
+Rutas protegidas
+Hay archivos y directorios que Claude Code nunca modifica automáticamente, ni siquiera en
+bypassPermissions . Siempre pide permiso explícito.
+
+Directorios protegidos:
+
+   • .git
+   • .vscode
+   • .idea
+   • .husky
+   • .claude (excepto .claude/commands , .claude/agents , .claude/skills y .claude/
+    worktrees )
+
+Archivos protegidos:
+
+   • .gitconfig , .gitmodules
+   • .bashrc , .bash_profile , .zshrc , .zprofile , .profile
+   • .ripgreprc , .mcp.json , .claude.json
+
+
+
+
+                                              248                                @soyenriquerocha
+                                                                           COMANDOS Y FLAGS DEL CLI
+
+
+
+
+Esto es una red de seguridad. Protege archivos críticos de tu sistema y proyecto.
+
+
+
+Flags de output y automatización
+
+Estos flags controlan qué formato tiene la respuesta de Claude y cómo se comporta en modo
+automático. Son fundamentales para scripting y CI/CD.
+
+Formato de salida
+--output-format cambia cómo Claude te entrega su respuesta. Solo funciona con --print .
+
+   • text — Texto plano. Es el formato por defecto.
+   • json — Un objeto JSON completo. Perfecto para parsear en scripts.
+   • stream-json — Eventos NDJSON línea por línea. Ves la respuesta a medida que se genera.
+
+
+
+   claude -p "lista los TODOs" --output-format json
+
+
+
+
+Formato de entrada
+--input-format controla cómo envías datos a Claude. Opciones: text (por defecto) y stream-
+json (para enviar múltiples mensajes como stream).
+
+
+
+Output estructurado con JSON Schema
+--json-schema le dice a Claude: "quiero tu respuesta en este formato exacto". Le pasas un JSON
+Schema y Claude devuelve datos que cumplen con ese formato.
+
+
+
+   claude -p --json-schema '{"type":"object","properties":{"bugs":
+   {"type":"array","items":{"type":"string"}}}}' "busca bugs en este codigo"
+
+
+
+Es como darle un formulario a Claude para que lo llene. Solo funciona con --print .
+
+
+Limitar turnos y presupuesto
+--max-turns limita cuántas veces Claude puede "pensar y actuar" en una tarea. Cada vez que
+Claude usa una herramienta y vuelve a razonar, es un turno.
+
+
+
+
+                                                  249                                  @soyenriquerocha
+COMANDOS Y FLAGS DEL CLI
+
+
+
+
+   claude -p --max-turns 3 "refactoriza este módulo"
+
+
+
+--max-budget-usd pone un tope de gasto en dólares. Cuando Claude llega al límite, se detiene.
+
+
+
+   claude -p --max-budget-usd 5.00 "revisa todo el proyecto"
+
+
+
+Ambos flags solo funcionan con --print . Son tu freno de mano para evitar sorpresas.
+
+
+Otros flags de output
+   • --verbose — Muestra información detallada de cada paso. Útil para depurar. También puedes
+    activarlo con Ctrl+O durante una sesión.
+   • --no-session-persistence — La sesión no se guarda en disco. Perfecta para tareas
+    desechables. Solo con --print .
+   • --include-partial-messages — Muestra el texto a medida que se genera (streaming).
+    Requiere --print y --output-format stream-json .
+   • --prompt-suggestions — Tras cada turno, emite un mensaje prompt_suggestion con el
+    siguiente prompt que Claude predice que escribirías. Útil para construir interfaces que sugieren el
+    próximo paso. Requiere la combinación --print + --output-format stream-json + --
+    verbose .
+
+
+
+
+Flags de system prompt
+
+El system prompt son las instrucciones base que Claude sigue. Es como el manual de entrenamiento
+de un empleado. Puedes cambiarlo por completo o agregarle instrucciones extra.
+
+Reemplazar el system prompt
+--system-prompt reemplaza TODO el prompt por defecto de Claude Code. Claude pierde todas sus
+instrucciones originales y solo sigue las tuyas.
+
+
+
+   claude --system-prompt "Eres un experto en Python. Solo escribes codigo con
+   type annotations."
+
+
+
+--system-prompt-file hace lo mismo pero lee las instrucciones de un archivo. Ideal para equipos
+que quieren consistencia.
+
+
+
+                                                   250                                   @soyenriquerocha
+                                                                       COMANDOS Y FLAGS DEL CLI
+
+
+
+
+   claude --system-prompt-file ./prompts/code-review.txt
+
+
+
+Cuidado: Estos dos flags son mutuamente exclusivos. No puedes usar ambos a la vez.
+
+
+Agregar al system prompt (recomendado)
+--append-system-prompt agrega instrucciones al final del prompt por defecto. Claude conserva
+todas sus capacidades originales Y sigue tus instrucciones extra.
+
+
+
+   claude --append-system-prompt "Siempre usa TypeScript e incluye comentarios
+   JSDoc"
+
+
+
+--append-system-prompt-file hace lo mismo pero lee de un archivo.
+
+
+
+   claude --append-system-prompt-file ./prompts/reglas-estilo.txt
+
+
+
+Esta es la opción más segura y recomendada para la mayoría de los casos. No pierdes nada, solo
+agregas.
+
+
+
+Flags de configuración
+
+Estos flags ajustan cómo Claude Code carga su configuración: agentes, settings, servidores MCP y
+directorios de trabajo.
+
+Agentes y subagentes
+--agent selecciona un agente predefinido para la sesión. El agente debe existir en ~/.claude/
+agents/ o .claude/agents/ .
+
+
+
+   claude --agent mi-agente-personalizado
+
+
+
+--agents define subagentes al vuelo usando JSON. No necesitas archivos de configuración.
+
+
+
+
+                                                  251                                @soyenriquerocha
+COMANDOS Y FLAGS DEL CLI
+
+
+
+
+   claude --agents '{"reviewer":{"description":"Revisa
+   codigo","prompt":"Enfócate en seguridad","tools":
+   ["Read","Grep"],"model":"sonnet"}}'
+
+
+
+Los campos obligatorios son           description     y   prompt .   Los opcionales son:     tools ,
+disallowedTools , model , skills , mcpServers , y maxTurns .
+
+
+
+Settings y MCP
+   • --settings ./settings.json — Carga settings adicionales desde un archivo o JSON.
+   • --setting-sources user,project — Controla de dónde se cargan las settings. Opciones:
+    user , project , local .
+
+   • --mcp-config ./mcp.json — Carga servidores MCP desde un archivo. Puedes dar múltiples
+    archivos separados por espacio.
+   • --strict-mcp-config — Solo usa los MCP de --mcp-config . Ignora todo lo demás.
+    Aislamiento total.
+
+
+Directorios de trabajo
+--add-dir agrega directorios adicionales. Claude puede leer y escribir en ellos. Es como darle
+acceso a más carpetas.
+
+
+
+   claude --add-dir ../apps ../lib
+
+
+
+También puedes usar /add-dir durante una sesión interactiva.
+
+
+Otros flags de configuración
+   • --betas — Headers beta para solicitudes API. Solo para usuarios con API key propia.
+   • --init — Ejecuta hooks de inicialización y abre modo interactivo.
+   • --init-only — Ejecuta hooks de inicialización y sale. No abre sesión.
+   • --maintenance — Ejecuta hooks de mantenimiento y sale.
+   • --disable-slash-commands — Deshabilita todos los comandos slash y skills.
+   • --debug "api,mcp" — Activa modo debug. Filtra por categorías. Usa ! para excluir: "!
+    statsig,!file" .
+
+
+
+
+                                                252                                   @soyenriquerocha
+                                                                          COMANDOS Y FLAGS DEL CLI
+
+
+
+
+   • --debug-file /ruta/archivo.log — Escribe logs de debug a un archivo específico. Habilita
+    debug automáticamente. Útil para diagnosticar sin contaminar stdout.
+   • --channels — (Research preview) Servidores MCP cuyas notificaciones de canal escuchar.
+   • --dangerously-load-development-channels — Carga canales fuera de la allowlist aprobada,
+    para desarrollo local.
+   • --include-hook-events — Incluye eventos del ciclo de vida de hooks en el stream de output.
+    Requiere --output-format stream-json .
+   • --replay-user-messages — Re-emite mensajes de usuario de stdin a stdout. Requiere --
+    input-format stream-json y --output-format stream-json .
+
+   • --exclude-dynamic-system-prompt-sections — Mueve las secciones por-máquina del
+    system prompt (directorio actual, info de entorno, rutas de memoria, flag de git-repo) al primer
+    mensaje de usuario. Esto mejora el reuso de prompt cache cuando muchos usuarios o máquinas
+    comparten el mismo prompt base. Solo aplica con el system prompt por defecto: se ignora si usas
+    --system-prompt o --system-prompt-file . Útil en cargas scripteadas multi-usuario.
+
+   • --ax-screen-reader — (v2.1.181+) Renderiza la salida en un formato amigable para lectores de
+    pantalla: texto plano, sin bordes ni animaciones. Pensado para accesibilidad. Tiene precedencia
+    sobre la variable de entorno CLAUDE_AX_SCREEN_READER y la opción axScreenReader de
+    settings.
+
+
+
+Flags de integraciones
+
+Claude Code se conecta con otras herramientas. Estos flags controlan esas conexiones.
+
+Chrome e IDE
+   • --chrome — Activa la integración con Chrome para automatización web.
+   • --no-chrome — Desactiva la integración con Chrome.
+   • --ide — Conecta automáticamente al IDE si hay exactamente uno disponible.
+   • --plugin-dir ./mis-plugins — Carga plugins desde un directorio. Puedes repetir el flag para
+    varios: --plugin-dir A --plugin-dir B.zip .
+   • --plugin-url https://example.com/plugin.zip — Descarga un plugin .zip desde una
+    URL solo para esta sesión. También se puede repetir para varios plugins, o pasar varias URLs
+    separadas por espacios en una cadena entrecomillada. Útil para probar un plugin sin instalarlo
+    permanentemente.
+
+
+Remote y Teleport
+--remote crea una sesión web en claude.ai desde la terminal.
+
+
+
+
+                                                 253                                     @soyenriquerocha
+COMANDOS Y FLAGS DEL CLI
+
+
+
+
+   claude --remote "Arregla el bug de login"
+
+
+
+--teleport hace lo contrario. Trae una sesión de claude.ai a tu terminal local.
+
+
+
+   claude --teleport
+
+
+
+--teammate-mode configura cómo se muestran los teammates del agent team. Opciones: auto ,
+in-process , tmux . Requiere la variable CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 . Cambio
+(v2.1.179): el valor por defecto pasó de auto a in-process . Si dependías del comportamiento
+anterior, fíjalo explícitamente con --teammate-mode auto .
+
+--remote-control-session-name-prefix <prefix> personaliza el prefijo con el que se auto-
+generan los nombres de las sesiones de Remote Control. Por defecto el prefijo es el hostname de tu
+máquina y produce nombres tipo myhost-graceful-unicorn . Si manejas muchas sesiones desde la
+app móvil, un prefijo descriptivo ( dev-box , laptop-personal ) ayuda a identificarlas. Equivale a la
+variable de entorno CLAUDE_REMOTE_CONTROL_SESSION_NAME_PREFIX .
+
+
+
+   claude remote-control --remote-control-session-name-prefix dev-box
+
+
+
+PR review status en el footer
+Cuando Claude Code detecta un PR vinculado a tu sesión (por ejemplo, después de crear uno o de
+reanudar con --from-pr ), muestra un link al PR en el footer con un código de color según su estado
+de review:
+
+   • Verde — Aprobado.
+   • Amarillo — Pending review.
+   • Rojo — Changes requested.
+   • Gris — Draft.
+   • Morado — Merged.
+
+Cmd+click (macOS) o Ctrl+click sobre el link abre el PR en tu navegador. Requiere tener gh
+(GitHub CLI) instalado y autenticado para que Claude Code pueda consultar el estado.
+
+
+
+
+                                                254                                    @soyenriquerocha
+                                                                         COMANDOS Y FLAGS DEL CLI
+
+
+
+
+Comandos slash (modo interactivo)
+
+Los comandos slash se usan dentro de una sesión interactiva. Empiezan con / y te permiten hacer
+cosas sin salir de la conversación. Son como atajos de menú.
+
+Gestión de sesión
+   • /clear — Limpia el historial. También funciona como /reset o /new . La sesión anterior se
+    guarda.
+   • /resume — Reanuda una conversación anterior. También /continue .
+   • /fork — Crea un "branch" de la conversación actual. Explora caminos diferentes sin perder el
+    original.
+   • /rename mi-sesion — Ponle nombre a la sesión. Sin nombre, auto-genera uno.
+   • /cd ruta — Mueve la sesión a otro directorio de trabajo sin romper el cache del prompt. Es
+    como hacer cd en la terminal, pero dentro de Claude Code y sin perder el contexto cacheado (así
+    el cambio no te cuesta tokens extra).
+   • /export archivo.txt — Exporta la conversación como texto plano.
+   • /exit — Sale de Claude Code. También /quit .
+   • /voice — Activa/desactiva dictado de voz push-to-talk. Requiere cuenta Claude.ai.
+   • /schedule — Crea, actualiza, lista o ejecuta tareas programadas en la nube.
+   • /ultraplan prompt — Crea un plan detallado en una sesión ultraplan. Lo revisas en el
+    navegador y luego lo ejecutas.
+   • /recap — Muestra un resumen de una línea de lo que se hizo en la sesión. Además del comando,
+    Claude lo dispara automáticamente cuando estuviste ausente al menos 3 minutos y hubo 3 o
+    más turnos previos: cuando vuelves, ves un "qué pasó mientras tanto" sin tener que leer todo el
+    scroll. Se puede desactivar desde /config si te molesta.
+
+
+Rendimiento y costo
+   • /cost — Muestra cuántos tokens has usado. Para usuarios con API key.
+   • /stats — Muestra uso diario, historial y patrones. Para usuarios Pro/Max.
+   • /compact — Compacta la conversación. Resume todo para liberar espacio de contexto.
+    Importantísimo para sesiones largas.
+   • /model sonnet — Cambia el modelo. Usa flechas izquierda/derecha para ajustar nivel de
+    esfuerzo.
+   • /fast — Activa/desactiva modo rápido.
+   • /usage — Muestra límites de tu plan y estado de rate limits.
+
+
+
+
+                                                 255                                     @soyenriquerocha
+COMANDOS Y FLAGS DEL CLI
+
+
+
+
+  • /context — Visualiza cuánto contexto estás usando. Te da sugerencias de optimización.
+  • /effort — Cambia nivel de esfuerzo del modelo. Sin argumento muestra el nivel actual.
+  • /extra-usage — Configura uso extra para cuando alcances rate limits.
+  • /status — Muestra versión, modelo, cuenta y conectividad. Funciona mientras Claude
+   responde.
+
+
+Operaciones de código
+  • /diff — Abre un visor de cambios. Ve qué modificó Claude, archivo por archivo.
+  • /rewind — Retrocede la conversación y/o código a un punto anterior. Es tu "deshacer" general.
+   También /checkpoint .
+  • /security-review — Analiza los cambios buscando vulnerabilidades de seguridad.
+  • /copy — Copia la última respuesta al portapapeles. Si hay bloques de código, te deja elegir cuál
+   copiar.
+  • /plan — Entra en modo plan. Claude analiza pero no toca nada.
+
+
+Configuración de proyecto
+  • /init — Crea un archivo CLAUDE.md para tu proyecto.
+  • /memory — Edita archivos de memoria ( CLAUDE.md ).
+  • /config — Abre interfaz de configuración. También /settings .
+  • /permissions — Ver o cambiar permisos de herramientas. También /allowed-tools .
+  • /hooks — Gestiona hooks para eventos de herramientas.
+  • /agents — Configura subagentes.
+  • /plugin — Gestiona plugins.
+  • /skills — Lista skills disponibles.
+  • /vim — Alterna entre modo Vim y modo normal para el editor.
+  • /theme — Cambia el tema de colores.
+  • /sandbox — Activa/desactiva modo sandbox (aislamiento de seguridad).
+  • /color — Cambia el color de la barra del prompt. Opciones: red, blue, green, yellow, purple,
+   orange, pink, cyan.
+  • /keybindings — Abre o crea archivo de configuración de atajos de teclado.
+  • /statusline — Configura la barra de estado de Claude Code.
+  • /privacy-settings — Ver y actualizar configuración de privacidad. Solo Pro y Max.
+  • /reload-plugins — Recarga todos los plugins activos sin reiniciar.
+
+
+
+
+                                                256                                    @soyenriquerocha
+                                                                      COMANDOS Y FLAGS DEL CLI
+
+
+
+
+  • /terminal-setup — Configura keybindings del terminal para Shift+Enter y otros shortcuts.
+
+
+Integraciones
+  • /mcp — Gestiona servidores MCP.
+  • /ide — Gestiona integraciones con tu editor de código.
+  • /chrome — Configura integración con Chrome.
+  • /remote-control — Haz tu sesión controlable desde claude.ai. Atajo: /rc .
+  • /pr-comments 123 — Obtiene comentarios de un PR de GitHub. Auto-detecta el PR de la branch
+   actual.
+  • /install-github-app — Instala la app de Claude para GitHub Actions.
+  • /install-slack-app — Instala la app de Claude para Slack.
+  • /desktop — Continúa la sesión en la app de escritorio. También /app .
+
+
+Otros comandos útiles
+  • /btw pregunta rápida — Pregunta lateral sin agregar al historial. Funciona mientras Claude
+   está procesando. Sin costo extra gracias al cache.
+  • /help — Muestra todos los comandos disponibles.
+  • /doctor — Diagnostica tu instalación de Claude Code.
+  • /feedback — Envía feedback. También /bug para reportar errores.
+  • /insights — Genera un reporte de tus patrones de uso.
+  • /release-notes — Muestra el changelog con las novedades.
+  • /tasks — Lista y gestiona tareas en segundo plano.
+  • /powerup — Descubre features de Claude Code con lecciones interactivas y demos animadas.
+  • /mobile — Muestra un código QR para descargar la app móvil.
+  • /stickers — Ordena stickers físicos de Claude Code.
+  • /upgrade — Abre la página para cambiar a un plan superior.
+  • /login — Inicia sesión en tu cuenta Anthropic.
+  • /logout — Cierra sesión de tu cuenta Anthropic.
+  • /setup-bedrock — Configura Amazon Bedrock. Solo visible con
+   CLAUDE_CODE_USE_BEDROCK=1 .
+
+  • /remote-env — Configura el entorno remoto para sesiones web con --remote .
+
+
+
+
+                                                257                                 @soyenriquerocha
+COMANDOS Y FLAGS DEL CLI
+
+
+
+
+Input especial en modo interactivo
+
+Hay tres prefijos mágicos que puedes usar en el prompt interactivo:
+
+   • ! — Ejecuta un comando bash directamente. Ejemplo: ! git status . El resultado se agrega al
+    contexto de la conversación.
+   • @ — Autocompleta rutas de archivos. Escribe @src/comp y presiona Tab. Claude recibirá el
+    archivo como contexto.
+   • / — Accede a comandos slash y skills.
+
+
+
+Atajos de teclado
+
+Estos atajos funcionan durante una sesión interactiva. Son como los shortcuts de cualquier programa.
+
+Controles generales
+   • Ctrl+C — Cancela el input actual o la generación en curso.
+   • Esc — Interrumpe a Claude en medio de un turno conservando el trabajo hecho hasta el
+    momento. Más útil que Ctrl+C cuando quieres redirigir sin tirar lo avanzado.
+   • Ctrl+D — Sale de Claude Code.
+   • Ctrl+G — Abre tu editor de texto externo para escribir el prompt. Útil para mensajes largos.
+   • Ctrl+X Ctrl+E — Alternativa equivalente a Ctrl+G . Abre $VISUAL o $EDITOR para escribir
+    el prompt.
+   • Ctrl+L — Limpia la pantalla. El historial de conversación se mantiene.
+   • Ctrl+O — Alterna el visor de transcript (ver detalles de cada operación y tool use).
+   • Ctrl+R — Busca en el historial de comandos anteriores.
+   • Ctrl+B — Envía la tarea actual al background. En tmux, presiona dos veces.
+   • Ctrl+T — Muestra/oculta la lista de tareas.
+   • Ctrl+X Ctrl+K — Detiene todos los agentes en background. Presiona dos veces en 3 segundos
+    para confirmar.
+   • Ctrl+V / Cmd+V — Pega imágenes del portapapeles.
+   • Shift+Tab / Alt+M — Cicla entre modos de permisos.
+   • Alt+P — Cambia modelo sin borrar el prompt.
+   • Esc + Esc — Rewind: restaura código y conversación a un punto anterior.
+   • Alt+T — Alterna extended thinking (pensamiento extendido).
+   • Alt+O — Alterna modo rápido (fast mode).
+
+
+
+
+                                                   258                                      @soyenriquerocha
+                                                                            COMANDOS Y FLAGS DEL CLI
+
+
+
+
+   • Hold Space — Mantén presionado para dictado de voz push-to-talk. Requiere voice activado.
+
+Edición rápida estilo readline (útiles dentro del prompt):
+
+   • Ctrl+A — Mueve el cursor al inicio de la línea.
+   • Ctrl+E — Mueve el cursor al final de la línea.
+   • Ctrl+W — Borra la palabra previa (la que está justo a la izquierda del cursor).
+
+
+Edición de texto
+   • Ctrl+K — Borra desde el cursor hasta el final de la línea.
+   • Ctrl+U — Borra toda la línea.
+   • Ctrl+Y — Pega el texto borrado con Ctrl+K o Ctrl+U.
+   • Alt+B — Mueve el cursor una palabra atrás.
+   • Alt+F — Mueve el cursor una palabra adelante.
+   • Alt+Y — Después de Ctrl+Y , cicla por el historial de textos pegados.
+
+
+Entrada multilínea
+Cuando necesitas escribir varias líneas (como un bloque de código), tienes varias opciones:
+
+   • \ + Enter — Funciona en todos los terminales.
+   • Option+Enter — Por defecto en macOS.
+   • Shift+Enter — Funciona en iTerm2, WezTerm, Ghostty, Kitty. Para otros terminales, ejecuta /
+    terminal-setup .
+
+   • Ctrl+J — Inserta un salto de línea.
+   • Pegar directamente — Si pegas un bloque de código, se mantienen las líneas.
+
+
+Visor de transcript
+El visor de transcript se abre con Ctrl+O . Dentro del visor (especialmente en modo fullscreen) tienes
+varios atajos:
+
+   • Ctrl+E — Alterna mostrar todo el contenido del transcript.
+   • ? — Abre el panel de ayuda con todos los atajos disponibles (fullscreen).
+   • { — Salta al prompt de usuario anterior (fullscreen).
+   • } — Salta al prompt de usuario siguiente (fullscreen).
+   • [ — Vuelca toda la conversación al scrollback nativo de la terminal. Útil para buscar con las
+    herramientas de tu terminal o copiar texto largo.
+
+
+
+
+                                                  259                                     @soyenriquerocha
+COMANDOS Y FLAGS DEL CLI
+
+
+
+
+   • v — Abre la conversación completa en tu editor ( $VISUAL o $EDITOR ). Perfecto para guardar,
+    anotar o reformatear.
+   • q / Ctrl+C / Esc — Salir del visor de transcript.
+
+
+Vim mode en el prompt
+Si activas el modo Vim en /config → Editor mode (o con /vim ), el prompt se comporta como un
+mini-Vim con tres modos: NORMAL, INSERT y VISUAL.
+
+Entrar y salir de modos:
+
+   • Esc — Vuelve a NORMAL desde cualquier modo.
+   • i , I , a , A , o , O — Entran a INSERT (insert, inicio de línea, append, fin de línea, línea nueva
+    debajo, línea nueva arriba).
+   • v , V — Entran a VISUAL (carácter, línea).
+
+Movimiento en NORMAL:
+
+   • h j k l — Izquierda, abajo, arriba, derecha.
+   • w e b — Palabra siguiente, fin de palabra, palabra anterior.
+   • 0 $ ^ — Inicio de línea, fin de línea, primer no-blanco.
+   • gg G — Inicio y fin del buffer.
+   • f{c} F{c} t{c} T{c} , ; , — Buscar carácter en la línea y repetir.
+
+Edición:
+
+   • x , dd , D — Borra carácter, línea completa, hasta el final.
+   • dw , de , db — Borra palabra (siguiente, hasta fin, anterior).
+   • cc , C , cw — Cambia (borra y entra a INSERT) línea, hasta el final, palabra.
+   • yy , Y , yw — Copia (yank) línea, igual, palabra.
+   • p , P — Pega después / antes del cursor.
+   • u , . — Deshacer, repetir último cambio.
+
+Text objects (combina con d , c , y ):
+
+   • iw / aw — Inner word / a word.
+   • i" / a" , i' / a' — Dentro / incluido el delimitador.
+   • i( / a( , i[ / a[ , i{ / a{ — Idem con paréntesis, corchetes y llaves.
+
+Limitación importante: Ctrl+V (visual block mode de Vim) no está soportado. Para selecciones
+rectangulares no hay equivalente; usa selecciones por línea o por carácter.
+
+
+
+
+                                                   260                                      @soyenriquerocha
+                                                                          COMANDOS Y FLAGS DEL CLI
+
+
+
+
+Variables de entorno
+
+Las variables de entorno son como instrucciones pegadas en la pared de la oficina. Claude Code las lee
+al arrancar y ajusta su comportamiento. Se configuran en tu terminal antes de ejecutar Claude.
+
+Ejemplo: export ANTHROPIC_MODEL=opus y luego claude .
+
+Autenticación y API
+   • ANTHROPIC_API_KEY — Tu API key de Anthropic. La forma más directa de autenticarte.
+   • ANTHROPIC_AUTH_TOKEN — Token de autorización personalizado (se agrega con prefijo 'Bearer ').
+   • ANTHROPIC_CUSTOM_HEADERS — Headers personalizados en formato 'Nombre: Valor'. Uno por
+    línea.
+   • ANTHROPIC_BASE_URL — URL base alternativa para la API (proxies/gateways). Cuando se
+    establece, deshabilita la búsqueda de herramientas MCP por defecto.
+
+
+Modelo y tokens
+   • ANTHROPIC_MODEL — Equivalente a --model . Define qué modelo usar.
+   • ANTHROPIC_DEFAULT_SONNET_MODEL — Modelo Sonnet personalizado.
+   • ANTHROPIC_DEFAULT_OPUS_MODEL — Modelo Opus personalizado.
+   • ANTHROPIC_DEFAULT_HAIKU_MODEL — Modelo Haiku personalizado.
+   • CLAUDE_CODE_EFFORT_LEVEL — Nivel de esfuerzo: low , medium , high .
+   • CLAUDE_CODE_MAX_OUTPUT_TOKENS — Máximo de tokens de salida. Default: 32000. Máximo:
+    64000.
+   • CLAUDE_CODE_SUBAGENT_MODEL — Modelo que usan los subagentes.
+   • MAX_THINKING_TOKENS — Controla el presupuesto de tokens para extended thinking.
+   • CLAUDE_CODE_DISABLE_THINKING — Set a 1 para deshabilitar extended thinking por completo.
+
+
+Bash y ejecución
+   • BASH_DEFAULT_TIMEOUT_MS — Timeout por defecto para comandos largos (en milisegundos).
+   • BASH_MAX_TIMEOUT_MS — Timeout máximo que Claude puede establecer.
+   • BASH_MAX_OUTPUT_LENGTH — Caracteres máximos en la salida de bash antes de truncar.
+   • CLAUDE_CODE_SHELL — Fuerza un shell específico (por ejemplo, bash o zsh ).
+   • API_TIMEOUT_MS — Timeout de requests API en milisegundos. Default: 600000 (10 minutos).
+
+
+
+
+                                                 261                                    @soyenriquerocha
+COMANDOS Y FLAGS DEL CLI
+
+
+
+
+Features y comportamiento
+  • CLAUDE_CODE_DISABLE_AUTO_MEMORY — Set a 1 para deshabilitar auto-memoria.
+  • CLAUDE_CODE_DISABLE_FAST_MODE — Set a 1 para deshabilitar modo rápido.
+  • CLAUDE_CODE_DISABLE_BACKGROUND_TASKS — Set a 1 para deshabilitar tareas en background.
+  • CLAUDE_CODE_SIMPLE — Set a 1 para un prompt mínimo con solo herramientas básicas. Es lo
+   mismo que pasar --bare .
+  • CLAUDE_CODE_AUTOCOMPACT_PCT_OVERRIDE — Porcentaje (1-100) de contexto al que se activa
+   auto-compactación. Default: ~95%.
+  • DISABLE_AUTOUPDATER — Set a 1 para deshabilitar actualizaciones automáticas.
+  • DISABLE_TELEMETRY — Set a 1 para deshabilitar telemetría.
+  • CLAUDE_CONFIG_DIR — Directorio de configuración alternativo. Default: ~/.claude .
+  • CLAUDECODE — Se establece a 1 automáticamente en shells creados por Claude Code. Útil para
+   detectar si estás dentro de una sesión.
+  • CLAUDE_CODE_MAX_RETRIES — Número máximo de reintentos API. Default: 10.
+  • CLAUDE_CODE_DEBUG_LOGS_DIR — Directorio donde se guardan los debug logs por defecto. El
+   flag --debug-file tiene precedencia: si lo pasas, ignora esta variable.
+  • CLAUDE_CODE_SKIP_PROMPT_HISTORY — Set a 1 y la sesión NO se guarda en disco. Es el
+   equivalente a --no-session-persistence , pero funciona en CUALQUIER modo (interactivo o
+   print), no solo en print.
+  • CLAUDE_CODE_TASK_LIST_ID — Permite que varias sesiones compartan la misma task list por
+   nombre. Útil cuando lanzas varios agentes en paralelo y quieres que todos vean y actualicen la
+   misma lista de TODOs.
+  • CLAUDE_REMOTE_CONTROL_SESSION_NAME_PREFIX — Equivale a --remote-control-session-
+   name-prefix . Define el prefijo de los nombres auto-generados de Remote Control.
+
+  • CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION — Set a false para desactivar las sugerencias de
+   prompt grayed-out que aparecen en el primer mensaje (basadas en tu historial de git).
+  • CLAUDE_CODE_SYNC_PLUGIN_INSTALL — Set a 1 y Claude emite eventos system/
+   plugin_install antes del primer turno. Útil para scripts que necesitan saber si la instalación de
+   plugins se completó.
+  • CLAUDE_CODE_OAUTH_TOKEN — Token OAuth de larga vida generado con claude setup-
+   token . Pensado para CI: permite autenticarte sin login interactivo en cada run.
+
+
+
+
+                                                262                                    @soyenriquerocha
+                                                                                  COMANDOS Y FLAGS DEL CLI
+
+
+
+
+API Gateways (proveedores cloud)
+Si usas Claude a través de un proveedor cloud, estas variables te permiten configurar la conexión:
+
+   • CLAUDE_CODE_USE_BEDROCK — Usar Amazon Bedrock.
+   • CLAUDE_CODE_USE_VERTEX — Usar Google Vertex AI.
+   • CLAUDE_CODE_USE_FOUNDRY — Usar Microsoft Foundry.
+   • CLAUDE_CODE_SKIP_BEDROCK_AUTH — Saltar autenticación AWS (útil con LLM gateways).
+
+Cada proveedor tiene variables adicionales para API keys, regiones y URLs base. Consulta la
+documentación oficial para los detalles de cada uno.
+
+
+
+Ejemplos Prácticos
+
+
+
+   Tu primer script con Claude Code
+
+
+
+       claude -p "lista todos los archivos .js en este proyecto"
+
+
+
+   El flag -p (print) ejecuta la consulta y sale. No abre sesión interactiva. Ideal para usar en scripts de
+   bash.
+
+
+
+
+   Enviar un archivo como contexto
+
+
+
+       cat error.log | claude -p "explica estos errores y sugiere
+       soluciones"
+
+
+
+   El pipe (|) envía el contenido del archivo a Claude como contexto. Claude lo lee, analiza y responde.
+
+
+
+
+                                                      263                                         @soyenriquerocha
+COMANDOS Y FLAGS DEL CLI
+
+
+
+
+   Obtener respuesta en formato JSON
+
+
+
+      claude -p "lista las funciones de este archivo" --output-format json
+
+
+
+   La respuesta viene como un objeto JSON que puedes parsear con jq, Python, o cualquier lenguaje.
+
+
+
+
+   Continuar donde te quedaste
+
+
+
+      claude -c "ahora agrega tests para la función que creaste"
+
+
+
+   El flag -c retoma la última sesión. Claude recuerda todo lo que hicieron antes.
+
+
+
+
+   Agregar instrucciones sin perder capacidades
+
+
+
+      claude --append-system-prompt "Siempre escribe en español. Usa
+      TypeScript con types estrictos."
+
+
+
+   append-system-prompt AGREGA reglas al prompt por defecto. Claude conserva todas sus
+   capacidades y además sigue tus reglas.
+
+
+
+
+   Automatización segura en CI/CD
+
+
+
+      claude -p --max-turns 5 --max-budget-usd 2.00 --allowedTools "Read"
+      "Grep" "Glob" "analiza la calidad del código"
+
+
+
+   Limita turnos y presupuesto para evitar sorpresas. Solo permite herramientas de lectura para que
+   no modifique nada.
+
+
+
+
+                                                   264                                    @soyenriquerocha
+                                                                         COMANDOS Y FLAGS DEL CLI
+
+
+
+
+Sesión aislada con worktree
+
+
+
+   claude -w feature-login "implementa la página de login"
+
+
+
+Crea una copia aislada del repositorio. Los cambios no afectan tu rama principal hasta que tú
+decidas.
+
+
+
+
+Definir subagentes al vuelo
+
+
+
+   claude --agents '{"tester":{"description":"Escribe
+   tests","prompt":"Genera tests unitarios
+   completos","model":"sonnet"}}'
+
+
+
+Crea un subagente especializado en testing sin necesidad de archivos de configuración.
+
+
+
+
+CI mínimo con modo bare
+
+
+
+   ANTHROPIC_API_KEY=$KEY claude --bare -p --max-turns 5 "revisa errores
+   de tipos"
+
+
+
+El flag --bare salta hooks, plugins y MCP para un arranque rápido. Perfecto para CI/CD donde
+necesitas resultados consistentes.
+
+
+
+
+                                               265                                       @soyenriquerocha
+COMANDOS Y FLAGS DEL CLI
+
+
+
+
+   Agente en background con --bg
+
+
+
+       claude --bg "investiga el test flaky en tests/auth_test.py"
+       # Devuelve session ID, p.ej. 7c5dcf5d
+       claude logs 7c5dcf5d            # ver progreso
+       claude attach 7c5dcf5d # engancharse cuando esté listo
+
+
+
+   Arranca a Claude como agente en segundo plano y devuelve la terminal de inmediato. Luego usas
+   claude logs/attach/stop para gestionarlo. Ideal para lanzar varias investigaciones en paralelo sin
+   bloquear tu prompt.
+
+
+
+
+   Continuar desde un PR de GitHub
+
+
+
+       claude -w "#1234"
+
+
+
+   Hace fetch del PR #1234 desde origin y crea un worktree con esa rama ya checkeada. Acepta
+   también la URL completa del PR. Ahorra dos pasos: fetch + checkout.
+
+
+
+
+   Token OAuth para CI
+
+
+
+       claude setup-token
+       # Guarda el token impreso como secret CLAUDE_CODE_OAUTH_TOKEN en tu
+       pipeline
+       # En GitHub Actions:
+       env:
+         CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
+
+
+   Genera un token de larga vida para autenticar runs no interactivos en CI. Mucho más cómodo que
+   volver a hacer login en cada job.
+
+
+
+
+                                                   266                                       @soyenriquerocha
+                                                                       COMANDOS Y FLAGS DEL CLI
+
+
+
+
+Consejo
+
+Usa -c (continue) frecuentemente. Retomar sesiones ahorra tiempo porque Claude ya tiene
+contexto de lo que hicieron antes.
+
+
+
+
+Consejo
+
+Prefiere --append-system-prompt sobre --system-prompt. El primero agrega tus reglas sin perder
+nada. El segundo elimina todo el comportamiento por defecto.
+
+
+
+
+Consejo
+
+El comando /compact es tu mejor amigo en sesiones largas. Libera espacio de contexto
+resumiendo la conversación.
+
+
+
+
+Advertencia
+
+Nunca uses --dangerously-skip-permissions en tu computadora personal. Solo en containers
+Docker o máquinas virtuales desechables.
+
+
+
+
+Advertencia
+
+--disallowedTools es más fuerte que negar permisos. La herramienta desaparece por completo.
+Úsalo solo cuando realmente quieras eliminar una capacidad.
+
+
+
+
+Nota
+
+Los flags --max-turns, --max-budget-usd, --json-schema y --output-format solo funcionan con --
+print (modo no interactivo).
+
+
+
+
+                                             267                                       @soyenriquerocha
+COMANDOS Y FLAGS DEL CLI
+
+
+
+
+     Nota
+
+     Puedes combinar flags. Por ejemplo: claude -p -c --model opus --max-turns 3 continúa una sesión
+     con un modelo específico y límite de turnos.
+
+
+
+
+     Consejo
+
+     Usa /btw para preguntas rápidas mientras Claude trabaja. No interrumpe la tarea actual y tiene
+     costo mínimo.
+
+
+
+
+     Consejo
+
+     Usa --bare en CI/CD para arranques rápidos. Salta hooks, plugins y MCP. En el futuro será el
+     comportamiento por defecto de -p.
+
+
+
+
+     Nota
+
+     El modo auto de permisos requiere Team/Enterprise/API + Sonnet 4.6 u Opus 4.6 + Anthropic API
+     directa. No funciona con Bedrock ni Vertex.
+
+
+
+
+     Advertencia
+
+     A partir del 15 de junio de 2026, el uso de 'claude -p' y del Agent SDK en planes de suscripción
+     consume un crédito mensual SEPARADO de los límites interactivos. Si automatizas mucho desde
+     scripts o CI, revisa /usage regularmente y considera --max-budget-usd para acotar gastos.
+
+
+
+
+     Consejo
+
+     Para CI, usa 'claude setup-token' una vez, guarda el token en los secretos de tu pipeline como
+     CLAUDE_CODE_OAUTH_TOKEN y olvídate de los logins. Mucho más limpio que reusar
+     ANTHROPIC_API_KEY si tienes suscripción.
+
+
+
+
+                                                   268                                       @soyenriquerocha
+                                                                             COMANDOS Y FLAGS DEL CLI
+
+
+
+
+Nota
+
+--enable-auto-mode fue eliminado en v2.1.111. Si lo ves en docs viejas, sustitúyelo por --
+permission-mode auto. El modo auto ya está en el ciclo Shift+Tab por defecto.
+
+
+
+
+Advertencia
+
+Desde v2.1.128 stdin piped está limitado a 10MB. Si tu archivo es más grande, pásalo por ruta
+dentro del prompt en vez de hacer 'cat archivo | claude -p'.
+
+
+
+
+Consejo
+
+En --allowedTools el espacio antes de '*' importa: 'Bash(git diff *)' (con espacio) es prefijo exacto,
+'Bash(git diff*)' también matchea 'git diff-index' y 'git difftool'. Casi siempre quieres la versión con
+espacio.
+
+
+
+
+Consejo
+
+Si Claude se comporta raro, prueba 'claude --safe-mode' (v2.1.169+): arranca sin tus
+personalizaciones (CLAUDE.md, hooks, plugins, skills, MCP) para aislar si el problema viene de tu
+config. No lo confundas con --bare, que es para velocidad en scripts, no para diagnóstico.
+
+
+
+
+Consejo
+
+--fallback-model ahora acepta una lista por comas que se prueba en orden (ej. --fallback-model
+sonnet,haiku). Activa el respaldo cuando el modelo principal está sobrecargado O fue retirado.
+Déjalo configurado para que tus scripts no se caigan cuando un modelo está ocupado.
+
+
+
+
+Nota
+
+Bug corregido (Junio 2026): había sesiones que no se guardaban ni aparecían en --resume al
+lanzar Claude Code desde la terminal integrada de VS Code. Si lo sufriste, actualiza a una versión
+2.1.x reciente.
+
+
+
+
+                                                269                                          @soyenriquerocha
+COMANDOS Y FLAGS DEL CLI
+
+
+
+
+   Resumen del Capítulo
+
+   Claude Code tiene tres tipos de controles: flags de terminal (como --print, --model, --bare y --bg),
+   comandos slash para modo interactivo (como /compact, /diff, /recap y /voice), y variables de
+   entorno para configuración persistente. Los flags más importantes son -p para scripting, --bare
+   para CI mínimo, -c para continuar sesiones, --effort para controlar profundidad (incluye xhigh y
+   max), --append-system-prompt para agregar instrucciones, --allowedTools para automatizar
+   permisos, --bg para lanzar agentes en background y -w #PR para empezar desde un Pull Request.
+   El modo de permisos auto usa un clasificador de seguridad para aprobar acciones sin preguntar; --
+   enable-auto-mode quedó eliminado en v2.1.111 y se sustituye por --permission-mode auto. Si
+   algo se comporta raro, --safe-mode (v2.1.169+) arranca sin tus personalizaciones para diagnosticar
+   la config rota (distinto de --bare, que es para velocidad); y --advisor activa una herramienta
+   consejera del lado servidor para una segunda opinión. Para resiliencia, --fallback-model acepta
+   una lista de modelos de respaldo probada en orden. Para CI tienes claude setup-token (token
+   OAuth de larga vida) y CLAUDE_CODE_OAUTH_TOKEN. Cuidado con el cambio de pricing del 15 de
+   junio de 2026: claude -p y el Agent SDK consumirán crédito separado en planes de suscripción. Usa
+   este capítulo como referencia rápida cuando necesites un flag o comando específico.
+
+
+
+
+                                                   270                                        @soyenriquerocha
+13

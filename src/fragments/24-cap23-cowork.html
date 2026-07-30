@@ -1,0 +1,1050 @@
+<article class="chapter" data-id="cap23" data-title="Cowork y Automatización" data-part="4">
+  <header class="ch-head">
+    <p class="ch-kicker">Parte 4 · Avanzado y Desarrollador · Capítulo 23</p>
+    <h1>Cowork y Automatización</h1>
+    <p class="ch-lede">Pon a Claude a trabajar solo: pipelines, CI/CD, equipos de agentes y tareas programadas. Hasta ahora usaste Claude de forma interactiva: tú preguntas, él responde. Pero Claude también puede trabajar solo, sin que estés presente. Puede revisar código automáticamente, ejecutar tareas programadas y coordinar equipos de agentes que trabajan en paralelo. Este capítulo te enseña a poner a Claude en piloto automático.</p>
+  </header>
+
+  <h2 id="cap23-cowork-claude-trabaja-en-tu-escritorio">Cowork: Claude trabaja en tu escritorio</h2>
+  <p>Cowork es una función de Claude Desktop. Trae las capacidades de Claude Code a personas que no son programadores. Piensa en Cowork como un asistente que puede tocar tus archivos.</p>
+  <p>Con Cowork, Claude puede leer, editar y crear archivos en tu computadora. Puede organizar carpetas, crear documentos Excel con fórmulas, armar presentaciones y analizar datos. Todo desde la app de escritorio.</p>
+  <p>Es como tener un pasante muy capaz sentado frente a tu computadora. Tú le dices qué hacer y él trabaja. Pero necesita tu permiso para acciones importantes, como borrar archivos.</p>
+
+  <h3>Qué necesitas para usar Cowork</h3>
+  <p>Cowork está disponible para planes pagos: Pro, Max, Team y Enterprise. Necesitas la última versión de Claude Desktop para macOS o Windows (solo x64, arm64 no está soportado).</p>
+  <p>Hay tres requisitos básicos:</p>
+  <ul>
+    <li>La app de Claude Desktop debe estar abierta todo el tiempo que dure la tarea</li>
+    <li>Tu computadora debe estar encendida y despierta</li>
+    <li>Necesitas conexión a internet</li>
+  </ul>
+  <p><strong>Modelo por defecto:</strong> las sesiones de Cowork usan Claude Sonnet 4.6 por defecto. Es un buen balance entre velocidad y capacidad para las tareas multi-paso típicas de Cowork.</p>
+  <div class="callout warn">
+    <p class="callout-label">Importante</p>
+    <p>Cowork consume más cuota de uso que chatear normalmente con Claude. Las tareas complejas gastan más créditos.</p>
+  </div>
+  <p><strong>Seguridad:</strong> el código que ejecuta Cowork corre en una VM aislada, separada de tu sistema operativo principal. Esto significa que Claude no tiene acceso directo a todo tu sistema, solo a las carpetas que tú le permites.</p>
+  <p><strong>Acceso desde el móvil:</strong> si tienes plan Pro o Max, puedes asignar tareas a Cowork desde tu teléfono. Claude las ejecuta en tu computadora de escritorio (que debe estar encendida con la app abierta). Es como enviarle un mensaje a tu asistente para que trabaje mientras tú estás fuera.</p>
+
+  <h3>Cómo funcionan los permisos</h3>
+  <p>Tú decides qué carpetas puede ver Claude. También decides si puede acceder a internet. Antes de hacer algo importante (como borrar un archivo), Claude te pide permiso.</p>
+  <p>Es como darle las llaves de ciertas habitaciones de tu casa. Tú eliges cuáles. Y si quiere mover un mueble, te pregunta primero.</p>
+
+  <h3>Personalizar Cowork</h3>
+  <p>Puedes darle instrucciones globales a Cowork. Ve a <code>Settings &gt; Cowork &gt; Edit Global Instructions</code>. Ahí puedes decirle cosas como tu tono preferido, tu rol o el formato que esperas.</p>
+  <p>También puedes darle instrucciones por carpeta. Cuando seleccionas una carpeta local, puedes agregar contexto específico del proyecto.</p>
+
+  <h3>Para qué sirve Cowork</h3>
+  <ul class="deflist">
+    <li><strong>Gestión de archivos</strong> — organizar descargas, procesar recibos, renombrar archivos en lote</li>
+    <li><strong>Investigación</strong> — sintetizar búsquedas en reportes, extraer información de transcripciones</li>
+    <li><strong>Documentos</strong> — crear Excel con VLOOKUP y formato condicional, presentaciones, reportes</li>
+    <li><strong>Datos</strong> — análisis estadístico, visualización, limpieza de datos</li>
+    <li><strong>Computer use (desde marzo 2026)</strong> — Claude puede abrir archivos, ejecutar herramientas de desarrollo, apuntar, hacer click y navegar la pantalla de tu computadora. No necesitas configurar nada adicional. Es como si Claude pudiera ver tu pantalla y mover el mouse.</li>
+  </ul>
+
+  <h3>Projects: espacios de trabajo persistentes</h3>
+  <p>Los Projects son espacios de trabajo dentro de Cowork donde puedes guardar archivos, instrucciones y contexto. A diferencia de las sesiones normales, los Projects retienen memoria entre conversaciones.</p>
+  <p>Piensa en un Project como un escritorio dedicado a un tema. Cada vez que vuelves, Claude recuerda lo que hiciste antes, los archivos que usaste y las instrucciones que le diste.</p>
+  <p>Un Project puede tener:</p>
+  <ul class="deflist">
+    <li><strong>Archivos</strong> — documentos que Claude puede leer y modificar</li>
+    <li><strong>Instrucciones</strong> — reglas específicas para ese proyecto (tono, formato, restricciones)</li>
+    <li><strong>Contexto</strong> — información de fondo que Claude usa para entender mejor tus pedidos</li>
+    <li><strong>Memoria</strong> — lo que Claude aprendió en sesiones anteriores del mismo Project</li>
+  </ul>
+  <div class="callout warn">
+    <p class="callout-label">Importante</p>
+    <p>La memoria solo se retiene dentro de Projects. Las sesiones que no están dentro de un Project siguen empezando de cero cada vez.</p>
+  </div>
+
+  <h3>Plugins de Cowork</h3>
+  <p>Cowork tiene su propio ecosistema de plugins. Un plugin es un paquete que le da a Claude capacidades y conocimiento para un tipo de trabajo concreto, sin que tú escribas código.</p>
+  <p>Hay dos grandes familias:</p>
+  <ul class="deflist">
+    <li><strong>Plugins open-source por departamento</strong> — los primeros 11 plugins se lanzaron el 30 de enero de 2026, pensados para áreas como ventas, legal y finanzas. Son abiertos, así que la comunidad puede revisarlos y adaptarlos.</li>
+    <li><strong>Conectores MCP enterprise</strong> — el 24 de febrero de 2026 se sumaron 13 conectores MCP para empresas, junto con más plugins organizados por departamento. Estos conectores enlazan Cowork con las herramientas internas de tu organización.</li>
+  </ul>
+  <p>La idea es que en vez de explicarle todo a Claude desde cero, instalas el plugin de tu área y ya viene con el contexto y las conexiones que necesitas. Es como contratar a un asistente que ya sabe cómo trabaja tu departamento.</p>
+
+  <h3>Limitaciones de Cowork</h3>
+  <ul>
+    <li>La memoria solo se retiene dentro de Projects. Las sesiones standalone empiezan de cero cada vez.</li>
+    <li>Las sesiones no se pueden compartir con otros.</li>
+    <li>Solo funciona en escritorio. No hay sincronización entre dispositivos (excepto asignar tareas desde móvil en Pro/Max).</li>
+    <li>Cerrar la app termina las sesiones activas.</li>
+    <li>No hay audit logging: la actividad no se registra en los logs de auditoría de la organización.</li>
+  </ul>
+
+  <h2 id="cap23-flag-print">El flag --print: la base de toda automatización</h2>
+  <p>El flag <code>-p</code> (o <code>--print</code>) es el interruptor que convierte a Claude Code en una herramienta automatizada. En lugar de abrir una conversación interactiva, Claude procesa un prompt y sale.</p>
+  <p>Es como la diferencia entre hablar con alguien por teléfono (interactivo) y enviarle un mensaje de texto (<code>--print</code>). Con el mensaje, tú envías tu pregunta, recibes la respuesta, y listo.</p>
+  <p>Este flag es la pieza fundamental de todo lo que viene después: scripts, CI/CD, pipelines y automatización.</p>
+
+  <h3>Uso básico de --print</h3>
+  <p>La forma más simple:</p>
+  <pre><code class="lang-bash">claude -p "Que hace el modulo de auth?"</code></pre>
+  <p>Claude lee el prompt, genera una respuesta y la imprime en la terminal. Luego termina. Sin conversación, sin preguntas.</p>
+  <p>También puedes pasar contenido por pipe (tubería). Un pipe es cuando tomas la salida de un programa y la envías como entrada a otro:</p>
+  <pre><code class="lang-bash">cat archivo.txt | claude -p "explica esto" &gt; output.txt</code></pre>
+  <p>Esto lee <code>archivo.txt</code>, se lo pasa a Claude, y guarda la respuesta en <code>output.txt</code>.</p>
+  <p><strong>Límite de stdin (desde Claude Code v2.1.128):</strong> stdin tiene un cap de 10 MB. Si pipear un archivo más grande, Claude rechaza la entrada. Para inputs grandes, escríbelos a un archivo y referencia el path en el prompt:</p>
+  <pre><code class="lang-bash"># En vez de:
+cat log-gigante.txt | claude -p "resume este log"
+
+# Haz:
+claude -p "resume el log en /tmp/log-gigante.txt"</code></pre>
+  <p>Claude abre el archivo con su herramienta Read y procesa el contenido por trozos.</p>
+
+  <h3>Formatos de salida</h3>
+  <p>Claude puede darte la respuesta en tres formatos diferentes:</p>
+  <ul class="deflist">
+    <li><strong><code>--output-format text</code></strong> — Texto plano. Es el formato por defecto.</li>
+    <li><strong><code>--output-format json</code></strong> — JSON con el resultado, session ID y metadata. Ideal para scripts.</li>
+    <li><strong><code>--output-format stream-json</code></strong> — JSON que llega token por token. Para ver la respuesta conforme se genera.</li>
+  </ul>
+  <p>Para automatización, casi siempre quieres <code>json</code>. Te da información extra que necesitas para encadenar pasos.</p>
+  <p>Flags relacionados:</p>
+  <ul class="deflist">
+    <li><strong><code>--input-format text|stream-json</code></strong> — Formato de la entrada cuando lees de stdin. Con <code>stream-json</code> puedes hacer conversaciones multi-turno via stdin.</li>
+    <li><strong><code>--verbose</code></strong> — Activa logging detallado. Es obligatorio para <code>--output-format stream-json</code>.</li>
+    <li><strong><code>--include-partial-messages</code></strong> — Emite eventos delta token a token mientras Claude responde. Útil para mostrar streaming en una UI custom.</li>
+  </ul>
+  <p><strong>Eventos de sistema en stream-json:</strong> además del texto que genera Claude, el stream emite eventos de control que conviene conocer si construyes tu propia UI o herramienta:</p>
+  <ul class="deflist">
+    <li><strong><code>system/init</code></strong> — Llega al inicio con la metadata de la sesión: modelo, herramientas disponibles, servidores MCP y plugins cargados. Es lo primero que recibes y te dice con qué configuración arrancó Claude.</li>
+    <li><strong><code>system/api_retry</code></strong> — Aparece cuando una llamada a la API falla y Claude la reintenta. Incluye <code>attempt</code> (número de intento), <code>max_retries</code>, <code>retry_delay_ms</code> y <code>error_status</code>. Útil para mostrar "reintentando..." en vez de parecer que se colgó.</li>
+  </ul>
+
+  <h3>Output estructurado con JSON Schema</h3>
+  <p>Puedes pedirle a Claude que te devuelva datos en un formato exacto. Le pasas un JSON Schema (una plantilla que describe la forma de los datos) y Claude valida su respuesta contra esa plantilla.</p>
+  <pre><code class="lang-bash">claude -p "Extrae los nombres de las funciones de auth.py" \
+   --output-format json \
+   --json-schema '{"type":"object","properties":{"functions":{"type":"array","items":{"type":"string"}}},"required":["functions"]}'</code></pre>
+  <p>El resultado aparece en el campo <code>structured_output</code> de la respuesta JSON. Esto es muy útil cuando otro programa necesita leer la respuesta de Claude.</p>
+
+  <h3>Continuar conversaciones en scripts</h3>
+  <p>Puedes encadenar varios prompts que comparten el mismo contexto:</p>
+  <pre><code class="lang-bash">claude -p "Revisa este codigo por problemas de performance"
+claude -p "Ahora enfocate en las queries de base de datos" --continue
+claude -p "Resume todos los problemas encontrados" --continue</code></pre>
+  <p>El flag <code>--continue</code> dice: "sigue la conversación más reciente". Claude recuerda todo lo anterior.</p>
+  <p>Si necesitas reanudar una conversación específica, captura el <code>session_id</code>:</p>
+  <pre><code class="lang-bash">session_id=$(claude -p "Empieza la revision" --output-format json | jq -r '.session_id')
+claude -p "Continua la revision" --resume "$session_id"</code></pre>
+
+  <h3>Controlar costos y límites</h3>
+  <p>En automatización, necesitas controles de seguridad. Los flags más importantes:</p>
+  <ul class="deflist">
+    <li><strong><code>--max-turns 5</code></strong> — Limita cuántas veces Claude puede iterar. Evita que entre en un bucle infinito. Por defecto son 10 turnos. Si no pones tope explícito y Claude se enreda, puede iterar las 10 veces y gastar de más.</li>
+    <li><strong><code>--max-budget-usd 5.00</code></strong> — Limita cuánto puede gastar en dólares.</li>
+    <li><strong><code>--allowedTools</code></strong> — Lista las herramientas auto-aprobadas. Soporta reglas finas: <code>Bash(git diff *)</code>.</li>
+    <li><strong><code>--disallowedTools</code></strong> — Lo contrario: lista herramientas explícitamente prohibidas. Útil cuando quieres prohibir WebSearch o WebFetch pero dejar el resto en automático.</li>
+  </ul>
+  <p>Piensa en estos flags como el freno de mano de un auto. Cuando Claude corre solo, necesitas un límite para que no se pase.</p>
+  <p><strong>Ajustar configuración con <code>/config</code> en modo <code>-p</code> (desde Claude Code v2.1.181):</strong> puedes pasar el comando <code>/config</code> con pares <code>key=value</code> dentro del prompt para cambiar opciones puntuales de la sesión sin tocar tus archivos de settings. Por ejemplo, para desactivar el modo de pensamiento extendido:</p>
+  <pre><code class="lang-bash">claude -p "/config thinking=false"</code></pre>
+  <p>Es práctico en scripts donde quieres forzar una configuración concreta solo para esa ejecución.</p>
+
+  <h3>El flag --permission-mode: cinco niveles de permiso</h3>
+  <p>El flag <code>--permission-mode</code> fija un modo de permisos para toda la sesión, sin tener que enumerar herramienta por herramienta. Tiene cinco valores:</p>
+  <ul class="deflist">
+    <li><strong><code>default</code></strong> — Comportamiento estándar. Claude pide permiso cuando va a tocar algo sensible. Útil para uso interactivo.</li>
+    <li><strong><code>plan</code></strong> — Claude solo planifica, no ejecuta. Hace lectura, búsqueda y razonamiento pero no escribe ni ejecuta comandos. Ideal para auditorías.</li>
+    <li><strong><code>acceptEdits</code></strong> — Auto-aprueba escrituras de archivo y comandos seguros (<code>mkdir</code>, <code>touch</code>, <code>mv</code>, <code>cp</code>). Otros comandos de shell y network siguen necesitando entrada explícita en <code>--allowedTools</code> o <code>permissions.allow</code>. Bueno para tareas tipo "aplica fixes y commitea".</li>
+    <li><strong><code>dontAsk</code></strong> — Rechaza todo lo que no esté en <code>permissions.allow</code> (o en el set de read-only). No pregunta, no insiste: si no está permitido, no se hace. Para runs muy restringidos.</li>
+    <li><strong><code>bypassPermissions</code></strong> — Salta todos los chequeos. Equivalente a <code>--dangerously-skip-permissions</code>. Solo úsalo dentro de contenedores aislados.</li>
+  </ul>
+  <p>Cuándo usar cada uno:</p>
+  <ul class="deflist">
+    <li><strong>CI que aplica linters y commitea</strong> — <code>acceptEdits</code> + <code>--allowedTools</code> específicos.</li>
+    <li><strong>Reporte automático que solo lee</strong> — <code>plan</code> o <code>default</code> con tools limitados.</li>
+    <li><strong>Sandbox que ejecuta cosas arbitrarias</strong> — <code>bypassPermissions</code> en un contenedor descartable.</li>
+    <li><strong>Pipeline con un allowlist estricto</strong> — <code>dontAsk</code> + <code>permissions.allow</code> en <code>--settings</code>.</li>
+  </ul>
+
+  <h3>Auto Mode: aprobaciones inteligentes</h3>
+  <p>Auto Mode es un clasificador de seguridad basado en IA que se añadió a Claude Code en 2026. Su trabajo es decidir, acción por acción, qué se puede auto-aprobar y qué hay que frenar.</p>
+  <p>Funciona así: las acciones rutinarias del desarrollador (leer archivos, correr comandos comunes, hacer ediciones normales) se aprueban solas. Pero las operaciones destructivas (borrar archivos, comandos peligrosos que pueden romper cosas) se bloquean y esperan tu confirmación.</p>
+  <p>El objetivo es reducir la fatiga de tantas aprobaciones manuales sin bajar la guardia frente a lo que de verdad importa. En vez de aprobar cada paso a mano, dejas que el clasificador filtre lo seguro y solo te interrumpa cuando hay riesgo real.</p>
+  <p><strong>Cómo se relaciona con <code>--permission-mode</code>:</strong> los dos sistemas se complementan. El <code>--permission-mode</code> fija una regla fija para toda la sesión (por ejemplo, "auto-aprueba todas las ediciones"). Auto Mode, en cambio, mira cada acción individual y juzga su riesgo con IA. Puedes pensar en <code>--permission-mode</code> como la política general y en Auto Mode como el guardia que evalúa caso por caso dentro de esa política.</p>
+
+  <h3>El flag --bare: arranque rápido para CI/CD</h3>
+  <p>El flag <code>--bare</code> hace que Claude arranque en modo mínimo. Salta toda la auto-detección de hooks, skills, plugins, MCP servers, auto memory y archivos CLAUDE.md. Solo los flags que le pases explícitamente tienen efecto.</p>
+  <p>Es como arrancar una computadora en modo seguro. Se carga lo mínimo para funcionar.</p>
+  <pre><code class="lang-bash">claude --bare -p 'Resume este archivo' --allowedTools 'Read'</code></pre>
+  <p>¿Cuándo usarlo? En CI/CD y scripts donde necesitas que Claude se comporte igual en cada máquina, sin que configuraciones locales cambien el resultado. El arranque es más rápido porque no busca archivos de configuración.</p>
+  <p>En modo bare, Claude tiene acceso a Bash, lectura y edición de archivos. Si necesitas más contexto, usa estos flags para cargarlo explícitamente:</p>
+  <ul class="deflist">
+    <li><strong><code>--append-system-prompt</code> o <code>--append-system-prompt-file</code></strong> — para agregar instrucciones al system prompt</li>
+    <li><strong><code>--settings</code></strong> — para cargar un archivo de settings</li>
+    <li><strong><code>--mcp-config</code></strong> — para conectar MCP servers</li>
+    <li><strong><code>--agents</code></strong> — para definir sub-agentes custom</li>
+  </ul>
+  <p><strong>Autenticación en bare mode:</strong> <code>--bare</code> omite tanto OAuth como el keychain del sistema. La autenticación debe llegar por una de dos vías:</p>
+  <ul>
+    <li><code>ANTHROPIC_API_KEY</code> en variables de entorno.</li>
+    <li><code>apiKeyHelper</code> dentro del archivo pasado a <code>--settings</code> (un comando que devuelve la key, útil cuando la lees de un vault).</li>
+  </ul>
+  <p>El argumento de <code>--settings</code> puede ser tanto un path a un archivo JSON como un JSON inline. Las dos formas funcionan:</p>
+  <pre><code class="lang-bash"># Path a archivo
+claude --bare -p "..." --settings ./ci-settings.json
+
+# JSON inline
+claude --bare -p "..." --settings '{"model":"claude-opus-4-7"}'</code></pre>
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>En una futura versión, <code>--bare</code> será el modo por defecto cuando uses <code>-p</code>. Si tus scripts ya funcionan con <code>--bare</code>, estarás preparado para el cambio.</p>
+  </div>
+
+  <h3>Crédito mensual separado desde el 15 de junio de 2026</h3>
+  <p><strong>Cambio importante para todos los planes de suscripción (Pro, Max, Team, Enterprise):</strong> a partir del 15 de junio de 2026, el uso del Agent SDK y del CLI en modo <code>claude -p</code> consume un crédito mensual separado del uso interactivo.</p>
+  <p>Hasta esa fecha, el uso de <code>claude -p</code> y el uso interactivo comparten los mismos límites de tu plan. Después, son dos buckets distintos:</p>
+  <ul class="deflist">
+    <li><strong>Bucket interactivo</strong> — lo que gastas chateando en <a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a> y usando Claude Code de forma normal.</li>
+    <li><strong>Bucket Agent SDK / <code>-p</code></strong> — todo lo que llamas desde scripts, crons, CI/CD y aplicaciones que usan el SDK.</li>
+  </ul>
+  <p>Qué significa para ti:</p>
+  <ul>
+    <li>Si tu equipo tiene un pipeline pesado de CI con <code>claude -p</code>, tendrás un budget dedicado que no compite con el uso humano.</li>
+    <li>Pero también puedes quedarte sin el bucket Agent SDK aunque tu bucket interactivo esté intacto.</li>
+    <li>Necesitas monitorear los dos por separado. La metadata de <code>--output-format json</code> incluye <code>total_cost_usd</code> y desglose por modelo, útil para trackear lo que gasta cada pipeline.</li>
+  </ul>
+  <p>Si tu organización depende mucho del Agent SDK, planifica con tu administrador antes de junio para revisar límites y, si hace falta, ajustar el plan.</p>
+
+  <h2 id="cap23-tareas-programadas">Tareas programadas: Claude trabaja a la hora que tú digas</h2>
+  <p>Hay cuatro formas de programar tareas con Claude. Cada una tiene un nivel diferente de durabilidad. Es como cuatro tipos de alarmas: una dentro de tu sesión (que se borra al cerrar), una en tu computadora (más confiable), una en la nube de Anthropic (funciona con tu PC apagada) y una en GitHub Actions (siempre activa, integrada con tu código).</p>
+
+  <h3>Nivel 1: /loop en el CLI (temporal)</h3>
+  <p>El comando <code>/loop</code> repite una tarea a intervalos regulares dentro de tu sesión de Claude Code. Es la opción más fácil pero menos durable.</p>
+  <pre><code class="lang-text">/loop 5m revisa si el deployment termino y dime que paso</code></pre>
+  <p>Esto verifica cada 5 minutos. Puedes usar diferentes unidades:</p>
+  <ul class="deflist">
+    <li><strong><code>s</code></strong> — segundos (se redondea al minuto más cercano)</li>
+    <li><strong><code>m</code></strong> — minutos</li>
+    <li><strong><code>h</code></strong> — horas</li>
+    <li><strong><code>d</code></strong> — días</li>
+  </ul>
+  <p>También puedes hacer loop sobre otros comandos:</p>
+  <pre><code class="lang-text">/loop 20m /review-pr 1234</code></pre>
+  <p>Y crear recordatorios únicos con lenguaje natural:</p>
+  <pre><code class="lang-text">recuerdame a las 3pm que haga push de la rama de release</code></pre>
+  <div class="callout warn">
+    <p class="callout-label">Limitación importante</p>
+    <p>Las tareas de <code>/loop</code> viven solo en la sesión actual. Si cierras la terminal, desaparecen. No hay forma de recuperarlas. Expiran automáticamente a los 3 días.</p>
+  </div>
+
+  <h3>Nivel 2: Tareas programadas en Cowork Desktop (semi-durable)</h3>
+  <p>Cowork Desktop permite programar tareas con el comando <code>/schedule</code>. Son más durables que <code>/loop</code>, pero la computadora debe estar encendida y la app abierta.</p>
+  <p>Accede a la sección Scheduled en la barra lateral para ver y gestionar tus tareas.</p>
+  <p><strong>Catch-up de ejecuciones perdidas:</strong> si tu computadora estuvo apagada o la app cerrada, Desktop ejecuta automáticamente la ejecución perdida más reciente de los últimos 7 días cuando vuelves a abrir la app. Solo ejecuta una (la más reciente), no todas las que se perdieron. Es como un despertador que te avisa que perdiste una alarma.</p>
+
+  <h3>Nivel 3: Tareas programadas en la nube (Cloud)</h3>
+  <p>Las tareas programadas Cloud corren en la infraestructura de Anthropic. No necesitas tu computadora encendida. Configúralas desde <a href="https://claude.ai/code" target="_blank" rel="noopener">claude.ai/code</a>.</p>
+  <p>Es como contratar a alguien que trabaja en una oficina remota. No depende de tu máquina, no depende de tu conexión. Claude trabaja aunque estés dormido.</p>
+  <p>Características:</p>
+  <ul>
+    <li>El intervalo mínimo es de 1 hora (a diferencia de Desktop, que permite 1 minuto)</li>
+    <li>Usa un clon fresco de tu repositorio en cada ejecución. No tiene acceso a archivos locales de tu máquina.</li>
+    <li>Funciona con tu computadora apagada</li>
+  </ul>
+  <p><strong>Presets de horario:</strong> al crear una tarea Cloud (también llamadas Routines) eliges entre cuatro presets listos:</p>
+  <ul class="deflist">
+    <li><strong><code>hourly</code></strong> — cada hora</li>
+    <li><strong><code>daily</code></strong> — una vez al día</li>
+    <li><strong><code>weekdays</code></strong> — solo de lunes a viernes</li>
+    <li><strong><code>weekly</code></strong> — una vez por semana</li>
+  </ul>
+  <p>Si necesitas un intervalo que no encaja en estos presets (por ejemplo, cada 2 horas o el día 1 de cada mes), usa <code>/schedule update</code> y pasa una expresión cron directa. Eso sí: el intervalo mínimo de 1 hora se sigue respetando, aunque tu cron pida algo más rápido.</p>
+  <p>¿Cuándo usarlo? Para tareas recurrentes que necesitan ejecutarse sin importar si tu computadora está encendida, como reportes diarios, auditorías semanales o monitoreo de repositorios.</p>
+
+  <h3>Nivel 4: GitHub Actions con cron (siempre activo)</h3>
+  <p>La opción más confiable y con más control. GitHub Actions ejecuta tareas en la nube de GitHub. No depende de tu computadora ni de Anthropic.</p>
+  <pre><code class="lang-json">name: Reporte Diario
+on:
+  schedule:
+    - cron: "0 9 * * *"
+jobs:
+  reporte:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: "Genera un resumen de los commits de ayer y los issues abiertos"
+          claude_args: "--model opus"</code></pre>
+  <p>Este ejemplo ejecuta un reporte diario a las 9am. La tarea corre en los servidores de GitHub. No necesitas tu computadora encendida.</p>
+
+  <h2 id="cap23-github-actions">GitHub Actions: Claude en tu repositorio</h2>
+  <p>GitHub Actions es un sistema de automatización de GitHub. Te permite ejecutar tareas automáticamente cuando pasan cosas en tu repositorio: alguien abre un PR, comenta en un issue, o hace push de código.</p>
+  <p>Claude tiene una acción oficial: <code>anthropics/claude-code-action@v1</code>. Con ella, Claude se convierte en un miembro más de tu equipo de desarrollo. Responde comentarios, revisa código y hasta crea PRs.</p>
+
+  <h3>Configuración rápida</h3>
+  <p>La forma más fácil de configurar Claude en GitHub es desde el CLI:</p>
+  <pre><code class="lang-text">/install-github-app</code></pre>
+  <p>Esto instala todo automáticamente. Si prefieres hacerlo manual, son tres pasos:</p>
+  <ol class="steps">
+    <li>Instala la GitHub App de Claude en <code><a href="https://github.com/apps/claude" target="_blank" rel="noopener">github.com/apps/claude</a></code></li>
+    <li>Agrega tu <code>ANTHROPIC_API_KEY</code> a los secretos del repositorio</li>
+    <li>Copia el archivo workflow a <code>.github/workflows/</code></li>
+  </ol>
+
+  <h3>claude-code-action vs claude-code-base-action</h3>
+  <p>Anthropic publica dos actions distintas. Es importante saber cuál usar.</p>
+  <p><strong><code>anthropics/claude-code-action@v1</code> (recomendada):</strong> action de alto nivel. Incluye chequeo de permisos del actor (verifica que quién dispara tiene write al repo), restauración del base-ref (separa código confiable del PR), auto-detección de modo interactivo vs automatización, y manejo de comentarios y reviews. Es la que cubre el 95% de los casos.</p>
+  <p><strong><code>anthropics/claude-code-base-action</code> (avanzada):</strong> un building block de bajo nivel. Solo ejecuta el Agent SDK con los flags que le pases, sin checks de permisos integrados, sin manejo de comentarios. Es para cuando estás construyendo tu propio wrapper y necesitas controlar tú la lógica de seguridad.</p>
+  <p>Como regla simple: empieza con <code>claude-code-action@v1</code>. Solo migra a <code>claude-code-base-action</code> si descubres que necesitas un control que la de alto nivel no te da.</p>
+
+  <h3>Migrar de @beta a @v1</h3>
+  <p>La versión beta usaba campos individuales como <code>mode</code>, <code>direct_prompt</code>, <code>custom_instructions</code>, <code>max_turns</code> y <code>model</code>. La v1.0 los consolidó en <code>prompt</code> + <code>claude_args</code> + <code>settings</code>. Si ya tienes workflows con <code>@beta</code>, los tienes que actualizar a mano.</p>
+  <p>Antes (@beta):</p>
+  <pre><code class="lang-json">- uses: anthropics/claude-code-action@beta
+  with:
+    mode: "tag"
+    direct_prompt: "Review this PR"
+    custom_instructions: "Follow our standards"
+    max_turns: "10"
+    model: "claude-sonnet-4-6"</code></pre>
+  <p>Después (@v1):</p>
+  <pre><code class="lang-json">- uses: anthropics/claude-code-action@v1
+  with:
+    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+    prompt: "Review this PR"
+    claude_args: |
+      --append-system-prompt "Follow our standards"
+      --max-turns 10
+      --model claude-sonnet-4-6</code></pre>
+  <p>Equivalencias clave:</p>
+  <ul class="deflist">
+    <li><strong><code>mode</code></strong> — desaparece. La v1 lo detecta automáticamente según el evento y si hay prompt o no.</li>
+    <li><strong><code>direct_prompt</code></strong> — <code>prompt</code>.</li>
+    <li><strong><code>custom_instructions</code></strong> — <code>--append-system-prompt</code> dentro de <code>claude_args</code>.</li>
+    <li><strong><code>max_turns</code>, <code>model</code>, <code>allowed_tools</code></strong> — flags dentro de <code>claude_args</code>.</li>
+  </ul>
+
+  <h3>Tu primer workflow con Claude</h3>
+  <p>Este es el workflow mínimo para que Claude responda cuando alguien escribe <code>@claude</code> en un comentario:</p>
+  <pre><code class="lang-json">name: Claude Code
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+jobs:
+  claude:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}</code></pre>
+  <p>Con esto, cualquier persona de tu equipo puede pedir ayuda a Claude directamente en GitHub. Escribe <code>@claude explica esta funcion</code> en un comentario y Claude responde.</p>
+
+  <h3>Code review automático</h3>
+  <p>Puedes hacer que Claude revise cada PR automáticamente:</p>
+  <pre><code class="lang-json">name: Code Review
+on:
+  pull_request:
+    types: [opened, synchronize]
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: "Revisa este PR por calidad, correctitud y seguridad."
+          claude_args: "--max-turns 5"</code></pre>
+  <p>Cada vez que se abre o actualiza un PR, Claude lo revisa. El flag <code>--max-turns 5</code> evita que se pase de vueltas (y de costo).</p>
+
+  <h3>Parámetros de la acción</h3>
+  <p>La <code>claude-code-action@v1</code> tiene muchos parámetros. Aquí los más importantes agrupados por función.</p>
+  <p><strong>Autenticación:</strong></p>
+  <ul class="deflist">
+    <li><strong><code>anthropic_api_key</code></strong> — Tu clave API de Anthropic. Siempre desde secretos de GitHub. Requerida si usas la API directa.</li>
+    <li><strong><code>claude_code_oauth_token</code></strong> — Alternativa a la API key para usuarios Pro o Max. Se genera localmente con <code>claude setup-token</code>.</li>
+    <li><strong><code>github_token</code></strong> — Token de GitHub. Solo necesario si usas un GitHub App custom (con <code>actions/create-github-app-token</code>). Con el app oficial de Claude no hace falta.</li>
+    <li><strong><code>use_bedrock</code>, <code>use_vertex</code></strong> — Cambiar a AWS Bedrock o Google Vertex AI en lugar de la API directa.</li>
+  </ul>
+  <p><strong>Configuración del agente:</strong></p>
+  <ul class="deflist">
+    <li><strong><code>prompt</code></strong> — Las instrucciones para Claude. Texto plano o invocación de skill. Si lo omites en eventos de comentario, Claude responde al trigger phrase.</li>
+    <li><strong><code>claude_args</code></strong> — Flags del CLI, multilínea. Ej: <code>--max-turns 10</code>, <code>--model claude-opus-4-7</code>, <code>--allowedTools</code>.</li>
+    <li><strong><code>settings</code></strong> — JSON o ruta a archivo con configuración avanzada (model, env, permissions, hooks).</li>
+  </ul>
+  <p><strong>Disparadores:</strong></p>
+  <ul class="deflist">
+    <li><strong><code>trigger_phrase</code></strong> — La frase que activa a Claude en comentarios. Por defecto <code>@claude</code>.</li>
+    <li><strong><code>assignee_trigger</code></strong> — Username que dispara la action al ser asignado.</li>
+    <li><strong><code>label_trigger</code></strong> — Nombre de label que dispara la action al aplicarse al issue/PR.</li>
+    <li><strong><code>base_branch</code></strong> — Branch base para crear ramas nuevas.</li>
+    <li><strong><code>branch_prefix</code></strong> — Prefijo de las ramas que crea Claude. Por defecto <code>claude/</code>.</li>
+  </ul>
+  <p><strong>Control de comentarios:</strong></p>
+  <ul class="deflist">
+    <li><strong><code>track_progress</code></strong> — Fuerza modo tag con comentarios de seguimiento.</li>
+    <li><strong><code>include_fix_links</code></strong> — Incluye enlaces "Fix this" en reviews de PR. Por defecto <code>true</code>.</li>
+    <li><strong><code>use_sticky_comment</code></strong> — Un solo comentario que se actualiza en vez de muchos nuevos.</li>
+    <li><strong><code>classify_inline_comments</code></strong> — Buffer y clasifica comentarios inline antes de publicarlos.</li>
+  </ul>
+  <p><strong>Commits:</strong></p>
+  <ul class="deflist">
+    <li><strong><code>use_commit_signing</code></strong> — Firma commits via API de GitHub.</li>
+    <li><strong><code>ssh_signing_key</code></strong> — Clave SSH privada para firmar commits con operaciones git completas.</li>
+    <li><strong><code>bot_id</code>, <code>bot_name</code></strong> — Identidad del bot para las operaciones git.</li>
+    <li><strong><code>additional_permissions</code></strong> — Permisos GitHub adicionales. Por ejemplo <code>actions: read</code> habilita herramientas MCP de CI.</li>
+  </ul>
+  <p><strong>Plugins y ejecutables:</strong></p>
+  <ul class="deflist">
+    <li><strong><code>plugin_marketplaces</code></strong> — URLs Git de marketplaces de plugins, una por línea.</li>
+    <li><strong><code>plugins</code></strong> — Plugins a instalar antes de la ejecución, uno por línea.</li>
+    <li><strong><code>path_to_claude_code_executable</code>, <code>path_to_bun_executable</code></strong> — Para usar binarios custom.</li>
+  </ul>
+  <p><strong>Costo:</strong> ten en cuenta que GitHub Actions consume minutos de runner, que es una cuenta separada de los costos de la API de Anthropic. Pagas dos cosas: el tiempo de máquina (GitHub) y los tokens consumidos por Claude (Anthropic). Para controlar el costo total:</p>
+  <ul>
+    <li>Limita iteraciones con <code>--max-turns</code> dentro de <code>claude_args</code>.</li>
+    <li>Pon <code>timeout-minutes</code> a nivel job o workflow.</li>
+    <li>Usa <code>concurrency</code> de GitHub para cancelar runs duplicados.</li>
+    <li>Activa caché para acelerar checkouts y dependencias.</li>
+  </ul>
+
+  <h3>Skills y plugins en GitHub Actions</h3>
+  <p>El campo <code>prompt</code> acepta tanto texto plano como invocaciones de skills. Esto te permite reusar las skills que ya tienes definidas para Claude Code interactivo dentro de tus pipelines de CI.</p>
+  <p><strong>Skill local (del propio repo):</strong> haz <code>actions/checkout</code> primero, luego pasa <code>/skill-name</code> en el prompt. La skill debe estar en <code>.claude/skills/</code> del repo.</p>
+  <pre><code class="lang-json">steps:
+  - uses: actions/checkout@v6
+  - uses: anthropics/claude-code-action@v1
+    with:
+      anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+      prompt: "/security-audit"</code></pre>
+  <p><strong>Skill empaquetada en plugin:</strong> instala el plugin con <code>plugin_marketplaces</code> + <code>plugins</code>, y luego usa el nombre con namespace en el prompt: <code>/plugin-name:skill-name</code>.</p>
+  <pre><code class="lang-json">- uses: anthropics/claude-code-action@v1
+  with:
+    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+    plugin_marketplaces: "https://github.com/anthropics/claude-code.git"
+    plugins: "code-review@claude-code-plugins"
+    prompt: "/code-review:code-review ${{ github.repository }}/pull/${{ github.event.pull_request.number }}"</code></pre>
+  <p>Esto instala el plugin oficial code-review desde el marketplace de Anthropic y lo invoca en cada PR. Es la forma más limpia de reusar el plugin estándar de revisión sin tener que copiar el prompt al workflow.</p>
+
+  <h3>Eventos que activan a Claude</h3>
+  <p>Puedes activar a Claude con diferentes eventos:</p>
+  <ul class="deflist">
+    <li><strong><code>issue_comment</code></strong> — Comentarios en issues</li>
+    <li><strong><code>pull_request_review_comment</code></strong> — Comentarios en reviews de PRs</li>
+    <li><strong><code>issues</code> (opened, assigned)</strong> — Cuando se abren o asignan issues</li>
+    <li><strong><code>pull_request</code> (opened, synchronize)</strong> — Cuando se abren o actualizan PRs</li>
+    <li><strong><code>schedule</code> (cron)</strong> — Ejecución programada por horario</li>
+  </ul>
+
+  <h3>Control fino de quién puede disparar a Claude</h3>
+  <p>Por defecto, solo usuarios con permisos de write al repo pueden disparar la action. Esto es bueno, pero a veces necesitas excepciones (bots de CI, contribuidores externos, etc.). La action te da cuatro parámetros para ajustar esto.</p>
+  <ul class="deflist">
+    <li><strong><code>include_comments_by_actor</code></strong> — Lista CSV de actores cuyos comentarios SÍ se procesan. Acepta el wildcard <code>*[bot]</code>. Ejemplo: <code>"user1,user2,*[bot]"</code>.</li>
+    <li><strong><code>exclude_comments_by_actor</code></strong> — Lista de actores a EXCLUIR. La exclusión gana si un actor está en ambas listas. Útil para ignorar dependabot o renovate. Ejemplo: <code>"dependabot[bot],renovate[bot]"</code>.</li>
+    <li><strong><code>allowed_bots</code></strong> — Lista de bots permitidos para disparar la action. Acepta <code>*</code> para permitir todos. Importante: los bots no son chequeados por permisos de repo. En repos públicos, <code>allowed_bots: '*'</code> permite a cualquier bot de terceros disparar workflows que consumen tu API key.</li>
+    <li><strong><code>allowed_non_write_users</code></strong> — Lista de usuarios sin permisos de write a los que se les permite disparar la action. Salta el chequeo principal de seguridad. Úsalo solo en workflows muy restringidos donde sabes exactamente qué puede pasar Claude.</li>
+  </ul>
+  <div class="callout warn">
+    <p class="callout-label">Advertencia para repos públicos</p>
+    <p>Nunca uses <code>allowed_bots: '*'</code> ni <code>allowed_non_write_users</code> abierto sin un workflow muy lockeado (con <code>--max-budget-usd</code> bajo, <code>--allowedTools</code> restringido y revisión humana antes de merge). Un actor externo puede abrir un issue con un prompt malicioso y consumir tu API key.</p>
+  </div>
+
+  <h3>Firmar commits hechos por Claude</h3>
+  <p>Los commits que hace Claude pueden quedar como "unverified" en GitHub si no firmas. La action ofrece dos formas de firmar.</p>
+  <p><strong>Opción 1: <code>use_commit_signing: true</code> (simple)</strong></p>
+  <pre><code class="lang-json">- uses: anthropics/claude-code-action@v1
+  with:
+    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+    use_commit_signing: true</code></pre>
+  <p>Esta opción firma los commits via la API de GitHub. Es la más fácil: no requiere generar claves. La limitación es que no soporta operaciones git complejas como <code>rebase</code> o <code>cherry-pick</code>. Si tu workflow solo hace commits normales, esto es suficiente.</p>
+  <p><strong>Opción 2: <code>ssh_signing_key</code> (completa)</strong></p>
+  <pre><code class="lang-json">- uses: anthropics/claude-code-action@v1
+  with:
+    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+    ssh_signing_key: ${{ secrets.SSH_SIGNING_KEY }}
+    bot_id: "123456"
+    bot_name: "my-bot[bot]"</code></pre>
+  <p>Esta opción usa una clave SSH privada para firmar. Permite cualquier operación git incluyendo rebase y cherry-pick. Los pasos:</p>
+  <ol class="steps">
+    <li>Genera una clave SSH: <code>ssh-keygen -t ed25519 -C "claude-bot"</code>.</li>
+    <li>Añade la clave pública a GitHub como Signing Key (no Authentication Key) en la cuenta del bot.</li>
+    <li>Guarda la clave privada como secret <code>SSH_SIGNING_KEY</code> en el repo.</li>
+  </ol>
+  <p>Si pasas las dos opciones, <code>ssh_signing_key</code> gana.</p>
+
+  <h3>Bedrock y Vertex AI: detalles completos</h3>
+  <p>La action soporta usar Claude via AWS Bedrock o Google Vertex AI en lugar de la API directa de Anthropic. Útil para data residency, billing centralizado en tu cloud provider y compliance.</p>
+  <p><strong>AWS Bedrock con OIDC:</strong></p>
+  <ol class="steps">
+    <li>Configura un OIDC Identity Provider en AWS apuntando a <code><a href="https://token.actions.githubusercontent.com" target="_blank" rel="noopener">token.actions.githubusercontent.com</a></code>.</li>
+    <li>Crea un IAM role con la policy <code>AmazonBedrockFullAccess</code> (o más restringida) y un trust policy que confíe en el OIDC provider para tu repo.</li>
+    <li>Guarda el ARN del role como secret <code>AWS_ROLE_TO_ASSUME</code>.</li>
+    <li>Crea un GitHub App custom y usa <code>actions/create-github-app-token@v2</code> en el workflow.</li>
+    <li>Configura el modelo con el prefijo regional: <code>us.anthropic.claude-sonnet-4-6</code>.</li>
+  </ol>
+  <pre><code class="lang-json">permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+steps:
+  - uses: actions/checkout@v6
+  - uses: actions/create-github-app-token@v2
+    id: app-token
+    with:
+      app-id: ${{ secrets.APP_ID }}
+      private-key: ${{ secrets.APP_PRIVATE_KEY }}
+  - uses: aws-actions/configure-aws-credentials@v4
+    with:
+      role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+      aws-region: us-west-2
+  - uses: anthropics/claude-code-action@v1
+    with:
+      github_token: ${{ steps.app-token.outputs.token }}
+      use_bedrock: "true"
+      claude_args: '--model us.anthropic.claude-sonnet-4-6 --max-turns 10'
+    env:
+      AWS_REGION: us-west-2</code></pre>
+  <p><strong>Google Vertex AI con Workload Identity Federation:</strong></p>
+  <ol class="steps">
+    <li>Configura un Workload Identity Pool y Provider en GCP que confíe en GitHub Actions OIDC.</li>
+    <li>Crea una service account con el rol Vertex AI User y vincúlala al pool.</li>
+    <li>Guarda <code>GCP_WORKLOAD_IDENTITY_PROVIDER</code> y <code>GCP_SERVICE_ACCOUNT</code> como secrets.</li>
+    <li>El project ID se toma del output de <code>google-github-actions/auth</code>; no se hardcodea.</li>
+    <li>Configura las env vars <code>ANTHROPIC_VERTEX_PROJECT_ID</code> y <code>CLOUD_ML_REGION</code> en el workflow.</li>
+  </ol>
+  <pre><code class="lang-json">- uses: actions/checkout@v6
+- uses: actions/create-github-app-token@v2
+  id: app-token
+  with:
+    app-id: ${{ secrets.APP_ID }}
+    private-key: ${{ secrets.APP_PRIVATE_KEY }}
+- uses: google-github-actions/auth@v2
+  id: auth
+  with:
+    workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+    service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+- uses: anthropics/claude-code-action@v1
+  with:
+    github_token: ${{ steps.app-token.outputs.token }}
+    use_vertex: "true"
+    claude_args: '--model claude-sonnet-4-5@20250929 --max-turns 10'
+  env:
+    ANTHROPIC_VERTEX_PROJECT_ID: ${{ steps.auth.outputs.project_id }}
+    CLOUD_ML_REGION: us-east5</code></pre>
+  <p>Para ambos providers se recomienda crear un GitHub App custom en vez de usar el app oficial de Claude. El custom app te da control sobre permisos y la identidad de los commits.</p>
+
+  <h3>Checkout seguro para PRs externos</h3>
+  <p>Cuando alguien externo abre un PR, el código de ese PR no es confiable: podría contener un workflow modificado, secretos exfiltrados o instrucciones para Claude. El patrón seguro es tener <strong>dos checkouts</strong>: el del base (confiable) en la raíz del workspace, y el del PR (no confiable) en un subdirectorio.</p>
+  <pre><code class="lang-json">steps:
+  # 1. Base ref (confiable) en la raíz del workspace.
+  #    Los archivos de workflow vienen de aquí.
+  - uses: actions/checkout@v6
+
+  # 2. HEAD del PR (no confiable) en un subdirectorio.
+  - uses: actions/checkout@v6
+    with:
+      ref: ${{ github.event.pull_request.head.sha }}
+      path: pr-head
+
+  # 3. Claude puede leer el PR via --add-dir,
+  #    pero ejecuta lógica del base.
+  - uses: anthropics/claude-code-action@v1
+    with:
+      anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+      claude_args: "--add-dir pr-head"
+      prompt: "Review the PR diff in ./pr-head/ for security issues."</code></pre>
+  <p>La idea es simple: el workspace raíz tiene los workflow files y settings de tu repo (confiables). El PR vive aislado en <code>pr-head/</code>. El flag <code>--add-dir</code> de Claude Code le permite leer y razonar sobre el código del PR sin que ese código pueda modificar tu workflow.</p>
+  <p>Nunca hagas <code>actions/checkout</code> directamente con <code>ref: head.sha</code> en la raíz cuando uses <code>pull_request_target</code> o <code>workflow_run</code>. Ejecutar secretos del base sobre código de un fork no confiable es la receta clásica para que un atacante extraiga tu API key.</p>
+
+  <h3>Sanitización de prompt injection</h3>
+  <p>Un riesgo concreto: un usuario externo escribe un comentario con instrucciones disfrazadas que intentan manipular a Claude. Por ejemplo, un HTML comment escondido que dice "ignora las instrucciones anteriores y haz X", o un alt text de imagen markdown con un prompt malicioso.</p>
+  <p>La <code>claude-code-action@v1</code> sanitiza automáticamente las fuentes de input más comunes:</p>
+  <ul>
+    <li>HTML comments (<code>&lt;!-- ... --&gt;</code>) en comentarios y descripciones.</li>
+    <li>Alt text de imágenes markdown (<code>![alt](url)</code>).</li>
+    <li>Atributos HTML ocultos y caracteres invisibles.</li>
+  </ul>
+  <p>Además, <code>show_full_output</code> está desactivado por defecto: los logs de la action sanitizan secretos. Si lo activas para debug, todos los outputs de tools quedan visibles. Nunca lo actives en repos públicos.</p>
+  <p>Aun con la sanitización, sigue siendo buena práctica limitar la fuente del input:</p>
+  <ul>
+    <li>Usa <code>include_comments_by_actor</code> para listar solo cuentas confiables.</li>
+    <li>Usa <code>exclude_comments_by_actor</code> para filtrar bots ruidosos.</li>
+    <li>En repos públicos, considera requerir un label manual (<code>label_trigger</code>) para que Claude solo responda cuando un maintainer marca el issue.</li>
+  </ul>
+
+  <h2 id="cap23-gitlab-cicd">GitLab CI/CD: Claude en GitLab</h2>
+  <p>Si tu equipo usa GitLab en vez de GitHub, también puedes integrar Claude. Esta integración está en beta y la mantiene GitLab (no Anthropic).</p>
+  <p>El funcionamiento es similar a GitHub Actions. Claude escucha eventos como comentarios <code>@claude</code> en issues o Merge Requests y responde automáticamente.</p>
+
+  <h3>Configuración básica en GitLab</h3>
+  <p>Cuatro pasos:</p>
+  <ol class="steps">
+    <li>Agrega <code>ANTHROPIC_API_KEY</code> como variable CI/CD enmascarada</li>
+    <li>Agrega un job Claude a tu <code>.gitlab-ci.yml</code></li>
+    <li>Instala Claude Code en el contenedor</li>
+    <li>Ejecuta con <code>claude -p</code></li>
+  </ol>
+  <pre><code class="lang-json">claude:
+  stage: ai
+  image: node:24-alpine3.21
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+  before_script:
+    - apk update
+    - apk add --no-cache git curl bash
+    - curl -fsSL https://claude.ai/install.sh | bash
+  script:
+    - claude -p "${AI_FLOW_INPUT:-'Revisa este MR'}" \
+            --permission-mode acceptEdits \
+            --allowedTools "Bash Read Edit Write" \
+            --debug</code></pre>
+  <p>Cada job corre en un contenedor aislado. Los cambios fluyen a través de Merge Requests para revisión humana.</p>
+
+  <h2 id="cap23-pipelines-multi-agente">Pipelines multi-agente: varios Claudes trabajando juntos</h2>
+  <p>Un pipeline multi-agente es como una línea de ensamblaje. Cada agente hace una tarea específica. La salida de uno alimenta al siguiente. Es la forma más potente de automatizar trabajo con Claude.</p>
+  <p>El patrón básico es simple: encadenas varios <code>claude -p</code> donde cada uno tiene su rol.</p>
+
+  <h3>El patrón básico de pipeline</h3>
+  <p>Imagina que quieres investigar un tema, escribir un artículo y luego revisarlo. Tres agentes, tres roles:</p>
+  <pre><code class="lang-bash"># Agente 1: Investigador
+claude -p 'Investiga las mejores practicas de autenticacion' \
+   --output-format json &gt; research.json
+
+# Agente 2: Escritor
+cat research.json | claude -p 'Escribe un articulo basado en esta investigacion' \
+   --output-format json &gt; draft.json
+
+# Agente 3: Editor
+cat draft.json | claude -p 'Revisa la calidad del articulo' &gt; final.txt</code></pre>
+  <p>Cada agente puede tener su propio <code>--system-prompt</code>, <code>--model</code> y <code>--allowedTools</code>. Puedes usar Haiku para tareas simples y Opus para tareas que requieren más razonamiento.</p>
+
+  <h3>Combinando con herramientas Unix</h3>
+  <p>Claude se integra con el ecosistema Unix. Puedes usar pipes para crear flujos poderosos:</p>
+  <pre><code class="lang-bash"># Revisar archivos modificados por seguridad
+git diff main --name-only | claude -p "revisa estos archivos por problemas de seguridad"
+
+# Monitorear logs en tiempo real
+tail -f app.log | claude -p "alertame si ves anomalias"
+
+# Revisar un PR como ingeniero de seguridad
+gh pr diff "$1" | claude -p \
+   --append-system-prompt "Eres un ingeniero de seguridad" \
+   --output-format json</code></pre>
+
+  <h3>Claude como linter personalizado</h3>
+  <p>Puedes integrar Claude como un linter (verificador de código) en tu <code>package.json</code>:</p>
+  <pre><code class="lang-json">{
+    "scripts": {
+        "lint:claude": "claude -p 'eres un linter. mira los cambios vs main y reporta problemas de typos. reporta archivo y linea en una linea, y la descripcion en la siguiente. no devuelvas otro texto.'"
+    }
+}</code></pre>
+  <p>Ahora puedes ejecutar <code>npm run lint:claude</code> como parte de tu flujo de desarrollo.</p>
+
+  <h3>Agent SDK: control programático desde Python o TypeScript</h3>
+  <p>Además del CLI (<code>claude -p</code>), puedes controlar Claude programáticamente usando el Agent SDK, disponible como paquete para Python y TypeScript. Esto te da más control que el CLI: puedes recibir structured outputs nativos, implementar callbacks para aprobar herramientas y manejar errores de forma granular.</p>
+  <p>El Agent SDK es ideal cuando necesitas integrar Claude dentro de una aplicación más grande, no solo encadenar comandos en bash. Para la mayoría de los pipelines simples, <code>claude -p</code> es suficiente. Pero si estás construyendo un producto que usa Claude como motor, el SDK te da el control que necesitas.</p>
+  <p><strong>Consumo de créditos desde el 15 de junio de 2026:</strong> si usas el Agent SDK con un plan de suscripción (Pro, Max, Team o Enterprise), su uso pasa a consumir un crédito mensual separado del uso interactivo. Es el mismo bucket que <code>claude -p</code>. Si tu aplicación llama al SDK con frecuencia, monitorea el consumo desde el primer día de junio para no quedarte sin presupuesto a mitad de mes. Ver detalles en la sección "Crédito mensual separado" arriba.</p>
+  <p>Consulta la documentación del Agent SDK en <code><a href="https://code.claude.com/docs/en/headless" target="_blank" rel="noopener">code.claude.com/docs/en/headless</a></code> para ejemplos detallados.</p>
+
+  <h2 id="cap23-sub-agentes">Sub-agentes: asistentes especializados</h2>
+  <p>Un sub-agente es un asistente dentro de tu asistente. Piensa en un gerente que delega tareas a especialistas. Claude es el gerente. Los sub-agentes son los especialistas.</p>
+  <p>Cada sub-agente corre en su propia ventana de contexto. Tiene su propio prompt, sus propias herramientas y sus propios permisos. Cuando termina, le devuelve el resultado al agente principal.</p>
+
+  <h3>Sub-agentes que ya vienen incluidos</h3>
+  <p>Claude Code viene con varios sub-agentes listos para usar:</p>
+  <ul class="deflist">
+    <li><strong>Explore</strong> — Busca y analiza código. Rápido y de solo lectura. Usa el modelo Haiku (más barato).</li>
+    <li><strong>Plan</strong> — Recopila contexto y presenta un plan antes de actuar. Solo lectura.</li>
+    <li><strong>General-purpose</strong> — Para tareas complejas de múltiples pasos. Tiene todas las herramientas.</li>
+    <li><strong>Bash</strong> — Ejecuta comandos de terminal en un contexto separado.</li>
+  </ul>
+
+  <h3>Crear tu propio sub-agente</h3>
+  <p>Puedes crear sub-agentes de dos formas. La primera es por archivo. Crea un archivo Markdown en <code>.claude/agents/</code> con frontmatter YAML:</p>
+  <pre><code class="lang-text"># .claude/agents/code-reviewer.md
+---
+name: code-reviewer
+description: "Revisa codigo por calidad y seguridad. Usar despues de cambios."
+tools:
+  - Read
+  - Grep
+  - Glob
+model: sonnet
+---
+
+Eres un revisor de codigo senior. Enfocate en calidad, seguridad y mejores practicas.</code></pre>
+  <p>La segunda forma es inline via CLI, pasando JSON:</p>
+  <pre><code class="lang-bash">claude --agents '{
+   "code-reviewer": {
+       "description": "Revisa codigo por calidad y seguridad",
+       "prompt": "Eres un revisor de codigo senior.",
+       "tools": ["Read", "Grep", "Glob"],
+       "model": "sonnet"
+   }
+}'</code></pre>
+  <p>Los sub-agentes creados por archivo se guardan y reutilizan. Los de CLI solo existen en esa sesión.</p>
+
+  <h3>Dónde guardar sub-agentes</h3>
+  <p>Tres ubicaciones con diferente alcance:</p>
+  <ul class="deflist">
+    <li><strong><code>.claude/agents/</code></strong> — Del proyecto. Se comparte con el equipo via Git. Prioridad alta.</li>
+    <li><strong><code>~/.claude/agents/</code></strong> — Personal. Disponible en todos tus proyectos. Prioridad media.</li>
+    <li><strong>Flag <code>--agents</code> en CLI</strong> — Solo para la sesión actual. Prioridad máxima.</li>
+  </ul>
+
+  <h3>Foreground vs background</h3>
+  <p>Los sub-agentes pueden correr en primer plano o en segundo plano:</p>
+  <ul class="deflist">
+    <li><strong>Foreground</strong> — Bloquea la conversación hasta que termine. Los permisos se pasan al usuario.</li>
+    <li><strong>Background</strong> — Corre en paralelo. Claude pide permisos antes de lanzar. Usa <code>Ctrl+B</code> para enviar una tarea al fondo.</li>
+  </ul>
+  <p><strong>Regla importante:</strong> los sub-agentes no pueden crear otros sub-agentes. No hay delegación en cadena.</p>
+
+  <h2 id="cap23-agent-teams">Agent Teams: un equipo completo de Claudes</h2>
+  <p>Los Agent Teams llevan la idea de sub-agentes al siguiente nivel. En vez de un gerente con asistentes, tienes un equipo completo. Cada miembro es una instancia separada de Claude Code. Pueden comunicarse entre sí y compartir una lista de tareas.</p>
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Esta función es experimental. Está deshabilitada por defecto y requiere Claude Code v2.1.32 o posterior.</p>
+  </div>
+
+  <h3>Activar Agent Teams</h3>
+  <p>Agrega esta variable de entorno:</p>
+  <pre><code class="lang-bash">CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1</code></pre>
+  <p>O agrégala a tu <code>settings.json</code>.</p>
+
+  <h3>Cómo funciona un equipo</h3>
+  <p>Un equipo tiene cuatro elementos:</p>
+  <ul class="deflist">
+    <li><strong>Team Lead</strong> — La sesión principal. Crea el equipo, asigna tareas y coordina el trabajo.</li>
+    <li><strong>Teammates</strong> — Instancias separadas de Claude. Trabajan en las tareas asignadas.</li>
+    <li><strong>Task List</strong> — Lista compartida de tareas. Los teammates las reclaman y las completan.</li>
+    <li><strong>Mailbox</strong> — Sistema de mensajes para comunicación entre agentes.</li>
+  </ul>
+  <p>Es como un equipo de fútbol. El lead es el capitán. Los teammates son los jugadores. La task list es el plan de juego. Y el mailbox son las señales que se hacen durante el partido.</p>
+  <p><strong>Archivos en disco:</strong> el team config se guarda en <code>~/.claude/teams/{team-name}/config.json</code> y la task list en <code>~/.claude/tasks/{team-name}/</code>. Claude Code los genera y actualiza automáticamente; si los editas a mano, el siguiente cambio de estado los sobrescribe. No hay equivalente a nivel proyecto: un <code>.claude/teams/teams.json</code> dentro de tu repo no es reconocido.</p>
+  <p>El config contiene un array <code>members</code> con <code>name</code>, <code>agent_id</code> y <code>agent_type</code>. Los teammates leen este archivo para descubrir quién está en el equipo.</p>
+  <p><strong>Estados de tarea:</strong> cada tarea tiene uno de tres estados: <code>pending</code>, <code>in_progress</code> o <code>completed</code>. Las tareas pueden tener dependencias entre sí: una <code>pending</code> con dependencias sin resolver no puede ser claimed hasta que las dependencias estén <code>completed</code>. Cuando varios teammates intentan claim la misma tarea, un file lock evita race conditions.</p>
+
+  <h3>Hooks específicos de Agent Teams</h3>
+  <p>Además de los hooks estándar de Claude Code, los Agent Teams exponen tres hooks propios. Todos siguen la convención de exit code 2 para bloquear o forzar acción:</p>
+  <ul class="deflist">
+    <li><strong><code>TeammateIdle</code></strong> — Se dispara cuando un teammate está a punto de pasar a estado idle. Devolver <code>exit 2</code> envía feedback al teammate para mantenerlo trabajando. Útil para evitar que un teammate se detenga antes de terminar su tarea.</li>
+    <li><strong><code>TaskCreated</code></strong> — Se dispara al crear una tarea. Devolver <code>exit 2</code> bloquea la creación. Útil para validar formato o permisos antes de añadir tareas al pool.</li>
+    <li><strong><code>TaskCompleted</code></strong> — Se dispara al marcar una tarea como completada. Devolver <code>exit 2</code> bloquea el cambio de estado. Útil para verificar que la salida cumple criterios (tests pasan, archivos creados, etc.).</li>
+  </ul>
+  <p>Estos hooks viven en <code>~/.claude/settings.json</code> bajo la clave <code>hooks</code>, igual que el resto. Recibe el contexto del evento por stdin y emite logs por stderr.</p>
+
+  <h3>Modos de visualización</h3>
+  <p>Puedes ver a tus teammates de dos formas:</p>
+  <ul class="deflist">
+    <li><strong>In-process</strong> — Todos corren dentro del mismo terminal. Usa <code>Shift+Down</code> para ciclar entre ellos.</li>
+    <li><strong>Split panes</strong> — Cada uno tiene su propio panel. Requiere tmux o iTerm2.</li>
+  </ul>
+  <p>Por defecto, el modo es <code>auto</code>: usa split panes si ya estás en tmux, in-process si no.</p>
+
+  <h3>Ejemplo: review paralelo de un PR</h3>
+  <p>Imagina que quieres revisar un PR desde tres perspectivas:</p>
+  <pre><code class="lang-text">Crea un equipo para revisar el PR #142. Lanza tres revisores:
+- Uno enfocado en seguridad
+- Uno verificando impacto en performance
+- Uno validando cobertura de tests
+Que cada uno revise y reporte sus hallazgos.</code></pre>
+  <p>Los tres revisores trabajan en paralelo. Cada uno tiene su propia perspectiva. Al final, el lead recopila los resultados.</p>
+
+  <h3>Mejores prácticas con Agent Teams</h3>
+  <ul>
+    <li>Da suficiente contexto a cada teammate. No heredan el historial del lead.</li>
+    <li>Empieza con 3-5 teammates. Más no siempre es mejor.</li>
+    <li>Asigna 5-6 tareas por teammate para un buen balance.</li>
+    <li>Evita que dos teammates toquen el mismo archivo. Causa conflictos.</li>
+    <li>Empieza con investigación antes de implementación paralela.</li>
+  </ul>
+
+  <h3>Limitaciones de Agent Teams</h3>
+  <ul>
+    <li>Solo un equipo por sesión. No equipos anidados.</li>
+    <li>El lead es fijo. No se puede transferir liderazgo.</li>
+    <li>Split panes no funcionan en VS Code terminal, Windows Terminal ni Ghostty.</li>
+    <li>El consumo de tokens es significativamente mayor que una sesión individual.</li>
+    <li>No hay session resumption con in-process teammates.</li>
+    <li>Subagentes usados como teammates ignoran los campos <code>skills</code> y <code>mcpServers</code> del frontmatter. En su lugar cargan los skills y MCP servers del proyecto o del usuario. Si dependías de skills específicas declaradas en tu subagent file, no van a aparecer cuando lo uses como teammate.</li>
+  </ul>
+
+  <h3>El ecosistema multi-agente</h3>
+  <p>Agent Teams no es la única forma de orquestar varios Claudes. A principios de 2026 hay tres tiers de soluciones, dependiendo de cuánto control quieras vs. cuánta integración con Anthropic.</p>
+  <ul class="deflist">
+    <li><strong>Tier 1: oficial de Anthropic</strong> — Agent Teams, shipeado con Opus 4.6 (febrero 2026). Es la opción más integrada, con file locking, mailbox, hooks específicos y soporte para tmux/iTerm2. Experimental pero mantenida por el equipo de Anthropic.</li>
+    <li><strong>Tier 2: plataformas de la comunidad</strong> — Proyectos como Ruflo y Claude Squad ofrecen UI y coordinación encima de Claude Code. Pensados para usuarios que quieren un dashboard visual de equipos de agentes sin entrar al CLI.</li>
+    <li><strong>Tier 3: orquestadores locales open source</strong> — ccpm, Swarm SDK, Multiclaude y Gas Town son librerías y herramientas que orquestan instancias de <code>claude -p</code> con scripts. Son la opción más flexible y la más cercana al patrón de pipelines multi-agente que vimos antes.</li>
+  </ul>
+  <p>Si estás empezando, prueba Agent Teams. Si necesitas más visualización, mira las opciones de comunidad. Si quieres control total y reproducibilidad en CI, queda en patrón shell-script con <code>claude -p</code>.</p>
+
+  <h2 id="cap23-git-worktrees">Git Worktrees: sesiones paralelas sin conflictos</h2>
+  <p>Un git worktree es una copia de trabajo separada de tu repositorio. Comparte el mismo historial de Git, pero tiene sus propios archivos. Es como tener dos escritorios con copias diferentes del mismo documento.</p>
+  <p>Esto te permite ejecutar múltiples sesiones de Claude Code en paralelo sin que los cambios colisionen.</p>
+
+  <h3>Cómo usar worktrees</h3>
+  <pre><code class="lang-bash"># Con nombre especifico
+claude --worktree feature-auth
+
+# Con nombre auto-generado
+claude --worktree
+
+# En otro terminal, otra tarea
+claude --worktree bugfix-123</code></pre>
+  <p>Cada worktree se crea en <code>.claude/worktrees/&lt;nombre&gt;/</code> con una rama llamada <code>worktree-&lt;nombre&gt;</code>.</p>
+  <p>Si Claude no hace cambios, el worktree se limpia automáticamente. Si hay cambios, Claude te pregunta si quieres mantenerlo o eliminarlo.</p>
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Agrega <code>.claude/worktrees/</code> a tu <code>.gitignore</code>.</p>
+  </div>
+
+  <h2 id="cap23-seguridad-en-automatizacion">Seguridad en automatización</h2>
+  <p>Cuando Claude trabaja solo, la seguridad es aún más importante. No hay un humano revisando cada paso. Estas son las reglas de oro:</p>
+
+  <h3>Las reglas de oro</h3>
+  <ol class="steps">
+    <li>Nunca hardcodees API keys en tus workflows. Usa secretos de GitHub/GitLab.</li>
+    <li>Limita herramientas con <code>--allowedTools</code>. En CI, restringe especialmente Bash.</li>
+    <li>Pon límites de turnos con <code>--max-turns</code> (entre 3 y 10 para CI/CD). Recuerda que el default es 10.</li>
+    <li>Pon límites de costo con <code>--max-budget-usd</code>.</li>
+    <li>Revisa los cambios de Claude antes de hacer merge. Siempre.</li>
+    <li>Usa OIDC para Bedrock y Vertex. Credenciales temporales, sin keys estáticas.</li>
+    <li>Limita la fuente de input en repos públicos. La action sanitiza prompt injection en HTML comments, alt text y atributos ocultos por defecto, pero no es infalible. Usa <code>include_comments_by_actor</code> o <code>exclude_comments_by_actor</code> para acotar quién puede instruir a Claude.</li>
+    <li>Cuidado con <code>allowed_bots: '*'</code> en repos públicos. Los bots no son chequeados por permisos de repo. Permitir cualquier bot deja una puerta para que terceros disparen tu workflow.</li>
+    <li>No actives <code>show_full_output</code> en repos públicos. Está desactivado por defecto justamente porque hace visibles los outputs de tools en los logs.</li>
+  </ol>
+
+  <h3>El flag --dangerously-skip-permissions</h3>
+  <p>Este flag salta todos los chequeos de permisos. Es como dejar la puerta de tu casa abierta. Úsalo solo cuando:</p>
+  <ul>
+    <li>Estás en un entorno completamente controlado (como un contenedor de CI)</li>
+    <li>No hay datos sensibles accesibles</li>
+    <li>Ya configuraste <code>--allowedTools</code> para limitar lo que puede hacer</li>
+  </ul>
+  <p>En la mayoría de los casos, es mejor usar <code>--allowedTools</code> de forma granular en vez de saltarte todos los permisos.</p>
+
+  <h2 id="cap23-variables-de-entorno">Variables de entorno para automatización</h2>
+  <p>Estas variables de entorno controlan el comportamiento de Claude en modo automatizado:</p>
+
+  <h3>Variables clave</h3>
+  <p><strong>Autenticación y modelo:</strong></p>
+  <ul class="deflist">
+    <li><strong><code>ANTHROPIC_API_KEY</code></strong> — Tu clave de API. Requerida para la API directa y obligatoria en modo bare salvo que uses <code>apiKeyHelper</code>.</li>
+    <li><strong><code>ANTHROPIC_VERTEX_PROJECT_ID</code></strong> — Project ID de GCP cuando usas Vertex AI.</li>
+    <li><strong><code>CLOUD_ML_REGION</code></strong> — Región de Vertex AI (ej: <code>us-east5</code>).</li>
+    <li><strong><code>AWS_REGION</code></strong> — Región de AWS para Bedrock (ej: <code>us-west-2</code>).</li>
+  </ul>
+  <p><strong>Control de features:</strong></p>
+  <ul class="deflist">
+    <li><strong><code>CLAUDE_CODE_DISABLE_CRON=1</code></strong> — Desactiva el scheduler de tareas programadas.</li>
+    <li><strong><code>CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1</code></strong> — Desactiva tareas en segundo plano.</li>
+    <li><strong><code>CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1</code></strong> — Habilita Agent Teams.</li>
+  </ul>
+  <p><strong>Aislamiento y seguridad:</strong></p>
+  <ul class="deflist">
+    <li><strong><code>CLAUDE_CODE_SUBPROCESS_ENV_SCRUB=1</code></strong> — Scrubbing de variables de entorno en los subprocesos que Claude lanza. En Linux, además habilita aislamiento via bubblewrap (namespace de PID). Activo por defecto. Especialmente recomendado cuando usas <code>allowed_non_write_users</code> en la GitHub Action.</li>
+    <li><strong><code>CLAUDE_CODE_SCRIPT_CAPS</code></strong> — Límites de ejecución por script en formato JSON. Ej: <code>{"<a href="https://deploy.sh" target="_blank" rel="noopener">deploy.sh</a>": 2}</code> permite máximo 2 ejecuciones del script. Útil para evitar que un loop ejecute un script destructivo muchas veces.</li>
+    <li><strong><code>CLAUDE_CODE_SYNC_PLUGIN_INSTALL=1</code></strong> — Cuando está activo, emite eventos <code>system/plugin_install</code> antes del primer turno mientras se instalan plugins. Útil para mostrar progreso en UIs custom.</li>
+  </ul>
+
+  <h2 id="cap23-ejemplos-practicos">Ejemplos Prácticos</h2>
+
+  <h3>Pipeline básico: investigar, escribir y revisar</h3>
+  <pre><code class="lang-bash"># Paso 1: Investigar
+claude -p 'Investiga las mejores prácticas de testing en Python' \
+   --output-format json &gt; research.json
+
+# Paso 2: Escribir
+cat research.json | claude -p 'Escribe una guia basada en está investigacion' \
+   --output-format json &gt; draft.json
+
+# Paso 3: Revisar
+cat draft.json | claude -p 'Revisa calidad y claridad del texto' &gt; final.txt</code></pre>
+  <p>Tres agentes en secuencia. Cada uno tiene un rol diferente. La salida de uno es la entrada del siguiente. Es como una línea de producción.</p>
+
+  <h3>Crear commits automáticos con Claude</h3>
+  <pre><code class="lang-bash">claude -p "Mira mis cambios staged y crea un commit apropiado" \
+   --allowedTools "Bash(git diff *),Bash(git log *),Bash(git status *),Bash(git commit *)"</code></pre>
+  <p>Claude revisa tus cambios, crea un mensaje de commit descriptivo y hace el commit. Los <code>--allowedTools</code> limitan qué comandos git puede ejecutar.</p>
+
+  <h3>Revisión de seguridad automática de archivos modificados</h3>
+  <pre><code class="lang-bash">git diff main --name-only | claude -p "revisa estos archivos por problemas de seguridad"</code></pre>
+  <p>Lista los archivos que cambiaron respecto a main y los pasa a Claude para que los revise desde el punto de vista de seguridad.</p>
+
+  <h3>GitHub Action para review automático en cada PR</h3>
+  <pre><code class="lang-json">name: Code Review
+on:
+  pull_request:
+    types: [opened, synchronize]
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: "Revisa este PR por calidad, correctitud y seguridad."
+          claude_args: "--max-turns 5"</code></pre>
+  <p>Cada vez que se abre o actualiza un PR, Claude lo revisa automáticamente. El flag <code>--max-turns 5</code> limita las iteraciones para controlar costos.</p>
+
+  <h3>Monitoreo con /loop</h3>
+  <pre><code class="lang-text">/loop 5m revisa si el deployment término y dime que paso</code></pre>
+  <p>Claude verifica el estado del deployment cada 5 minutos y te reporta. Vive mientras la sesión esté abierta.</p>
+
+  <h3>Sesión multi-turn con --continue</h3>
+  <pre><code class="lang-bash">claude -p "Revisa este codebase por problemas de performance"
+claude -p "Ahora enfocate en las queries de base de datos" --continue
+claude -p "Resume todos los problemas encontrados" --continue</code></pre>
+  <p>Tres prompts que comparten contexto. Cada <code>--continue</code> retoma donde se quedó el anterior.</p>
+
+  <h3>Pipeline rápido en CI con --bare</h3>
+  <pre><code class="lang-bash">claude --bare -p 'Analiza y corrige todos los errores de lint' \
+  --max-turns 10 \
+  --max-budget-usd 2.00 \
+  --allowedTools 'Bash,Read,Edit' \
+  --output-format json \
+  --no-session-persistence</code></pre>
+  <p>Modo bare para arranque rápido sin cargar configuración local. Combinado con límites de turnos, presupuesto, output JSON y sin persistencia de sesión. Ideal para CI/CD.</p>
+
+  <h3>GitHub Action con Bedrock via OIDC</h3>
+  <pre><code class="lang-json">name: Claude on Bedrock
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: us-west-2
+      - uses: anthropics/claude-code-action@v1
+        with:
+          github_token: ${{ steps.app-token.outputs.token }}
+          use_bedrock: "true"
+          claude_args: '--model us.anthropic.claude-sonnet-4-6 --max-turns 10'
+        env:
+          AWS_REGION: us-west-2</code></pre>
+  <p>Stack completo para AWS Bedrock: OIDC para asumir el role IAM, GitHub App custom para los commits y el modelo con prefijo regional. No hay API key estática en ningún sitio.</p>
+
+  <h3>Checkout seguro para revisar PRs externos</h3>
+  <pre><code class="lang-json">name: Review External PR
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      # Base ref (confiable) en la raíz.
+      - uses: actions/checkout@v6
+
+      # HEAD del PR (no confiable) en subdirectorio.
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr-head
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_args: "--add-dir pr-head --max-turns 5"
+          prompt: "Review the diff in ./pr-head/ for security issues. Do not execute code from pr-head/."</code></pre>
+  <p>El base ref (workflow files y settings de tu repo) queda en la raíz. El código del PR vive aislado en <code>pr-head/</code>. <code>--add-dir</code> le permite a Claude leer ese subdirectorio sin que pueda modificar el workflow. Crítico cuando aceptas PRs de forks.</p>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa <code>--max-turns</code> y <code>--max-budget-usd</code> siempre que Claude corra sin supervisión. Son tu red de seguridad contra costos descontrolados.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Para sub-agentes de exploración, usa el modelo Haiku. Es más rápido y barato. Reserva Opus para tareas que requieren razonamiento profundo.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Nunca hardcodees tu <code>ANTHROPIC_API_KEY</code> en archivos de workflow. Usa siempre secretos de GitHub o variables CI/CD enmascaradas.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Agent Teams es experimental y consume significativamente más tokens. Empieza con sub-agentes simples antes de saltar a equipos completos.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Las tareas de <code>/loop</code> expiran automáticamente a los 3 días. Para tareas más durables, usa tareas Cloud o GitHub Actions con schedule.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Los sub-agentes no pueden crear otros sub-agentes. Si necesitas delegación en cadena, usa Skills o coordina desde la conversación principal.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa <code>--no-session-persistence</code> en CI/CD para ejecuciones efímeras. Las sesiones no se guardan a disco y no gastan almacenamiento.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>El flag <code>--dangerously-skip-permissions</code> salta todos los chequeos de seguridad. Solo úsalo en entornos controlados como contenedores de CI.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa <code>--bare</code> en CI/CD para arranque rápido. Salta la auto-detección de hooks, skills, plugins y CLAUDE.md. Tu pipeline será más rápido y predecible.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Desde el 15 de junio de 2026, Agent SDK y <code>claude -p</code> en planes de suscripción consumen un crédito mensual SEPARADO del uso interactivo. Si tu equipo depende de pipelines con <code>claude -p</code>, revisa tu plan antes de junio y monitorea el consumo con <code>--output-format json</code> (campo <code>total_cost_usd</code>).</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>El default de <code>--max-turns</code> es 10. Sin tope explícito ni <code>--max-budget-usd</code>, una llamada que se enrede puede iterar las 10 veces y gastar más de lo esperado. Para CI conservador, usa 3-5 turnos.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>En repos públicos, nunca uses <code>allowed_bots: '*'</code>. Los bots no son chequeados por permisos de repo: cualquier bot de terceros podría disparar tu workflow y consumir tu API key. Lista bots concretos o, mejor, ninguno.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>stdin de <code>claude -p</code> tiene cap de 10 MB desde Claude Code v2.1.128. Si pipear archivos grandes te falla, escribe el contenido a un archivo y referencia el path en el prompt.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Para Bedrock y Vertex, usa siempre OIDC en vez de credenciales estáticas. Las credenciales temporales caducan automáticamente y no quedan en GitHub Secrets de forma permanente.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Si tu <code>claude -p</code> parecía quedarse colgado tras terminar, suele ser por una tarea Bash que lanzaste en background. Desde Claude Code v2.1.163, esas tareas en background durante <code>claude -p</code> se terminan automáticamente ~5 segundos después de que Claude devuelve su resultado final y stdin se cierra. Si necesitas que un proceso siga vivo más allá de la ejecución, no lo lances dentro de la sesión headless.</p>
+  </div>
+
+  <section class="recap">
+    <h2 id="cap23-resumen-del-capitulo">Resumen del Capítulo</h2>
+    <p>Claude puede trabajar de forma autónoma mediante el flag <code>--print</code>, tareas programadas (en 4 niveles: <code>/loop</code>, Desktop, Cloud y GitHub Actions), GitHub Actions y pipelines multi-agente. Cowork trae estas capacidades al escritorio con computer use y Projects persistentes. La GitHub Action v1.0 GA ofrece control fino de permisos (include/exclude actors, <code>allowed_bots</code>), commit signing (via API o SSH), soporte para Bedrock y Vertex AI mediante OIDC y skills empaquetadas como plugins. Los sub-agentes permiten delegar tareas a especialistas, y los Agent Teams (experimentales) coordinan equipos completos con hooks específicos y archivos persistentes en <code>~/.claude/teams</code>. El flag <code>--bare</code> acelera el arranque en CI/CD y el flag <code>--permission-mode</code> fija el nivel de permisos para toda la sesión. A partir del 15 de junio de 2026, el uso del Agent SDK y de <code>claude -p</code> en planes de suscripción consume un crédito mensual separado del uso interactivo. Siempre usa límites de turnos (default 10), presupuesto y herramientas cuando Claude trabaje sin supervisión.</p>
+  </section>
+</article>

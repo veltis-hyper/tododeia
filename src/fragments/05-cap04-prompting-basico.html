@@ -1,0 +1,405 @@
+<article class="chapter" data-id="cap04" data-title="Prompting Básico" data-part="1">
+  <header class="ch-head">
+    <p class="ch-kicker">Parte 1 · Fundamentos · Capítulo 4</p>
+    <h1>Prompting Básico</h1>
+    <p class="ch-sub">Cómo hablarle a Claude para que te entienda a la primera</p>
+    <p class="ch-level">Principiante</p>
+    <p class="ch-lede">Un prompt es lo que le escribes a Claude para pedirle algo. Puede ser una pregunta, una instrucción o una tarea. La calidad de lo que Claude te responde depende directamente de cómo le hables. En este capítulo vas a aprender las técnicas básicas para escribir prompts claros y efectivos. No necesitas experiencia previa: empezamos desde cero.</p>
+  </header>
+
+  <h2 id="cap04-que-es-un-prompt">Qué es un prompt (y por qué importa)</h2>
+  <p>Un prompt es el texto que le envías a Claude. Puede ser tan corto como una palabra o tan largo como varias páginas. Es tu forma de comunicarte con el modelo.</p>
+  <p>Piensa en Claude como un empleado nuevo. Es brillante, pero acaba de llegar. No conoce tu empresa, tus reglas ni tus preferencias. Si le das instrucciones vagas, haría su mejor esfuerzo... pero probablemente no será lo que esperabas.</p>
+  <p>La regla de oro del prompting es simple: <strong>muestra tu prompt a un compañero de trabajo que no conozca la tarea</strong>. Si esa persona se confundiría, Claude también se va a confundir.</p>
+  <p>La buena noticia: con unas pocas técnicas básicas, puedes mejorar drásticamente las respuestas de Claude. Vamos a verlas una por una.</p>
+
+  <h2 id="cap04-se-claro-y-directo">Sé claro y directo</h2>
+  <p>La técnica más importante es también la más simple: di exactamente lo que quieres.</p>
+  <p>Claude toma tus instrucciones de forma literal. Si le pides algo vago, te dará algo vago. Si le pides algo específico, te dará algo específico.</p>
+  <p>Es como pedir comida en un restaurante. No le dices al mesero "tráeme algo rico". Le dices: "Quiero una hamburguesa con queso, sin cebolla, con papas fritas".</p>
+
+  <h3>Prompt vago vs. prompt específico</h3>
+  <p>Mira la diferencia:</p>
+  <ul class="deflist">
+    <li><strong>Vago</strong> — <code>Crea un dashboard de analiticas</code></li>
+    <li><strong>Específico</strong> — <code>Crea un dashboard de analiticas. Incluye graficos de barras para ventas mensuales, una tabla con los 10 productos mas vendidos, y un filtro por fecha. Usa colores profesionales.</code></li>
+  </ul>
+  <p>El segundo prompt le da a Claude una imagen clara de lo que esperas. El primero lo deja adivinando.</p>
+
+  <h3>Usa lenguaje imperativo</h3>
+  <p>Hay una diferencia enorme entre sugerir y pedir.</p>
+  <ul class="deflist">
+    <li><strong>Pasivo</strong> — <code>Can you suggest some changes to improve this function?</code> — Claude solo dará sugerencias, sin tocar el código.</li>
+    <li><strong>Directo</strong> — <code>Change this function to improve its performance.</code> — Claude implementará los cambios.</li>
+  </ul>
+  <p>Si quieres que Claude haga algo, usa verbos de acción: "cambia", "crea", "escribe", "analiza". No le preguntes si "podría" hacerlo.</p>
+
+  <h3>Usa pasos cuando el orden importa</h3>
+  <p>Si tu tarea tiene varios pasos, ponlos en una lista numerada. Así Claude los sigue en orden y no se salta ninguno.</p>
+  <pre><code class="lang-text">Sigue estos pasos:
+1. Lee el documento adjunto
+2. Identifica los 3 temas principales
+3. Escribe un resumen de cada tema en 2 oraciones
+4. Da una conclusion general</code></pre>
+  <p>Es como darle una receta de cocina. Paso a paso, sin ambigüedades.</p>
+
+  <h2 id="cap04-dale-contexto">Dale contexto (el porqué)</h2>
+  <p>Claude entiende mejor cuando sabe por qué le pides algo. El contexto es como darle el mapa completo en vez de solo una dirección.</p>
+  <p>Mira este ejemplo:</p>
+  <ul class="deflist">
+    <li><strong>Sin contexto</strong> — <code>NUNCA uses puntos suspensivos</code></li>
+    <li><strong>Con contexto</strong> — <code>Tu respuesta sera leida por un motor de texto a voz. Nunca uses puntos suspensivos porque el motor no sabra como pronunciarlos.</code></li>
+  </ul>
+  <p>Cuando Claude entiende la razón, puede generalizar. En el segundo ejemplo, Claude también evitará otros símbolos problemáticos para texto a voz, sin que tengas que listar cada uno.</p>
+  <p>Piensa en ello como explicarle a un niño por qué no debe cruzar la calle corriendo. Si solo le dices "no lo hagas", no entiende. Si le explicas "porque vienen carros y es peligroso", tendrá cuidado incluso en situaciones que no le mencionaste.</p>
+
+  <h3>Ancla respuestas en citas (documentos largos)</h3>
+  <p>Cuando trabajas con documentos largos, hay una técnica muy efectiva para mejorar la precisión: pedirle a Claude que cite las partes relevantes antes de responder.</p>
+  <p>La idea es simple. En vez de dejar que Claude responda de memoria sobre un documento de 50 páginas, le pides que primero extraiga las citas relevantes en tags <code>&lt;quotes&gt;</code> y luego responda basándose en esas citas.</p>
+  <pre><code class="lang-text">Encuentra citas del documento que sean relevantes para
+la pregunta del usuario. Colocalas en tags &lt;quotes&gt;.
+Luego, basandote en estas citas, responde la pregunta
+en tags &lt;answer&gt;.</code></pre>
+  <p>Esto funciona como un ancla: obliga a Claude a buscar datos reales en el documento en vez de generar información de memoria. Es especialmente útil cuando el documento tiene más de 20,000 tokens.</p>
+
+  <h2 id="cap04-usa-ejemplos">Usa ejemplos para guiar a Claude</h2>
+  <p>Los ejemplos son tu herramienta más poderosa. En vez de explicar con muchas palabras, muestra lo que quieres.</p>
+  <p>Imagina que le pides a alguien que pinte tu casa. Puedes describir el color con palabras... o puedes mostrarle una foto. La foto es mucho más clara.</p>
+
+  <h3>Zero-shot, one-shot y few-shot</h3>
+  <p>Estos términos suenan complicados, pero son muy simples:</p>
+  <ul class="deflist">
+    <li><strong>Zero-shot</strong> — Le pides algo sin dar ningún ejemplo. Solo instrucciones.</li>
+    <li><strong>One-shot</strong> — Le das un ejemplo de lo que esperas.</li>
+    <li><strong>Few-shot</strong> — Le das 3 a 5 ejemplos. Es lo que Anthropic recomienda para mejores resultados.</li>
+  </ul>
+  <p>Es como enseñarle un baile a alguien. Puedes explicarlo con palabras (zero-shot), mostrarle un paso (one-shot), o bailarlo completo varias veces para que lo capte (few-shot).</p>
+
+  <h3>Cómo escribir buenos ejemplos</h3>
+  <p>Tus ejemplos deben cumplir tres reglas:</p>
+  <ol>
+    <li><strong>Relevantes:</strong> Deben parecerse a tu caso real. No uses ejemplos de cocina si tu tarea es de programación.</li>
+    <li><strong>Diversos:</strong> Cubre diferentes escenarios. Si solo muestras un tipo de caso, Claude pensará que todos son iguales.</li>
+    <li><strong>Estructurados:</strong> Envuélvelos en etiquetas <code>&lt;example&gt;</code> para que Claude los distinga de las instrucciones.</li>
+  </ol>
+  <pre><code class="lang-text">&lt;examples&gt;
+   &lt;example&gt;
+      &lt;input&gt;El producto llego roto&lt;/input&gt;
+      &lt;output&gt;Categoria: Reclamo | Prioridad: Alta&lt;/output&gt;
+   &lt;/example&gt;
+   &lt;example&gt;
+      &lt;input&gt;Cuando llega mi pedido?&lt;/input&gt;
+      &lt;output&gt;Categoria: Consulta | Prioridad: Media&lt;/output&gt;
+   &lt;/example&gt;
+&lt;/examples&gt;</code></pre>
+  <p>Con este formato, Claude entiende perfectamente el patrón que debe seguir.</p>
+
+  <h2 id="cap04-organiza-con-etiquetas-xml">Organiza tu prompt con etiquetas XML</h2>
+  <p>Las etiquetas XML son como carpetas para organizar las partes de tu prompt. Le dicen a Claude: "esto son instrucciones", "esto es contexto", "esto es la pregunta".</p>
+  <p>Piensa en un formulario de papel. Cada campo tiene su etiqueta: "Nombre", "Dirección", "Teléfono". Las etiquetas XML hacen lo mismo con tu prompt.</p>
+
+  <h3>Etiquetas más usadas</h3>
+  <p>Estas son las etiquetas que usarás con más frecuencia:</p>
+  <ul class="deflist">
+    <li><strong><code>&lt;instructions&gt;</code></strong> — Tus instrucciones principales</li>
+    <li><strong><code>&lt;context&gt;</code></strong> — Información de fondo que Claude necesita</li>
+    <li><strong><code>&lt;input&gt;</code></strong> — El dato que quieres que Claude procese</li>
+    <li><strong><code>&lt;example&gt;</code></strong> — Un ejemplo de entrada y salida</li>
+    <li><strong><code>&lt;output&gt;</code></strong> — El formato de respuesta que esperas</li>
+    <li><strong><code>&lt;thinking&gt;</code></strong> — Para que Claude razone antes de responder</li>
+    <li><strong><code>&lt;answer&gt;</code></strong> — Para la respuesta final</li>
+  </ul>
+  <p>Puedes inventar tus propias etiquetas. Lo importante es que el nombre sea descriptivo. <code>&lt;datos_del_cliente&gt;</code> es mejor que <code>&lt;d1&gt;</code>.</p>
+
+  <h3>Ejemplo completo con XML</h3>
+  <pre><code class="lang-text">&lt;instructions&gt;
+Eres un asistente de atencion al cliente.
+Clasifica el mensaje del usuario segun su tipo y prioridad.
+&lt;/instructions&gt;
+
+&lt;examples&gt;
+   &lt;example&gt;
+     &lt;input&gt;Mi pedido llego danado&lt;/input&gt;
+     &lt;output&gt;Tipo: Reclamo | Prioridad: Alta&lt;/output&gt;
+   &lt;/example&gt;
+&lt;/examples&gt;
+
+&lt;input&gt;
+{{mensaje_del_usuario}}
+&lt;/input&gt;</code></pre>
+  <p>Este prompt tiene todo separado: instrucciones, ejemplos e input. Claude sabe exactamente dónde empieza y termina cada parte.</p>
+
+  <h2 id="cap04-asignale-un-rol">Asígnale un rol a Claude</h2>
+  <p>Decirle a Claude quién es cambia cómo responde. Es como ponerle un uniforme: si le dices que es un doctor, responderá como doctor.</p>
+  <p>Esto se hace en el <strong>system prompt</strong> (un mensaje especial que va antes de la conversación). Pero también funciona al inicio de tu mensaje normal.</p>
+  <pre><code class="lang-text">Eres un asistente de programacion especializado en Python.
+Ayudame a ordenar una lista de diccionarios por una clave especifica.</code></pre>
+  <p>Un consejo importante: <strong>no exageres con el rol</strong>. Decir "eres un asistente útil de Python" funciona mejor que "eres el mejor programador del mundo que solo habla en jerga técnica". Los roles demasiado elaborados pueden limitar las respuestas de Claude.</p>
+
+  <h2 id="cap04-controla-el-formato">Controla el formato de la respuesta</h2>
+  <p>Claude tiende a responder con formato markdown (títulos, listas, negritas). A veces eso es útil. Otras veces, no es lo que quieres.</p>
+  <p>Hay cuatro técnicas para controlar el formato:</p>
+
+  <h3>Di qué hacer, no qué NO hacer</h3>
+  <p>Las instrucciones positivas funcionan mejor que las prohibiciones.</p>
+  <ul class="deflist">
+    <li><strong>Menos efectivo</strong> — <code>No uses markdown en tu respuesta</code></li>
+    <li><strong>Más efectivo</strong> — <code>Tu respuesta debe estar compuesta de párrafos fluidos en prosa.</code></li>
+  </ul>
+  <p>Es como darle direcciones a alguien. "No vayas por la calle 5" no es tan útil como "ve por la calle 8".</p>
+
+  <h3>Tu prompt influye en la respuesta</h3>
+  <p>Dato curioso: el formato de tu prompt afecta el formato de la respuesta. Si escribes tu prompt lleno de markdown y bullet points, Claude responderá igual. Si escribes en prosa simple, Claude también responderá en prosa simple.</p>
+  <p>Piensa en ello como una conversación. Si le hablas formal, te responde formal. Si le hablas casual, te responde casual.</p>
+
+  <h3>Elimina los preámbulos</h3>
+  <p>A veces Claude empieza su respuesta con frases como "Aquí tienes el resumen..." o "Basándome en tu solicitud...". Si no quieres eso, pídelo directamente:</p>
+  <pre><code class="lang-text">Responde directamente sin preambulos.
+No empieces con frases como "Aqui tienes...", "Basandome en..." o similares.</code></pre>
+  <p>Claude obedecerá e irá directo al grano.</p>
+
+  <h3>Prompt oficial para minimizar markdown</h3>
+  <p>Anthropic documentó un prompt específico y muy efectivo para cuando necesitas que Claude escriba en prosa fluida sin exceso de listas y formato. Puedes copiarlo y usarlo directamente:</p>
+  <pre><code class="lang-text">&lt;avoid_excessive_markdown_and_bullet_points&gt;
+Cuando escribas reportes, documentos, explicaciones tecnicas,
+analisis o cualquier contenido extenso, escribe en prosa clara
+y fluida usando parrafos y oraciones completas. Usa saltos de
+parrafo para organizacion y reserva markdown principalmente
+para `codigo inline`, bloques de codigo, y encabezados simples.
+
+NO uses listas ordenadas o no ordenadas a menos que:
+a) estes presentando items verdaderamente discretos donde
+    el formato de lista es la mejor opcion, o
+b) el usuario pida explicitamente una lista.
+
+En lugar de listar items con vinetas o numeros, incorporalos
+naturalmente en oraciones. NUNCA generes una serie de vinetas
+excesivamente cortas.
+
+Tu objetivo es texto legible y fluido que guie al lector
+naturalmente a traves de las ideas.
+&lt;/avoid_excessive_markdown_and_bullet_points&gt;</code></pre>
+  <p>Este prompt usa una etiqueta XML descriptiva que refuerza la instrucción. Es ideal para reportes, análisis y documentos largos donde el exceso de bullet points rompe la lectura.</p>
+
+  <h3>Controla el formato de matemáticas (LaTeX)</h3>
+  <p>Claude Opus 4.7 (y desde Opus 4.6) usa LaTeX por defecto para expresiones matemáticas. Si estás en un contexto donde LaTeX no se renderiza (como texto plano o un chat simple), las fórmulas aparecerán con símbolos como <code>\frac{}{}</code> que son difíciles de leer.</p>
+  <p>Para desactivarlo, agrega esta instrucción a tu prompt:</p>
+  <pre><code class="lang-text">Formatea tu respuesta solo en texto plano.
+No uses LaTeX, MathJax, ni ninguna notacion de markup
+como \( \), $, o \frac{}{}.
+Escribe todas las expresiones matematicas usando
+caracteres de texto estandar.</code></pre>
+  <p>Esto es solo relevante si trabajas con contenido matemático. Para la mayoría de las tareas, no necesitas preocuparte por esto.</p>
+
+  <h2 id="cap04-piensa-paso-a-paso">Pídele que piense paso a paso</h2>
+  <p>Cuando la tarea es compleja, pedirle a Claude que razone antes de responder mejora mucho la precisión. Es como pedirle a un estudiante que muestre su trabajo en un examen de matemáticas.</p>
+  <p>La forma más simple:</p>
+  <pre><code class="lang-text">Piensa paso a paso sobre este problema. Luego da tu respuesta final.</code></pre>
+  <p>Para más control, puedes usar etiquetas:</p>
+  <pre><code class="lang-text">&lt;thinking&gt;Aqui Claude escribe su razonamiento&lt;/thinking&gt;
+&lt;answer&gt;Aqui va la respuesta final&lt;/answer&gt;</code></pre>
+  <p>También puedes pedirle que se verifique a sí mismo:</p>
+  <pre><code class="lang-text">Antes de terminar, verifica tu respuesta contra estos criterios:
+- Es correcta gramaticalmente?
+- Responde la pregunta original?
+- No contiene informacion inventada?</code></pre>
+  <p>Esta técnica se llama <strong>Chain of Thought</strong> (cadena de pensamiento) y es especialmente útil para matemáticas, lógica y programación.</p>
+  <p>En los modelos actuales de Claude (de 4.6 en adelante, incluyendo Opus 4.7/4.8, Sonnet 4.6 y los nuevos Fable 5 / Mythos 5) esto es nativo: ya no hace falta pedirlo manualmente. El modelo decide solo cuánto razonar usando <strong>adaptive thinking</strong> y el parámetro <code>effort</code> (<code>max</code>, <code>xhigh</code>, <code>high</code>, <code>medium</code>, <code>low</code>). Según el modelo y la tarea, el nivel por defecto cambia (por ejemplo, <code>high</code> es típico, y para tareas de código algunos modelos suben a <code>xhigh</code>). Pedir 'piensa paso a paso' manualmente sigue funcionando, pero hoy lo normal es dejarle ese trabajo al modelo. Los detalles del parámetro <code>effort</code> están en el capítulo de la API.</p>
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Nota sobre Claude Opus 4.5: Este modelo es particularmente sensible a la palabra "think" y sus variantes cuando el pensamiento extendido está deshabilitado. Si notas comportamiento inesperado al pedir razonamiento, usa alternativas como "consider", "evaluate" o "reason through". Por ejemplo, en vez de <code>Think step by step</code>, prueba con <code>Reason through this step by step</code>.</p>
+  </div>
+
+  <h2 id="cap04-evita-que-invente">Evita que Claude invente cosas</h2>
+  <p>A veces Claude "alucina": responde con información que suena correcta pero es inventada. Es como un estudiante que no estudió pero intenta sonar convincente en el examen.</p>
+  <p>La solución es simple: dale permiso para decir "no sé".</p>
+  <pre><code class="lang-text">Si no estas seguro de alguna informacion, dilo explicitamente.
+No adivines ni inventes datos.</code></pre>
+  <p>Para tareas de código, esta instrucción es aún más poderosa:</p>
+  <pre><code class="lang-text">Nunca especules sobre codigo que no hayas leido.
+Si el usuario menciona un archivo, DEBES leerlo antes de responder.</code></pre>
+  <p>Los modelos actuales de Claude (la familia 4.x y posteriores: Opus 4.7/4.8, Sonnet 4.6, y los más nuevos Fable 5 y Mythos 5) ya son menos propensos a alucinar que versiones anteriores. Pero esta instrucción sigue siendo una buena práctica. Las técnicas de este capítulo aplican igual a todos estos modelos; qué modelo es cuál lo ves en el capítulo de modelos.</p>
+
+  <h2 id="cap04-estructura-ideal">La estructura ideal de un prompt</h2>
+  <p>Ahora que conoces todas las piezas, veamos cómo armar un prompt completo. Esta es la estructura recomendada por Anthropic:</p>
+  <ol>
+    <li><strong>Rol:</strong> Quién es Claude en este contexto</li>
+    <li><strong>Contexto / Documentos:</strong> Información de referencia (al inicio si es larga)</li>
+    <li><strong>Instrucciones:</strong> Qué debe hacer, paso a paso</li>
+    <li><strong>Ejemplos:</strong> 3 a 5 ejemplos del resultado esperado</li>
+    <li><strong>Formato de salida:</strong> Cómo quieres la respuesta</li>
+    <li><strong>Pregunta o tarea:</strong> Lo que quieres que haga (al final)</li>
+  </ol>
+  <p>No siempre necesitas todas las partes. Un prompt simple puede tener solo la pregunta. Pero para tareas importantes, esta estructura te da los mejores resultados.</p>
+  <p>Un dato clave: <strong>pon los documentos largos al inicio y la pregunta al final</strong>. Pruebas de Anthropic muestran que esto mejora la calidad de la respuesta hasta un 30%.</p>
+
+  <h2 id="cap04-errores-comunes">Errores comunes de principiante</h2>
+  <p>Estos son los errores que todos cometemos al principio. Aprende a reconocerlos para evitarlos.</p>
+
+  <h3>Error 1: Ser demasiado vago</h3>
+  <p><strong>El problema:</strong> No especificar formato, nivel de detalle ni comportamiento deseado.</p>
+  <p><strong>La solución:</strong> Indica formato exacto, longitud deseada y nivel de detalle. Si quieres que Claude se luzca, pídelo: "Ve más allá de lo básico y crea algo completo y detallado".</p>
+
+  <h3>Error 2: Pedir sugerencias cuando quieres acción</h3>
+  <p><strong>El problema:</strong> Escribir "¿podrías sugerir cambios?" cuando quieres que Claude implemente los cambios.</p>
+  <p><strong>La solución:</strong> Usa verbos imperativos. "Cambia esta función" en vez de "¿podrías sugerir cambios para esta función?".</p>
+
+  <h3>Error 3: Formato no deseado</h3>
+  <p><strong>El problema:</strong> Claude responde con demasiados bullet points, markdown o listas cuando querías prosa fluida.</p>
+  <p><strong>La solución:</strong> Usa instrucciones positivas sobre el formato. Escribe tu prompt en el estilo que quieres recibir. Envuelve las instrucciones de formato en etiquetas XML descriptivas.</p>
+
+  <h3>Error 4: Preámbulos innecesarios</h3>
+  <p><strong>El problema:</strong> Claude empieza con "Aquí tienes el resultado..." antes de dar la respuesta real.</p>
+  <p><strong>La solución:</strong> Agrega al prompt: "Responde directamente sin preámbulos".</p>
+
+  <h3>Error 5: Alucinaciones por no dar permiso de decir 'no sé'</h3>
+  <p><strong>El problema:</strong> Claude inventa información cuando no sabe algo.</p>
+  <p><strong>La solución:</strong> Agrega: "Si no estás seguro, dilo. No adivines." Esto reduce las alucinaciones de forma significativa.</p>
+
+  <h3>Error 6: Rol demasiado restrictivo</h3>
+  <p><strong>El problema:</strong> Decirle a Claude que es "el mejor experto mundial que solo habla en jerga técnica" limita sus respuestas.</p>
+  <p><strong>La solución:</strong> Mantener roles simples: "Eres un asistente útil especializado en [área]". Menos es más.</p>
+
+  <h2 id="cap04-ejemplos-practicos">Ejemplos Prácticos</h2>
+
+  <h3>Prompt básico vs. prompt mejorado para clasificación</h3>
+  <p><strong>Prompt básico:</strong></p>
+  <pre><code class="lang-text">Clasifica esta oración según el artículo de Wikipedia al que
+pertenece.
+Artículos: {{títulos}}
+Oración: {{oración}}</code></pre>
+  <p><strong>Prompt mejorado:</strong></p>
+  <pre><code class="lang-text">Eres un sistema de clasificación de texto especializado en emparejar
+oraciones con títulos de artículos de Wikipedia.
+
+Revisa estos títulos de artículos:
+
+{{títulos}}
+
+Ahora clasifica esta oración:
+
+{{oración}}
+
+Sigue estos pasos:
+1. Lista los conceptos clave de la oración
+2. Compara cada concepto con los títulos
+3. Elige el título más apropiado
+
+Escribe tu análisis en &lt;thinking&gt; y luego solo el título elegido.</code></pre>
+  <p>El prompt mejorado agrega: un rol claro, etiquetas XML para separar datos, pasos de razonamiento, y un formato de salida explícito. La diferencia en calidad de respuesta es enorme.</p>
+
+  <h3>Usar ejemplos para clasificar mensajes de soporte</h3>
+  <pre><code class="lang-text">Clasifica el mensaje del cliente por tipo y prioridad.
+
+&lt;examples&gt;
+   &lt;example&gt;
+      &lt;input&gt;Mi pedido llego roto y quiero un reembolso&lt;/input&gt;
+      &lt;output&gt;Tipo: Reclamo | Prioridad: Alta&lt;/output&gt;
+   &lt;/example&gt;
+   &lt;example&gt;
+      &lt;input&gt;Cuando llega mi pedido?&lt;/input&gt;
+      &lt;output&gt;Tipo: Consulta | Prioridad: Media&lt;/output&gt;
+   &lt;/example&gt;
+   &lt;example&gt;
+      &lt;input&gt;Gracias, todo perfecto!&lt;/input&gt;
+      &lt;output&gt;Tipo: Feedback positivo | Prioridad: Baja&lt;/output&gt;
+   &lt;/example&gt;
+&lt;/examples&gt;
+
+&lt;input&gt;El cobro se hizo doble en mi tarjeta&lt;/input&gt;</code></pre>
+  <p>Con 3 ejemplos diversos, Claude entiende exactamente el patrón de clasificación. Los ejemplos cubren diferentes tipos (reclamo, consulta, feedback) para que Claude generalice correctamente.</p>
+
+  <h3>Prompt con contexto para texto a voz</h3>
+  <pre><code class="lang-text">Tu respuesta será convertida a audio por un motor de texto a voz.
+Por eso:
+- Escribe números en palabras ("tres" en vez de "3")
+- No uses abreviaturas ("por ejemplo" en vez de "ej.")
+- Evita simbolos que no se pronuncian fácilmente
+
+Explica qué es la fotosíntesis en 3 oraciones.</code></pre>
+  <p>Al dar el contexto (texto a voz), Claude entiende la razón detrás de cada regla y puede generalizar a situaciones similares que no le mencionaste.</p>
+
+  <h3>Evitar alucinaciones en tareas de código</h3>
+  <pre><code class="lang-text">Nunca especules sobre código que no hayas leido.
+Si el usuario menciona un archivo, DEBES leerlo antes de responder.
+Si no estas seguro, di "no tengo esa información" en vez de adivinar.
+
+Explica qué hace la función calcularTotal en el archivo utils.js</code></pre>
+  <p>Con esta instrucción, Claude leerá el archivo antes de responder. Sin ella, podría inventar lo que hace la función basándose en el nombre.</p>
+
+  <h3>Anclar respuesta en citas de un documento largo</h3>
+  <pre><code class="lang-text">{{DOCUMENTO_LARGO}}
+
+Encuentra citas del documento que sean relevantes para
+responder la siguiente pregunta. Colocalas en tags &lt;quotes&gt;.
+Luego, basandote en estas citas, responde en tags &lt;answer&gt;.
+
+Pregunta: Cuales fueron los principales cambios en la política
+de precios durante el último trimestre?</code></pre>
+  <p>Al pedir citas primero en tags <code>&lt;quotes&gt;</code>, Claude ancla su respuesta en datos reales del documento. Esto reduce alucinaciones y mejora la precisión en documentos largos.</p>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Empieza simple. Escribe tu prompt, pruébalo, y mejóralo poco a poco. No intentes escribir el prompt perfecto de una sola vez.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa 3 a 5 ejemplos diversos cuando necesites resultados consistentes. Los ejemplos son más efectivos que párrafos largos de instrucciones.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Pon los documentos largos al INICIO del prompt y tu pregunta al FINAL. Esto mejora la calidad de respuesta hasta un 30%.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Los modelos actuales de Claude (la familia 4.x y posteriores: Opus 4.7/4.8, Sonnet 4.6, Fable 5 y Mythos 5) toman tus instrucciones de forma literal. Si tu prompt es vago, el resultado será vago. Sé tan específico como puedas.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Claude Opus 4.7 interpreta los prompts aún más literalmente que versiones anteriores (y lo mismo aplica a los modelos más nuevos como Opus 4.8 y Fable 5). Si antes una sola instrucción bastaba para que el modelo la aplicara a todo el documento, ahora puede aplicarla solo al primer caso. Si quieres aplicación amplia, dilo explícito: 'aplica esto a cada sección' o 'para cada item de la lista'.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Cuidado con pedir 'sugerencias' cuando quieres acción. '¿Podrías sugerir cambios?' haría que Claude solo sugiera. 'Cambia esto' haría que lo cambie.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Los roles demasiado elaborados ('eres el mejor experto mundial') pueden limitar las respuestas de Claude. Mantener roles simples y funcionales.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Evita lenguaje agresivo como 'CRITICAL: YOU MUST...' o 'IMPORTANT: ALWAYS...' con modelos nuevos como Claude 4.6. Este tipo de instrucciones, que eran necesarias en modelos anteriores, ahora pueden causar que Claude sobre-ingenieríe la solución o sea demasiado proactivo. Usa instrucciones naturales y directas: en vez de 'CRITICAL: You MUST use this tool when...' simplemente escribe 'Usa esta herramienta cuando...'.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Las técnicas de este capítulo funcionan en todas las interfaces: <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>, la API y Claude Code. Los templates con variables <code>{{doble llave}}</code> solo están disponibles en la API y Console.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Si vienes de documentación antigua, la técnica de 'prefilled responses' (empezar la respuesta del asistente para forzar un formato) está deprecada desde Claude 4.6: las peticiones con prefill en el último turno del asistente devuelven error 400. Para forzar formato hoy se usan Structured Outputs, instrucciones directas en el system prompt o etiquetas XML. El detalle va en el capítulo de la API.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Antes de empezar a iterar prompts, define tus criterios de éxito (qué cuenta como una buena respuesta: formato, longitud, factualidad, tono) y cómo vas a medirlos. Sin criterios claros, iterar es subjetivo y nunca terminas.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Anthropic ofrece un tutorial interactivo gratuito de prompt engineering en GitHub: <a href="https://github.com/anthropics/prompt-eng-interactive-tutorial">github.com/anthropics/prompt-eng-interactive-tutorial</a></p>
+  </div>
+
+  <section class="recap">
+    <h2 id="cap04-resumen-del-capitulo">Resumen del Capítulo</h2>
+    <p>Un buen prompt es claro, específico y tiene contexto. Las técnicas básicas son: dar instrucciones directas, explicar el porqué, usar ejemplos (3-5 idealmente), organizar con etiquetas XML, asignar un rol simple, y pedir razonamiento paso a paso. Evita ser vago, usar prohibiciones en vez de instrucciones positivas, y siempre dale a Claude permiso para decir 'no sé'. Para documentos largos, ancla las respuestas pidiendo citas en tags antes de la tarea principal. Con modelos nuevos como Claude 4.6, usa instrucciones naturales y directas en vez de lenguaje agresivo.</p>
+  </section>
+</article>

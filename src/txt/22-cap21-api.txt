@@ -1,0 +1,1792 @@
+La API de Claude
+Guía completa para hablar con Claude desde tu propio código
+
+
+    AVANZADO                                                  @soyenriquerocha
+
+
+
+
+                                     560                      @soyenriquerocha
+                                                                                       LA API DE CLAUDE
+
+
+
+
+    La API de Claude te permite conectar tu aplicación directamente con la inteligencia de
+    Claude. Es como tener un teléfono directo con Claude: tu programa le envía un mensaje,
+    y Claude responde. En este capítulo vas a aprender todo lo que necesitas para hacer esa
+    conexión. Desde lo más básico hasta funciones avanzadas como streaming,
+    herramientas y procesamiento por lotes.
+
+
+
+
+Qué es la API de Claude y cómo funciona
+
+Una API (Application Programming Interface) es como un mesero en un restaurante. Tú le dices lo que
+quieres, él va a la cocina y te trae la respuesta. En este caso, tu programa es el cliente, la API es el
+mesero y Claude es la cocina.
+
+La API de Claude se llama Messages API. Vive en esta dirección:
+
+
+
+   https://api.anthropic.com/v1/messages
+
+
+
+Tu programa envía una solicitud HTTP tipo POST a esa dirección. Le manda un mensaje. Claude lo
+procesa y devuelve una respuesta. Así de simple.
+
+Todo lo que envías y recibes es JSON. JSON es un formato de texto que las computadoras entienden
+fácilmente. Se ve así:
+
+
+
+   {
+       "model": "claude-opus-4-8",
+       "max_tokens": 1024,
+       "messages": [
+           {"role": "user", "content": "Hola, Claude"}
+       ]
+   }
+
+
+
+Eso es todo lo que necesitas para hablar con Claude: el modelo que quieres usar, cuántos tokens
+puede generar, y tu mensaje.
+
+Autenticación: tu llave de acceso
+Para hablar con Claude, necesitas una API key. Es como la llave de tu casa. Sin ella, no puedes entrar.
+
+
+
+
+                                                   561                                     @soyenriquerocha
+LA API DE CLAUDE
+
+
+
+
+Consigues tu API key en la Console de Anthropic: platform.claude.com/settings/keys .
+
+Cada solicitud necesita 3 headers obligatorios:
+
+   • x-api-key — tu API key
+   • anthropic-version — la versión de la API (actualmente 2023-06-01 )
+   • content-type — siempre application/json
+
+Un header es información extra que va junto con tu solicitud. Piensa en él como la etiqueta de un
+paquete: dice quién lo envía y qué contiene.
+
+Los SDKs oficiales manejan estos headers por ti. Solo necesitas configurar la variable de entorno
+ANTHROPIC_API_KEY y listo.
+
+En total hay 3 formas de autenticarte:
+
+  1. x-api-key — Tu API key directa. La más común.
+  2. Authorization: Bearer <token> vía Workload Identity Federation (WIF) — Un Bearer token
+    de corta duración. Lo pides al endpoint POST /v1/oauth/token y lo envías en el header
+     Authorization . Ideal para entornos cloud (AWS, GCP, Azure) y servidores/CI donde no quieres
+    API keys de larga vida circulando por tu infraestructura.
+  3. Login OAuth con perfiles — Con la CLI ant ejecutas ant auth login y se guardan las
+    credenciales en disco como un perfil. Cómodo para trabajar desde tu máquina sin gestionar keys
+    a mano. Para tokens OAuth también hace falta el header anthropic-beta:
+    oauth-2025-04-20 .
+
+Cuidado con el conflicto de variables. Si exportas ANTHROPIC_API_KEY y ANTHROPIC_AUTH_TOKEN
+al mismo tiempo, la API rechaza la petición con un 401. Usa solo una: ANTHROPIC_API_KEY para x-
+api-key, o ANTHROPIC_AUTH_TOKEN para Bearer/OAuth. Desactiva la que sobre.
+
+Variable de entorno       ANTHROPIC_BASE_URL . Por defecto, los SDKs apuntan a               https://
+api.anthropic.com . Si necesitas redirigir las llamadas a un proxy interno de tu empresa o a un mock
+server para tests, exporta esta variable y todos los SDKs oficiales la respetarán automáticamente.
+
+
+Tu primera llamada con curl
+curl es una herramienta de terminal para hacer solicitudes HTTP. Perfecta para probar la API
+rápidamente.
+
+
+
+
+                                                  562                                    @soyenriquerocha
+                                                                                      LA API DE CLAUDE
+
+
+
+
+   curl https://api.anthropic.com/v1/messages \
+      --header "x-api-key: $ANTHROPIC_API_KEY" \
+      --header "anthropic-version: 2023-06-01" \
+      --header "content-type: application/json" \
+      --data '{
+         "model": "claude-opus-4-8",
+         "max_tokens": 1024,
+         "messages": [
+             {"role": "user", "content": "Hola, Claude"}
+         ]
+      }'
+
+
+
+Si todo está bien, Claude responde con un JSON que incluye su respuesta en el campo content .
+
+
+
+Parámetros de la solicitud
+
+Cuando envías un mensaje a Claude, puedes ajustar muchos detalles. Es como pedir comida: puedes
+pedir el plato básico, o personalizarlo con extras.
+
+Hay 3 parámetros obligatorios y muchos opcionales. Veamos los más importantes.
+
+Los 3 parámetros que siempre necesitas
+   • model — Qué modelo de Claude usar. Ejemplo: "claude-opus-4-8" , "claude-sonnet-4-6" ,
+     "claude-haiku-4-5" . Cada modelo tiene diferente capacidad y precio.
+
+   • max_tokens — El máximo de tokens que Claude puede generar. Un token es aproximadamente
+    una palabra o parte de una palabra. Si pones 1024, Claude puede escribir hasta ~750 palabras.
+   • messages — El array de mensajes. Cada mensaje tiene un role ( "user" o "assistant" ) y
+    un content (el texto). Los roles deben alternar: primero user, luego assistant, luego user, etc.
+
+Modelos vigentes (junio 2026). El modelo por defecto recomendado es ahora Claude Opus 4.8
+( claude-opus-4-8 ), que reemplaza a Opus 4.7 como la opción más capaz para uso diario. Los
+modelos disponibles son:
+
+   • claude-opus-4-8 — El más capaz. Default recomendado para razonamiento exigente y agentes.
+   • claude-opus-4-7 y claude-opus-4-6 — Versiones previas de Opus, aún disponibles.
+   • claude-sonnet-4-6 — Buen balance entre capacidad, velocidad y precio. Ideal para alto
+    volumen.
+   • claude-haiku-4-5 — El más rápido y barato. Para tareas simples.
+
+
+
+
+                                                      563                                 @soyenriquerocha
+LA API DE CLAUDE
+
+
+
+
+El 9 de junio de 2026 Anthropic anunció dos modelos nuevos, Claude Fable 5 ( claude-fable-5 ) y
+Mythos 5 ( claude-mythos-5 ), con 1M de contexto, hasta 128K de salida y precio de $10/$50 por
+millón de tokens (entrada/salida). Aviso importante: el 12 de junio de 2026 una directiva de control
+de exportaciones del gobierno de EEUU obligó a Anthropic a suspender el acceso a Fable 5 y Mythos
+5. Verifica su disponibilidad real antes de depender de ellos; el resto de la API (incluido Opus 4.8) no se
+ve afectado.
+
+Nota sobre los IDs: usa el alias sin sufijo de fecha ( claude-opus-4-8 , no                      claude-
+opus-4-8-20251114 ) y con guiones, no puntos ( claude-opus-4-8 , nunca claude-opus-4.8 , que
+da 404).
+
+
+Parámetros opcionales más usados
+   • system — El system prompt. Instrucciones generales para Claude. Ejemplo: "Eres un
+    asistente que responde en español" . Es como darle un manual de instrucciones antes de
+    empezar.
+   • temperature — Controla la creatividad. Va de 0.0 a 1.0. Bajo (0.2) para respuestas precisas. Alto
+    (0.8) para respuestas creativas. Por defecto es 1.0. Importante: los modelos nuevos (Opus 4.7,
+    Opus 4.8 y Fable 5) rechazan temperature con un error 400. Si usas esos modelos, omite este
+    parámetro y controla la profundidad de la respuesta con output_config.effort (más abajo).
+   • stream — Si es true , Claude envía la respuesta palabra por palabra. Muy útil para respuestas
+    largas.
+   • stop_sequences — Palabras que detienen la generación. Cuando Claude escribe esa secuencia,
+    para inmediatamente.
+   • metadata — Para rastrear usuarios. Usa un user_id anónimo (UUID o hash). Nunca pongas
+    datos personales aquí.
+
+
+Parámetros avanzados
+   • tools — Define herramientas que Claude puede usar. Lo veremos en detalle más adelante.
+   • tool_choice — Controla cómo Claude usa las herramientas: auto (decide él), any (forzar
+    uso), tool (forzar una específica), none (deshabilitarlas).
+   • tool_choice.disable_parallel_tool_use — Booleano. Si es true , Claude no puede llamar
+    a varias herramientas en paralelo dentro del mismo turno. Útil cuando tu backend no soporta
+    ejecución concurrente o cuando quieres procesar las llamadas de una en una.
+   • thinking — Activa el extended thinking. Claude piensa antes de responder. En los modelos 4.6+
+    se usa {"type": "adaptive"} y Claude decide cuánto pensar. El antiguo budget_tokens está
+    deprecado (da 400 en Fable 5, Opus 4.7 y 4.8). Lo vemos en detalle en la sección de Extended
+    Thinking.
+
+
+
+
+                                                   564                                      @soyenriquerocha
+                                                                                      LA API DE CLAUDE
+
+
+
+
+   • output_config — Controla el formato de salida. Puedes forzar que Claude responda en JSON
+    con un esquema específico (campo format ). También incluye effort , que acepta cinco
+    valores: low , medium , high (default), xhigh y max . xhigh (entre high y max ) es lo más
+    recomendado para coding y agentes en Opus 4.7/4.8.
+   • fallbacks (beta server-side-fallback-2026-06-01 ) — Lista de modelos de respaldo. Si el
+    modelo principal (por ejemplo Fable 5) rechaza una petición por seguridad, la API reintenta
+    automáticamente con otro modelo (por ejemplo claude-opus-4-8 ). Solo disponible en Claude
+    API y Claude Platform on AWS, no en Batches, Bedrock, Vertex ni Foundry. El rechazo llega como
+    un HTTP 200 con stop_reason: "refusal" y un stop_details.category que indica el
+    motivo.
+   • service_tier — Selector del tier de servicio. Acepta dos valores: "auto" (default — usa
+    Priority Tier si tu organización tiene contrato de spend comprometido, y si no cae a Standard) y
+     "standard_only" (fuerza el uso de Standard Tier aunque tengas Priority disponible). Útil
+    cuando quieres reservar Priority para cargas críticas.
+   • container — ID de un container para reutilizar el entorno de ejecución de código
+    ( code_execution ) entre llamadas. Permite que archivos y estado persistan.
+   • inference_geo — Región geográfica para controles de residencia de datos (ej: "us" ). Útil
+    cuando necesitas que el procesamiento ocurra en una región específica.
+   • cache_control — Activa el cache de prompts a nivel de toda la solicitud. Reduce costos en
+    conversaciones repetitivas.
+   • top_p y top_k — Alternativas a temperature para controlar la aleatoriedad. Usa uno u otro,
+    no ambos junto con temperature. Importante: al igual que temperature , estos parámetros dan
+    error 400 en Opus 4.7, Opus 4.8 y Fable 5. Con esos modelos no los envíes.
+
+Otras betas avanzadas. Para casos más exigentes existen funciones beta que se activan con el header
+anthropic-beta :
+
+   • Fast mode ( fast-mode-2026-02-01 ) — Respuestas más rápidas. Solo en Opus 4.8 y 4.7.
+   • Task Budgets ( task-budgets-2026-03-13 ) — Limita el trabajo que Claude dedica a una tarea
+    de agente.
+   • Compaction ( compact-2026-01-12 ) y context editing ( context-management-2025-06-27 )
+    — Para gestionar conversaciones muy largas sin reventar la ventana de contexto.
+
+
+
+Entender la respuesta de Claude
+
+Cuando Claude responde, te envía un objeto JSON con varios campos. Vamos a desglosarlo para que
+sepas qué significa cada parte.
+
+
+
+
+                                                  565                                    @soyenriquerocha
+LA API DE CLAUDE
+
+
+
+
+   {
+       "id": "msg_01XFDUDYJgAACzvnptvVoYEL",
+       "type": "message",
+       "role": "assistant",
+       "content": [
+            {"type": "text", "text": "Hola! En que puedo ayudarte?"}
+       ],
+       "model": "claude-opus-4-8",
+       "stop_reason": "end_turn",
+       "usage": {
+            "input_tokens": 12,
+            "output_tokens": 15
+       }
+   }
+
+
+
+Campos principales de la respuesta
+   • id — Identificador único del mensaje. Útil para debugging.
+   • content — Array con los bloques de contenido. Puede tener texto ( text ), llamadas a
+    herramientas ( tool_use ), o bloques de pensamiento ( thinking ).
+   • stop_reason — Por qué Claude dejó de escribir:
+           ◦ end_turn — Terminó naturalmente.
+           ◦ max_tokens — Alcanzó el límite de tokens.
+           ◦ stop_sequence — Encontró una secuencia de parada.
+           ◦ tool_use — Quiere usar una herramienta.
+           ◦ refusal — Claude rechazó la petición (por políticas de seguridad o porque el formato
+            pedido no se puede cumplir). Aparece sobre todo con structured outputs, cuando el modelo
+            decide que no puede generar JSON válido para esa solicitud. Trata este caso aparte: la
+            respuesta puede no respetar el esquema esperado.
+
+   • usage — Cuántos tokens usó. Esto determina cuánto pagas. Incluye input_tokens (lo que le
+    enviaste) y output_tokens (lo que generó). Si usaste cache, también verás
+       cache_creation_input_tokens y cache_read_input_tokens .
+
+Headers de respuesta siempre presentes: además del clásico request-id (útil para soporte y
+debugging), cada respuesta incluye anthropic-organization-id , el ID de la organización a la que
+pertenece la API key que hizo la llamada. Te sirve para confirmar a qué organización se está cargando
+el gasto cuando trabajas con varias cuentas.
+
+
+
+
+                                                    566                                     @soyenriquerocha
+                                                                                   LA API DE CLAUDE
+
+
+
+
+SDKs oficiales: el camino fácil
+
+Un SDK (Software Development Kit) es como un juego de herramientas listo para usar. En vez de armar
+las solicitudes HTTP a mano, usas funciones ya hechas en tu lenguaje favorito.
+
+Anthropic ofrece 7 SDKs oficiales. Todos manejan headers, reintentos, errores y streaming
+automáticamente.
+
+Python
+El SDK más popular. Funciona con Python 3.9 o superior.
+
+
+
+   pip install anthropic
+
+
+
+
+   from anthropic import Anthropic
+
+
+   client = Anthropic()        # Lee ANTHROPIC_API_KEY del entorno
+
+
+   message = client.messages.create(
+        model="claude-opus-4-8",
+        max_tokens=1024,
+        messages=[{"role": "user", "content": "Hola, Claude"}],
+   )
+
+
+   print(message.content[0].text)
+
+
+
+Tres líneas de código y ya estás hablando con Claude. El SDK lee la API key de la variable de entorno
+ANTHROPIC_API_KEY automáticamente.
+
+
+
+TypeScript / JavaScript
+Funciona en Node.js 20+, Deno, Bun y hasta en el navegador. Requiere TypeScript 4.9+.
+
+
+
+   npm install @anthropic-ai/sdk
+
+
+
+
+                                                 567                                    @soyenriquerocha
+LA API DE CLAUDE
+
+
+
+
+   import Anthropic from "@anthropic-ai/sdk";
+
+
+   const client = new Anthropic();
+
+
+   const message = await client.messages.create({
+      model: "claude-opus-4-8",
+      max_tokens: 1024,
+      messages: [{ role: "user", content: "Hola, Claude" }],
+   });
+
+
+   console.log(message.content[0].text);
+
+
+
+
+Otros SDKs disponibles
+Además de Python y TypeScript, hay SDKs para:
+
+   • Java — com.anthropic:anthropic-java:2.18.0 (Java 8+). Usa builder pattern y
+     CompletableFuture para async.
+
+   • Go — go get github.com/anthropics/anthropic-sdk-go (Go 1.23+). Usa context para
+    cancelación.
+   • Ruby — bundler add anthropic (Ruby 3.2.0+). Incluye tipos Sorbet.
+   • C# — dotnet add package Anthropic (.NET Standard 2.0+). Se integra con IChatClient .
+   • PHP — composer require anthropic-ai/sdk (PHP 8.1.0+). Usa builder pattern.
+
+Todos usan la misma variable de entorno ANTHROPIC_API_KEY y todos soportan streaming.
+
+CLI oficial ant . Además de los 7 SDKs, Anthropic publica una CLI llamada ant para hablar con la API
+desde la terminal sin escribir código. La instalas con:
+
+
+
+   brew install anthropics/tap/ant
+
+
+
+Es ideal para scripts rápidos, pruebas manuales y para integrar Claude en pipelines de shell. Lee la
+misma variable ANTHROPIC_API_KEY que el resto de SDKs.
+
+
+
+Streaming: respuestas en tiempo real
+
+Imagina que Claude es un amigo que te escribe un mensaje largo. Sin streaming, esperas a que
+termine y te llega todo junto. Con streaming, ves cada palabra mientras la escribe. Mucho mejor
+experiencia.
+
+
+
+                                                   568                                @soyenriquerocha
+                                                                                   LA API DE CLAUDE
+
+
+
+
+Streaming usa Server-Sent Events (SSE). Es una tecnología que permite al servidor enviarte datos poco
+a poco por la misma conexión.
+
+Streaming con Python
+
+
+   import anthropic
+
+
+   client = anthropic.Anthropic()
+
+
+   with client.messages.stream(
+        max_tokens=1024,
+        messages=[{"role": "user", "content": "Cuentame una historia corta"}],
+        model="claude-opus-4-8",
+   ) as stream:
+        for text in stream.text_stream:
+             print(text, end="", flush=True)
+
+
+
+Cada fragmento de texto aparece en pantalla al instante. El flush=True fuerza que Python muestre
+el texto inmediatamente sin esperar.
+
+También puedes obtener el mensaje completo al final:
+
+
+
+   final = stream.get_final_message()
+   print(final.usage)       # Ver cuantos tokens uso
+
+
+
+
+Los eventos del streaming
+Cuando activas streaming, Claude envía una serie de eventos en orden:
+
+  1. message_start — Comienza el mensaje. Contiene el objeto Message pero con content vacío.
+  2. content_block_start — Comienza un bloque de contenido (texto, herramienta, pensamiento).
+  3. content_block_delta — Un pedazo del contenido. Para texto es text_delta . Para
+    herramientas es input_json_delta .
+  4. content_block_stop — Termina el bloque de contenido.
+  5. message_delta — Cambios finales al mensaje (como el stop_reason ).
+  6. message_stop — Fin del mensaje.
+
+También puedes recibir eventos ping (para mantener la conexión viva) y error (si algo sale mal
+durante el streaming).
+
+
+
+
+                                                569                                    @soyenriquerocha
+LA API DE CLAUDE
+
+
+
+
+Tool Use: darle herramientas a Claude
+
+Imagina que Claude es un asistente muy inteligente pero encerrado en una habitación. No puede ver
+el clima, consultar bases de datos ni ejecutar código. Tool use le da herramientas para hacer esas
+cosas.
+
+Tú defines herramientas. Claude decide cuándo usarlas. Tú ejecutas la herramienta. Le devuelves el
+resultado a Claude. Claude genera su respuesta final.
+
+Es como un juego de ping-pong: tu programa y Claude se pasan la pelota.
+
+Cómo definir una herramienta
+Cada herramienta tiene 3 partes:
+
+   • name — Un nombre corto y descriptivo.
+   • description — Qué hace la herramienta. Claude usa esta descripción para decidir cuándo
+    usarla.
+   • input_schema — Un JSON Schema que define los parámetros. Es como un formulario: qué
+    campos necesita y de qué tipo son.
+
+
+
+   tools = [{
+         "name": "get_weather",
+         "description": "Obtiene el clima actual de una ciudad",
+         "strict": True,
+         "input_schema": {
+              "type": "object",
+              "properties": {
+                   "location": {
+                       "type": "string",
+                       "description": "La ciudad, ej: Madrid, Espana"
+                   }
+              },
+              "required": ["location"],
+              "additionalProperties": False
+         }
+   }]
+
+
+
+El campo strict: true es importante. Garantiza que Claude siempre envíe parámetros que
+cumplan tu esquema exactamente.
+
+
+
+
+                                                 570                                @soyenriquerocha
+                                                                                  LA API DE CLAUDE
+
+
+
+
+Límites del strict tool use: cuando activas strict: true hay topes que conviene tener en cuenta.
+Por petición puedes definir como máximo 20 herramientas strict, sumando entre todas un máximo
+de 24 parámetros opcionales, de los cuales solo 16 pueden usar union types (tipos múltiples). Si te
+pasas, la API responde con un 400 explicando qué límite cruzaste.
+
+
+El flujo completo de tool use
+  1. Envías el mensaje del usuario junto con las definiciones de tools.
+  2. Claude responde con stop_reason: "tool_use" y un bloque tool_use con el nombre y los
+    argumentos.
+  3. Tu programa ejecuta la herramienta con esos argumentos.
+  4. Envías el resultado en un bloque tool_result dentro de un mensaje user .
+  5. Claude lee el resultado y genera su respuesta final.
+
+Puedes controlar el comportamiento con tool_choice :
+
+   • auto — Claude decide si usar herramientas o no.
+   • any — Claude está obligado a usar al menos una herramienta.
+   • tool — Claude debe usar una herramienta específica (indicada por name ).
+   • none — Deshabilita todas las herramientas.
+
+
+Herramientas integradas de Claude
+Además de tus herramientas personalizadas, Claude tiene herramientas integradas listas para usar:
+
+   • web_search — Busca en internet. Soporta filtros de dominios. Versiones:
+     web_search_20250305 , web_search_20260209 .
+
+   • web_fetch — Descarga contenido de una URL. Versiones: web_fetch_20250910 ,
+     web_fetch_20260209 , web_fetch_20260309 .
+
+   • code_execution — Ejecuta código en un entorno seguro. Versiones:
+     code_execution_20250522 , code_execution_20250825 , code_execution_20260120 .
+
+   • text_editor — Lee y edita archivos de texto.
+   • bash_20250124 — Ejecuta comandos de terminal.
+   • memory_20250818 — Guarda información entre sesiones.
+   • tool_search_tool_bm25 — Búsqueda de herramientas por relevancia semántica (BM25).
+    Versión: tool_search_tool_bm25_20251119 .
+   • tool_search_tool_regex — Búsqueda de herramientas por patrón regex. Versión:
+     tool_search_tool_regex_20251119 .
+
+
+
+
+                                                   571                                @soyenriquerocha
+LA API DE CLAUDE
+
+
+
+
+Cada herramienta tiene versiones con fecha. Usa siempre la versión más reciente disponible para
+obtener las mejores capacidades.
+
+
+
+Structured Outputs: respuestas en formato exacto
+
+A veces necesitas que Claude responda en un formato exacto. No texto libre, sino datos estructurados.
+Por ejemplo, extraer el nombre, email y plan de un cliente.
+
+Structured outputs garantiza que Claude siempre te devuelva JSON válido que cumple con tu
+esquema. Nunca más tendrás que preocuparte por parsear texto.
+
+Nota sobre el parámetro: el antiguo                  output_format        está deprecado en favor de
+output_config.format . Si ves output_format en código viejo, sigue funcionando, pero lo
+recomendado es usar output_config: {"format": {"type": "json_schema", "schema":
+{...}}} .
+
+Dos incompatibilidades importantes: structured outputs no se puede combinar con citations (da
+error 400) ni con prefill (rellenar el inicio de la respuesta del assistant).
+
+
+
+
+                                                      572                                @soyenriquerocha
+                                                                                LA API DE CLAUDE
+
+
+
+
+Método 1: JSON Schema con output_config
+
+
+   response = client.messages.create(
+        model="claude-opus-4-8",
+        max_tokens=1024,
+        messages=[{
+              "role": "user",
+              "content": "Extrae los datos: Juan Perez, juan@correo.com, Plan Pro"
+        }],
+        output_config={
+              "format": {
+                  "type": "json_schema",
+                  "schema": {
+                      "type": "object",
+                      "properties": {
+                            "name": {"type": "string"},
+                            "email": {"type": "string"},
+                            "plan": {"type": "string"}
+                      },
+                      "required": ["name", "email", "plan"],
+                      "additionalProperties": False
+                  }
+              }
+        }
+   )
+
+
+
+Claude responde con JSON que sigue tu esquema al pie de la letra. Internamente, Anthropic compila
+tu esquema en una gramática que restringe lo que Claude puede generar.
+
+
+
+
+                                               573                                  @soyenriquerocha
+LA API DE CLAUDE
+
+
+
+
+Método 2: Pydantic en Python (el más fácil)
+
+
+   from pydantic import BaseModel
+   from anthropic import Anthropic
+
+
+   class ContactInfo(BaseModel):
+        name: str
+        email: str
+        plan: str
+
+
+   client = Anthropic()
+   response = client.messages.parse(
+        model="claude-opus-4-8",
+        max_tokens=1024,
+        messages=[{
+              "role": "user",
+              "content": "Extrae: Juan Perez, juan@correo.com, Enterprise"
+        }],
+        output_format=ContactInfo,
+   )
+
+
+   # response.parsed_output es un objeto ContactInfo tipado
+   print(response.parsed_output.name)              # "Juan Perez"
+   print(response.parsed_output.email)             # "juan@correo.com"
+
+
+
+Con client.messages.parse() defines un modelo Pydantic y obtienes un objeto tipado
+directamente. El argumento se sigue llamando output_format en este helper, pero por dentro
+parse() ya traduce tu modelo a output_config.format (json_schema), que es el camino actual.
+No tienes que hacer nada extra. En TypeScript puedes hacer lo mismo con zodOutputFormat() y
+esquemas Zod.
+
+
+Limitaciones del esquema
+Structured outputs es muy potente pero no acepta cualquier JSON Schema. Hay varias construcciones
+que no están soportadas y, si las incluyes, la API rechaza la petición con un 400:
+
+   • Esquemas recursivos — Un tipo que se referencia a sí mismo (ej. un árbol con hijos del mismo
+    tipo) no se puede compilar.
+   • $ref externo — Solo puedes usar $ref a definiciones dentro del mismo documento. Apuntar a
+    otro fichero o URL no funciona.
+   • minimum y maximum — No puedes pedir que un número esté entre dos valores.
+   • minLength y maxLength — Tampoco puedes acotar la longitud de un string.
+
+
+
+
+                                                  574                                  @soyenriquerocha
+                                                                                 LA API DE CLAUDE
+
+
+
+
+   • multipleOf — Sin restricciones de divisibilidad.
+   • additionalProperties distinto de false — Tiene que valer siempre false en los objetos.
+   • Regex con lookahead o lookbehind — La gramática que compila el esquema no soporta estas
+    extensiones de regex.
+
+Si tu esquema usa algo de esta lista, simplifica antes de enviarlo. Lo que no puedas expresar en el
+esquema, valídalo después en tu código.
+
+
+
+Vision y PDFs: Claude ve imágenes y documentos
+
+Claude no solo lee texto. También puede ver imágenes y leer documentos PDF. Es como tener un
+asistente que además de escucharte, puede mirar fotos y leer papeles.
+
+Enviar imágenes a Claude
+Claude soporta JPEG, PNG, GIF y WebP. Hay 3 formas de enviar imágenes:
+
+  1. Por URL — La más simple.
+  2. En base64 — Cuando la imagen está en tu servidor.
+  3. Por File ID — Usando la Files API para archivos reutilizables.
+
+
+
+   message = client.messages.create(
+        model="claude-opus-4-8",
+        max_tokens=1024,
+        messages=[{
+              "role": "user",
+              "content": [
+                   {
+                        "type": "image",
+                        "source": {"type": "url", "url": "https://ejemplo.com/
+   foto.jpg"}
+                   },
+                   {
+                        "type": "text",
+                        "text": "Describe esta imagen."
+                   }
+              ]
+        }]
+   )
+
+
+
+
+                                                   575                               @soyenriquerocha
+LA API DE CLAUDE
+
+
+
+
+Límites de imágenes:
+
+   • 5 MB por imagen vía API.
+   • Hasta 600 imágenes por solicitud (100 para modelos con ventana de contexto de 200K).
+   • Tamaño máximo: 8000x8000 píxeles.
+   • Si pasas más de 20 imágenes en la misma petición, el tamaño máximo por imagen baja a
+    2000x2000 píxeles. Conviene redimensionar antes para evitar errores.
+   • Tamaño óptimo: 1568 píxeles en cualquier dimensión.
+
+Alta resolución en Opus 4.7+: a partir de Opus 4.7, Claude soporta imágenes de alta resolución de
+hasta 2576 píxeles en el lado largo, con coordenadas que mapean 1:1 a los píxeles reales (muy útil
+para tareas de computer use o cuando necesitas señalar zonas exactas de la imagen). Una imagen a
+resolución completa puede costar hasta unos 4,784 tokens, así que tenlo en cuenta para el
+presupuesto.
+
+Costo en tokens: se calcula como (ancho x alto) / 750 . Una imagen de 1000x1000 cuesta unos
+1,334 tokens.
+
+Claude no puede identificar personas por nombre. Tampoco genera ni edita imágenes.
+
+
+Enviar PDFs a Claude
+Claude lee PDFs extrayendo el texto y analizando cada página como imagen. Es muy útil para analizar
+reportes, contratos o documentos técnicos.
+
+
+
+
+                                                576                                   @soyenriquerocha
+                                                                                    LA API DE CLAUDE
+
+
+
+
+   import base64
+
+
+   with open("documento.pdf", "rb") as f:
+        pdf_data = base64.standard_b64encode(f.read()).decode("utf-8")
+
+
+   message = client.messages.create(
+        model="claude-opus-4-8",
+        max_tokens=1024,
+        messages=[{
+             "role": "user",
+             "content": [
+                   {
+                        "type": "document",
+                        "source": {
+                             "type": "base64",
+                             "media_type": "application/pdf",
+                             "data": pdf_data
+                        }
+                   },
+                   {"type": "text", "text": "Cuales son las conclusiones
+   principales?"}
+             ]
+        }]
+   )
+
+
+
+Límites de PDFs:
+
+   • Hasta 600 páginas por solicitud (100 para modelos con ventana de contexto de 200K).
+   • Máximo 32 MB de tamaño total.
+   • No soporta PDFs con contraseña o encriptados.
+
+Costo: entre 1,500 y 3,000 tokens por página de texto, más el costo de imagen por página.
+
+Tip: coloca los PDFs antes del texto en tu mensaje. Y si vas a analizar el mismo PDF varias veces, usa
+prompt caching para ahorrar.
+
+
+
+Prompt Caching: ahorra dinero repitiendo menos
+
+Imagina que cada vez que llamas a un restaurante, tienes que explicar tu dirección completa. El
+prompt caching es como que el restaurante guarde tu dirección. La próxima vez, solo dices tu nombre
+y ya saben a dónde enviar.
+
+
+
+
+                                                 577                                    @soyenriquerocha
+LA API DE CLAUDE
+
+
+
+
+Cuando envías el mismo system prompt o contexto repetidamente, Claude lo guarda en cache. Las
+siguientes veces, leer ese cache cuesta 90% menos que procesarlo de nuevo.
+
+Cache y Zero Data Retention (ZDR). Si tu organización tiene contrato ZDR, el prompt caching sí es
+elegible: los prefijos cacheados se almacenan dentro del enclave ZDR y nadie los persiste fuera de ahí.
+Los Message Batches, en cambio, no son elegibles para ZDR. Si trabajas bajo ZDR, puedes seguir
+usando caching tranquilamente pero tendrás que sustituir los batches por peticiones síncronas.
+
+Cache automático (recomendado)
+La forma más fácil. Agrega cache_control a nivel de toda la solicitud:
+
+
+
+   response = client.messages.create(
+         model="claude-opus-4-8",
+         max_tokens=1024,
+         cache_control={"type": "ephemeral"},
+         system="Eres un experto en leyes mexicanas. Aqui esta el texto completo
+   del codigo civil...",
+         messages=[{"role": "user", "content": "Que dice el articulo 42?"}]
+   )
+
+
+
+El cache se aplica automáticamente al último bloque cacheable. Ideal para conversaciones multi-
+turno donde el system prompt se repite.
+
+
+Duración del cache (TTL)
+TTL significa Time To Live. Es cuánto tiempo dura el cache antes de borrarse.
+
+   • 5 minutos (default) — Escribir cuesta 1.25x el precio base. Leer cuesta 0.1x.
+   • 1 hora — Escribir cuesta 2x el precio base. Leer cuesta 0.1x.
+
+Para usar TTL de 1 hora, especifícalo así:
+
+
+
+   "cache_control": {"type": "ephemeral", "ttl": "1h"}
+
+
+
+Importante: leer del cache siempre cuesta lo mismo (0.1x) sin importar el TTL. La diferencia está en
+cuánto pagas por crear el cache y cuánto tiempo dura.
+
+
+
+
+                                                   578                                   @soyenriquerocha
+                                                                                    LA API DE CLAUDE
+
+
+
+
+Qué se puede cachear
+Puedes cachear: definiciones de herramientas, system prompts, mensajes de texto (user y assistant),
+imágenes, documentos, y resultados de herramientas.
+
+No puedes cachear directamente los bloques de thinking . Pero si un turno anterior incluye
+thinking, ese turno completo sí se cachea.
+
+El orden de cache es: tools → system → messages . Si cambias las definiciones de herramientas,
+todo el cache se invalida.
+
+Tokens mínimos para cachear:
+
+   • Claude Opus 4.8: 4,096 tokens
+   • Claude Opus 4.6 / 4.5: 4,096 tokens
+   • Claude Fable 5: 2,048 tokens
+   • Claude Sonnet 4.6: 2,048 tokens
+   • Claude Sonnet 4.x (4.5 y anteriores): 1,024 tokens
+   • Claude Sonnet 3.7 y Opus 4.1 / 4: 1,024 tokens
+   • Claude Haiku 4.5: 4,096 tokens
+   • Claude Haiku 3.5: 2,048 tokens
+
+Si tu contenido no llega al mínimo, no se cachea (sin error: simplemente no hay cache).
+
+Cache lookback window: 20 bloques. Cuando llega una petición nueva, el sistema busca un prefijo
+cacheado que coincida exactamente. Esa búsqueda solo mira hacia atrás los 20 bloques anteriores al
+breakpoint. Si tu prefijo común queda más lejos, no encuentra el cache y tendrás que pagar el write
+otra vez. Tenlo en cuenta cuando armes conversaciones largas con muchos turnos: coloca el
+breakpoint cerca de lo que cambia, no en el principio.
+
+
+
+Message Batches: procesamiento masivo con 50% de descuento
+
+Si necesitas procesar muchas solicitudes y no te urge la respuesta inmediata, la Batches API es tu
+mejor opción. Es como enviar un paquete de cartas en vez de llevar cada una al correo por separado.
+Sale más barato.
+
+Pagas la mitad del precio normal. La mayoría de batches terminan en menos de 1 hora.
+
+
+
+
+                                                  579                                     @soyenriquerocha
+LA API DE CLAUDE
+
+
+
+
+Crear un batch
+
+
+   batch = client.messages.batches.create(
+          requests=[
+               {
+                    "custom_id": "solicitud-1",
+                    "params": {
+                        "model": "claude-opus-4-8",
+                        "max_tokens": 1024,
+                        "messages": [{"role": "user", "content": "Hola"}]
+                    }
+               },
+               {
+                    "custom_id": "solicitud-2",
+                    "params": {
+                        "model": "claude-opus-4-8",
+                        "max_tokens": 1024,
+                        "messages": [{"role": "user", "content": "Adios"}]
+                    }
+               }
+          ]
+   )
+
+
+
+Cada solicitud tiene un custom_id único para identificarla en los resultados. Y params con los
+mismos parámetros que usarías en la Messages API normal.
+
+
+El flujo completo: polling y descarga de resultados
+Crear el batch es solo el primer paso. Después tienes que esperar a que termine y descargar los
+resultados.
+
+  1. Polling. Llama cada cierto tiempo a GET /v1/messages/batches/{batch_id} (en Python:
+       client.messages.batches.retrieve(batch_id) ). El campo processing_status puede
+    valer:
+         ◦ in_progress — Aún se está procesando.
+         ◦ canceling — Pediste cancelarlo y la API está parando las peticiones pendientes.
+         ◦ ended — Terminó. Ya puedes descargar resultados.
+
+  2. Descarga. Cuando el status es ended , el objeto del batch incluye un campo results_url . Haz
+    un GET ahí (o usa client.messages.batches.results(batch_id) en el SDK) y recibes un
+    fichero JSONL: una línea por petición, cada una con su custom_id y un result que indica si
+    fue succeeded , errored , canceled o expired .
+
+
+
+
+                                                 580                                    @soyenriquerocha
+                                                                                   LA API DE CLAUDE
+
+
+
+
+Otros endpoints útiles:
+
+   • GET /v1/messages/batches — Lista todos tus batches recientes (con paginación).
+   • POST /v1/messages/batches/{batch_id}/cancel — Cancela un batch en proceso. Las
+    peticiones ya iniciadas pueden terminar igualmente.
+   • DELETE /v1/messages/batches/{batch_id} — Borra un batch. Solo funciona tras ended .
+
+
+Límites de los batches
+   • Máximo 100,000 solicitudes por batch O 256 MB, lo que se alcance primero.
+   • Los resultados están disponibles por 29 días.
+   • Si un batch no termina en 24 horas, las solicitudes pendientes expiran.
+   • Los batches no son elegibles para Zero Data Retention (ZDR).
+
+Los descuentos de prompt caching y batches se acumulan. Si usas cache dentro de un batch, ahorras
+aún más.
+
+
+
+Rate Limits: los límites de velocidad
+
+La API tiene límites de velocidad. Es como un semáforo: no puedes pasar todos a la vez. Estos límites
+protegen el servicio para que funcione bien para todos.
+
+Hay 3 tipos de límites, todos medidos por minuto:
+
+   • RPM — Requests por minuto. Cuántas solicitudes puedes hacer.
+   • ITPM — Input tokens por minuto. Cuántos tokens puedes enviar.
+   • OTPM — Output tokens por minuto. Cuántos tokens puede generar Claude.
+
+Tiers de uso
+Tus límites dependen de cuánto has gastado. Más gastas, más límites obtienes. Y son diferentes para
+cada familia de modelos (Opus, Sonnet, Haiku), así que conviene mirar las tres tablas por separado.
+
+Spend limits y depósito por tier:
+
+   • Tier 1 — Depósito de $5. Gasto máximo mensual: $500.
+   • Tier 2 — Depósito de $40. Gasto máximo mensual: $500.
+   • Tier 3 — Depósito de $200. Gasto máximo mensual: $1,000.
+   • Tier 4 — Depósito de $400. Gasto máximo mensual: $200,000.
+   • Monthly Invoicing — Facturación mensual (se contrata). Sin límite de gasto.
+
+
+
+
+                                                     581                               @soyenriquerocha
+LA API DE CLAUDE
+
+
+
+
+Claude Opus 4.x (4.7, 4.6, 4.5, 4.1, 4):
+
+   • Tier 1 — 50 RPM, 500K ITPM, 80K OTPM
+   • Tier 4 — 4,000 RPM, 10M ITPM, 800K OTPM
+
+Claude Sonnet 4.x (4.6, 4.5, 4):
+
+   • Tier 1 — 50 RPM, 30K ITPM, 8K OTPM
+   • Tier 4 — 4,000 RPM, 2M ITPM, 400K OTPM
+
+Claude Haiku 4.5:
+
+   • Tier 1 — 50 RPM, 50K ITPM, 10K OTPM
+   • Tier 4 — 4,000 RPM, 4M ITPM, 800K OTPM
+
+Los límites son por familia de modelo. El cupo de Opus es compartido entre todas las versiones de
+Opus, lo mismo con Sonnet y Haiku. Para tiers intermedios (2 y 3) los valores escalan progresivamente
+entre Tier 1 y Tier 4.
+
+
+El truco del cache con rate limits
+Aquí viene algo poderoso: los cache_read_input_tokens no cuentan para el límite de ITPM en la
+mayoría de modelos. Solo cuentan los input_tokens y cache_creation_input_tokens .
+
+Esto significa que si tienes 80% de cache hits, puedes procesar efectivamente 5 veces más tokens por
+minuto. Con un límite de 2M ITPM, podrías manejar 10M tokens por minuto en la práctica.
+
+Excepción importante: Claude Haiku 3.5. En ese modelo concreto, los cache_read_input_tokens
+sí cuentan para el ITPM. Si estás optimizando volumen sobre Haiku 3.5, no asumas el descuento de
+ratelimit que sí aplica al resto de modelos.
+
+Calcular el total real de input. El campo usage.input_tokens que devuelve la API solo cuenta los
+tokens después del último cache breakpoint. Si quieres saber cuántos tokens procesó Claude en total
+(para estimar coste o entender el consumo), tienes que sumar:
+
+
+
+    total_input = input_tokens + cache_read_input_tokens +
+    cache_creation_input_tokens
+
+
+
+Es un detalle fácil de olvidar y que explica por qué algunas facturas parecen mayores de lo esperado
+cuando solo miras input_tokens .
+
+
+
+
+                                                582                                    @soyenriquerocha
+                                                                                     LA API DE CLAUDE
+
+
+
+
+Headers de rate limit en la respuesta
+Cada respuesta de la API incluye headers que te dicen cuánto te queda:
+
+   • anthropic-ratelimit-requests-remaining — Cuántas solicitudes te quedan.
+   • anthropic-ratelimit-tokens-remaining — Cuántos tokens te quedan.
+   • retry-after — Si recibes un error 429, este header te dice cuántos segundos esperar.
+
+Usa estos headers para implementar backoff exponencial: si recibes un 429, espera el tiempo indicado,
+y si falla de nuevo, espera el doble.
+
+
+Acceleration limits: sube el tráfico despacio
+Hay un detalle poco conocido pero crítico: la API no solo aplica límites por minuto. También aplica
+acceleration limits. Esto significa que si pasas de 0 a tope de golpe (por ejemplo, lanzas 1,000
+peticiones en 2 segundos), puedes recibir un 429 aunque aún no hayas alcanzado tu cupo nominal
+de RPM o ITPM.
+
+La recomendación oficial de Anthropic es subir el tráfico de forma gradual. Si estás haciendo un
+launch, una migración, o pruebas de carga, dobla la concurrencia poco a poco y observa si aparecen
+429. Si los ves, baja el ritmo y vuelve a subir más despacio. Cuando el sistema confirma que tu tráfico
+es estable, la aceleración deja de ser un problema.
+
+
+
+Errores comunes y cómo resolverlos
+
+Cuando algo sale mal, la API te dice exactamente qué pasó. Los errores tienen un código HTTP y un
+tipo descriptivo.
+
+Tabla de errores
+   • 400 invalid_request_error — Algo está mal en tu solicitud. Revisa el formato del JSON y los
+    parámetros.
+   • 401 authentication_error — Tu API key es inválida o falta. Verifica la variable
+     ANTHROPIC_API_KEY .
+
+   • 402 billing_error — No tienes crédito disponible o hay un problema con tu método de pago.
+    Recarga crédito en la Console o revisa la sección de facturación.
+   • 403 permission_error — Tu API key no tiene permiso para este recurso.
+   • 404 not_found_error — El recurso no existe. Verifica la URL.
+   • 413 request_too_large — Tu solicitud pesa más de 32 MB. Reduce el payload o usa la Files API.
+   • 429 rate_limit_error — Superaste el límite. Espera y reintenta con backoff. Revisa el header
+     retry-after .
+
+
+
+
+                                                  583                                    @soyenriquerocha
+LA API DE CLAUDE
+
+
+
+
+   • 500 api_error — Error interno de Anthropic. No es culpa tuya. Reintenta después.
+   • 504 timeout_error — La petición tardó demasiado en completarse. Suele pasar con respuestas
+    largas sin streaming. Usa stream: true o la Batches API para tareas largas, y verifica que tu
+    cliente HTTP tenga TCP keep-alive.
+   • 529 overloaded_error — La API está sobrecargada. Reintenta con backoff o usa Batches API.
+
+
+Soluciones rápidas a errores frecuentes
+   • Timeout en respuestas largas — Usa stream: true . Los SDKs configuran TCP keep-alive
+    automáticamente.
+   • Cache miss inesperado — Verifica que el prefijo del prompt sea idéntico. Cualquier cambio en
+    tools, tool_choice o parámetros de thinking invalida el cache. Comprueba también que el
+    breakpoint quede dentro de los 20 bloques de lookback.
+   • Prefilling no soportado — Los modelos Mythos Preview, Fable 5, Claude Opus 4.8, Opus 4.7, Opus
+    4.6 y Sonnet 4.6 no soportan prefilling de mensajes assistant (da 400). Usa structured outputs o
+    instrucciones en el system prompt.
+   • JSON inválido en streaming de tools — Con eager_input_streaming puede llegar JSON
+    parcial. Maneja el stop_reason: max_tokens y envuelve JSON inválido en {"INVALID_JSON":
+    "..."} .
+
+
+
+
+Extended Thinking: ver cómo piensa Claude
+
+Con extended thinking, Claude piensa antes de responder. Es como pedirle que muestre su trabajo en
+un examen de matemáticas. Puedes ver su razonamiento paso a paso.
+
+En los modelos actuales (Opus 4.6+, Sonnet 4.6, Opus 4.7/4.8 y Fable 5) la forma correcta es activar el
+modo adaptive y controlar la profundidad con output_config.effort :
+
+
+
+   response = client.messages.create(
+        model="claude-opus-4-8",
+        max_tokens=16000,
+        thinking={"type": "adaptive", "display": "summarized"},
+        output_config={"effort": "high"},
+        messages=[{"role": "user", "content": "Resuelve este problema
+   complejo..."}]
+   )
+
+
+
+
+                                                 584                                     @soyenriquerocha
+                                                                                    LA API DE CLAUDE
+
+
+
+
+Con {"type": "adaptive"} , Claude decide por sí mismo cuánto necesita pensar. La profundidad y
+el coste los controlas con output_config.effort ( low , medium , high por defecto, xhigh o
+max ); xhigh es lo más recomendado para coding y tareas de agente.
+
+La respuesta incluye bloques de tipo thinking con el razonamiento, seguidos del bloque text con
+la respuesta final. También hay un signature que verifica la autenticidad del pensamiento.
+
+El parámetro budget_tokens está deprecado. Antes se usaba thinking={"type": "enabled",
+"budget_tokens": 5000} para fijar cuántos tokens podía usar Claude para pensar (al menos 1,024 y
+menor que max_tokens ). Sigue funcionando como legacy en algunos modelos, pero está deprecado
+en Opus 4.6 y Sonnet 4.6, y da error 400 en Fable 5, Opus 4.7 y Opus 4.8. En modelos nuevos
+sustitúyelo por adaptive + effort .
+
+El parámetro display controla cómo se muestra el pensamiento en la respuesta:
+
+   • summarized — Claude incluye un resumen de su razonamiento interno. Útil para entender cómo
+    llegó a su respuesta sin ver todos los detalles.
+   • omitted — El pensamiento se oculta de la respuesta, pero se incluye un signature para
+    verificar la autenticidad. Útil cuando no necesitas ver el razonamiento pero quieres confirmar que
+    ocurrió.
+
+Cuidado con el default: en Fable 5, Opus 4.7 y Opus 4.8 el valor por defecto de display es
+omitted . Si quieres ver el resumen del razonamiento, tienes que pedir explícitamente "display":
+"summarized" .
+
+
+
+
+Otras APIs complementarias
+
+Además de la Messages API, Anthropic ofrece otras APIs útiles:
+
+   • Token Counting API — POST /v1/messages/count_tokens . Te dice cuántos tokens tiene tu
+    mensaje antes de enviarlo. Útil para estimar costos.
+   • Models API — GET /v1/models . Lista todos los modelos disponibles. Desde marzo de 2026 ya
+    no expone el campo context_window ; en su lugar devuelve max_input_tokens , max_tokens
+    (máximo de salida) y capabilities (qué funciones soporta cada modelo).
+   • Files API (beta) — POST /v1/files . Sube archivos para reutilizarlos en múltiples solicitudes sin
+    enviarlos cada vez. El tamaño máximo por archivo es de 500 MB (mucho más que los 32 MB de
+    una petición normal de Messages), lo que la hace ideal para PDFs grandes o conjuntos de
+    documentos.
+   • Usage and Cost API — Para monitorear cuánto estás gastando.
+
+
+
+
+                                                   585                                   @soyenriquerocha
+LA API DE CLAUDE
+
+
+
+
+   • Skills API (beta) — POST /v1/skills , GET /v1/skills . Permite crear y gestionar skills
+    personalizados para agentes. Un skill es un conjunto reutilizable de instrucciones y herramientas
+    que puedes asignar a tus agentes.
+   • MCP connector — Permite conectar la API de Claude directamente a servidores MCP (Model
+    Context Protocol) externos. En lugar de tener que ejecutar tú el servidor MCP en tu backend y
+    hacer de puente, Anthropic se conecta al servidor MCP por ti y le pasa a Claude las herramientas y
+    recursos que expone. Ideal para integrar repositorios de código, bases de datos internas o
+    sistemas propios sin tener que reempaquetarlos como tools tradicionales.
+
+Las APIs en beta requieren un header adicional para activarlas.
+
+
+
+Plataformas de terceros
+
+Claude también está disponible en otras nubes:
+
+   • Amazon Bedrock — Para usuarios de AWS.
+   • Google Vertex AI — Para usuarios de Google Cloud.
+   • Azure AI Foundry — Para usuarios de Microsoft Azure.
+
+Los 7 SDKs oficiales soportan estas plataformas. Solo cambias la configuración del cliente.
+
+Cuidado con los límites de tamaño por plataforma. El tamaño máximo de petición no es el mismo
+en todas:
+
+   • API directa de Anthropic — 32 MB por petición.
+   • Google Vertex AI — 30 MB por petición.
+   • Amazon Bedrock — 20 MB por petición.
+
+Si tu app envía PDFs grandes o muchas imágenes, los límites más estrictos de Bedrock y Vertex
+pueden hacer que peticiones que funcionan en la API directa fallen con 413. Soluciónalo dividiendo el
+payload o usando la Files API (cuando esté disponible en la plataforma) para referenciar binarios por
+file_id en vez de mandarlos inline.
+
+
+
+
+                                                 586                                     @soyenriquerocha
+                                                                                    LA API DE CLAUDE
+
+
+
+
+Ejemplos Prácticos
+
+
+
+  Tu primera conversación con Claude en Python
+
+
+
+     from anthropic import Anthropic
+
+
+     client = Anthropic()
+
+
+     message = client.messages.create(
+          model="claude-opus-4-8",
+          max_tokens=1024,
+          system="Responde siempre en español.",
+          messages=[{"role": "user", "content": "Que es una API?"}],
+     )
+
+
+     print(message.content[0].text)
+
+
+
+  Crea un cliente, envía un mensaje con system prompt en español, y muestra la respuesta. El SDK
+  lee la API key de la variable de entorno ANTHROPIC_API_KEY.
+
+
+
+
+                                                587                                      @soyenriquerocha
+LA API DE CLAUDE
+
+
+
+
+   Streaming para ver la respuesta en tiempo real
+
+
+
+      import anthropic
+
+
+      client = anthropic.Anthropic()
+
+
+      with client.messages.stream(
+            max_tokens=1024,
+            messages=[{"role": "user", "content": "Cuentame una historia
+      corta"}],
+            model="claude-opus-4-8",
+      ) as stream:
+            for text in stream.text_stream:
+                   print(text, end="", flush=True)
+
+
+
+   Usa streaming para mostrar la respuesta palabra por palabra. Perfecto para chatbots o interfaces
+   donde quieres que el usuario vea la respuesta mientras se genera.
+
+
+
+
+                                                  588                                      @soyenriquerocha
+                                                                                    LA API DE CLAUDE
+
+
+
+
+Herramienta personalizada: consultar el clima
+
+
+
+    response = client.messages.create(
+         model="claude-opus-4-8",
+         max_tokens=1024,
+         tools=[{
+               "name": "get_weather",
+               "description": "Obtiene el clima actual",
+               "strict": True,
+               "input_schema": {
+                    "type": "object",
+                    "properties": {
+                          "location": {"type": "string"}
+                    },
+                    "required": ["location"],
+                    "additionalProperties": False
+               }
+         }],
+         messages=[{"role": "user", "content": "Que clima hace en CDMX?"}]
+    )
+
+
+
+Define una herramienta de clima con strict: true. Claude analiza el mensaje, decide que necesita
+consultar el clima, y devuelve un bloque tool_use con location: 'Ciudad de Mexico'. Tu programa
+ejecuta la consulta real y le devuelve el resultado.
+
+
+
+
+                                                  589                                    @soyenriquerocha
+LA API DE CLAUDE
+
+
+
+
+   Extraer datos estructurados de texto
+
+
+
+      from pydantic import BaseModel
+      from anthropic import Anthropic
+
+
+      class ContactInfo(BaseModel):
+            name: str
+            email: str
+            plan: str
+
+
+      client = Anthropic()
+      response = client.messages.parse(
+            model="claude-opus-4-8",
+            max_tokens=1024,
+            messages=[{
+                   "role": "user",
+                   "content": "Extrae: Juan Perez, juan@correo.com, Plan
+      Enterprise"
+            }],
+            output_format=ContactInfo,
+      )
+
+
+      print(response.parsed_output.name)             # Juan Perez
+
+
+
+   Usa Pydantic para definir la estructura esperada. client.messages.parse() devuelve un objeto
+   tipado directamente. No necesitas parsear JSON manualmente. El argumento output_format del
+   helper se traduce por dentro a output_config.format (json_schema), que es el parámetro actual.
+
+
+
+
+                                                  590                                      @soyenriquerocha
+                                                                                  LA API DE CLAUDE
+
+
+
+
+Analizar una imagen con Claude
+
+
+
+   message = client.messages.create(
+        model="claude-opus-4-8",
+        max_tokens=1024,
+        messages=[{
+              "role": "user",
+              "content": [
+                   {"type": "image", "source": {"type": "url", "url":
+   "https://ejemplo.com/grafica.png"}},
+                   {"type": "text", "text": "Que muestra está grafica?"}
+              ]
+        }]
+   )
+
+
+
+Envía una imagen por URL junto con una pregunta. Claude analiza la imagen y describe lo que ve.
+Siempre coloca la imagen antes del texto para mejores resultados.
+
+
+
+
+                                               591                                    @soyenriquerocha
+LA API DE CLAUDE
+
+
+
+
+   Procesar solicitudes masivas con 50% de descuento
+
+
+
+      batch = client.messages.batches.create(
+            requests=[
+                   {
+                        "custom_id": "email-1",
+                        "params": {
+                            "model": "claude-sonnet-4-6",
+                            "max_tokens": 1024,
+                            "messages": [{"role": "user", "content": "Resume este
+      email: ..."}]
+                        }
+                   },
+                   {
+                        "custom_id": "email-2",
+                        "params": {
+                            "model": "claude-sonnet-4-6",
+                            "max_tokens": 1024,
+                            "messages": [{"role": "user", "content": "Resume este
+      otro email: ..."}]
+                        }
+                   }
+            ]
+      )
+      print(f"Batch creado: {batch.id}")
+
+
+
+   Crea un batch con múltiples solicitudes. Cada una tiene un custom_id para identificar los
+   resultados. La mayoría de batches terminan en menos de 1 hora y cuestan la mitad.
+
+
+
+
+                                                  592                                          @soyenriquerocha
+                                                                                        LA API DE CLAUDE
+
+
+
+
+Files API + PDF reutilizable
+
+
+
+    from anthropic import Anthropic
+
+
+    client = Anthropic()
+
+
+    # Sube el PDF una sola vez
+    with open("manual.pdf", "rb") as f:
+         file = client.beta.files.upload(
+              file=("manual.pdf", f, "application/pdf")
+         )
+
+
+    # Referencia el file_id en multiples peticiones sin volver a subirlo
+    resp = client.beta.messages.create(
+         model="claude-opus-4-8",
+         max_tokens=1024,
+         betas=["files-api-2025-04-14"],
+         messages=[{
+              "role": "user",
+              "content": [
+                    {"type": "document", "source": {"type": "file",
+    "file_id": file.id}},
+                    {"type": "text", "text": "Resume el manual en 5 puntos."}
+              ]
+         }]
+    )
+    print(resp.content[0].text)
+
+
+
+Cuando vas a consultar el mismo PDF muchas veces (análisis legales, atención al cliente sobre un
+manual, etc.), súbelo una vez con la Files API y referencia su file_id en cada petición. Reduces el
+tamaño del request, evitas re-subir el binario y combinas muy bien con prompt caching.
+
+
+
+
+                                                 593                                        @soyenriquerocha
+LA API DE CLAUDE
+
+
+
+
+   Manejar 429 con retry-after y backoff
+
+
+
+       import anthropic, time
+
+
+       client = anthropic.Anthropic()
+
+
+       def llamar_con_reintentos(messages, max_intentos=5):
+            espera = 1
+            for intento in range(max_intentos):
+                   try:
+                       return client.messages.create(
+                            model="claude-opus-4-8",
+                            max_tokens=1024,
+                            messages=messages,
+                       )
+                   except anthropic.RateLimitError as e:
+                       # La API te dice cuanto esperar
+                       retry_after = int(e.response.headers.get("retry-after",
+       espera))
+                       print(f"429 recibido. Espero {retry_after}s...")
+                       time.sleep(retry_after)
+                   except anthropic.APIStatusError as e:
+                       if e.status_code in (500, 529, 504):
+                            time.sleep(espera)
+                            espera *= 2       # backoff exponencial
+                       else:
+                            raise
+            raise RuntimeError("Se agotaron los reintentos")
+
+
+       resp = llamar_con_reintentos([{"role": "user", "content": "Hola"}])
+       print(resp.content[0].text)
+
+
+
+   Patrón estándar para manejar 429 (rate limit) y errores transitorios. Lee el header retry-after para
+   saber exactamente cuántos segundos esperar antes de reintentar. Para 500, 529 y 504 usa backoff
+   exponencial. Sube el tráfico de forma gradual para evitar acceleration limits.
+
+
+
+
+     Consejo
+
+     Siempre usa streaming (stream: true) cuando max_tokens sea alto. Evita timeouts y mejora la
+     experiencia del usuario.
+
+
+
+
+                                                    594                                        @soyenriquerocha
+                                                                                  LA API DE CLAUDE
+
+
+
+
+Consejo
+
+Guarda tu API key en la variable de entorno ANTHROPIC_API_KEY. Nunca la pongas directamente
+en el código.
+
+
+
+
+Consejo
+
+Usa prompt caching cuando repitas el mismo system prompt. Ahorras hasta 90% en tokens de
+entrada.
+
+
+
+
+Consejo
+
+Los cache_read_input_tokens no cuentan para rate limits (excepto en Haiku 3.5). Más cache =
+más capacidad efectiva.
+
+
+
+
+Consejo
+
+Para calcular el input real (y el coste real), suma input_tokens + cache_read_input_tokens +
+cache_creation_input_tokens. El campo input_tokens solo cuenta lo posterior al último cache
+breakpoint.
+
+
+
+
+Advertencia
+
+No uses temperature y top_p al mismo tiempo. Elige uno u otro para controlar la creatividad.
+
+
+
+
+Advertencia
+
+Claude Mythos Preview, Fable 5, Opus 4.8, Opus 4.7, Opus 4.6 y Sonnet 4.6 no soportan prefilling
+de mensajes assistant. Usa structured outputs en su lugar.
+
+
+
+
+                                             595                                       @soyenriquerocha
+LA API DE CLAUDE
+
+
+
+
+     Advertencia
+
+     Si cambias tus definiciones de herramientas (tools), todo el prompt cache se invalida. Mantenlas
+     estables.
+
+
+
+
+     Advertencia
+
+     Los batches no son elegibles para Zero Data Retention (ZDR). El prompt caching sí lo es: si
+     trabajas bajo ZDR, sustituye batches por peticiones síncronas pero mantén el caching.
+
+
+
+
+     Advertencia
+
+     Sube el tráfico gradualmente. Los acceleration limits pueden dispararte un 429 aunque no hayas
+     alcanzado tu cupo nominal de RPM/ITPM.
+
+
+
+
+     Nota
+
+     La versión de la API es 2023-06-01 y no ha cambiado. Se especifica en el header anthropic-
+     version.
+
+
+
+
+     Nota
+
+     Cada respuesta incluye un request-id y un anthropic-organization-id en los headers. Guárdalos
+     para debugging y soporte.
+
+
+
+
+     Nota
+
+     Los descuentos de prompt caching y batches se acumulan. Puedes ahorrar significativamente
+     combinándolos.
+
+
+
+
+                                                   596                                       @soyenriquerocha
+                                                                                     LA API DE CLAUDE
+
+
+
+
+ Nota
+
+ Cuidado con los tamaños máximos de petición: 32 MB en la API directa, 30 MB en Vertex AI, 20 MB
+ en Bedrock.
+
+
+
+
+Resumen del Capítulo
+
+La API de Claude te permite integrar la inteligencia de Claude en cualquier aplicación. Lo esencial
+son 3 parámetros (model, max_tokens, messages) y una API key. Las funciones avanzadas como
+streaming, tool use, structured outputs, vision, PDFs, prompt caching y batches te dan control
+total sobre cómo interactúas con Claude y cuánto pagas.
+
+
+
+
+                                               597                                       @soyenriquerocha
+22

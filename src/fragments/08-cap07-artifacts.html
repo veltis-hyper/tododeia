@@ -1,0 +1,545 @@
+<article class="chapter" data-id="cap07" data-title="Artifacts: Crea Cosas Reales con Claude" data-part="2">
+  <header class="ch-head">
+    <p class="ch-kicker">Parte 2 · <a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a> en Profundidad · Capítulo 7</p>
+    <h1>Artifacts: Crea Cosas Reales con Claude</h1>
+    <p class="ch-sub">Páginas web, apps interactivas, diagramas y documentos — todo dentro de Claude</p>
+    <p class="ch-level">Intermedio</p>
+    <p class="ch-lede">Imagina que Claude no solo te responde con texto, sino que te construye cosas. Una página web funcional. Un dashboard con gráficos interactivos. Un diagrama profesional. Eso son los Artifacts: ventanas especiales donde Claude crea contenido real que puedes ver, tocar, editar y compartir. En este capítulo vas a aprender a usar cada tipo de artifact, desde documentos simples hasta aplicaciones con inteligencia artificial integrada.</p>
+  </header>
+
+  <h2 id="cap07-que-son-los-artifacts">Qué son los Artifacts</h2>
+  <p>Cuando le pides algo a Claude, normalmente te responde con texto en el chat. Pero a veces la respuesta es algo más grande. Un código de 50 líneas. Una página web completa. Un diagrama detallado.</p>
+  <p>Para esas respuestas grandes, Claude usa Artifacts. Piensa en un artifact como una ventana especial que aparece al lado del chat. Es como tener un mini-editor dentro de Claude.</p>
+  <p>La analogía perfecta: imagina que el chat es una conversación por teléfono. Los artifacts son como si, durante la llamada, la otra persona te enviara un documento por correo. Puedes verlo, editarlo y guardarlo — todo sin colgar el teléfono.</p>
+
+  <h3>Cuando Claude crea un Artifact automáticamente</h3>
+  <p>Claude no crea un artifact para cualquier cosa. Solo lo hace cuando se cumplen estas condiciones:</p>
+  <ul class="deflist">
+    <li><strong>Es contenido grande</strong> — típicamente más de 15 líneas de código o texto sustancial.</li>
+    <li><strong>Es autocontenido</strong> — funciona por sí solo, sin necesitar el contexto del chat.</li>
+    <li><strong>Es reutilizable</strong> — algo que probablemente quieras copiar, descargar o editar después.</li>
+  </ul>
+  <p>Si le pides una línea de código corta, Claude la pone directamente en el chat. Si le pides una función completa, la pone en un artifact.</p>
+
+  <h3>En qué planes están disponibles</h3>
+  <p>Los artifacts están disponibles en todos los planes: Free, Pro, Max, Team y Enterprise. Algunas funciones avanzadas (como almacenamiento persistente e integración MCP) requieren plan Pro o superior.</p>
+  <p>Los administradores de Team y Enterprise pueden activar o desactivar artifacts para toda la organización.</p>
+
+  <h3>Cómo activar o desactivar Artifacts</h3>
+  <p>En la mayoría de cuentas creadas después de febrero 2026, los artifacts están activos por defecto. Pero puedes controlarlos manualmente desde la configuración.</p>
+  <p>Ruta: <code>Settings &gt; Capabilities &gt; Artifacts</code></p>
+  <p>Allí encuentras dos interruptores separados:</p>
+  <ul class="deflist">
+    <li><strong>Artifacts</strong> — activa o desactiva la creación de artifacts en general.</li>
+    <li><strong>AI-powered artifacts</strong> — controla por separado los artifacts que usan la inteligencia de Claude dentro de sí mismos (los que llaman a la API <code>window.claude.complete</code>). Útil desactivarlo si solo quieres artifacts estáticos.</li>
+  </ul>
+  <p>No basta con el interruptor de Artifacts: para que Claude pueda crear artifacts, también deben estar activadas otras dos capacidades en <code>Settings &gt; Capabilities</code>: <strong>code execution</strong> (ejecución de código) y <strong>file creation</strong> (creación de archivos). Si alguna de las dos está apagada, puede que no aparezca la opción de crear artifacts aunque el interruptor de Artifacts esté encendido. Si no ves artifacts, revisa que las tres estén activas.</p>
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Nota para cuentas antiguas: si abriste tu cuenta antes de febrero 2026, puede que el interruptor esté bajo <code>Settings &gt; Feature Preview</code> en vez de Capabilities. Es la misma función, solo cambia de lugar.</p>
+  </div>
+  <p>En planes Team y Enterprise, los administradores tienen controles adicionales a nivel de organización para activar o restringir esta capacidad para todos los miembros.</p>
+
+  <h2 id="cap07-panel-de-artifacts">El Panel de Artifacts: Tu Taller de Trabajo</h2>
+  <p>Los artifacts aparecen en la barra lateral de Claude. Es como un taller organizado donde guardas todas tus creaciones.</p>
+  <p>Desde la barra lateral puedes:</p>
+  <ul>
+    <li>Ver todos los artifacts que has creado.</li>
+    <li>Explorar artifacts de inspiración creados por Anthropic.</li>
+    <li>Crear nuevos artifacts o personalizar los existentes.</li>
+  </ul>
+
+  <h3>Dos formas de ver un Artifact: Preview y Code</h3>
+  <p>Cada artifact tiene dos vistas. Es como ver una moneda por ambos lados:</p>
+  <ul class="deflist">
+    <li><strong>Preview</strong> — muestra el resultado final. Si es una página web, ves la página. Si es un diagrama, ves el diagrama.</li>
+    <li><strong>Code</strong> — muestra el código fuente detrás del artifact. Es lo que Claude escribió para crear esa vista bonita.</li>
+  </ul>
+  <p>Puedes alternar entre ambas vistas con un botón en la parte superior del artifact. Los documentos de texto plano no tienen vista de código.</p>
+
+  <h3>Navegar entre versiones</h3>
+  <p>Cada vez que le pides a Claude que modifique un artifact, se crea una nueva versión. Es como el historial de un documento de Google Docs.</p>
+  <p>Usa las flechas o el menú en el artifact para moverte entre versiones. Así puedes comparar cambios o volver a una versión anterior si algo no te gustó.</p>
+
+  <h3>Trabajar con varios artifacts a la vez</h3>
+  <p>A veces una conversación produce varios artifacts. Por ejemplo: un componente React y un diagrama. Para cambiar entre ellos, usa el icono deslizador en el chat. Este control te permite seleccionar cuál artifact está "activo" — es decir, cuál modificará Claude cuando le pidas cambios.</p>
+
+  <h2 id="cap07-los-7-tipos-de-artifacts">Los 7 Tipos de Artifacts</h2>
+  <p>Claude puede crear diferentes tipos de contenido. Cada tipo es como una herramienta distinta en una caja de herramientas. Vamos uno por uno.</p>
+
+  <h3>1. Documentos (Markdown o texto plano)</h3>
+  <p>El tipo más simple. Claude escribe un documento con formato: títulos, listas, negritas, enlaces.</p>
+  <p>Ideal para: tutoriales, documentación, artículos, notas.</p>
+  <p>Ejemplo de prompt:</p>
+  <pre><code class="lang-text">Escribe un tutorial sobre cómo usar Git para principiantes</code></pre>
+  <p>Claude generará un documento Markdown con secciones, ejemplos y formato profesional.</p>
+
+  <h3>2. Fragmentos de código</h3>
+  <p>Código en más de 30 lenguajes de programación. La lista es muy amplia: Python, JavaScript, TypeScript, Java, C, C++, C#, Go, Rust, Ruby, PHP, Swift, Kotlin, Bash, R, Lua, Dart, Elixir, Haskell, Scala, SQL, HTML, CSS, YAML, JSON, XML, Markdown y más. Si es un lenguaje conocido, Claude lo soporta.</p>
+  <p>El código se muestra con resaltado de sintaxis — eso significa que las palabras clave, funciones y variables aparecen en colores diferentes para que sea más fácil de leer.</p>
+  <p>Ejemplo de prompt:</p>
+  <pre><code class="lang-text">Escribe una función en Python que ordene una lista de nombres alfabéticamente</code></pre>
+  <p>Puedes copiar el código al portapapeles o descargarlo como archivo (<code>.py</code>, <code>.js</code>, <code>.ts</code>, <code>.swift</code>, etc.).</p>
+
+  <h3>3. Páginas HTML</h3>
+  <p>Esto es donde la magia empieza. Claude puede crear páginas web completas con HTML, CSS y JavaScript — todo en un solo archivo.</p>
+  <p>La página se renderiza en el panel del artifact. Es decir, ves la página web funcionando, no solo el código.</p>
+  <p>Ejemplo de prompt:</p>
+  <pre><code class="lang-text">Crea una landing page moderna para una app de productividad con hero section, features, pricing y footer</code></pre>
+  <div class="callout warn">
+    <p class="callout-label">Importante</p>
+    <p>Restricción importante: si necesitas cargar bibliotecas externas (como jQuery o Chart.js), solo puedes hacerlo desde <code><a href="https://cdnjs.cloudflare.com" target="_blank" rel="noopener">https://cdnjs.cloudflare.com</a></code>. Ningún otro dominio está permitido por seguridad. Además, siempre usa versiones específicas (como <code>3.7.1</code>), nunca <code>latest</code>.</p>
+  </div>
+
+  <h3>4. Imágenes SVG</h3>
+  <p>SVG significa Scalable Vector Graphics. Son imágenes hechas con matemáticas en vez de píxeles. Se ven nítidas a cualquier tamaño.</p>
+  <p>Piensa en la diferencia entre dibujar con crayones (píxeles — se ve borroso al ampliar) y dibujar con reglas y compás (vectores — siempre nítido).</p>
+  <p>Ideal para: diagramas técnicos, iconos, logos, ilustraciones simples.</p>
+  <p>Ejemplo de prompt:</p>
+  <pre><code class="lang-text">Crea un diagrama SVG que muestre el flujo de una petición HTTP desde el cliente hasta el servidor</code></pre>
+
+  <h3>5. Diagramas Mermaid</h3>
+  <p>Mermaid es un lenguaje para crear diagramas escribiendo texto. Claude escribe el texto y el artifact te muestra el diagrama visual.</p>
+  <p>Es como dar instrucciones escritas para dibujar: "una caja que dice Inicio, una flecha que va a otra caja que dice Proceso". Mermaid convierte esas instrucciones en un diagrama profesional.</p>
+  <p>Tipos de diagramas soportados (23 en total):</p>
+  <ul class="deflist">
+    <li><strong>Diagramas de flujo</strong> (flowchart)</li>
+    <li><strong>Diagramas de secuencia</strong></li>
+    <li><strong>Diagramas de clases</strong></li>
+    <li><strong>Diagramas de estado</strong></li>
+    <li><strong>Gráficos Gantt</strong></li>
+    <li><strong>Gráficos de pastel</strong> (pie)</li>
+    <li><strong>Diagramas entidad-relación</strong></li>
+    <li><strong>Mindmap</strong> — mapas mentales</li>
+    <li><strong>Timeline</strong> — líneas de tiempo</li>
+    <li><strong>C4Context</strong> — arquitectura de software estilo C4</li>
+    <li><strong>quadrantChart</strong> — matriz 2x2 tipo Eisenhower</li>
+    <li><strong>Sankey</strong> — diagramas de flujo proporcionales</li>
+    <li><strong>gitGraph</strong> — historial de ramas Git</li>
+    <li><strong>Journey</strong> — viajes de usuario</li>
+    <li><strong>xychart</strong> — gráficos de barras y líneas</li>
+    <li><strong>block-beta</strong> — bloques con relaciones</li>
+    <li><strong>requirementDiagram</strong> — diagramas de requisitos</li>
+    <li>Y varios más: ZenUML, packet, kanban, architecture, etc.</li>
+  </ul>
+  <p>Ejemplo de prompt:</p>
+  <pre><code class="lang-text">Crea un diagrama de flujo del proceso de CI/CD con etapas de build, test y deploy</code></pre>
+  <p><strong>Temas disponibles</strong>: puedes pedirle a Claude que use un tema visual diferente. Las opciones son <code>default</code>, <code>forest</code>, <code>dark</code> y <code>neutral</code>. Por ejemplo: "usa el tema dark".</p>
+  <p><strong>Exportación</strong>: los diagramas Mermaid se pueden exportar como SVG, PNG o PDF, listos para pegar en documentación, presentaciones o reportes.</p>
+
+  <h3>6. Componentes React (el más poderoso)</h3>
+  <p>React es una tecnología para crear interfaces interactivas. Los artifacts React son el tipo más poderoso porque te permiten crear aplicaciones funcionales completas.</p>
+  <p>Imagina la diferencia entre una foto de un dashboard y un dashboard real donde puedes hacer clic, filtrar datos y ver gráficos animados. Los artifacts React son eso segundo.</p>
+  <p>Ejemplo de prompt:</p>
+  <pre><code class="lang-text">Crea un dashboard interactivo que muestre gráficos de ventas mensuales con barras y líneas. Incluye filtros por período.</code></pre>
+  <p>Bibliotecas pre-instaladas en React artifacts (15+):</p>
+  <ul class="deflist">
+    <li><strong>React (v18)</strong> — el motor principal con todos los Hooks.</li>
+    <li><strong>Tailwind CSS</strong> — estilos rápidos y modernos con clases inline.</li>
+    <li><strong>Recharts</strong> — gráficos y visualizaciones (la opción por defecto para data viz).</li>
+    <li><strong>shadcn/ui</strong> — botones, inputs, modales y otros componentes de interfaz.</li>
+    <li><strong>Lucide React</strong> — miles de iconos vectoriales bonitos.</li>
+    <li><strong>Lodash</strong> — funciones útiles para manipular datos (groupBy, sortBy, etc.).</li>
+    <li><strong>D3</strong> — visualizaciones de datos avanzadas y personalizadas.</li>
+    <li><strong>Three.js (r128)</strong> — gráficos 3D y escenas inmersivas.</li>
+    <li><strong>Plotly</strong> — gráficos interactivos científicos, 3D plots, mapas.</li>
+    <li><strong>Tone.js</strong> — framework para audio web — útil para apps musicales.</li>
+    <li><strong>mathjs</strong> — librería matemática completa para calculadoras y herramientas científicas.</li>
+    <li><strong>Papaparse</strong> — parser de archivos CSV.</li>
+    <li><strong>SheetJS / xlsx</strong> — leer y generar archivos Excel.</li>
+    <li><strong>mammoth</strong> — convertir archivos Word (.docx) a HTML.</li>
+    <li><strong>TensorFlow.js</strong> — machine learning en el navegador.</li>
+    <li><strong>Chart.js</strong> — alternativa a Recharts disponible también en artifacts HTML.</li>
+  </ul>
+  <p>Solo puedes usar estas bibliotecas. No puedes instalar ni importar otras desde npm.</p>
+
+  <h3>7. Archivos descargables</h3>
+  <p>Claude también puede crear archivos que descargas directamente a tu computadora.</p>
+  <p>Formatos soportados:</p>
+  <ul class="deflist">
+    <li><strong><code>.docx</code></strong> — Documentos Word</li>
+    <li><strong><code>.pptx</code></strong> — Presentaciones PowerPoint</li>
+    <li><strong><code>.xlsx</code></strong> — Hojas de cálculo Excel</li>
+    <li><strong><code>.pdf</code></strong> — Documentos PDF</li>
+  </ul>
+  <p>Ejemplo de prompt:</p>
+  <pre><code class="lang-text">Crea una presentación de 10 slides sobre inteligencia artificial para una clase universitaria</code></pre>
+  <p>El archivo se descarga listo para usar. Puedes abrirlo con Microsoft Office, Google Docs o cualquier programa compatible.</p>
+
+  <h2 id="cap07-editar-y-mejorar-tus-artifacts">Editar y Mejorar tus Artifacts</h2>
+  <p>Crear un artifact es solo el primer paso. La verdadera potencia está en iterar — pedir cambios hasta que quede perfecto.</p>
+
+  <h3>Pedir cambios en el chat</h3>
+  <p>Simplemente escribe lo que quieres cambiar. Claude entiende el contexto y modifica el artifact.</p>
+  <p>Ejemplos de prompts para iterar:</p>
+  <ul>
+    <li>Cambia los colores a azul oscuro y blanco</li>
+    <li>Agrega un botón de contacto en el footer</li>
+    <li>Haz que la tabla sea responsive para móviles</li>
+    <li>Corrige el error en la función de cálculo</li>
+  </ul>
+  <p>Cada cambio crea una nueva versión. Si no te gusta el resultado, vuelve a la versión anterior.</p>
+
+  <h3>Edición selectiva: cambia solo una parte</h3>
+  <p>No siempre quieres que Claude reescriba todo. A veces solo necesitas cambiar un botón o un párrafo.</p>
+  <p>Para eso existe la edición selectiva:</p>
+  <ol class="steps">
+    <li>Selecciona (resalta) la sección que quieres cambiar dentro del artifact.</li>
+    <li>Escribe en el chat qué quieres modificar.</li>
+    <li>Claude solo toca esa parte y deja el resto intacto.</li>
+  </ol>
+  <p>Es más rápido y más preciso que pedir una reescritura completa.</p>
+
+  <h3>Cuando algo falla: Try fixing with Claude</h3>
+  <p>A veces un artifact tiene errores. Especialmente los de código. Cuando eso pasa, aparece un botón que dice <strong>"Try fixing with Claude"</strong>.</p>
+  <p>Al hacer clic, Claude recibe automáticamente los detalles del error y te propone una solución. <strong>Resuelve aproximadamente la mitad de los errores comunes a la primera.</strong> Es el punto de partida más rápido para arreglar problemas.</p>
+  <p>Si ese botón no resuelve el problema, hay un truco extra que casi siempre funciona:</p>
+  <ol class="steps">
+    <li>Abre la consola del navegador con la tecla <code>F12</code> (en Mac: <code>Cmd + Option + I</code>).</li>
+    <li>Ve a la pestaña Console.</li>
+    <li>Copia el mensaje de error en rojo.</li>
+    <li>Pégalo en el chat con un mensaje como: "este es el error que aparece, arréglalo".</li>
+  </ol>
+  <p>Con el texto exacto del error, Claude entiende el problema mucho mejor y casi siempre lo resuelve en el siguiente intento.</p>
+
+  <h3>Editar mensajes anteriores: crear ramas de la conversación</h3>
+  <p>Hay otra forma de iterar que mucha gente no conoce: editar un mensaje anterior en el chat.</p>
+  <p>Cuando editas un mensaje pasado, Claude no continúa desde el punto actual. En vez de eso, crea una rama alternativa de la conversación desde ese mensaje. Es como un "qué hubiera pasado si...".</p>
+  <p>Esto es útil para:</p>
+  <ul>
+    <li>Probar un enfoque distinto sin perder el actual.</li>
+    <li>Comparar dos versiones del mismo artifact partiendo del mismo punto.</li>
+    <li>Volver a un momento previo y tomar otra dirección.</li>
+  </ul>
+  <p>Es similar a hacer fork en GitHub: dos versiones que viven en paralelo desde un origen común.</p>
+
+  <h2 id="cap07-publicar-y-compartir-artifacts">Publicar y Compartir Artifacts</h2>
+  <p>Crear artifacts es útil para ti. Pero publicarlos y compartirlos los convierte en herramientas para todos.</p>
+
+  <h3>Publicar: hazlo accesible para el mundo</h3>
+  <p>Publicar un artifact le da un enlace público. Cualquier persona con ese enlace puede verlo e interactuar con él — sin necesitar cuenta de Claude.</p>
+  <p>Cómo publicar:</p>
+  <ol class="steps">
+    <li>Abre el artifact que quieres publicar.</li>
+    <li>Verifica que estés en la versión correcta.</li>
+    <li>Haz clic en <strong>Publish</strong>.</li>
+    <li>Copia el enlace público que se genera.</li>
+  </ol>
+  <p>Disponible en planes Free, Pro y Max.</p>
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Advertencias importantes:</p>
+    <ul>
+      <li>Si despublicas un artifact, no puedes volver a publicar ese mismo artifact. Tendrás que crear uno nuevo.</li>
+      <li>Despublicar elimina permanentemente todos los datos de almacenamiento asociados.</li>
+      <li>Las versiones nuevas no se publican automáticamente. Debes publicar cada versión individualmente.</li>
+      <li>Eliminar el chat donde se creó el artifact desactiva automáticamente su publicación.</li>
+    </ul>
+  </div>
+
+  <h3>Compartir en equipos (Team y Enterprise)</h3>
+  <p>En planes Team y Enterprise, los artifacts no se publican al mundo. Se comparten dentro de la organización.</p>
+  <p>Cómo compartir:</p>
+  <ol class="steps">
+    <li>Abre el artifact.</li>
+    <li>Verifica la versión.</li>
+    <li>Haz clic en <strong>Share</strong>.</li>
+    <li>Selecciona <strong>Share &amp; copy link</strong>.</li>
+  </ol>
+  <p>Solo miembros autenticados de tu organización pueden acceder. Para dejar de compartir, ve a Share y luego <strong>Unshare</strong>.</p>
+  <div class="callout warn">
+    <p class="callout-label">Ojo</p>
+    <p>Al compartir un artifact, los demás también obtienen acceso a adjuntos y archivos de la conversación que lo creó. No compartas artifacts creados en conversaciones con información sensible.</p>
+  </div>
+
+  <h3>Embeber artifacts en tu sitio web</h3>
+  <p>Embeber significa insertar un artifact dentro de otra página web. Es como poner un video de YouTube dentro de tu blog.</p>
+  <p>Cómo embeber:</p>
+  <ol class="steps">
+    <li>Publica el artifact primero.</li>
+    <li>Haz clic en <strong>Get embed code</strong>.</li>
+    <li>Escribe los dominios permitidos (separados por comas). Ejemplo: <code><a href="https://midominio.com" target="_blank" rel="noopener">midominio.com</a>, <a href="https://blog.midominio.com" target="_blank" rel="noopener">blog.midominio.com</a></code></li>
+    <li>Copia el código <code>&lt;iframe&gt;</code> generado.</li>
+    <li>Pega ese código en el HTML de tu sitio web.</li>
+  </ol>
+  <p>Los dominios se especifican por seguridad. Solo los sitios que tú autorices podrán mostrar el artifact.</p>
+
+  <h3>Remix: construye sobre el trabajo de otros</h3>
+  <p>¿Viste un artifact publicado que te gustó? Puedes usarlo como punto de partida para crear el tuyo.</p>
+  <p>Cómo hacer remix:</p>
+  <ol class="steps">
+    <li>Abre el enlace de un artifact publicado.</li>
+    <li>Haz clic en <strong>Customize</strong> (antes se llamaba "Remix this Artifact").</li>
+    <li>Se abre una nueva conversación con el contenido del artifact.</li>
+    <li>Pide las modificaciones que quieras.</li>
+  </ol>
+  <p>Tu versión es completamente independiente. Los cambios que hagas no afectan al artifact original.</p>
+
+  <h2 id="cap07-funciones-avanzadas">Funciones Avanzadas</h2>
+  <p>Estas funciones llevan los artifacts al siguiente nivel. Requieren plan Pro o superior.</p>
+
+  <h3>Artifacts con IA: apps que piensan</h3>
+  <p>Esta es la función más impresionante. Puedes crear un artifact que usa la inteligencia de Claude dentro de sí mismo.</p>
+  <p>Imagina crear un chatbot personalizado, un coach de escritura, o un juego que se adapta al jugador — todo como un artifact que puedes publicar y compartir.</p>
+  <p>Cómo funcionan:</p>
+  <ol class="steps">
+    <li>Descríbele a Claude lo que quieres. Ejemplo: <code>Crea un chatbot que ayude a practicar inglés corrigiendo errores gramaticales</code></li>
+    <li>Claude escribe el código del artifact con llamadas a su propia API.</li>
+    <li>La app se ejecuta en los servidores de Anthropic.</li>
+    <li>Los usuarios se autentican con su cuenta de Claude para usarla.</li>
+  </ol>
+  <p><strong>La API exacta que usan</strong>: el código generado llama a una función especial llamada <code>window.claude.complete</code>. Su firma es muy simple: acepta un prompt en formato texto y devuelve la respuesta también en texto.</p>
+  <pre><code class="lang-js">const respuesta = await window.claude.complete('Resume este texto: ' + input);</code></pre>
+  <p>No tienes que aprenderte esta API si no quieres — Claude la usa automáticamente al construir el artifact. Pero saber el nombre te ayuda si quieres pedir cambios específicos al código.</p>
+  <p><strong>Sobre los costos</strong>: tú no pagas por lo que otros usan. Cada persona que interactúa con tu artifact AI-powered usa sus propios límites de suscripción. Es como prestar tu receta de cocina: tú la creas, pero cada persona compra sus propios ingredientes.</p>
+  <p>Disponible en todos los planes.</p>
+
+  <h3>Almacenamiento persistente: datos que no se pierden</h3>
+  <p>Normalmente, los datos dentro de un artifact desaparecen cuando cierras la página. El almacenamiento persistente cambia eso.</p>
+  <p>Hay dos tipos:</p>
+  <ul class="deflist">
+    <li><strong>Personal</strong> — cada usuario guarda sus propios datos privados. Ejemplo: un diario personal donde solo tú ves tus entradas.</li>
+    <li><strong>Compartido</strong> — todos los usuarios ven y modifican los mismos datos. Ejemplo: un tablero de tareas donde todo el equipo colabora.</li>
+  </ul>
+  <p>Límites:</p>
+  <ul>
+    <li>Máximo 20 MB por artifact.</li>
+    <li>Solo texto. No puedes guardar imágenes, archivos ni datos binarios.</li>
+    <li>El almacenamiento personal y el compartido están completamente separados.</li>
+  </ul>
+  <p><strong>La API que se usa</strong>: el almacenamiento persistente se accede a través de una función especial llamada <code>window.storage</code>. Esta reemplaza a <code>localStorage</code> y <code>sessionStorage</code>, que no funcionan dentro del sandbox de los artifacts. Igual que con <code>window.claude.complete</code>, no tienes que aprenderte esta API — Claude la usa automáticamente cuando le pides que el artifact recuerde datos. Pero conocer el nombre te ayuda si quieres pedir cambios precisos al código.</p>
+  <div class="callout warn">
+    <p class="callout-label">Detalle clave</p>
+    <p>Detalle clave que mucha gente pasa por alto: <code>window.storage</code> y el almacenamiento persistente SOLO funcionan en artifacts PUBLICADOS. Mientras el artifact viva solo dentro de tu chat (sin publicar), no hay almacenamiento persistente disponible. Si quieres que los datos sobrevivan entre sesiones, primero publica el artifact.</p>
+  </div>
+  <p>Disponible en Pro, Max, Team y Enterprise.</p>
+
+  <h3>Integración MCP: conecta con el mundo exterior</h3>
+  <p>MCP (Model Context Protocol) permite que un artifact se conecte con servicios externos. Es como darle brazos y piernas a tu artifact para que haga cosas fuera de Claude.</p>
+  <p><strong>Servicios compatibles</strong>: Google Calendar, Gmail, Slack, Asana, y servidores MCP personalizados.</p>
+  <p>Ejemplo: un artifact que lee tu calendario de Google y te muestra un resumen visual de tu semana.</p>
+  <div class="callout warn">
+    <p class="callout-label">Importante</p>
+    <p>Cada usuario debe autenticar los servidores MCP por separado, incluso en artifacts compartidos. La primera vez se te pide aprobación, y después la preferencia se guarda.</p>
+  </div>
+  <p>Disponible en Pro, Max, Team y Enterprise (web y desktop).</p>
+
+  <h3>Live Artifacts: dashboards que se actualizan solos</h3>
+  <p>Esta es una de las novedades más importantes de 2026. Los Live Artifacts son dashboards y trackers que se refrescan con datos en vivo cada vez que los abres. Sin tener que pedirle nada a Claude.</p>
+  <p>La analogía: un artifact normal es como una foto. Un Live Artifact es como una ventana — cuando la miras, ves lo que está pasando ahora mismo del otro lado.</p>
+  <p>Fechas de lanzamiento:</p>
+  <ul class="deflist">
+    <li><strong>20 de abril de 2026</strong> — lanzamiento inicial exclusivo en Claude Cowork.</li>
+    <li><strong>21 de abril de 2026</strong> — rollout amplio a todos los planes compatibles.</li>
+  </ul>
+  <p>Cómo funcionan por debajo: un Live Artifact combina tres piezas que ya viste en este capítulo:</p>
+  <ol class="steps">
+    <li>Un artifact publicado (para que tenga URL estable).</li>
+    <li>Conexión MCP o llamadas a APIs externas (para tirar de datos reales).</li>
+    <li>Almacenamiento persistente (para recordar configuraciones entre sesiones).</li>
+  </ol>
+  <p>Cada vez que reabres el artifact, vuelve a pedir los datos a la fuente y se actualiza la visualización. Tú no haces nada.</p>
+  <p>Casos de uso reales:</p>
+  <ul class="deflist">
+    <li><strong>Monitor de KPIs</strong> — ingresos, conversiones, métricas de producto. Conectado a Google Analytics 4, Stripe o tu CRM.</li>
+    <li><strong>Seguimiento de pipeline</strong> — oportunidades por etapa del CRM, actualizadas al instante.</li>
+    <li><strong>Calendario de contenido</strong> — publicaciones programadas, performance histórico, ideas pendientes.</li>
+    <li><strong>Mini Data Studio</strong> — dashboards visuales tipo Looker o GA4, pero construidos en lenguaje natural.</li>
+    <li><strong>Tracker de proyectos</strong> — tareas, hitos y bloqueos sincronizados con Asana o Linear.</li>
+  </ul>
+  <p>Ejemplo práctico: imagina un Live Artifact conectado a Google Calendar vía MCP. Le dices a Claude:</p>
+  <pre><code class="lang-text">Crea un artifact que muestre mis próximas 5 reuniones de la semana, con quién es cada una y un botón para unirme. Que se refresque cada vez que lo abra.</code></pre>
+  <p>Una vez creado y publicado, lo guardas como pestaña en tu navegador. Cada mañana lo abres y ves tu día actualizado — sin pedirle nada a Claude, sin regenerar el artifact, sin copiar y pegar.</p>
+  <p>Disponible en Pro, Max, Team y Enterprise. Requiere tener MCP activo en tu cuenta.</p>
+
+  <h3>Artifacts en Claude Code: tu sesión convertida en página web</h3>
+  <p>Una novedad reciente (lanzada el 18 de junio de 2026) lleva los artifacts a Claude Code, la herramienta de Claude para programar desde la terminal. La idea es simple pero potente: convierte el trabajo de una sesión de Claude Code en una página web en vivo y compartible.</p>
+  <p>A diferencia de un artifact normal, esta página se construye con el contexto completo de tu sesión de código y se actualiza en tiempo real: cuando Claude Code modifica el artifact, la página que ya tienes abierta se refresca sola y se republica a la misma URL. Es privada por defecto, con galería e historial de versiones que puedes restaurar.</p>
+  <div class="callout warn">
+    <p class="callout-label">Importante</p>
+    <p>Esta función está en BETA y por ahora solo está disponible en los planes Team y Enterprise.</p>
+  </div>
+  <p>Aquí solo te dejamos la mención para que sepas que existe. El detalle completo de Claude Code y de esta función lo verás en su propio capítulo (ver <code>ch11-empezar-claude-code</code>).</p>
+
+  <h2 id="cap07-limitaciones-que-debes-conocer">Limitaciones que Debes Conocer</h2>
+  <p>Los artifacts son poderosos, pero tienen límites claros. Conocerlos te ahorra frustración.</p>
+  <ul class="deflist">
+    <li><strong>Solo frontend</strong> — los artifacts ejecutan código en el navegador. No hay servidor ni backend. No puedes conectarte a bases de datos.</li>
+    <li><strong>Un solo archivo</strong> — todo el código debe estar en un archivo. No puedes tener múltiples archivos que se importen entre sí.</li>
+    <li><strong>Sin localStorage</strong> — los artifacts React no pueden usar <code>localStorage</code> ni <code>sessionStorage</code>. Usa <code>useState</code> de React o almacenamiento persistente.</li>
+    <li><strong>Bibliotecas limitadas</strong> — en React solo puedes usar las bibliotecas pre-instaladas (15+ disponibles). En HTML solo puedes cargar desde <code><a href="https://cdnjs.cloudflare.com" target="_blank" rel="noopener">cdnjs.cloudflare.com</a></code>.</li>
+    <li><strong>Versiones congeladas de las bibliotecas</strong> — las versiones están fijadas y no las puedes cambiar. Esto importa sobre todo con Three.js, que está fijado en la versión r128. Las APIs que llegaron después de esa versión no existen en el artifact. Por ejemplo, <code>CapsuleGeometry</code> (que apareció en r142) no está disponible, y <code>OrbitControls</code> no se puede importar desde el CDN. Si necesitas esas formas o controles, pídele a Claude que use alternativas de r128 (como <code>CylinderGeometry</code> o <code>SphereGeometry</code>) y que maneje el giro de cámara a mano.</li>
+    <li><strong>Sin multimedia</strong> — no hay soporte para audio, video ni imágenes fotográficas. Solo contenido basado en texto y gráficos SVG.</li>
+    <li><strong>Rendimiento</strong> — datasets muy grandes o visualizaciones pesadas pueden hacer que el artifact se ponga lento o falle.</li>
+    <li><strong>No es producción</strong> — los artifacts son ideales para prototipos y demostraciones. Para apps en producción, necesitas migrar el código a infraestructura profesional.</li>
+    <li><strong>El Tab de Artifacts no está en móvil</strong> — la sección dedicada de Artifacts en la barra lateral solo está disponible en web y desktop. En la app móvil puedes ver artifacts dentro del chat, pero no acceder al panel completo de gestión.</li>
+    <li><strong>Dos límites de tamaño distintos</strong> — el límite de subida/descarga de archivos al chat es de 30 MB (límite general de Claude). Es distinto del límite de 20 MB de almacenamiento persistente por artifact, que solo acepta texto.</li>
+    <li><strong>Los visores sin cuenta deben hacer login antes de interactuar</strong> — los enlaces públicos van a <code><a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a></code>, así que aunque alguien pueda ver el artifact, necesita iniciar sesión (incluso en tier Free) para usar funciones interactivas o hacer Remix.</li>
+  </ul>
+
+  <h2 id="cap07-solucion-de-problemas-comunes">Solución de Problemas Comunes</h2>
+  <p>Cuando algo falla en un artifact, casi siempre cae en uno de estos 9 escenarios. Esta es la guía rápida para arreglarlo.</p>
+
+  <h3>1. Panel vacío / artifact en blanco</h3>
+  <p><strong>Síntoma</strong>: el panel del artifact carga pero no muestra nada.</p>
+  <p><strong>Causa probable</strong>: una extensión del navegador, el firewall de tu empresa o un proxy/VPN están bloqueando el iframe. O hay un error de JavaScript silencioso dentro del artifact.</p>
+  <p><strong>Solución</strong>: abre Claude en una ventana de incógnito sin extensiones. Si funciona ahí, ve desactivando extensiones de tu navegador normal una por una hasta encontrar la culpable (los bloqueadores de anuncios son los sospechosos habituales). Si sigue vacío, abre la consola con <code>F12</code> y copia el error a Claude.</p>
+
+  <h3>2. El artifact no se renderiza / no aparece</h3>
+  <p><strong>Síntoma</strong>: Claude genera el código pero el preview no se actualiza.</p>
+  <p><strong>Causa probable</strong>: caché viejo, navegador desactualizado o la función está desactivada en Settings.</p>
+  <p><strong>Solución</strong>: recarga con <code>Ctrl+Shift+R</code> (Mac: <code>Cmd+Shift+R</code>). Verifica que <code>Settings &gt; Capabilities &gt; Artifacts</code> esté activado. Actualiza tu navegador a la última versión.</p>
+
+  <h3>3. Excepción en runtime</h3>
+  <p><strong>Síntoma</strong>: aparece un mensaje rojo de error en el panel del artifact.</p>
+  <p><strong>Causa probable</strong>: un bug en el código generado, una dependencia inexistente o el uso de una API bloqueada (como <code>localStorage</code>).</p>
+  <p><strong>Solución</strong>: pulsa <strong>"Try fixing with Claude"</strong>. Si no resuelve, abre la consola del navegador (<code>F12</code>), copia el texto exacto del error y pégalo en el chat pidiendo la corrección.</p>
+
+  <h3>4. Fetch a una API externa bloqueado</h3>
+  <p><strong>Síntoma</strong>: el artifact intenta llamar a una API y falla con un error de CORS o de red.</p>
+  <p><strong>Causa probable</strong>: el sandbox bloquea las llamadas cross-origin a dominios externos por seguridad.</p>
+  <p><strong>Solución</strong>: pasa los datos directamente al componente (inline o como props). Si necesitas datos en vivo, usa MCP (Pro o superior) o llamadas a <code>window.claude.complete</code> en artifacts AI-powered. Para dashboards con datos reales, considera un Live Artifact.</p>
+
+  <h3>5. "localStorage is not defined"</h3>
+  <p><strong>Síntoma</strong>: error que dice que <code>localStorage</code> o <code>sessionStorage</code> no están definidos.</p>
+  <p><strong>Causa probable</strong>: el sandbox no expone las APIs de almacenamiento del navegador.</p>
+  <p><strong>Solución</strong>: sustituye por <code>useState</code> o <code>useReducer</code> de React para mantener estado en memoria. Si necesitas que los datos sobrevivan entre sesiones, publica el artifact y usa el almacenamiento persistente (20 MB, solo texto).</p>
+
+  <h3>6. El destinatario del enlace ve una pantalla de login</h3>
+  <p><strong>Síntoma</strong>: compartes un enlace y la otra persona se topa con un login antes de poder usar el artifact.</p>
+  <p><strong>Causa probable</strong>: los enlaces públicos apuntan a <code><a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a></code> y requieren autenticación para interactuar plenamente (incluso en tier Free).</p>
+  <p><strong>Solución</strong>: avísale a quién recibe el enlace que basta con crear una cuenta Free para usar el artifact. Si necesitas mostrarlo en una web pública sin login, usa el embed iframe en tu sitio.</p>
+
+  <h3>7. No puedo republicar después de despublicar</h3>
+  <p><strong>Síntoma</strong>: despublicaste un artifact y ahora el botón Publish no funciona o no aparece.</p>
+  <p><strong>Causa probable</strong>: despublicar es una acción permanente por diseño. Ese artifact concreto no puede volver a publicarse con el mismo enlace.</p>
+  <p><strong>Solución</strong>: crea un artifact nuevo (puede ser un Remix de tu propio artifact original) y publícalo. Vas a recibir un enlace distinto.</p>
+
+  <h3>8. MCP no funciona en el artifact</h3>
+  <p><strong>Síntoma</strong>: el artifact debería conectarse a Google Calendar, Gmail u otro servicio MCP pero no lo hace.</p>
+  <p><strong>Causa probable</strong>: estás en plan Free (que no incluye MCP) o el admin de tu organización lo tiene desactivado.</p>
+  <p><strong>Solución</strong>: verifica que estás en Pro, Max, Team o Enterprise. Si estás en Team o Enterprise y aún así no funciona, pide al admin que active <strong>Artifact MCP access</strong> en la consola de administración.</p>
+
+  <h3>9. Carga infinita en el preview</h3>
+  <p><strong>Síntoma</strong>: el spinner del artifact gira eternamente sin renderizar nada.</p>
+  <p><strong>Causa probable</strong>: un recurso de CDN bloqueado, una dependencia que no existe, o un loop infinito en el código (típicamente un <code>useEffect</code> sin array de dependencias).</p>
+  <p><strong>Solución</strong>: abre la consola del navegador y mira si hay errores de carga. Pídele a Claude que cambie la librería problemática por una de las pre-instaladas. Si sospechas de un loop, di: "revisa el useEffect, creo que tiene un loop infinito".</p>
+
+  <h2 id="cap07-mejores-practicas">Mejores Prácticas</h2>
+  <p>Estos consejos te ayudan a sacar el máximo provecho de los artifacts.</p>
+  <ul class="deflist">
+    <li><strong>Sé específico en tu prompt</strong> — en vez de "haz una página web", di "crea una landing page con hero section azul, 3 features con iconos, tabla de precios y footer con links".</li>
+    <li><strong>Itera en pasos pequeños</strong> — no pidas 10 cambios a la vez. Pide uno o dos, revisa, y sigue.</li>
+    <li><strong>Usa edición selectiva</strong> — selecciona la parte que quieres cambiar. Es más rápido y preciso.</li>
+    <li><strong>Versiones específicas de CDN</strong> — al usar bibliotecas en HTML, siempre especifica la versión exacta (ej: <code>3.7.1</code>), nunca uses <code>latest</code>.</li>
+    <li><strong>Piensa antes de despublicar</strong> — despublicar es permanente. No puedes re-publicar el mismo artifact. Exporta datos antes.</li>
+    <li><strong>Cuidado con la privacidad</strong> — al publicar, el contenido y archivos adjuntos se hacen públicos. Revisa que no haya información sensible.</li>
+    <li><strong>De prototipo a producción</strong> — cuando tu artifact esté listo para el mundo real, copia el código y usa Claude Code o un IDE profesional para convertirlo en una app robusta.</li>
+  </ul>
+
+  <h2 id="cap07-descubrir-artifacts-de-inspiracion">Descubrir Artifacts de Inspiración</h2>
+  <p>¿No sabes por dónde empezar? Claude tiene una sección de inspiración con artifacts creados por Anthropic.</p>
+  <p>Para acceder: ve a <code>Artifacts &gt; Inspiration</code> en la barra lateral.</p>
+  <p>Las categorías disponibles son:</p>
+  <ul class="deflist">
+    <li><strong>Learn something</strong> — artifacts educativos.</li>
+    <li><strong>Life hacks</strong> — herramientas para la vida diaria.</li>
+    <li><strong>Play a game</strong> — juegos interactivos.</li>
+    <li><strong>Be creative</strong> — herramientas creativas.</li>
+    <li><strong>Touch grass</strong> — actividades fuera de pantalla.</li>
+  </ul>
+  <p>En planes Team y Enterprise, esta sección muestra artifacts compartidos por miembros de la organización en vez de la galería pública.</p>
+
+  <h2 id="cap07-ejemplos-practicos">Ejemplos Prácticos</h2>
+
+  <h3>Crear una landing page HTML</h3>
+  <pre><code class="lang-text">Prompt: 'Crea una landing page moderna para una app de productividad con hero section, features, pricing y footer. Usa colores azul y blanco.'</code></pre>
+  <p>Claude genera un artifact HTML completo con CSS y JavaScript integrados. La página aparece renderizada en el panel lateral. Puedes iterar pidiendo cambios: 'Haz el botón más grande', 'Cambia el fondo a degradado', 'Agrega testimonios'.</p>
+
+  <h3>Dashboard interactivo con React</h3>
+  <pre><code class="lang-text">Prompt: 'Crea un dashboard interactivo que muestre gráficos de ventas mensuales con barras y líneas. Incluye filtros por período y categoría.'</code></pre>
+  <p>Claude usa React con Recharts para los gráficos y Tailwind CSS para el diseño. El dashboard es completamente funcional: puedes hacer clic en filtros, pasar el mouse sobre gráficos y ver datos detallados.</p>
+
+  <h3>Diagrama de arquitectura con Mermaid</h3>
+  <pre><code class="lang-text">Prompt: 'Crea un diagrama de arquitectura de microservicios con API Gateway, 4 servicios, base de datos y cola de mensajes usando Mermaid.'</code></pre>
+  <p>Claude genera código Mermaid que se renderiza automáticamente como un diagrama visual profesional. Puedes pedir modificaciones como 'Agrega un servicio de autenticación' y el diagrama se actualiza.</p>
+
+  <h3>App con IA integrada</h3>
+  <pre><code class="lang-text">Prompt: 'Crea un chatbot que ayude a practicar español. Que corrija errores gramaticales y sugiera mejoras.'</code></pre>
+  <p>Claude crea un artifact que usa su propia IA internamente. Los usuarios se autentican con su cuenta Claude. El uso de IA cuenta contra los límites de cada usuario, no los tuyos.</p>
+
+  <h3>Embeber un artifact en tu sitio web</h3>
+  <ol class="steps">
+    <li>Publica el artifact (botón Publish)</li>
+    <li>Clic en 'Get embed code'</li>
+    <li>Escribe dominios permitidos: '<a href="https://midominio.com" target="_blank" rel="noopener">midominio.com</a>, <a href="https://blog.midominio.com" target="_blank" rel="noopener">blog.midominio.com</a>'</li>
+    <li>Copia el código iframe</li>
+    <li>Pega el iframe en tu HTML</li>
+  </ol>
+  <p>Así puedes integrar cualquier artifact interactivo directamente en tu sitio web o blog. Solo los dominios que autorices podrán mostrarlo.</p>
+
+  <h3>Edición selectiva paso a paso</h3>
+  <ol class="steps">
+    <li>Selecciona/resalta solo el botón 'Comprar' en el artifact</li>
+    <li>Escribe en el chat: 'Cambia este botón a rojo, hazlo más grande y agrega un icono de carrito'</li>
+  </ol>
+  <p>Claude modifica únicamente la sección seleccionada. El resto del artifact queda intacto. Es mucho más rápido y preciso que pedir una reescritura completa.</p>
+
+  <h3>Remix de un artifact publicado</h3>
+  <ol class="steps">
+    <li>Abre el enlace de un artifact publicado</li>
+    <li>Clic en 'Customize'</li>
+    <li>En la nueva conversación escribe: 'Cambia los colores a verde y agrega una sección de testimonios'</li>
+  </ol>
+  <p>Tomas el trabajo de otro usuario como base y creas tu propia versión. El original no se modifica. Es como forkear un repositorio en GitHub.</p>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Sé lo más específico posible en tu prompt. 'Crea una página web' produce resultados genéricos. 'Crea una landing page con hero section degradada en azul, 3 features con iconos de Lucide, y un formulario de contacto' produce algo mucho mejor.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa edición selectiva para cambios puntuales. Selecciona la parte exacta que quieres modificar en vez de describir dónde está el cambio.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Si el artifact es complejo, constrúyelo por pasos. Primero la estructura básica, luego estilos, luego interactividad. No pidas todo junto.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Despublicar un artifact es PERMANENTE. No puedes volver a publicar el mismo artifact. Además, se borran todos los datos de almacenamiento asociados. Piénsalo bien antes de despublicar.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Al publicar o compartir un artifact, los demás también pueden ver adjuntos y archivos de la conversación donde se creó. Nunca crees artifacts publicables en conversaciones con información confidencial.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>En artifacts HTML, solo puedes cargar bibliotecas externas desde <code><a href="https://cdnjs.cloudflare.com" target="_blank" rel="noopener">cdnjs.cloudflare.com</a></code>. Cualquier otro dominio será bloqueado por seguridad. Siempre usa versiones específicas, nunca 'latest'.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Los artifacts con IA (AI-Powered) no te cuestan nada como creador. Cada usuario que interactúa con el artifact usa sus propios límites de suscripción.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Para llevar un artifact a producción, copia el código y usa Claude Code o un IDE profesional. Los artifacts son perfectos para prototipos, pero necesitas infraestructura real para producción.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Existe una herramienta open source llamada Claude Artifact Runner (en GitHub) que convierte artifacts React en apps desplegables en segundos.</p>
+  </div>
+
+  <section class="recap">
+    <h2 id="cap07-resumen-del-capitulo">Resumen del Capítulo</h2>
+    <p>Los Artifacts son ventanas especiales donde Claude crea contenido real: páginas web, apps interactivas, diagramas, documentos y archivos descargables. Puedes editarlos iterativamente, publicarlos con un enlace público, embeberlos en tu sitio web, o hacer remix del trabajo de otros. Las funciones avanzadas incluyen artifacts con IA integrada, almacenamiento persistente y conexión con servicios externos vía MCP.</p>
+  </section>
+</article>

@@ -1,0 +1,604 @@
+<article class="chapter" data-id="cap03" data-title="Los Modelos de Claude" data-part="1">
+  <header class="ch-head">
+    <p class="ch-kicker">Parte 1 · Fundamentos · Capítulo 3</p>
+    <h1>Los Modelos de Claude</h1>
+    <p class="ch-lede">Opus, Sonnet y Haiku: cuál elegir y por qué</p>
+    <p class="ch-level">Nivel: Principiante</p>
+  </header>
+
+  <p>Claude no es un solo modelo. Es una familia con tres miembros: Haiku, Sonnet y Opus. Cada uno tiene un trabajo diferente. Piensa en ellos como tres tallas de motor: pequeño, mediano y grande. En este capítulo vas a aprender qué hace cada uno, cuánto cuesta y cuál te conviene según tu proyecto.</p>
+
+  <h2 id="cap03-los-tres-niveles">Los tres niveles: Haiku, Sonnet y Opus</h2>
+  <p>Imagina que vas a una tienda de herramientas. Hay tres taladros:</p>
+  <ul class="deflist">
+    <li><strong>Haiku</strong> — El taladro portátil. Ligero, rápido y barato. Perfecto para colgar un cuadro.</li>
+    <li><strong>Sonnet</strong> — El taladro intermedio. Hace casi todo lo que necesitas en casa.</li>
+    <li><strong>Opus</strong> — El taladro industrial. Para trabajos pesados donde necesitas máxima potencia.</li>
+  </ul>
+  <p>Los modelos de Claude funcionan igual. Haiku es el más rápido y barato. Sonnet es el equilibrio entre velocidad e inteligencia. Opus es el más inteligente pero el más caro.</p>
+  <p>La buena noticia: Sonnet maneja el 90% de las tareas del día a día. Solo necesitas Opus para cosas realmente complejas.</p>
+
+  <h3>Cuándo usar cada uno</h3>
+  <p>Aquí va una guía rápida:</p>
+  <ul class="deflist">
+    <li><strong>Usa Haiku</strong> cuando necesites respuestas rápidas y baratas. Clasificar textos, responder preguntas simples, filtrar contenido. Es como enviar un mensaje de texto: rápido y al grano.</li>
+    <li><strong>Usa Sonnet</strong> para la mayoría de tu trabajo. Escribir código, analizar documentos, crear contenido. Es tu herramienta de todos los días.</li>
+    <li><strong>Usa Opus</strong> para tareas que necesitan pensar mucho. Razonamiento científico complejo, agentes autónomos, análisis legal profundo. Es como contratar al mejor especialista.</li>
+  </ul>
+
+  <h2 id="cap03-los-modelos-actuales">Los modelos actuales (junio 2026)</h2>
+  <p>Ahora mismo hay tres modelos principales recomendados activamente por Anthropic. Son los que deberías usar en proyectos nuevos: Claude Opus 4.8, Claude Sonnet 4.6 y Claude Haiku 4.5.</p>
+  <p>Además, desde junio de 2026 existe una clase nueva por encima de Opus: la clase Mythos. La forman Claude Fable 5 (disponibilidad general), Claude Mythos 5 (acceso limitado vía Project Glasswing) y Claude Mythos Preview (un research preview solo por invitación para flujos de ciberseguridad defensiva, sin self-serve sign-up). Le dedicamos su propia subsección más abajo.</p>
+
+  <h3>Claude Opus 4.8: el nuevo flagship</h3>
+  <p>Opus 4.8 es el modelo tope de línea de la familia Opus desde junio de 2026. Reemplaza a Opus 4.7 como flagship; Opus 4.7 sigue funcionando pero pasó a la categoría de legacy activo. (Ojo: desde junio de 2026 existe además una clase Mythos por encima de Opus — la vemos en la siguiente subsección.)</p>
+  <p>Estos son sus números clave:</p>
+  <ul class="deflist">
+    <li><strong>ID de API</strong> — <code>claude-opus-4-8</code>.</li>
+    <li><strong>Ventana de contexto</strong> — 1 millón de tokens. Un token es un pedacito de texto — aproximadamente una palabra. 1 millón de tokens son varias novelas completas. (En Microsoft Foundry, Opus 4.8 se queda en 200K de contexto, no 1M.)</li>
+    <li><strong>Salida máxima</strong> — 128,000 tokens. Con Batch API soporta hasta 300,000 tokens de salida usando el beta header <code>output-300k-2026-03-24</code>.</li>
+    <li><strong>Precio</strong> — $5 por millón de tokens de entrada, $25 por millón de salida (idéntico al de Opus 4.7 y Opus 4.6).</li>
+    <li><strong>Reliable knowledge cutoff</strong> — enero 2026. Conocimiento factual fiable hasta esa fecha.</li>
+    <li><strong>Velocidad</strong> — moderada — piensa mejor, pero no es el más rápido.</li>
+  </ul>
+  <p>Opus 4.8 mejora sobre Opus 4.7 en codificación, tareas agénticas, razonamiento y trabajo de conocimiento. Hereda casi todas las características que llegaron con la generación 4.7+:</p>
+  <ul class="deflist">
+    <li><strong>Solo adaptive thinking</strong> — Opus 4.8 no soporta extended thinking con <code>budget_tokens</code>. Si lo intentas usar, la API devuelve un error 400. El único modo de razonamiento profundo es adaptive thinking: el modelo decide solo cuánto pensar según la dificultad del problema.</li>
+    <li><strong>Effort levels con default <code>high</code></strong> — Puedes guiar el esfuerzo con cinco niveles — <code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code> y <code>max</code>. En Opus 4.8 el valor por defecto del parámetro <code>effort</code> es <code>high</code> en todas las superficies (tanto en la API como en Claude Code). Si quieres otro nivel, tienes que fijarlo explícitamente.</li>
+    <li><strong>Task budgets (beta)</strong> — Distinto de <code>max_tokens</code>. Le das al modelo una estimación de presupuesto para todo el loop agéntico (mínimo 20,000 tokens). Se activa con el beta header <code>task-budgets-2026-03-13</code>.</li>
+    <li><strong>Nuevo tokenizer</strong> — Desde la generación 4.7 se usa un tokenizador distinto: el mismo texto puede consumir aproximadamente 30% más tokens que en Opus 4.6. Eso afecta tanto el costo como el tamaño efectivo de la ventana de contexto.</li>
+    <li><strong>Imágenes de alta resolución</strong> — Soporta imágenes hasta 2576×2576 píxeles (3.75 megapíxeles), frente al límite anterior de 1568px (1.15 MP). Las coordenadas en la imagen son 1:1 con los píxeles reales — útil para señalar regiones específicas.</li>
+    <li><strong>Sin temperature, top_p ni top_k personalizados</strong> — Opus 4.8 solo acepta los valores por defecto. Pasar valores distintos devuelve 400.</li>
+    <li><strong>Thinking oculto por defecto</strong> — El campo de pensamiento viene vacío en la respuesta. Si quieres verlo, pasa <code>thinking: {type: 'adaptive', display: 'summarized'}</code>.</li>
+    <li><strong>Fast mode</strong> — Disponible en Opus 4.8. Hasta 2.5x más rápido, con precio premium de $10/$50 por MTok (mucho más barato que el $30/$150 que costaba el fast mode en Opus 4.6 y 4.7). No es compatible con Batch API ni con Claude Platform on AWS.</li>
+  </ul>
+  <p>En benchmarks, la familia Opus mantiene su posición fuerte en SWE-bench Verified, SWE-bench Pro, CursorBench y Vision Acuity (ver la sección de benchmarks). Opus 4.8 sube respecto a Opus 4.7 sobre todo en coding, tareas agénticas y razonamiento.</p>
+
+  <h3>La clase Mythos: Fable 5 y Mythos 5</h3>
+  <p>Desde junio de 2026 Anthropic introdujo una clase nueva que se sitúa por encima de Opus: la clase Mythos. Si Opus era el motor industrial, esto es el motor de competición. La forman tres modelos:</p>
+  <ul class="deflist">
+    <li><strong>Claude Fable 5</strong> (<code>claude-fable-5</code>) — el modelo más capaz de Anthropic con disponibilidad amplia. Disponible en general (GA) desde el 9 de junio de 2026.
+      <ul>
+        <li>Precio: $10 por millón de tokens de entrada, $50 por millón de salida.</li>
+        <li>Ventana de contexto: 1 millón de tokens. Salida máxima: 128,000 tokens.</li>
+        <li>Razonamiento: adaptive thinking siempre activo (no tiene extended thinking, igual que Opus 4.8).</li>
+        <li>Clasificadores de seguridad: Fable 5 incluye clasificadores que pueden rechazar ciertas solicitudes. Tenlo en cuenta si construyes flujos automáticos: una petición puede ser denegada por estos filtros.</li>
+      </ul>
+    </li>
+    <li><strong>Claude Mythos 5</strong> (<code>claude-mythos-5</code>) — mismo precio que Fable 5, pero de disponibilidad limitada vía Project Glasswing. No tiene registro self-serve — solo clientes aprobados.</li>
+    <li><strong>Claude Mythos Preview</strong> (<code>claude-mythos-preview</code>) — un research preview para ciberseguridad defensiva, solo por invitación.</li>
+  </ul>
+  <p>¿Cuándo conviene Fable 5 sobre Opus 4.8? En tareas de hojas de cálculo, donde según los benchmarks de Anthropic supera a Opus 4.8 en todos los niveles de effort, resolviéndolas con menos turnos y entre 25% y 30% más rápido. También es notablemente más fuerte en benchmarks de trading. Para el resto del trabajo diario, Opus 4.8 (o directamente Sonnet 4.6) sigue siendo la opción más equilibrada en precio.</p>
+
+  <h3>Claude Sonnet 4.6: el favorito de los desarrolladores</h3>
+  <p>Sonnet 4.6 salió el 17 de febrero de 2026. Es el modelo que la mayoría de la gente debería usar. La documentación de Anthropic lo describe como la mejor combinación de velocidad e inteligencia para uso general — incluso por encima de Opus 4.6 en muchos workflows de producción.</p>
+  <p>Sus números:</p>
+  <ul class="deflist">
+    <li><strong>Ventana de contexto</strong> — 1 millón de tokens (GA, disponible para todos).</li>
+    <li><strong>Salida máxima</strong> — 64,000 tokens. Con Batch API, soporta hasta 300,000 tokens de salida usando el beta header <code>output-300k-2026-03-24</code>.</li>
+    <li><strong>Precio</strong> — $3 por millón de tokens de entrada, $15 por millón de salida.</li>
+    <li><strong>Reliable knowledge cutoff</strong> — agosto 2025 (training cutoff: enero 2026).</li>
+    <li><strong>Velocidad</strong> — rápida.</li>
+    <li><strong>Soporta</strong> — extended thinking y adaptive thinking.</li>
+  </ul>
+  <p>¿Por qué es tan popular? Porque rinde casi igual que Opus en muchas tareas pero cuesta 40% menos en entrada ($3 vs $5 por MTok) y 40% menos en salida ($15 vs $25). En SWE-bench Verified saca 79.6%, contra el 87.6% de Opus 4.7. Es una diferencia real para coding agéntico de horizonte largo, pero para la mayoría del trabajo diario no la vas a notar.</p>
+  <p>Un dato revelador: el 70% de los desarrolladores que probaron Sonnet 4.6 lo prefirieron sobre Sonnet 4.5. Y el 59% lo prefiere incluso sobre Opus 4.5 (el modelo tope anterior).</p>
+  <p>Es el modelo por defecto en los planes Free y Pro de Claude. Si no sabes cuál elegir, empieza con este.</p>
+
+  <h3>Claude Haiku 4.5: rápido y barato</h3>
+  <p>Haiku 4.5 salió el 15 de octubre de 2025. Es el modelo económico, pero no te dejes engañar: es sorprendentemente capaz.</p>
+  <p>Sus números:</p>
+  <ul class="deflist">
+    <li><strong>Ventana de contexto</strong> — 200K tokens (no soporta 1M).</li>
+    <li><strong>Salida máxima</strong> — 64,000 tokens.</li>
+    <li><strong>Precio</strong> — $1 por millón de tokens de entrada, $5 por millón de salida.</li>
+    <li><strong>Reliable knowledge cutoff</strong> — febrero 2025 (training cutoff: julio 2025).</li>
+    <li><strong>Velocidad</strong> — la más rápida de todos — 4 a 5 veces más rápido que Sonnet 4.5.</li>
+    <li><strong>Soporta</strong> — extended thinking. No soporta adaptive thinking.</li>
+  </ul>
+  <p>Haiku cuesta una tercera parte de lo que cuesta Sonnet. Y aun así, rinde a un nivel cercano al de Sonnet 4 a un tercio del costo y con más del doble de velocidad. En pruebas de código saca 73% en SWE-bench. Anthropic reporta también que supera a Sonnet 4 en tareas de computer use.</p>
+  <p>Es ideal para tareas de alto volumen. Si necesitas clasificar miles de mensajes, filtrar contenido, hacer routing (decidir a dónde enviar una solicitud) o desplegar subagentes dentro de una arquitectura multi-agente, Haiku es tu modelo.</p>
+  <p>Claude Code lo usa automáticamente para tareas simples. Cuando escribes algo fácil, Claude Code envía tu petición a Haiku para ahorrarte dinero.</p>
+
+  <h2 id="cap03-comparacion-de-precios">Comparación de precios</h2>
+  <p>Veamos los precios lado a lado. Los precios son por millón de tokens (MTok). Un millón de tokens es aproximadamente 750,000 palabras.</p>
+  <p>Piensa en los tokens como monedas de un videojuego. Cada palabra que le envías a Claude gasta monedas de entrada. Cada palabra que Claude te responde gasta monedas de salida.</p>
+
+  <h3>Precios estándar</h3>
+  <p>Precios por millón de tokens (MTok). Para cada modelo: entrada / cache write 5min / cache write 1h / cache read / salida.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Modelo</th>
+          <th>Entrada</th>
+          <th>Cache write 5 min</th>
+          <th>Cache write 1 h</th>
+          <th>Cache read</th>
+          <th>Salida</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Fable 5 (clase Mythos)</td>
+          <td>$10</td>
+          <td>$12.50</td>
+          <td>$20</td>
+          <td>$1</td>
+          <td>$50</td>
+        </tr>
+        <tr>
+          <td>Opus 4.8</td>
+          <td>$5</td>
+          <td>$6.25</td>
+          <td>$10</td>
+          <td>$0.50</td>
+          <td>$25</td>
+        </tr>
+        <tr>
+          <td>Opus 4.7 (legacy)</td>
+          <td>$5</td>
+          <td>$6.25</td>
+          <td>$10</td>
+          <td>$0.50</td>
+          <td>$25</td>
+        </tr>
+        <tr>
+          <td>Opus 4.6 (legacy)</td>
+          <td>$5</td>
+          <td>$6.25</td>
+          <td>$10</td>
+          <td>$0.50</td>
+          <td>$25</td>
+        </tr>
+        <tr>
+          <td>Sonnet 4.6</td>
+          <td>$3</td>
+          <td>$3.75</td>
+          <td>$6</td>
+          <td>$0.30</td>
+          <td>$15</td>
+        </tr>
+        <tr>
+          <td>Haiku 4.5</td>
+          <td>$1</td>
+          <td>$1.25</td>
+          <td>$2</td>
+          <td>$0.10</td>
+          <td>$5</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Para ponerlo en perspectiva: si le envías a Sonnet 4.6 un documento de 10,000 palabras (~13,000 tokens), el costo de entrada sería de unos $0.04. Cuatro centavos.</p>
+  <p>Una nota sobre Opus 4.8 (y todos los modelos 4.7+): como el nuevo tokenizer consume aproximadamente 30% más tokens para el mismo texto, el costo real por documento sube proporcionalmente aunque el precio por MTok sea idéntico al de Opus 4.6.</p>
+
+  <h3>Tres formas de ahorrar dinero</h3>
+  <ol class="steps">
+    <li>
+      <p><strong>Batch API (50% de descuento).</strong> Si no necesitas la respuesta al instante, puedes enviar muchas peticiones juntas. Claude las procesa cuando tenga capacidad y te cobra la mitad. Es como enviar paquetes por correo económico: más lento, pero más barato.</p>
+      <p>Con Batch API, Haiku 4.5 baja a $0.50/$2.50 por MTok. Increíblemente barato.</p>
+    </li>
+    <li>
+      <p><strong>Prompt Caching.</strong> Si envías el mismo texto largo repetidamente (por ejemplo, un manual de instrucciones), puedes cachearlo. Hay dos opciones de duración:</p>
+      <ul class="deflist">
+        <li><strong>Cache de 5 minutos</strong> — La escritura cuesta 1.25x el precio base. Es la opción por defecto y se amortiza con una sola relectura.</li>
+        <li><strong>Cache de 1 hora</strong> — La escritura cuesta 2x el precio base. Útil cuando reutilizas el mismo contexto durante una sesión larga. Se amortiza con 2 relecturas.</li>
+      </ul>
+      <p>En ambos casos, cada relectura desde cache cuesta solo 0.1x del precio normal. Es como comprar una fotocopia en vez de imprimir de nuevo.</p>
+    </li>
+    <li>
+      <p><strong>Elegir el modelo correcto.</strong> No uses Opus para clasificar emails. Usa Haiku. Ahorras 80% sin perder calidad en tareas simples.</p>
+    </li>
+  </ol>
+
+  <h3>Precios especiales</h3>
+  <p>Hay situaciones donde el precio cambia:</p>
+  <ul class="deflist">
+    <li><strong>Fast Mode (Opus 4.8)</strong> — $10/$50 por MTok, hasta 2.5x más rápido. Mucho más barato que el fast mode de Opus 4.6 y 4.7, que costaba $30/$150 por MTok. No es compatible con Batch API ni con Claude Platform on AWS.</li>
+    <li><strong>Inference geography (data residency)</strong> — Si pasas <code>inference_geo: 'us'</code> para forzar que la inferencia ocurra en Estados Unidos, se aplica un multiplicador 1.1x sobre todo el pricing. <code>inference_geo: 'global'</code> es el default y no tiene recargo. Este parámetro solo funciona en Opus 4.6 y posteriores; en modelos anteriores devuelve 400.</li>
+    <li><strong>Endpoints regionales en Bedrock y Vertex AI</strong> — desde Sonnet 4.5 en adelante, las plataformas ofrecen endpoints globales y regionales. Los endpoints regionales y multi-region tienen un premium del 10% sobre los globales.</li>
+  </ul>
+  <p>Estos multiplicadores se acumulan. Por ejemplo, en Opus 4.8 combinar Fast mode ($10/$50) con <code>inference_geo</code> us aplica el recargo 1.1x adicional sobre ese precio premium.</p>
+
+  <h2 id="cap03-capacidades-compartidas-y-diferencias">Capacidades compartidas y diferencias</h2>
+  <p>Todos los modelos actuales comparten muchas capacidades. Pero también tienen diferencias importantes.</p>
+
+  <h3>Lo que todos pueden hacer</h3>
+  <p>Los tres modelos (Opus 4.8, Sonnet 4.6 y Haiku 4.5) pueden:</p>
+  <ul class="deflist">
+    <li><strong>Ver imágenes</strong> — Les puedes enviar fotos, capturas de pantalla, diagramas. Entienden lo que ven. Esto se llama visión. Opus 4.8 acepta imágenes hasta 2576px (3.75 MP); los otros se quedan en el límite anterior de 1568px (1.15 MP).</li>
+    <li><strong>Usar herramientas</strong> — Pueden llamar funciones externas, buscar en internet, ejecutar código. Esto se llama tool use.</li>
+    <li><strong>Usar computadoras</strong> — Pueden controlar un mouse y teclado virtual. Esto se llama computer use.</li>
+    <li><strong>Múltiples idiomas</strong> — Funcionan en español, inglés, francés, y muchos más.</li>
+    <li><strong>Priority Tier</strong> — los tres tienen disponible el servicio premium con capacidad reservada.</li>
+  </ul>
+  <p>Una capacidad que no es uniforme: el razonamiento profundo. Extended thinking (pensar internamente antes de responder con un presupuesto de tokens) está disponible en Sonnet 4.6 y Haiku 4.5. Opus 4.8 ya no lo soporta — solo trae adaptive thinking, donde el modelo decide solo cuánto pensar. Lo mismo aplica a Fable 5 (clase Mythos): adaptive thinking siempre activo, sin extended thinking.</p>
+
+  <h3>Diferencias clave</h3>
+  <ul class="deflist">
+    <li><strong>Adaptive thinking</strong> — disponible en Opus 4.8 y Sonnet 4.6 (y siempre activo en Fable 5). El modelo decide automáticamente cuánto pensar.</li>
+    <li><strong>Extended thinking (con <code>budget_tokens</code>)</strong> — disponible en Sonnet 4.6 y Haiku 4.5. Opus 4.8 ya no lo soporta (devuelve 400). Haiku 4.5 solo tiene este modo, no adaptive.</li>
+    <li><strong>Ventana de 1 millón de tokens</strong> — Opus 4.8, Sonnet 4.6 y Fable 5 (GA, sin costo extra). Haiku 4.5 se queda en 200K.</li>
+    <li><strong>Fast Mode</strong> — Opus 4.8 (igual que Opus 4.6 y 4.7). Sonnet y Haiku no lo tienen.</li>
+    <li><strong>Salida máxima</strong> — Opus 4.8 y Fable 5 generan hasta 128K tokens. Sonnet 4.6 y Haiku 4.5 hasta 64K.</li>
+    <li><strong>Soporte de imágenes de alta resolución</strong> — Opus 4.8 acepta hasta 3.75 MP. Los demás siguen en 1.15 MP.</li>
+    <li><strong>Temperature / top_p / top_k personalizados</strong> — Opus 4.8 no los acepta. Los demás (Sonnet y Haiku) sí.</li>
+  </ul>
+
+  <h3>Reliable knowledge cutoff vs training data cutoff</h3>
+  <p>Cuando le preguntas a Claude por hechos recientes, hay dos fechas que importan — y no son la misma:</p>
+  <ul class="deflist">
+    <li><strong>Reliable knowledge cutoff</strong> — hasta esta fecha, el conocimiento del modelo es más amplio y fiable. Es la fecha que deberías usar como referencia mental.</li>
+    <li><strong>Training data cutoff</strong> — rango más amplio de datos vistos durante entrenamiento. Cubre eventos posteriores, pero con cobertura más parcial.</li>
+  </ul>
+  <p>Las fechas por modelo:</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Modelo</th>
+          <th>Reliable knowledge cutoff</th>
+          <th>Training data cutoff</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Opus 4.8</td>
+          <td>enero 2026</td>
+          <td>enero 2026</td>
+        </tr>
+        <tr>
+          <td>Sonnet 4.6</td>
+          <td>agosto 2025</td>
+          <td>enero 2026</td>
+        </tr>
+        <tr>
+          <td>Haiku 4.5</td>
+          <td>febrero 2025</td>
+          <td>julio 2025</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Para datos posteriores al reliable cutoff, dale a Claude la información en el contexto o conéctalo a una herramienta de búsqueda web. No confíes en su memoria interna.</p>
+
+  <h2 id="cap03-como-se-llaman-los-modelos">Cómo se llaman los modelos (nomenclatura)</h2>
+  <p>Los nombres de los modelos siguen un patrón. Y el patrón cambió a partir de la generación 4.6 — vale la pena entender los dos formatos.</p>
+  <p><strong>Modelos pre-4.6: el ID incluye fecha.</strong> Formato: <code>claude-[nivel]-[version]-[YYYYMMDD]</code>. Por ejemplo: <code>claude-sonnet-4-5-20250929</code>.</p>
+  <ul class="deflist">
+    <li><strong><code>claude</code></strong> — Es Claude (obvio).</li>
+    <li><strong><code>sonnet</code></strong> — El nivel (haiku, sonnet u opus).</li>
+    <li><strong><code>4-5</code></strong> — La versión (4.5).</li>
+    <li><strong><code>20250929</code></strong> — La fecha exacta. Esto se llama snapshot: el modelo concreto en ese día.</li>
+  </ul>
+  <p>En modelos pre-4.6 también existen alias cortos sin fecha (como <code>claude-sonnet-4-5</code>) que apuntan al snapshot fechado más reciente de ese modelo. El alias no es un puntero evergreen — Anthropic lo deja apuntando a un snapshot concreto, pero lo expone con un nombre más cómodo.</p>
+  <p><strong>Desde la generación 4.6: el ID ya no incluye fecha.</strong> Formato: <code>claude-[nivel]-[version]</code>. Por ejemplo: <code>claude-opus-4-8</code>, <code>claude-sonnet-4-6</code>, <code>claude-opus-4-6</code>.</p>
+  <p>El detalle importante: estos IDs sin fecha siguen siendo snapshots fijos, no evergreen. Los pesos del modelo detrás de <code>claude-opus-4-8</code> no van a cambiar mañana. Cuando Anthropic libera una versión nueva (como pasó con Opus 4.8 sobre 4.7), es un ID nuevo (<code>claude-opus-4-8</code>), no una mutación del anterior.</p>
+
+  <h3>Alias vs snapshot: cuál usar</h3>
+  <p>El consejo cambia según la generación del modelo.</p>
+  <p>Para modelos pre-4.6:</p>
+  <ul class="deflist">
+    <li><strong>Desarrollo y pruebas</strong> — el alias corto (<code>claude-sonnet-4-5</code>) es cómodo, pero técnicamente apunta a un snapshot concreto.</li>
+    <li><strong>Producción</strong> — el ID con fecha (<code>claude-sonnet-4-5-20250929</code>) es la apuesta segura. Si Anthropic alguna vez moviera el alias, tu app no se entera.</li>
+  </ul>
+  <p>Para modelos 4.6 y posteriores:</p>
+  <ul>
+    <li>El ID sin fecha (<code>claude-opus-4-8</code>) ya es el snapshot fijo. No hay versión con fecha que añadir.</li>
+    <li>Puedes usarlo en producción con tranquilidad.</li>
+  </ul>
+  <p>Es como la diferencia entre decir 'quiero Chrome 120' (pre-4.6, con fecha) vs 'quiero Chrome Opus 4.8' (post-4.6, el nombre ya identifica una versión fija). En ambos casos sabes exactamente qué te van a dar.</p>
+
+  <h2 id="cap03-la-historia-de-claude">La historia de Claude: de Claude 1 a la clase Mythos</h2>
+  <p>Claude ha evolucionado mucho en tres años. Aquí va un resumen rápido.</p>
+
+  <h3>Línea del tiempo</h3>
+  <ul class="deflist">
+    <li><strong>Marzo 2023 — Claude 1</strong> — El primer modelo de Anthropic. Solo para usuarios selectos.</li>
+    <li><strong>Julio 2023 — Claude 2</strong> — El primero disponible al público. Trajo 100K tokens de contexto, algo revolucionario en ese momento.</li>
+    <li><strong>Noviembre 2023 — Claude 2.1</strong> — Duplicó el contexto a 200K tokens.</li>
+    <li><strong>Marzo 2024 — Claude 3</strong> — Nacieron Haiku, Sonnet y Opus. Claude 3 incluyó visión (entender imágenes) y superó a GPT-4 en benchmarks.</li>
+    <li><strong>Junio 2024 — Claude 3.5 Sonnet</strong> — Un momento histórico. El modelo 'mediano' superó al modelo 'grande' (Opus 3) en benchmarks. Demostró que más grande no siempre es mejor.</li>
+    <li><strong>Octubre 2024 — Claude 3.5 Sonnet v2</strong> — Introdujo computer use. Claude podía usar una computadora como un humano.</li>
+    <li><strong>Febrero 2025 — Claude 3.7 Sonnet</strong> — Introdujo extended thinking. El primer modelo que 'piensa' antes de responder.</li>
+    <li><strong>Mayo 2025 — Claude 4</strong> — Sonnet 4 y Opus 4. Extended thinking en toda la línea.</li>
+    <li><strong>Octubre 2025 — Claude Haiku 4.5</strong> — El Haiku más capaz hasta la fecha, 4-5x más rápido que Sonnet 4.5.</li>
+    <li><strong>Noviembre 2025 — Claude Opus 4.5</strong> — El precio de Opus bajó un 67%. De $15 a $5 por MTok de entrada.</li>
+    <li><strong>Febrero 2026 — Claude Opus 4.6 y Sonnet 4.6</strong> — 1M de contexto en GA, adaptive thinking y nuevo formato de IDs sin fecha.</li>
+    <li><strong>14 abril 2026 — Deprecation</strong> — Claude Sonnet 4 y Claude Opus 4 originales pasan a estado deprecated, con retiro previsto el 15 de junio de 2026.</li>
+    <li><strong>16 abril 2026 — Claude Opus 4.7</strong> — Adaptive thinking como único modo, nuevo tokenizer, soporte de imágenes hasta 3.75 MP, SWE-bench Verified al 87.6%.</li>
+    <li><strong>20 abril 2026 — Retiro de Haiku 3</strong> — El modelo más viejo de la familia 3 deja de funcionar en la API.</li>
+    <li><strong>9 junio 2026 — Clase Mythos</strong> — Anthropic estrena una clase por encima de Opus: Claude Fable 5 (GA) y Claude Mythos 5 (acceso limitado, Project Glasswing). Fable 5 supera a Opus en hojas de cálculo y trading.</li>
+    <li><strong>Junio 2026 — Claude Opus 4.8</strong> — El nuevo flagship de la familia Opus. Mejora coding, tareas agénticas y razonamiento sobre Opus 4.7; effort por defecto en <code>high</code>; fast mode más barato ($10/$50). Opus 4.7 pasa a legacy.</li>
+  </ul>
+
+  <h3>Cómo han bajado los precios</h3>
+  <p>Los precios del tier Opus han cambiado dramáticamente:</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Modelo</th>
+          <th>Entrada</th>
+          <th>Salida</th>
+          <th>Nota</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Opus 3 (2024)</td>
+          <td>$15</td>
+          <td>$75</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Opus 4 y 4.1 (2025)</td>
+          <td>$15</td>
+          <td>$75</td>
+          <td>mismo precio</td>
+        </tr>
+        <tr>
+          <td>Opus 4.5 (nov 2025)</td>
+          <td>$5</td>
+          <td>$25</td>
+          <td>¡67% más barato!</td>
+        </tr>
+        <tr>
+          <td>Opus 4.6 (feb 2026)</td>
+          <td>$5</td>
+          <td>$25</td>
+          <td>mantiene el precio con mejores capacidades</td>
+        </tr>
+        <tr>
+          <td>Opus 4.7 (abr 2026)</td>
+          <td>$5</td>
+          <td>$25</td>
+          <td>mismo precio, salto grande en benchmarks</td>
+        </tr>
+        <tr>
+          <td>Opus 4.8 (jun 2026)</td>
+          <td>$5</td>
+          <td>$25</td>
+          <td>mismo precio, mejor coding y razonamiento</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Hoy el modelo más inteligente cuesta lo mismo que el modelo intermedio costaba hace un año. La tendencia es clara: cada vez más inteligencia por menos dinero.</p>
+
+  <h2 id="cap03-ciclo-de-vida-de-un-modelo">Ciclo de vida de un modelo</h2>
+  <p>Anthropic clasifica cada modelo en uno de cuatro estados. Saber en qué estado está te ayuda a decidir si seguirlo usando o migrar.</p>
+  <ul class="deflist">
+    <li><strong>Active (activo)</strong> — totalmente soportado y recomendado. Es la apuesta segura para proyectos nuevos. Hoy: Opus 4.8, Sonnet 4.6 y Haiku 4.5, además de Fable 5 (clase Mythos).</li>
+    <li><strong>Legacy (legacy)</strong> — sigue funcionando pero ya no recibe actualizaciones. Podría pasar a deprecated en el futuro. Buen lugar para mantener integraciones existentes que no quieres tocar.</li>
+    <li><strong>Deprecated (deprecado)</strong> — aún funciona pero Anthropic recomienda explícitamente migrar. Tiene un modelo de reemplazo y una fecha de retiro publicada. Hoy: Sonnet 4 y Opus 4 originales (retiro 15 junio 2026).</li>
+    <li><strong>Retired (retirado)</strong> — ya no está disponible. Las requests al ID devuelven error. No hay vuelta atrás.</li>
+  </ul>
+  <p>Dos garantías importantes de Anthropic:</p>
+  <ul class="deflist">
+    <li><strong>Aviso mínimo de 60 días</strong> antes de retirar un modelo público. Tienes al menos dos meses para migrar desde que se anuncia el retiro.</li>
+    <li><strong>Preservación a largo plazo</strong> de los pesos de modelos retirados. Eventualmente podrían volver a abrirse, aunque hoy no son consumibles.</li>
+  </ul>
+  <p>Si quieres ver qué modelos están disponibles ahora mismo y sus capacidades, el endpoint <code>/v1/models</code> de la Models API te devuelve <code>max_input_tokens</code>, <code>max_tokens</code> y un objeto <code>capabilities</code> para cada uno. Útil para detectar uso de modelos viejos en tu codebase.</p>
+
+  <h2 id="cap03-modelos-anteriores">Modelos anteriores: todavía disponibles</h2>
+  <p>Aunque deberías usar los modelos actuales, los modelos anteriores siguen disponibles por un tiempo. Aquí van los más relevantes.</p>
+
+  <h3>Modelos legacy que aún puedes usar</h3>
+  <ul class="deflist">
+    <li><strong>Opus 4.7</strong> (<code>claude-opus-4-7</code>) — el flagship anterior, reemplazado por Opus 4.8 en junio de 2026. Sigue costando $5/$25 por MTok y mantiene 1M de contexto, 128K de salida, adaptive thinking, el nuevo tokenizer y Fast mode. Pasó a legacy activo: funciona perfectamente, pero Opus 4.8 lo supera en coding, tareas agénticas y razonamiento. Si ya tenías una integración estable en 4.7, no hay prisa por migrar.</li>
+    <li><strong>Opus 4.6</strong> (<code>claude-opus-4-6</code>) — un flagship más antiguo. Sigue costando $5/$25 por MTok y mantiene 1M de contexto, 128K de salida y Fast mode. Es una opción razonable si no quieres lidiar con los cambios de comportamiento de la generación 4.7+ (sin temperature personalizada, nuevo tokenizer, adaptive-only). Posible retiro: no antes del 5 febrero 2027.</li>
+    <li><strong>Sonnet 4.5</strong> (<code>claude-sonnet-4-5</code>) — fue el rey del coding con 77.2% en SWE-bench. Mismo precio que Sonnet 4.6 ($3/$15). Superado por Sonnet 4.6, pero sigue funcionando bien. Posible retiro: no antes del 29 septiembre 2026.</li>
+    <li><strong>Opus 4.5</strong> (<code>claude-opus-4-5</code>) — trajo la reducción de precio del 67%. $5/$25. Buen modelo, pero Opus 4.6 y 4.7 lo superan. Posible retiro: no antes del 24 noviembre 2026.</li>
+  </ul>
+
+  <h3>Modelos legacy caros y deprecados</h3>
+  <p>Estos modelos cuestan 3 veces más que los actuales y rinden peor:</p>
+  <ul class="deflist">
+    <li><strong>Opus 4.1</strong> — $15 entrada / $75 salida. Tres veces más caro que Opus 4.6 / 4.7 y con menos capacidades. No hay razón para usarlo en proyectos nuevos. Posible retiro: no antes del 5 agosto 2026.</li>
+    <li><strong>Sonnet 4 (deprecated)</strong> — <code>claude-sonnet-4-20250514</code>. Pasó a deprecated el 14 abril 2026. Retiro previsto: 15 junio 2026. Migra a <code>claude-sonnet-4-6</code>.</li>
+    <li><strong>Opus 4 (deprecated)</strong> — <code>claude-opus-4-20250514</code>. Pasó a deprecated el 14 abril 2026. Retiro previsto: 15 junio 2026. $15/$75 por MTok. Migra a <code>claude-opus-4-8</code>.</li>
+  </ul>
+  <p>Si tu código todavía apunta a Sonnet 4 o a Opus 4, ponlo en la lista corta de cosas a actualizar antes de mediados de junio.</p>
+
+  <h3>Haiku 3: ya retirado</h3>
+  <p><strong>Atención:</strong> Claude Haiku 3 (<code>claude-3-haiku-20240307</code>) fue retirado el 20 de abril de 2026. Hoy (mayo 2026) ya no funciona en la API — las requests devuelven error.</p>
+  <p>Haiku 3 costaba $0.25/$1.25 por MTok (muy barato), pero solo generaba 4,096 tokens de salida. El reemplazo recomendado es Haiku 4.5: genera 64,000 tokens, soporta extended thinking, es 4-5x más rápido que Sonnet 4.5 y cuesta $1/$5 por MTok. Si todavía tienes código apuntando a Haiku 3, actualízalo ya.</p>
+
+  <h3>Modelos retirados recientemente</h3>
+  <p>Estos modelos dejaron de funcionar en los últimos meses. Si los ves en código viejo, son candidatos a migración inmediata.</p>
+  <ul class="deflist">
+    <li><strong>Claude Opus 3</strong> (<code>claude-3-opus-20240229</code>) — retirado el 5 enero 2026. Reemplazo: <code>claude-opus-4-8</code>.</li>
+    <li><strong>Claude Sonnet 3.7</strong> (<code>claude-3-7-sonnet-20250219</code>) — retirado el 19 febrero 2026. Reemplazo: <code>claude-sonnet-4-6</code>.</li>
+    <li><strong>Claude Haiku 3.5</strong> (<code>claude-3-5-haiku-20241022</code>) — retirado en la Claude API el 19 febrero 2026. Sigue accesible en Amazon Bedrock y Google Vertex AI por ahora. Reemplazo: <code>claude-haiku-4-5</code>.</li>
+    <li><strong>Claude Haiku 3</strong> (<code>claude-3-haiku-20240307</code>) — retirado el 20 abril 2026.</li>
+  </ul>
+  <div class="callout tip">
+    <p class="callout-label">Truco práctico</p>
+    <p>En Claude Console hay una página Usage &gt; Export que te muestra el uso por API key y modelo. Es la forma más rápida de detectar si tu organización todavía consume modelos deprecated.</p>
+  </div>
+
+  <h2 id="cap03-benchmarks">Benchmarks: cómo se mide la inteligencia</h2>
+  <p>Los benchmarks son pruebas estándar. Son como los exámenes que todos los modelos toman para compararse. Aquí van los más importantes.</p>
+
+  <h3>Los benchmarks que importan</h3>
+  <ul class="deflist">
+    <li><strong>SWE-bench Verified</strong> — le dan al modelo un bug real de un proyecto de software. El modelo tiene que arreglarlo. Opus 4.7 resuelve el 87.6% (sube desde el 80.8% de Opus 4.6). Sonnet 4.6 resuelve el 79.6%. Haiku 4.5 el 73%.</li>
+    <li><strong>SWE-bench Pro</strong> — versión más difícil del anterior. Opus 4.7 saca 64.3%, superando a Gemini 3.1 Pro (54.2%) y GPT-5.4 (57.7%). Opus 4.6 sacaba 53.4%.</li>
+    <li><strong>CursorBench</strong> — mide qué tan bien trabaja el modelo dentro de un editor agéntico. Opus 4.7 saca 70% (vs 58% de Opus 4.6).</li>
+    <li><strong>Vision Acuity</strong> — precisión en tareas visuales. Opus 4.7 saca 98.5% (vs 54.5% de Opus 4.6). El salto viene del soporte de imágenes hasta 2576px.</li>
+    <li><strong>Rakuten-SWE-Bench</strong> — Opus 4.7 resuelve 3x más tareas que Opus 4.6, con mejoras de doble dígito en Code Quality y Test Quality.</li>
+    <li><strong>OfficeQA Pro</strong> — tareas de productividad. Opus 4.7 comete 21% menos errores que su predecesor.</li>
+    <li><strong>GPQA Diamond (referencia histórica)</strong> — preguntas de ciencias a nivel de doctorado. Opus 4.6 sacaba 91.3%; para comparar, Opus 3 sacaba 50.4%.</li>
+    <li><strong>ARC-AGI 2 (referencia histórica)</strong> — problemas de lógica y abstracción. Opus 4.6 saca 68.8%. Sonnet 4.6 saca 58-60%.</li>
+    <li><strong>Terminal Bench 2 (referencia histórica)</strong> — tareas de programación en terminal. Opus 4.6 tiene 65.4%; Anthropic reporta que Opus 4.7 resuelve casos que generaciones anteriores fallaban.</li>
+  </ul>
+  <p>¿Qué significan estos números? Que la familia Opus resuelve casi 9 de cada 10 bugs reales de software en SWE-bench Verified y le saca ventaja real a los competidores en SWE-bench Pro. Opus 4.8 mejora a Opus 4.7 sobre todo en coding, tareas agénticas y razonamiento. Sonnet 4.6 está unos puntos por debajo, a una fracción del costo.</p>
+  <p><strong>Fable 5 vs Opus 4.8.</strong> En la clase Mythos, Fable 5 sube otro escalón en tareas concretas. Según los benchmarks de Anthropic, supera a Opus 4.8 en hojas de cálculo en todos los niveles de effort: las resuelve con menos turnos y entre 25% y 30% más rápido. También es notablemente más fuerte en benchmarks de trading. Para la mayoría del trabajo diario, sin embargo, la diferencia no justifica el doble de precio ($10/$50 vs $5/$25).</p>
+
+  <h2 id="cap03-donde-puedes-usar-los-modelos">Dónde puedes usar los modelos</h2>
+  <p>Los modelos de Claude están disponibles en varias plataformas:</p>
+  <ul class="deflist">
+    <li><strong>Claude API (directa)</strong> — la forma más común. Te registras en Anthropic y usas la API directamente.</li>
+    <li><strong>Claude Platform on AWS</strong> — distinto de Bedrock. Se contrata a través de AWS Marketplace usando Claude Consumption Units. Nota: Fast mode no está disponible en esta plataforma.</li>
+    <li><strong>AWS Bedrock</strong> — si ya usas Amazon Web Services. Los IDs empiezan con <code>anthropic.claude-*</code>. Desde Sonnet 4.5 en adelante, Bedrock ofrece endpoints globales y regionales. Los regionales tienen un premium del 10% sobre los globales.</li>
+    <li><strong>Google Vertex AI</strong> — si ya usas Google Cloud. El formato es <code>claude-modelo@fecha</code> (en modelos con fecha) o <code>claude-modelo</code> (en 4.6+). Vertex AI ofrece endpoints global, multi-region y regional. Los multi-region y regional tienen el mismo premium del 10%.</li>
+    <li><strong>Microsoft Foundry</strong> — disponible para modelos recientes. Ojo con un detalle: en Microsoft Foundry, Opus 4.8 ofrece 200K de contexto, no el millón de tokens que tiene en la Claude API y otras plataformas.</li>
+    <li><strong><a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a></strong> — la interfaz web. Todos los modelos disponibles según tu plan.</li>
+    <li><strong>Claude Code</strong> — la herramienta de línea de comandos. Hace routing automático: envía tareas simples a Haiku y tareas complejas a Sonnet u Opus.</li>
+  </ul>
+  <p>Un dato importante: los modelos con el mismo ID (sea snapshot fechado o ID sin fecha 4.6+) son idénticos en todas las plataformas. No importa si usas AWS, Google o la API directa. El modelo se comporta igual.</p>
+
+  <h2 id="cap03-planes-de-suscripcion">Planes de suscripción para <a href="https://Claude.ai" target="_blank" rel="noopener">Claude.ai</a></h2>
+  <p>Si usas Claude a través de la web (<a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>), hay varios planes:</p>
+  <ul class="deflist">
+    <li><strong>Free ($0/mes)</strong> — Acceso básico a todos los modelos. Perfecto para probar.</li>
+    <li><strong>Pro ($17-20/mes)</strong> — 5 veces más uso que Free. Acceso completo a Opus 4.8 y Cowork.</li>
+    <li><strong>Max 5x ($100/mes)</strong> — 25 veces el uso de Free. Prioridad máxima. Claude Code completo.</li>
+    <li><strong>Max 20x ($200/mes)</strong> — 100 veces el uso de Free. Cero latencia en la cola.</li>
+    <li><strong>Team ($25-30/persona/mes)</strong> — Para equipos. Mínimo 5 personas.</li>
+    <li><strong>Enterprise (precio personalizado)</strong> — SSO, controles de acceso, audit logs, compliance.</li>
+  </ul>
+  <p>Si eres desarrollador individual, el plan Pro es el mejor valor. Si usas Claude Code intensivamente, considera Max.</p>
+
+  <h2 id="cap03-ejemplos-practicos">Ejemplos Prácticos</h2>
+
+  <h3>Llamar a Opus 4.8 desde la API</h3>
+  <pre><code class="lang-python">import anthropic
+
+client = anthropic.Anthropic()
+message = client.messages.create(
+    model="claude-opus-4-8",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Analiza este código y sugiere mejoras"}]
+)
+print(message.content[0].text)</code></pre>
+  <p>Usa el ID <code>claude-opus-4-8</code> — desde la generación 4.6 los IDs ya no llevan fecha pero siguen siendo snapshots fijos. El parámetro <code>max_tokens</code> limita cuánto puede escribir Claude en su respuesta. Opus 4.8 NO acepta temperature, top_p ni top_k personalizados; pasarlos devuelve 400.</p>
+
+  <h3>Usar Haiku para clasificación rápida y barata</h3>
+  <pre><code class="lang-python">message = client.messages.create(
+    model="claude-haiku-4-5",
+    max_tokens=100,
+    messages=[{"role": "user", "content": "Clasifica este mensaje del cliente: 'Quiero devolver mi producto porque llego roto'"}]
+)</code></pre>
+  <p>Haiku es perfecto para tareas simples como clasificar mensajes. A $1 por millón de tokens de entrada, puedes clasificar miles de mensajes por centavos.</p>
+
+  <h3>Usar la ventana de 1 millón de tokens</h3>
+  <pre><code class="lang-python">message = client.messages.create(
+    model="claude-sonnet-4-6",
+    max_tokens=8192,
+    messages=[{"role": "user", "content": documento_muy_largo}]
+)</code></pre>
+  <p>La ventana de 1 millón de tokens es GA (disponible para todos) en Opus 4.8, Sonnet 4.6 y Fable 5 (y también en los Opus legacy 4.7 y 4.6). No necesitas ningún flag beta ni parámetro especial — solo envía tu documento largo y el modelo lo procesará. El precio por token es el mismo sin importar el tamaño de la solicitud.</p>
+
+  <h3>Adaptive thinking en Opus 4.8</h3>
+  <pre><code class="lang-python">message = client.messages.create(
+    model="claude-opus-4-8",
+    max_tokens=128000,
+    thinking={"type": "adaptive", "display": "summarized"},
+    output_config={"effort": "high"},
+    messages=[{"role": "user", "content": "Diseña la arquitectura del sistema..."}]
+)</code></pre>
+  <p>En Opus 4.8 ya no se usa extended thinking con <code>budget_tokens</code> (devuelve 400). Adaptive thinking es el único modo: el modelo decide solo cuánto pensar. Con <code>display: 'summarized'</code> recibes un resumen del razonamiento; por defecto el campo viene vacío. Los effort levels disponibles son <code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code> y <code>max</code>, y en Opus 4.8 el valor por defecto es <code>'high'</code> en todas las superficies.</p>
+
+  <h3>Task budgets en Opus 4.8 (beta)</h3>
+  <pre><code class="lang-python">message = client.beta.messages.create(
+    model="claude-opus-4-8",
+    max_tokens=128000,
+    output_config={
+        "effort": "high",
+        "task_budget": {"type": "tokens", "total": 128000}
+    },
+    betas=["task-budgets-2026-03-13"],
+    messages=[{"role": "user", "content": "Revisa el codebase y propón un plan"}]
+)</code></pre>
+  <p>Task budgets es distinto de <code>max_tokens</code>. <code>max_tokens</code> es un hard cap por request. Task budget es una estimación para todo el loop agéntico (mínimo 20,000 tokens) — le sirve al modelo para autorregular cuántos pasos dar. Requiere el header beta <code>task-budgets-2026-03-13</code>.</p>
+
+  <h3>Ahorrar con Prompt Caching</h3>
+  <pre><code class="lang-python">message = client.messages.create(
+    model="claude-sonnet-4-6",
+    max_tokens=1024,
+    system=[{
+        "type": "text",
+        "text": "Eres un asistente legal especializado en contratos...[texto largo]...",
+        "cache_control": {"type": "ephemeral"}
+    }],
+    messages=[{"role": "user", "content": "Revisa esta cláusula"}]
+)</code></pre>
+  <p>El system prompt largo se cachea automáticamente. Con cache de 5 minutos, la primera vez pagas 1.25x del precio base. Con cache de 1 hora, pagas 2x. Las siguientes lecturas cuestan solo 0.1x en ambos casos. Si envías 10 preguntas con el mismo system prompt, ahorras mucho.</p>
+
+  <h3>Batch API con 50% de descuento</h3>
+  <pre><code class="lang-python">batch = client.messages.batches.create(
+    requests=[
+        {"custom_id": "req-1", "params": {"model": "claude-haiku-4-5", "max_tokens": 100, "messages": [{"role": "user", "content": "Clasifica: texto 1"}]}},
+        {"custom_id": "req-2", "params": {"model": "claude-haiku-4-5", "max_tokens": 100, "messages": [{"role": "user", "content": "Clasifica: texto 2"}]}}
+    ]
+)</code></pre>
+  <p>La Batch API procesa muchas peticiones juntas con 50% de descuento. No recibes las respuestas al instante, pero pagas la mitad. Ideal para procesar grandes volúmenes. Nota: Fast mode no es compatible con Batch API.</p>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Sonnet 4.6 es la mejor opción para empezar. Cubre el 90% de los casos de uso a un precio razonable. Solo sube a Opus 4.8 si realmente lo necesitas, y reserva Fable 5 (clase Mythos, el doble de caro) para tareas donde de verdad marca la diferencia, como hojas de cálculo o trading.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Claude Code hace routing automático: envía tareas simples a Haiku y complejas a Sonnet/Opus. No necesitas elegir modelo manualmente cuando usas Claude Code.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Cuidado con los modelos legacy Opus 4 y 4.1. Cuestan $15/$75 por MTok — tres veces más que Opus 4.8 — y rinden peor. Opus 4 original ya está deprecated (14 abril 2026) y se retira el 15 junio 2026. Migra a <code>claude-opus-4-8</code> cuanto antes.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Si migras de Opus 4.6 a Opus 4.8 (o a Opus 4.7), revisa tu código antes: estos modelos NO soportan extended thinking con <code>budget_tokens</code> (usa adaptive thinking en su lugar), NO aceptan valores personalizados de <code>temperature</code>, <code>top_p</code> o <code>top_k</code>, y omiten el thinking content en la respuesta a menos que pases <code>display: 'summarized'</code>. Recuerda además que en Opus 4.8 el effort por defecto es <code>'high'</code>. Si no haces estos cambios, vas a recibir errores 400 o respuestas inesperadas.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Los modelos de la generación 4.7+ (incluido Opus 4.8) usan un nuevo tokenizer que consume aproximadamente 30% más tokens que Opus 4.6 para el mismo texto. Al migrar, presupuesta más <code>max_tokens</code> y revisa que tu ventana de contexto efectiva sigue alcanzando. El precio por MTok es el mismo, pero la factura final sube proporcionalmente.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Sonnet 4 y Opus 4 originales se retiran el 15 de junio de 2026. Si tu código todavía apunta a <code>claude-sonnet-4-20250514</code> o <code>claude-opus-4-20250514</code>, planifica la migración a <code>claude-sonnet-4-6</code> y <code>claude-opus-4-8</code> antes de esa fecha.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>La ventana de 1M tokens en Opus 4.8, Sonnet 4.6 y Fable 5 (y en los Opus legacy 4.7 y 4.6) es GA y tiene precio uniforme. El costo por token es el mismo sin importar si envías 10K o 900K tokens. No hay recargo por contexto largo.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Los descuentos se acumulan. Puedes combinar Batch API (50% off) + Prompt Caching (90% off en lecturas) + modelo barato (Haiku). El ahorro total puede superar el 95%. Cuidado: Fast mode (6x) no es compatible con Batch API.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Claude Haiku 3 ya fue retirado el 20 de abril de 2026. Si todavía ves <code>claude-3-haiku-20240307</code> en tu código, sustitúyelo por <code>claude-haiku-4-5</code> — las requests al ID viejo ya devuelven error.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Haiku 3.5 fue retirado en la Claude API el 19 de febrero de 2026, pero sigue accesible en AWS Bedrock y Google Vertex AI. Si necesitas migrar, el reemplazo recomendado es <code>claude-haiku-4-5</code>.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Para producción en modelos pre-4.6 usa IDs con fecha (snapshot) como <code>claude-sonnet-4-5-20250929</code>. Para modelos 4.6 y posteriores, el ID sin fecha (<code>claude-opus-4-8</code>, <code>claude-sonnet-4-6</code>) YA ES un snapshot fijo — úsalo en producción con tranquilidad.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Si tu organización necesita data residency, el parámetro <code>inference_geo: 'us'</code> fuerza inferencia en Estados Unidos con un multiplicador 1.1x sobre el pricing. Solo funciona en Opus 4.6+ y Sonnet 4.6+; en modelos anteriores devuelve 400.</p>
+  </div>
+
+  <section class="recap">
+    <h2 id="cap03-resumen-del-capitulo">Resumen del Capítulo</h2>
+    <p>Claude tiene tres modelos principales recomendados: Haiku 4.5 (rápido y barato, $1/$5 MTok), Sonnet 4.6 (el favorito, equilibrio perfecto, $3/$15 MTok) y Opus 4.8 (el nuevo flagship desde junio 2026, $5/$25 MTok). Opus 4.8 mantiene el precio de Opus 4.7 y mejora en coding, tareas agénticas y razonamiento; soporta solo adaptive thinking (no extended thinking con <code>budget_tokens</code>), trae el effort por defecto en <code>'high'</code> y usa el nuevo tokenizer que consume ~30% más tokens. Opus 4.7 pasa a legacy activo. Desde junio de 2026 existe además la clase Mythos por encima de Opus: Claude Fable 5 (GA, $10/$50 MTok, supera a Opus 4.8 en hojas de cálculo y trading) y Claude Mythos 5 (acceso limitado, Project Glasswing). Desde la generación 4.6 los IDs ya no llevan fecha (<code>claude-opus-4-8</code>) pero siguen siendo snapshots fijos. Para la mayoría de tareas, Sonnet 4.6 sigue siendo la mejor opción. Puedes ahorrar con Batch API (50% off), prompt caching (90% off en relecturas) y eligiendo el modelo correcto para cada tarea.</p>
+  </section>
+</article>

@@ -1,0 +1,980 @@
+<article class="chapter" data-id="cap16" data-title="Skills y Slash Commands" data-part="3">
+  <header class="ch-head">
+    <p class="ch-kicker">Parte 3 · Claude Code · Capítulo 16</p>
+    <h1>Skills y Slash Commands</h1>
+    <p class="ch-lede">Cómo extender Claude Code con comandos personalizados y skills reutilizables</p>
+    <p class="ch-level">INTERMEDIO</p>
+  </header>
+
+  <p>Claude Code viene con muchos comandos listos para usar. Pero lo mejor es que puedes crear los tuyos. Las skills son como recetas que le enseñas a Claude. Escribes las instrucciones una vez y las usas siempre que quieras. En este capítulo vas a aprender todos los comandos que ya vienen incluidos, cómo crear tus propias skills, y cómo instalar skills que otros compartieron.</p>
+
+  <h2 id="cap16-que-son-skills-y-slash-commands">Qué son las Skills y los Slash Commands</h2>
+
+  <p>Imagina que Claude Code es un chef. Los slash commands son las recetas que ya sabe cocinar. Escribes <code>/</code> seguido del nombre y Claude ejecuta la receta.</p>
+
+  <p>Hay tres tipos de comandos <code>/</code> en Claude Code:</p>
+
+  <ul class="deflist">
+    <li><strong>Built-in commands</strong> — Comandos del sistema. Hacen cosas fijas como limpiar la pantalla o cambiar el modelo. Son como los botones de tu microondas.</li>
+    <li><strong>Bundled skills</strong> — Skills que vienen incluidas con Claude Code. Son más inteligentes: pueden leer archivos, lanzar agentes y adaptarse a tu proyecto. Son como electrodomésticos programables.</li>
+    <li><strong>Custom skills</strong> — Las que tú creas o instalas de terceros. Son como recetas que tú escribes en un cuaderno.</li>
+  </ul>
+
+  <p>Las skills son una evolución de los slash commands. Antes existían los "custom commands" (archivos <code>.md</code> sueltos). Ahora las skills son carpetas completas con un archivo <code>SKILL.md</code> como punto de entrada. Los comandos viejos siguen funcionando, pero las skills tienen más poderes.</p>
+
+  <p><strong>Fusión oficial en 2026:</strong> La documentación de Anthropic ahora dice textualmente que "custom commands have been merged into skills". Un archivo en <code>.claude/commands/deploy.md</code> y un skill en <code>.claude/skills/deploy/SKILL.md</code> generan ambos el mismo <code>/deploy</code> y se comportan igual. Hasta la URL antigua <code>/slash-commands</code> ahora redirige a <code>/skills</code>. Conceptualmente ya no son dos cosas separadas: son la misma cosa, y skills es la única vía recomendada para casos nuevos porque acepta archivos de soporte (templates, scripts, referencias) dentro de su carpeta.</p>
+
+  <h3>El estándar abierto Agent Skills</h3>
+
+  <p>Las skills siguen un formato estándar llamado Agent Skills. Lo publicó Anthropic en diciembre de 2025. Está disponible en <code><a href="https://agentskills.io" target="_blank" rel="noopener">agentskills.io</a></code>.</p>
+
+  <p>¿Por qué importa? Porque es un formato que funciona en varias herramientas. No solo Claude Code. OpenAI lo adoptó para Codex CLI y ChatGPT. Es como el formato USB: un solo conector para muchos dispositivos.</p>
+
+  <p>El principio clave de este estándar se llama <strong>progressive disclosure</strong> (divulgación progresiva). Funciona en tres niveles:</p>
+
+  <ol>
+    <li><strong>Metadata (~100 tokens):</strong> El nombre y la descripción. Se cargan siempre al inicio.</li>
+    <li><strong>Instructions (hasta 5000 tokens):</strong> El contenido completo del <code>SKILL.md</code>. Se carga cuando el skill se activa.</li>
+    <li><strong>Resources (bajo demanda):</strong> Archivos extra como scripts, ejemplos o datos. Se cargan solo cuando se necesitan.</li>
+  </ol>
+
+  <p>Es como un restaurante. Primero ves el menú (metadata). Luego pides un plato y el mesero te trae la receta detallada (instructions). Si necesitas algo más, pides los ingredientes extra (resources).</p>
+
+  <h2 id="cap16-comandos-built-in">Comandos Built-in del Sistema</h2>
+
+  <p>Estos comandos vienen integrados en Claude Code. No necesitas instalar nada. Solo escribe <code>/</code> y el nombre del comando.</p>
+
+  <p>Los vamos a organizar por lo que hacen.</p>
+
+  <h3>Sesión y navegación</h3>
+
+  <ul class="deflist">
+    <li><strong><code>/help</code></strong> — Muestra la ayuda y todos los comandos disponibles.</li>
+    <li><strong><code>/clear</code></strong> — Limpia el historial de conversación. Borra todo y empiezas de cero. Aliases: <code>/reset</code>, <code>/new</code>.</li>
+    <li><strong><code>/compact [instrucciones]</code></strong> — Compacta la conversación. Claude resume lo que llevas hablando para liberar espacio. Puedes darle instrucciones de qué conservar.</li>
+    <li><strong><code>/context</code></strong> — Muestra cuánto contexto estás usando. Te da una cuadrícula de colores y sugerencias para optimizar.</li>
+    <li><strong><code>/exit</code></strong> — Sale de Claude Code. Alias: <code>/quit</code>.</li>
+    <li><strong><code>/branch [nombre]</code></strong> — Crea una bifurcación de la conversación. Como guardar tu partida en un videojuego antes de tomar una decisión. Alias: <code>/fork</code>. Con la variable <code>CLAUDE_CODE_FORK_SUBAGENT</code> seteada, lanza un subagente forkeado en lugar de una rama de conversación.</li>
+    <li><strong><code>/resume [sesion]</code></strong> — Retoma una conversación anterior. Alias: <code>/continue</code>.</li>
+    <li><strong><code>/rewind</code></strong> — Rebobina la conversación a un punto anterior. Alias: <code>/checkpoint</code>.</li>
+    <li><strong><code>/rename [nombre]</code></strong> — Le pone nombre a tu sesión actual.</li>
+    <li><strong><code>/cd &lt;ruta&gt;</code></strong> — Mueve la sesión actual a otro directorio preservando el prompt cache. Disponible desde v2.1.169.</li>
+    <li><strong><code>/export [archivo]</code></strong> — Exporta la conversación como texto plano.</li>
+    <li><strong><code>/copy [N]</code></strong> — Copia la última respuesta al portapapeles. Pasa un número N para copiar la N-ésima respuesta más reciente. Cuando hay bloques de código, muestra un picker interactivo para seleccionar bloques individuales o la respuesta completa. Presiona <code>w</code> en el picker para escribir la selección a un archivo (útil sobre SSH).</li>
+    <li><strong><code>/color [color|default]</code></strong> — Cambia el color de la barra de prompt para la sesión actual. Colores disponibles: red, blue, green, yellow, purple, orange, pink, cyan. Usa <code>default</code> para resetear.</li>
+    <li><strong><code>/focus</code></strong> — Alterna la vista enfocada: solo el último prompt, un resumen de una línea por tool call (con diffstats) y la respuesta final. Persiste entre sesiones. Solo en modo fullscreen.</li>
+    <li><strong><code>/goal [condicion|clear]</code></strong> — Setea un objetivo: Claude sigue trabajando turno tras turno hasta cumplir la condición. Ejemplo: <code>/goal all tests pass</code>. Sin argumento muestra el goal actual. <code>clear</code>, <code>stop</code>, <code>off</code>, <code>reset</code>, <code>none</code> o <code>cancel</code> lo quita.</li>
+    <li><strong><code>/recap</code></strong> — Genera un resumen de una línea de la sesión actual on-demand. También aparece automáticamente tras una ausencia larga.</li>
+    <li><strong><code>/scroll-speed</code></strong> — Ajusta interactivamente la velocidad del scroll de la rueda del mouse con un previo visual. Solo en fullscreen y no en la terminal de JetBrains.</li>
+    <li><strong><code>/teleport</code></strong> — Trae una sesión de Claude Code on the web a este terminal: abre un picker para buscar branch y conversación. Alias: <code>/tp</code>. Requiere suscripción a <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>.</li>
+    <li><strong><code>/tui [default|fullscreen]</code></strong> — Cambia el renderer de UI del terminal y relanza con la conversación intacta. <code>fullscreen</code> activa el renderer alt-screen sin flicker. Sin argumento imprime el activo.</li>
+    <li><strong><code>/background [prompt]</code></strong> — Desacopla la sesión actual para que corra como background agent y libera el terminal. Alias: <code>/bg</code>. Monitorea con <code>claude agents</code>.</li>
+    <li><strong><code>/stop</code></strong> — Detiene la sesión background actual. Solo aparece cuando estás acoplado a una. El transcript y los worktrees se conservan. Para solo desacoplar sin detener, usa <code>/exit</code> o la flecha izquierda.</li>
+    <li><strong><code>/heapdump</code></strong> — Escribe un snapshot del heap de JavaScript y un desglose de memoria en <code>~/Desktop</code> (o el home en Linux). Útil para diagnosticar consumo alto de RAM.</li>
+  </ul>
+
+  <h3>Modelo y rendimiento</h3>
+
+  <ul class="deflist">
+    <li><strong><code>/model [modelo]</code></strong> — Cambia el modelo de IA. Usa flechas izquierda/derecha para ajustar el nivel de esfuerzo. El cambio es inmediato.</li>
+    <li><strong><code>/effort [low|medium|high|xhigh|max|auto]</code></strong> — Establece el nivel de esfuerzo del modelo. Los niveles <code>low</code>, <code>medium</code>, <code>high</code> y <code>xhigh</code> persisten entre sesiones. <code>max</code> aplica solo a la sesión actual. <code>auto</code> resetea al default del modelo. Sin argumento, muestra el nivel actual o abre un slider interactivo. Toma efecto inmediatamente sin esperar a que termine la respuesta actual. <strong>Importante:</strong> los niveles disponibles dependen del modelo en uso, no todos los modelos soportan los cinco.</li>
+    <li><strong><code>/fast [on|off]</code></strong> — Activa o desactiva el modo rápido.</li>
+    <li><strong><code>/cost</code></strong> — Muestra cuántos tokens llevas gastando.</li>
+    <li><strong><code>/usage</code></strong> — Muestra los límites de tu plan y el estado de rate limits.</li>
+    <li><strong><code>/usage-credits</code></strong> — Configura uso extra si llegas al límite de tu plan. Antes se llamaba <code>/extra-usage</code>; el nombre viejo sigue funcionando como alias.</li>
+    <li><strong><code>/plan [descripcion]</code></strong> — Entra en modo planificación. Claude piensa antes de actuar. Puedes pasar una descripción opcional para iniciar directamente con esa tarea.</li>
+  </ul>
+
+  <h3>Proyecto y código</h3>
+
+  <ul class="deflist">
+    <li><strong><code>/init</code></strong> — Crea un archivo <code>CLAUDE.md</code> para tu proyecto. Es como darle a Claude un manual de instrucciones sobre tu código. Tip: establece <code>CLAUDE_CODE_NEW_INIT=1</code> para un flujo interactivo extendido que también configura skills, hooks y archivos de memoria personal.</li>
+    <li><strong><code>/add-dir &lt;ruta&gt;</code></strong> — Agrega un directorio extra a tu sesión.</li>
+    <li><strong><code>/diff</code></strong> — Abre un visor interactivo de cambios. Muestra qué archivos modificaste.</li>
+    <li><strong><code>/security-review</code></strong> — Analiza tus cambios buscando vulnerabilidades de seguridad.</li>
+    <li><strong><code>/review</code></strong> — Deprecado, pero sigue existiendo. Usa <code>/code-review</code> en su lugar: ya viene incluido como bundled skill (no necesitas instalar ningún plugin). Lo describimos en la sección de skills incluidas.</li>
+    <li><strong><code>/autofix-pr [prompt]</code></strong> — Lanza una sesión de Claude Code on the web que vigila el PR de tu rama actual y empuja arreglos cuando CI falla o llegan comentarios de revisión. Detecta el PR vía <code>gh pr view</code>. Requiere <code>gh</code> CLI y acceso a Claude Code on the web. Ejemplo: <code>/autofix-pr only fix lint and type errors</code>.</li>
+  </ul>
+
+  <h3>Configuración y sistema</h3>
+
+  <ul class="deflist">
+    <li><strong><code>/config</code></strong> — Abre la pantalla de configuración. Alias: <code>/settings</code>. Desde v2.1.181 también acepta pares clave=valor para setear cualquier ajuste directo desde el prompt, sin abrir la interfaz. Ejemplo: <code>/config thinking=false</code>. Funciona en modo interactivo, en <code>-p</code> y en Remote Control. Usa <code>/config help</code> (o <code>/config --help</code> desde v2.1.183) para ver la lista de claves disponibles.</li>
+    <li><strong><code>/advisor [modelo]</code></strong> — Pide una segunda opinión a otro modelo sobre lo que estás haciendo. Acepta varios modelos, incluido <code>fable</code>.</li>
+    <li><strong><code>/permissions</code></strong> — Ve o cambia los permisos. Alias: <code>/allowed-tools</code>.</li>
+    <li><strong><code>/memory</code></strong> — Edita tus archivos de memoria <code>CLAUDE.md</code>.</li>
+    <li><strong><code>/theme</code></strong> — Cambia el tema de colores. Incluye temas para daltonismo.</li>
+    <li><strong><code>/hooks</code></strong> — Muestra las configuraciones de hooks para eventos de herramientas.</li>
+    <li><strong><code>/statusline</code></strong> — Configura la línea de estado de Claude Code. Puedes describir lo que quieres, o ejecutar sin argumentos para auto-configurar desde tu shell prompt.</li>
+    <li><strong><code>/terminal-setup</code></strong> — Configura keybindings del terminal para Shift+Enter y otros atajos. Solo visible en terminales que lo necesitan (VS Code, Alacritty, Warp).</li>
+    <li><strong><code>/keybindings</code></strong> — Abre tu archivo de atajos de teclado.</li>
+    <li><strong><code>/doctor</code></strong> — Diagnostica tu instalación de Claude Code.</li>
+    <li><strong>Flag de CLI <code>--safe-mode</code> (desde v2.1.169)</strong> — No es un comando <code>/</code>, sino un flag que pasas al arrancar: <code>claude --safe-mode</code>. Desactiva TODAS las personalizaciones (skills, comandos, hooks, plugins, settings) para diagnosticar si un problema viene de tu configuración. Equivale a la variable de entorno <code>CLAUDE_CODE_SAFE_MODE</code>.</li>
+    <li><strong><code>/status</code></strong> — Muestra versión, modelo, cuenta y conexión.</li>
+    <li><strong><code>/stats</code></strong> — Muestra tu uso diario, rachas y preferencias.</li>
+    <li><strong><code>/release-notes</code></strong> — Ve el changelog de actualizaciones.</li>
+    <li><strong><code>/feedback</code></strong> — Envía comentarios al equipo de Claude. Alias: <code>/bug</code>.</li>
+    <li><strong><code>/setup-vertex</code></strong> — Configura autenticación, proyecto, región y pins de modelo para Google Vertex AI mediante un wizard. Solo visible cuando <code>CLAUDE_CODE_USE_VERTEX=1</code> está establecido (paralelo al <code>/setup-bedrock</code>).</li>
+    <li><strong><code>/radio</code></strong> — Abre Claude FM, la radio lo-fi de Claude Code, en el navegador. Si no hay navegador disponible, imprime la URL del stream. No disponible en Bedrock, Vertex ni Foundry.</li>
+    <li><strong><code>/team-onboarding</code></strong> — Genera una guía de onboarding para tu equipo a partir de tu historial de los últimos 30 días (sesiones, comandos y MCPs usados). Suscriptores de <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a> en Pro, Max, Team o Enterprise también reciben un share link.</li>
+  </ul>
+
+  <h3>Integraciones y extras</h3>
+
+  <ul class="deflist">
+    <li><strong><code>/ide</code></strong> — Gestiona integraciones con editores de código.</li>
+    <li><strong><code>/mcp</code></strong> — Gestiona conexiones con servidores MCP.</li>
+    <li><strong><code>/chrome</code></strong> — Configura Claude en Chrome.</li>
+    <li><strong><code>/desktop</code></strong> — Continúa la sesión en la app de escritorio. Alias: <code>/app</code>.</li>
+    <li><strong><code>/mobile</code></strong> — Muestra un QR para descargar la app móvil. Aliases: <code>/ios</code>, <code>/android</code>.</li>
+    <li><strong><code>/install-github-app</code></strong> — Configura la app de GitHub Actions.</li>
+    <li><strong><code>/install-slack-app</code></strong> — Instala la app de Slack.</li>
+    <li><strong><code>/login</code> / <code>/logout</code></strong> — Inicia o cierra sesión.</li>
+    <li><strong><code>/upgrade</code></strong> — Abre la página para cambiar de plan.</li>
+    <li><strong><code>/privacy-settings</code></strong> — Configuración de privacidad (solo Pro y Max).</li>
+    <li><strong><code>/remote-control</code></strong> — Habilita control remoto desde <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>. Alias: <code>/rc</code>.</li>
+    <li><strong><code>/remote-env</code></strong> — Configura el entorno remoto por defecto para sesiones web iniciadas con <code>--remote</code>.</li>
+    <li><strong><code>/sandbox</code></strong> — Activa o desactiva el modo sandbox.</li>
+    <li><strong><code>/plugin</code></strong> — Gestiona plugins de Claude Code.</li>
+    <li><strong><code>/reload-plugins</code></strong> — Recarga todos los plugins sin reiniciar.</li>
+    <li><strong><code>/tasks</code></strong> — Lista y gestiona tareas en background. Alias: <code>/bashes</code>.</li>
+    <li><strong><code>/agents</code></strong> — Gestiona configuraciones de subagentes.</li>
+    <li><strong><code>/skills</code></strong> — Lista las skills disponibles.</li>
+    <li><strong><code>/insights</code></strong> — Genera un reporte de tus sesiones.</li>
+    <li><strong><code>/ultrareview [PR]</code></strong> — Corre un review profundo multi-agente del PR en un sandbox cloud. Incluye 3 ejecuciones gratis en Pro y Max; después requiere extra usage. Es el primo "pesado" de <code>/review</code> y <code>/security-review</code>.</li>
+    <li><strong><code>/web-setup</code></strong> — Conecta tu cuenta de GitHub a Claude Code on the web usando las credenciales locales del <code>gh</code> CLI. <code>/schedule</code> lo invoca automáticamente si GitHub no está conectado todavía.</li>
+    <li><strong><code>/schedule [descripcion]</code></strong> — Crea, actualiza, lista o ejecuta tareas programadas en la nube. Claude te guía en la configuración conversacionalmente.</li>
+    <li><strong><code>/voice</code></strong> — Alterna dictado por voz push-to-talk. Requiere una cuenta de <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>.</li>
+    <li><strong><code>/powerup</code></strong> — Descubre features de Claude Code con lecciones interactivas rápidas y demos animadas.</li>
+    <li><strong><code>/passes</code></strong> — Comparte una semana gratis de Claude Code con amigos. Solo visible si tu cuenta es elegible.</li>
+    <li><strong><code>/stickers</code></strong> — Ordena stickers de Claude Code.</li>
+    <li><strong><code>/ultraplan &lt;prompt&gt;</code></strong> — Redacta un plan en una sesión ultraplan, revísalo en tu navegador, y luego ejecútalo remotamente o envíalo de vuelta a tu terminal.</li>
+    <li><strong><code>/setup-bedrock</code></strong> — Configura Amazon Bedrock con un wizard interactivo. Solo visible cuando <code>CLAUDE_CODE_USE_BEDROCK=1</code> está establecido.</li>
+  </ul>
+
+  <h3>Prefijos especiales: /, ! y @</h3>
+
+  <p>Además de los comandos <code>/</code>, Claude Code tiene dos prefijos más:</p>
+
+  <ul class="deflist">
+    <li><strong><code>!</code> al inicio</strong> — Modo bash. Ejecuta comandos de terminal sin pasar por Claude. Por ejemplo: <code>!git status</code>. La salida se agrega al contexto de la conversación.</li>
+    <li><strong><code>@</code> en cualquier parte</strong> — Mención de archivo. Activa autocompletado de rutas. Escribe <code>@src/</code> y verás las opciones.</li>
+  </ul>
+
+  <p>El comando <code>/btw</code> merece mención especial. Es una pregunta lateral rápida. Funciona incluso mientras Claude está procesando. No tiene acceso a herramientas. Es como susurrarle algo al oído sin interrumpir lo que está haciendo.</p>
+
+  <h2 id="cap16-skills-incluidas">Skills Incluidas con Claude Code</h2>
+
+  <p>Estas skills vienen preinstaladas. Son más poderosas que los built-in commands porque pueden usar herramientas, lanzar agentes y adaptarse a tu proyecto.</p>
+
+  <p>Dos cosas importantes sobre las bundled skills:</p>
+
+  <ul>
+    <li><strong>Las puedes reemplazar.</strong> Si creas un skill propio con el mismo nombre (en <code>.claude/skills/</code> o <code>~/.claude/skills/</code>), tu versión gana y reemplaza a la incluida. Por ejemplo, un <code>code-review</code> en tu proyecto reemplaza al <code>/code-review</code> de fábrica.</li>
+    <li><strong>Las puedes desactivar todas.</strong> Pon <code>"disableBundledSkills": true</code> en tu <code>settings.json</code> (o la variable de entorno <code>CLAUDE_CODE_DISABLE_BUNDLED_SKILLS</code>) para quitar de un golpe todas las skills incluidas. Útil si prefieres tus propias versiones sin choques de nombres.</li>
+  </ul>
+
+  <h3>/simplify — Limpia tu código</h3>
+
+  <p>Revisa los archivos que modificaste recientemente buscando oportunidades de limpieza: código duplicado, simplificaciones, eficiencia y reutilización. Luego aplica las correcciones.</p>
+
+  <p><strong>Cambio importante desde v2.1.154:</strong> <code>/simplify</code> es ahora un review de SOLO limpieza (calidad y reutilización). NO busca bugs. Para cazar bugs de corrección usa su primo <code>/code-review</code>, que es la herramienta dedicada a eso. Piensa en ellos como dos pasadas complementarias: <code>/simplify</code> deja el código más limpio, <code>/code-review</code> busca que esté correcto.</p>
+
+  <pre><code class="lang-bash">/simplify
+/simplify focus on memory efficiency</code></pre>
+
+  <p>Puedes darle instrucciones adicionales para enfocarse en algo específico.</p>
+
+  <h3>/batch — Cambios masivos en paralelo</h3>
+
+  <p>Imagina que necesitas renombrar algo en 50 archivos. O migrar un framework completo. <code>/batch</code> hace eso.</p>
+
+  <p>Primero investiga tu código. Luego divide el trabajo en 5 a 30 unidades independientes. Te muestra el plan para que lo apruebes. Después lanza un agente por cada unidad, cada uno en su propia copia del código. Al terminar, cada agente abre un pull request.</p>
+
+  <pre><code class="lang-bash">/batch migrate src/ from Solid to React
+/batch rename all instances of UserManager to UserService</code></pre>
+
+  <p>Requiere que tu proyecto sea un repositorio git.</p>
+
+  <h3>Otras skills incluidas</h3>
+
+  <ul class="deflist">
+    <li><strong><code>/code-review [nivel]</code></strong> — Revisa tus cambios buscando bugs de corrección. Acepta un nivel de profundidad: <code>low</code> y <code>medium</code> dan pocos hallazgos de alta confianza; <code>high</code>, <code>xhigh</code> y <code>max</code> amplían la cobertura (y pueden incluir hallazgos inciertos); <code>ultra</code> hace un review profundo multi-agente en la nube. Con el flag <code>--fix</code> aplica las correcciones al working tree y con <code>--comment</code> publica los hallazgos como comentarios en el PR. Es la alternativa recomendada al deprecado <code>/review</code>, y ahora viene incluido por defecto (no requiere instalar el plugin).</li>
+    <li><strong><code>/run &lt;descripcion&gt;</code></strong> — Lanza y conduce la app del proyecto para verla funcionando. Requiere v2.1.145+.</li>
+    <li><strong><code>/verify &lt;descripcion&gt;</code></strong> — Verifica que un cambio realmente hace lo que debe corriendo la app y observando el comportamiento. Requiere v2.1.145+.</li>
+    <li><strong><code>/run-skill-generator</code></strong> — Asistente para generar skills nuevos guiándote por el proceso. Requiere v2.1.145+.</li>
+    <li><strong><code>/debug [descripcion]</code></strong> — Diagnostica la sesión actual leyendo el log de depuración. Puedes describir el problema para enfocar el análisis.</li>
+    <li><strong><code>/loop [intervalo] &lt;prompt&gt;</code></strong> — Ejecuta algo repetidamente. Por ejemplo: <code>/loop 5m check if the deploy finished</code>. Ideal para monitorear procesos. Alias: <code>/proactive</code>. Sin prompt, hace un check de mantenimiento autónomo o usa el prompt en <code>.claude/loop.md</code> si existe.</li>
+    <li><strong><code>/claude-api</code></strong> — Carga documentación de referencia de la API de Claude para tu lenguaje (Python, TypeScript, etc.). Se activa automáticamente cuando tu código importa <code>anthropic</code> o <code>@anthropic-ai/sdk</code>.</li>
+    <li><strong><code>/fewer-permission-prompts</code></strong> — Escanea tus transcripts en busca de llamadas Bash y MCP comunes de solo lectura y agrega un allowlist priorizado a <code>.claude/settings.json</code> del proyecto. Reduce los prompts de permiso que interrumpen tu flujo. Útil después de unas semanas de uso, cuando ya tienes patrón claro de comandos que usas todo el tiempo.</li>
+  </ul>
+
+  <h2 id="cap16-crear-tus-propias-skills">Cómo Crear tus Propias Skills</h2>
+
+  <p>Crear un skill es como escribir una receta. Necesitas un directorio y un archivo <code>SKILL.md</code> adentro. Eso es todo lo mínimo.</p>
+
+  <h3>Estructura de un skill</h3>
+
+  <p>Un skill es una carpeta con esta estructura:</p>
+
+  <pre><code class="lang-text">mi-skill/
+     SKILL.md             # Archivo principal (requerido)
+     template.md          # Plantilla para que Claude rellene (opcional)
+     examples/            # Ejemplos de salida esperada (opcional)
+     scripts/             # Scripts que Claude puede ejecutar (opcional)
+     references/          # Documentacion adicional (opcional)
+     assets/              # Templates, imagenes, datos (opcional)</code></pre>
+
+  <p>El archivo <code>SKILL.md</code> tiene dos partes:</p>
+
+  <ol>
+    <li><strong>Frontmatter YAML:</strong> Metadata entre marcadores <code>---</code>. Le dice a Claude cuándo y cómo usar el skill.</li>
+    <li><strong>Contenido Markdown:</strong> Las instrucciones que Claude sigue cuando el skill se activa.</li>
+  </ol>
+
+  <h3>Dónde guardar tus skills</h3>
+
+  <p>Tienes varias opciones según quién quieres que use el skill:</p>
+
+  <ul class="deflist">
+    <li><strong>Personal</strong> — <code>~/.claude/skills/mi-skill/SKILL.md</code> — Disponible en todos tus proyectos. Solo tú lo ves.</li>
+    <li><strong>Proyecto</strong> — <code>.claude/skills/mi-skill/SKILL.md</code> — Solo para este proyecto. Si haces commit, tu equipo también lo puede usar.</li>
+    <li><strong>Plugin</strong> — Dentro de un plugin en <code>skills/mi-skill/SKILL.md</code> — Disponible donde el plugin esté habilitado.</li>
+    <li><strong>Enterprise</strong> — Vía managed settings — Para toda la organización.</li>
+  </ul>
+
+  <p>También siguen funcionando los comandos legacy en <code>~/.claude/commands/nombre.md</code> y <code>.claude/commands/nombre.md</code>. Si un skill y un command legacy tienen el mismo nombre, el skill gana.</p>
+
+  <p>La prioridad es: enterprise &gt; personal &gt; proyecto.</p>
+
+  <h3>Tu primer skill paso a paso</h3>
+
+  <p>Vamos a crear un skill que explique código con analogías. Paso 1: crea el directorio.</p>
+
+  <pre><code class="lang-bash">mkdir -p ~/.claude/skills/explain-code</code></pre>
+
+  <p>Paso 2: crea el archivo <code>SKILL.md</code> con este contenido:</p>
+
+  <pre><code class="lang-text">---
+name: explain-code
+description: Explains code with visual diagrams and analogies. Use when
+explaining how code works or when the user asks "how does this work?"
+---
+
+When explaining code, always include:
+
+1. **Start with an analogy**: Compare the code to something from everyday
+life
+2. **Draw a diagram**: Use ASCII art to show the flow
+3. **Walk through the code**: Explain step-by-step what happens
+4. **Highlight a gotcha**: What's a common mistake?</code></pre>
+
+  <p>Paso 3: ya está. Escribe <code>/explain-code</code> en Claude Code y funciona.</p>
+
+  <div class="callout tip">
+    <p class="callout-label">Tip</p>
+    <p>No necesitas memorizar el formato. Puedes pedirle a Claude que cree el skill por ti. Dile: "Crea un skill que haga X" y él genera el archivo completo.</p>
+  </div>
+
+  <h3>Campos del frontmatter</h3>
+
+  <p>El frontmatter es la sección entre <code>---</code> al inicio del archivo. Controla el comportamiento del skill. Todos los campos son opcionales.</p>
+
+  <ul class="deflist">
+    <li><strong><code>name</code></strong> — Nombre del skill. Máximo 64 caracteres. Solo letras minúsculas, números y guiones. Debe coincidir con el nombre de la carpeta.</li>
+    <li><strong><code>description</code></strong> — Qué hace el skill. Claude usa esto para decidir cuándo activarlo automáticamente. Incluye palabras clave que describan las situaciones donde se usa. El listado de skills trunca <code>description</code> + <code>when_to_use</code> combinados a 1536 caracteres por defecto (configurable con <code>maxSkillDescriptionChars</code>).</li>
+    <li><strong><code>when_to_use</code></strong> — Contexto adicional sobre cuándo Claude debe invocar el skill: frases trigger, ejemplos típicos, situaciones de uso. Se anexa a <code>description</code> en el listado. Cuenta para el cap de 1536 caracteres. Útil cuando <code>description</code> ya está bien sintetizada y solo quieres darle más pistas a Claude.</li>
+    <li><strong><code>argument-hint</code></strong> — Pista visual de qué argumentos espera. Aparece en el autocompletado. Ejemplo: <code>[issue-number]</code>.</li>
+    <li><strong><code>arguments</code></strong> — Lista de argumentos posicionales nombrados que mapean a sustituciones <code>$name</code> en el contenido. Acepta string separado por espacios o lista YAML. Ejemplo: <code>arguments: [issue, branch]</code>. Al invocar <code>/skill 123 main</code> tendrás <code>$issue=123</code> y <code>$branch=main</code>. Equivalente legible a <code>$0</code> y <code>$1</code>.</li>
+    <li><strong><code>disable-model-invocation</code></strong> — Si es <code>true</code>, Claude NO puede activar este skill automáticamente. Solo el usuario puede usarlo con <code>/nombre</code>. Ideal para skills con efectos secundarios como deploy o enviar mensajes.</li>
+    <li><strong><code>user-invocable</code></strong> — Si es <code>false</code>, el skill no aparece en el menú <code>/</code>. Pero Claude sí puede usarlo. Ideal para conocimiento de fondo.</li>
+    <li><strong><code>allowed-tools</code></strong> — Herramientas que Claude puede usar sin pedir permiso durante este skill. Ejemplo: <code>Read, Grep, Glob</code>.</li>
+    <li><strong><code>disallowed-tools</code> (desde v2.1.152)</strong> — El complemento opuesto de <code>allowed-tools</code>: herramientas removidas del pool mientras el skill está activo. Se limpia automáticamente al enviar el siguiente mensaje. Útil para evitar que Claude use cierta herramienta durante el skill. Ejemplo: <code>disallowed-tools: AskUserQuestion</code>.</li>
+    <li><strong><code>model</code></strong> — Modelo específico a usar cuando este skill está activo.</li>
+    <li><strong><code>effort</code></strong> — Nivel de esfuerzo cuando este skill está activo. Sobreescribe el nivel de la sesión. Opciones: <code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code>, <code>max</code>. Los niveles disponibles dependen del modelo.</li>
+    <li><strong><code>context</code></strong> — Pon <code>fork</code> para ejecutar en un subagente aislado.</li>
+    <li><strong><code>agent</code></strong> — Tipo de subagente cuando usas <code>context: fork</code>. Opciones: <code>Explore</code>, <code>Plan</code>, <code>general-purpose</code>, o un agente personalizado.</li>
+    <li><strong><code>hooks</code></strong> — Hooks específicos para el ciclo de vida de este skill.</li>
+    <li><strong><code>paths</code></strong> — Patrones glob que limitan cuándo el skill se activa automáticamente. Si trabajas con archivos que coinciden con estos patrones, Claude carga el skill. Acepta string separado por comas o lista YAML. Ejemplo: <code>src/components/**/*.tsx, src/styles/**/*.css</code>.</li>
+    <li><strong><code>shell</code></strong> — Shell a usar para comandos <code>!`command`</code> y bloques <code>```!</code> dentro del skill. Acepta <code>bash</code> (default) o <code>powershell</code>. Para usar PowerShell se requiere <code>CLAUDE_CODE_USE_POWERSHELL_TOOL=1</code>.</li>
+  </ul>
+
+  <h3>Variables y argumentos</h3>
+
+  <p>Los skills pueden recibir argumentos. Es como pasarle ingredientes a una receta.</p>
+
+  <p>Variables de sustitución:</p>
+
+  <ul class="deflist">
+    <li><strong><code>$ARGUMENTS</code></strong> — Todos los argumentos que el usuario pasó. Se reemplazan en el contenido del skill.</li>
+    <li><strong><code>$ARGUMENTS[0]</code>, <code>$ARGUMENTS[1]</code>...</strong> — Acceso a argumentos individuales por posición.</li>
+    <li><strong><code>$0</code>, <code>$1</code>, <code>$2</code>...</strong> — Atajo para lo mismo.</li>
+    <li><strong><code>$name</code></strong> — Argumentos nombrados declarados en el campo <code>arguments</code> del frontmatter. Si pones <code>arguments: [issue, branch]</code>, usas <code>$issue</code> y <code>$branch</code> directamente, mucho más legible que <code>$0</code> y <code>$1</code>.</li>
+    <li><strong><code>${CLAUDE_SESSION_ID}</code></strong> — El ID de la sesión actual. Útil para crear archivos de log por sesión.</li>
+    <li><strong><code>${CLAUDE_SKILL_DIR}</code></strong> — La ruta al directorio del skill. Útil para referenciar scripts empaquetados.</li>
+    <li><strong><code>${CLAUDE_EFFORT}</code></strong> — El nivel de esfuerzo activo en la sesión: <code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code> o <code>max</code>. Permite que el skill adapte sus instrucciones (por ejemplo, pedir análisis más profundo solo si el effort es alto).</li>
+  </ul>
+
+  <p>Ejemplo con argumentos posicionales:</p>
+
+  <pre><code class="lang-text">---
+name: migrate-component
+description: Migrate a component from one framework to another
+---
+
+Migrate the $0 component from $1 to $2.
+Preserve all existing behavior and tests.</code></pre>
+
+  <p>Al escribir <code>/migrate-component SearchBar React Vue</code>, Claude recibe: "Migrate the SearchBar component from React to Vue."</p>
+
+  <p><strong>Escapar un <code>$</code> literal:</strong> Si necesitas un signo de dólar seguido de un dígito (como un precio) y NO quieres que se interprete como argumento, escápalo con una barra invertida. Por ejemplo, escribe <code>\$1.00</code> para que aparezca <code>$1.00</code> en vez de tratar <code>$1</code> como el segundo argumento.</p>
+
+  <p>Lo mismo con argumentos nombrados (más legible al mantenerlo):</p>
+
+  <pre><code class="lang-text">---
+name: migrate-component
+description: Migrate a component from one framework to another
+arguments: [component, from, to]
+---
+
+Migrate the $component component from $from to $to.
+Preserve all existing behavior and tests.</code></pre>
+
+  <h3>Inyección de contexto dinámico</h3>
+
+  <p>Esta es una feature poderosa. Puedes ejecutar comandos de terminal ANTES de que Claude vea el contenido del skill. La sintaxis es <code>!`comando`</code>.</p>
+
+  <p>Claude no ve el comando. Solo ve el resultado. Es como preparar los ingredientes antes de que el chef entre a la cocina.</p>
+
+  <div class="callout warn">
+    <p class="callout-label">Ojo</p>
+    <p>Ojo con dónde va el <code>!</code>: El <code>!</code> de inyección solo se reconoce al inicio de una línea o justo después de un espacio. Si lo pegas a otro texto (por ejemplo <code>KEY=!`comando`</code>), no se ejecuta y aparece literal. Déjalo al principio de la línea o tras un espacio.</p>
+  </div>
+
+  <pre><code class="lang-text">---
+name: pr-summary
+description: Summarize changes in a pull request
+context: fork
+agent: Explore
+allowed-tools: Bash(gh *)
+---
+
+## Pull request context
+- PR diff: !`gh pr diff`
+- PR comments: !`gh pr view --comments`
+- Changed files: !`gh pr diff --name-only`
+
+## Your task
+Summarize this pull request focusing on impact and risks.</code></pre>
+
+  <p>Cuando invocas <code>/pr-summary</code>, los comandos <code>gh pr diff</code> y los demás se ejecutan primero. Sus salidas reemplazan los placeholders. Claude recibe los datos reales del PR listos para analizar.</p>
+
+  <p><strong>Sintaxis multi-línea:</strong> Para comandos de shell que necesitan varias líneas, usa un bloque de código abierto con <code>```!</code> en lugar de la forma inline:</p>
+
+  <pre><code class="lang-text">## Environment
+```!
+node --version
+npm --version
+git status --short
+```</code></pre>
+
+  <p>Cada línea del bloque se ejecuta y su salida reemplaza el bloque completo. Es la alternativa a encadenar múltiples <code>!`comando`</code> en líneas separadas.</p>
+
+  <h3>Ciclo de vida del contenido de un skill</h3>
+
+  <p>Cuando invocas un skill, su contenido renderizado entra en la conversación como un mensaje y se queda ahí el resto de la sesión. Claude NO relee el archivo en turnos posteriores. Esto tiene una implicación práctica: cada línea del skill cuesta tokens de manera recurrente, así que un <code>SKILL.md</code> gigante engorda toda la sesión.</p>
+
+  <p>Por eso la recomendación oficial es: mantener el <code>SKILL.md</code> bajo 500 líneas y 1500-2000 palabras. Lo detallado (ejemplos largos, especificaciones, referencias de API) va en archivos separados que el skill referencia, como <code>reference.md</code>, <code>examples/</code> o <code>scripts/</code>. Esos archivos solo se cargan cuando Claude decide leerlos.</p>
+
+  <p><strong>Qué pasa tras auto-compaction:</strong> Cuando el contexto se llena y Claude compacta la conversación, los skills invocados se re-anexan con un presupuesto: cada skill mantiene solo los primeros 5000 tokens y entre todos comparten un budget combinado de 25000 tokens. La cola empieza por el más recientemente invocado, así que si invocaste muchos skills durante la sesión, los más viejos pueden desaparecer del contexto tras la compactación.</p>
+
+  <p>Si notas que un skill "deja de influir" después de varias compactaciones, simplemente vuelve a invocarlo: su contenido se reanima en el contexto actual.</p>
+
+  <h2 id="cap16-controlar-quien-invoca">Controlar quién Invoca los Skills</h2>
+
+  <p>Por defecto, tanto tú como Claude pueden usar cualquier skill. Pero a veces quieres controlar eso. Hay tres combinaciones:</p>
+
+  <ol>
+    <li><strong>Default (sin campos especiales):</strong> Tú puedes invocarlo con <code>/nombre</code>. Claude también puede activarlo automáticamente cuando detecta que es relevante.</li>
+    <li><strong><code>disable-model-invocation: true</code>:</strong> Solo tú puedes invocarlo. Claude no lo activa solo. La descripción ni siquiera se carga en el contexto de Claude. Usa esto para skills con efectos secundarios como deploy o enviar correos.</li>
+    <li><strong><code>user-invocable: false</code>:</strong> No aparece en tu menú <code>/</code>. Pero Claude sí puede activarlo. Usa esto para conocimiento de fondo que quieres que Claude aplique sin que tú lo pidas.</li>
+  </ol>
+
+  <h3>Permisos para skills</h3>
+
+  <p>Puedes gestionar permisos de skills desde <code>/permissions</code>:</p>
+
+  <ul>
+    <li>Agregar <code>Skill</code> a las reglas de denegación bloquea TODOS los skills.</li>
+    <li><code>Skill(commit)</code> permite solo el skill exacto "commit".</li>
+    <li><code>Skill(review-pr *)</code> permite "review-pr" con cualquier argumento.</li>
+    <li><code>Skill(deploy *)</code> en denegación bloquea el skill "deploy".</li>
+  </ul>
+
+  <p><strong>Recuerda:</strong> <code>user-invocable: false</code> solo oculta el skill del menú. No impide que Claude lo use vía la herramienta Skill. Para bloquear la invocación programática, necesitas <code>disable-model-invocation: true</code>.</p>
+
+  <h3>skillOverrides: controlar visibilidad sin editar SKILL.md</h3>
+
+  <p>A veces no quieres tocar el archivo de un skill (porque viene en un repo compartido, o porque lo provee un MCP) pero sí quieres cambiar su visibilidad. Para eso existe el setting <code>skillOverrides</code>.</p>
+
+  <p>Es un objeto en tu <code>settings.json</code> donde cada llave es el nombre del skill y cada valor controla cómo aparece:</p>
+
+  <ul class="deflist">
+    <li><strong><code>on</code></strong> — Visible normal: nombre y descripción cargan en el listado.</li>
+    <li><strong><code>name-only</code></strong> — Solo el nombre se carga. La descripción no entra al contexto (ahorra tokens).</li>
+    <li><strong><code>user-invocable-only</code></strong> — Oculto para Claude, pero sigue apareciendo en el menú <code>/</code> cuando tú lo necesitas.</li>
+    <li><strong><code>off</code></strong> — Oculto completamente.</li>
+  </ul>
+
+  <pre><code class="lang-json">// .claude/settings.local.json
+{
+    "skillOverrides": {
+        "legacy-context": "name-only",
+        "deploy": "off",
+        "experimental-tool": "user-invocable-only"
+    }
+}</code></pre>
+
+  <p><strong>Vía rápida desde el menú:</strong> El comando <code>/skills</code> abre un menú interactivo. Presiona <code>t</code> para ordenar por token count y descubrir qué skills consumen más contexto. Con <code>Space</code> alternas la visibilidad de un skill y con <code>Enter</code> guardas; los cambios se escriben automáticamente a <code>skillOverrides</code> en <code>settings.local.json</code>.</p>
+
+  <div class="callout warn">
+    <p class="callout-label">Importante</p>
+    <p><code>skillOverrides</code> NO afecta los skills de plugins. Para esos hay que usar <code>/plugin disable</code> y <code>/plugin enable</code>.</p>
+  </div>
+
+  <h2 id="cap16-skills-con-subagentes">Skills con Subagentes</h2>
+
+  <p>Cuando pones <code>context: fork</code> en el frontmatter, el skill se ejecuta en un subagente aislado. Imagina que clonas a Claude, le das las instrucciones del skill, y cuando termina te entrega un resumen.</p>
+
+  <p>El subagente tiene todas las herramientas pero empieza sin contexto de conversación. Solo ve las instrucciones del skill y el <code>CLAUDE.md</code> del proyecto.</p>
+
+  <h3>Tipos de agente disponibles</h3>
+
+  <ul class="deflist">
+    <li><strong><code>general-purpose</code></strong> — El agente por defecto. Tiene acceso a todas las herramientas.</li>
+    <li><strong><code>Explore</code></strong> — Especializado en buscar y leer archivos. Rápido para investigar código.</li>
+    <li><strong><code>Plan</code></strong> — Especializado en diseñar planes de implementación. Piensa antes de actuar.</li>
+    <li><strong>Agentes personalizados</strong> — Definidos en <code>.claude/agents/</code>.</li>
+  </ul>
+
+  <p>Ejemplo de skill con subagente Explore:</p>
+
+  <pre><code class="lang-text">---
+name: deep-research
+description: Research a topic thoroughly
+context: fork
+agent: Explore
+---
+
+Research $ARGUMENTS thoroughly:
+
+1. Find relevant files using Glob and Grep
+2. Read and analyze the code
+3. Summarize findings with specific file references</code></pre>
+
+  <h3>Skills de referencia vs skills de tarea</h3>
+
+  <p>Hay dos tipos de skills según su propósito:</p>
+
+  <ul class="deflist">
+    <li><strong>Skills de referencia</strong> — Agregan conocimiento. Ejemplo: convenciones de tu API, reglas de estilo. Se ejecutan inline (sin <code>context: fork</code>) para que Claude aplique las reglas en la conversación actual.</li>
+    <li><strong>Skills de tarea</strong> — Ejecutan una acción. Ejemplo: deploy, generar reportes. Usan <code>context: fork</code> porque necesitan un entorno aislado.</li>
+  </ul>
+
+  <p>Si usas <code>context: fork</code> en un skill de referencia, el subagente recibe las guías pero no tiene tarea que hacer. Retorna sin resultado útil. Así que: referencia = inline, tarea = fork.</p>
+
+  <h2 id="cap16-skills-de-plugins-y-terceros">Skills de Plugins y Terceros</h2>
+
+  <p>Los plugins pueden incluir skills. Funcionan igual que las skills normales, pero viven dentro de un plugin y usan un namespace (nombre con prefijo).</p>
+
+  <h3>Instalar y usar plugins con skills</h3>
+
+  <p>El marketplace oficial se llama <code>claude-plugins-official</code>. Viene activado por defecto en cada instalación de Claude Code y tiene auto-update encendido, así que sus plugins se actualizan solos.</p>
+
+  <p>Instalar y gestionar plugins desde la sesión:</p>
+
+  <pre><code class="lang-bash"># Instalar un plugin del marketplace oficial
+/plugin install github@claude-plugins-official
+
+# Desactivar sin desinstalar (mantiene la configuracion)
+/plugin disable github@claude-plugins-official
+
+# Volver a activar
+/plugin enable github@claude-plugins-official
+
+# Borrar por completo
+/plugin uninstall github@claude-plugins-official</code></pre>
+
+  <p>Gestionar marketplaces:</p>
+
+  <pre><code class="lang-bash"># Anadir un marketplace nuevo (GitHub, URL git, path local o URL remota)
+/plugin marketplace add anthropics/claude-code
+
+# Listar los marketplaces configurados
+/plugin marketplace list
+
+# Refrescar el catalogo de un marketplace
+/plugin marketplace update claude-plugins-official
+
+# Quitar un marketplace (ojo: tambien desinstala sus plugins)
+/plugin marketplace remove my-team-tools</code></pre>
+
+  <p><strong>Scopes de instalación:</strong> Cuando instalas un plugin puedes elegir el alcance:</p>
+
+  <ul class="deflist">
+    <li><strong><code>user</code> (default)</strong> — Disponible en todos tus proyectos.</li>
+    <li><strong><code>project</code></strong> — Compartido con tu equipo vía <code>.claude/settings.json</code> del repo.</li>
+    <li><strong><code>local</code></strong> — Solo tú en este repo, vía <code>.claude/settings.local.json</code>.</li>
+    <li><strong><code>managed</code></strong> — Impuesto por administradores en entornos enterprise.</li>
+  </ul>
+
+  <p>Para elegir el scope usa el menú interactivo de <code>/plugin</code> &gt; Discover &gt; Enter sobre el plugin, o desde CLI con <code>--scope project</code>.</p>
+
+  <p>Probar plugins locales o remotos sin instalar:</p>
+
+  <pre><code class="lang-bash"># Probar un directorio local (acepta .zip desde v2.1.128)
+claude --plugin-dir ./mi-plugin
+claude --plugin-dir ./mi-plugin.zip
+
+# Probar varios plugins a la vez
+claude --plugin-dir ./plugin-uno --plugin-dir ./plugin-dos
+
+# Cargar un plugin desde una URL .zip remota
+claude --plugin-url https://example.com/mi-plugin.zip</code></pre>
+
+  <p>Los skills de plugins usan namespace para evitar conflictos. Si instalas un plugin llamado "greet" con un skill "hello", el comando será <code>/greet:hello</code>. Para recargar plugins sin reiniciar Claude Code: <code>/reload-plugins</code>.</p>
+
+  <h3>Estructura de un plugin con skills</h3>
+
+  <pre><code class="lang-text">mi-plugin/
+  .claude-plugin/
+     plugin.json           # Manifiesto: name, description, version, author
+  skills/
+     mi-skill/
+       SKILL.md            # Skills del plugin
+  commands/                 # Comandos legacy (tambien funciona)
+  agents/                   # Definiciones de agentes personalizados
+  hooks/
+     hooks.json             # Configuracion de hooks
+  monitors/
+     monitors.json          # Monitores en background
+  bin/                      # Ejecutables que se anaden al PATH
+  .mcp.json                 # Servidores MCP
+  .lsp.json                 # Servidores LSP
+  settings.json             # Settings por defecto</code></pre>
+
+  <div class="callout warn">
+    <p class="callout-label">Atención</p>
+    <p>Solo <code>plugin.json</code> va dentro de <code>.claude-plugin/</code>. Todo lo demás va en la raíz del plugin. Si pones las carpetas <code>skills/</code> o <code>agents/</code> dentro de <code>.claude-plugin/</code>, no funcionarán.</p>
+  </div>
+
+  <p>Los dos nuevos directorios merecen una nota: <code>bin/</code> agrega sus ejecutables al PATH cuando el plugin está activo (útil para distribuir herramientas CLI junto con los skills), y <code>monitors/monitors.json</code> declara monitores que corren en background y notifican a Claude cuando ocurre algo (por ejemplo, cuando termina un build).</p>
+
+  <h3>Marketplaces y configuración del equipo</h3>
+
+  <p>Si tu equipo usa un marketplace propio, no quieres que cada persona tenga que correr <code>/plugin marketplace add</code> a mano. Para eso existe el setting <code>extraKnownMarketplaces</code> en el <code>.claude/settings.json</code> del proyecto. Cuando un compañero confía en la carpeta, Claude Code le ofrece instalar el marketplace automáticamente.</p>
+
+  <pre><code class="lang-json">// .claude/settings.json del proyecto
+{
+     "extraKnownMarketplaces": {
+         "my-team-tools": {
+             "source": {
+               "source": "github",
+               "repo": "your-org/claude-plugins"
+             },
+             "autoUpdate": true
+         }
+     }
+}</code></pre>
+
+  <p>Cada entrada acepta <code>autoUpdate: true</code> para mantener el catálogo refrescado automáticamente, sin que nadie tenga que correr <code>/plugin marketplace update</code>.</p>
+
+  <p><strong>Controlar el auto-update global:</strong> Hay dos variables de entorno que regulan cómo se comportan las actualizaciones:</p>
+
+  <ul class="deflist">
+    <li><strong><code>DISABLE_AUTOUPDATER=1</code></strong> — Desactiva TODOS los auto-updates de Claude Code y de plugins. Útil cuando quieres pinear versiones manualmente.</li>
+    <li><strong><code>FORCE_AUTOUPDATE_PLUGINS=1</code></strong> — Mantiene los auto-updates de plugins activos aunque <code>DISABLE_AUTOUPDATER</code> esté seteada. Combo ideal cuando quieres controlar las versiones del CLI a mano pero seguir recibiendo updates de plugins automáticamente.</li>
+  </ul>
+
+  <h3>Compartir y distribuir skills</h3>
+
+  <p>Puedes compartir skills de varias formas:</p>
+
+  <ul class="deflist">
+    <li><strong>En tu proyecto</strong> — Haz commit de <code>.claude/skills/</code> al repositorio. Tu equipo las tendrá automáticamente.</li>
+    <li><strong>Como plugin</strong> — Crea un plugin con directorio <code>skills/</code> y distribúyelo en el marketplace.</li>
+    <li><strong>Marketplace oficial</strong> — Envía tu plugin en <code><a href="https://claude.ai/settings/plugins/submit" target="_blank" rel="noopener">claude.ai/settings/plugins/submit</a></code>.</li>
+    <li><strong>Enterprise</strong> — Deploy para toda la organización vía managed settings.</li>
+  </ul>
+
+  <h2 id="cap16-comandos-desde-servidores-mcp">Comandos desde Servidores MCP</h2>
+
+  <p>Los servidores MCP pueden exponer prompts que aparecen como comandos en Claude Code. Usan el formato <code>/mcp__&lt;servidor&gt;__&lt;prompt&gt;</code>.</p>
+
+  <p>Estos comandos se descubren dinámicamente. Cuando conectas un servidor MCP, sus prompts aparecen automáticamente en tu lista de comandos <code>/</code>.</p>
+
+  <p>Por ejemplo, si tienes un servidor MCP de Gmail conectado, podrías ver comandos como <code>/mcp__gmail__compose</code> para componer un correo.</p>
+
+  <h2 id="cap16-descubrimiento-automatico">Descubrimiento Automático de Skills</h2>
+
+  <p>Claude Code es inteligente para encontrar skills. No solo busca en las ubicaciones obvias.</p>
+
+  <ul class="deflist">
+    <li><strong>Monorepos</strong> — Cuando trabajas con archivos en subdirectorios, Claude descubre skills en directorios <code>.claude/skills/</code> anidados. Si editas un archivo en <code>packages/frontend/</code>, también busca en <code>packages/frontend/.claude/skills/</code>.</li>
+    <li><strong>Directorios adicionales</strong> — Skills definidos en carpetas agregadas vía <code>--add-dir</code> (o el comando <code>/add-dir</code>) se cargan automáticamente. Puedes editarlos durante la sesión sin reiniciar. Ojo: el setting <code>permissions.additionalDirectories</code> NO carga skills. Solo <code>--add-dir</code> y <code>/add-dir</code> escanean los <code>.claude/skills/</code> de directorios extra.</li>
+    <li><strong>Plugins sin marketplace</strong> — Desde v2.1.157, los plugins y skills que pongas en <code>.claude/skills/</code> se cargan automáticamente sin necesidad de un marketplace. Y para arrancar un plugin desde cero, <code>claude plugin init &lt;name&gt;</code> genera el scaffold (la estructura de carpetas y archivos base) por ti.</li>
+    <li><strong>Presupuesto del listado</strong> — Las descripciones de skills ocupan espacio en el contexto. El presupuesto total se controla con <code>skillListingBudgetFraction</code> en <code>settings.json</code> (default: <code>0.01</code>, o sea 1% de la ventana de contexto). Como alternativa fija en caracteres puedes usar la variable de entorno <code>SLASH_COMMAND_TOOL_CHAR_BUDGET</code>.</li>
+    <li><strong>Cap por entrada</strong> — Cada skill ocupa como mucho 1536 caracteres en el listado (con <code>description</code> + <code>when_to_use</code> combinados), configurable vía <code>maxSkillDescriptionChars</code>. Si los pasas, se truncan al final.</li>
+    <li><strong>Diagnóstico</strong> — Ejecuta <code>/doctor</code> para ver si el listado está desbordado y qué skills quedaron cortados. <code>/context</code> también te muestra cuánto del contexto se está yendo en metadata de skills.</li>
+  </ul>
+
+  <p>Si te sobran skills y el listado se llena, la solución típica es: subir <code>skillListingBudgetFraction</code> (por ejemplo a <code>0.02</code>), o bajar entradas de baja prioridad a <code>name-only</code> en <code>skillOverrides</code>.</p>
+
+  <h2 id="cap16-patrones-avanzados">Patrones Avanzados</h2>
+
+  <p>Una vez que dominas los skills básicos, puedes combinarlos de formas más sofisticadas. Estos patrones te permiten crear flujos de trabajo especializados y seguros.</p>
+
+  <h3>Skill de solo lectura</h3>
+
+  <p>Restringe las herramientas para crear un modo seguro:</p>
+
+  <pre><code class="lang-text">---
+name: safe-reader
+description: Read files without making changes
+allowed-tools: Read, Grep, Glob
+---
+
+Read and analyze the requested files.
+Do NOT make any changes.</code></pre>
+
+  <p>Claude solo podrá leer archivos. No podrá editar ni ejecutar comandos.</p>
+
+  <h3>Skill con scripts empaquetados</h3>
+
+  <p>Puedes empaquetar scripts dentro de tu skill:</p>
+
+  <pre><code class="lang-text">---
+name: codebase-visualizer
+description: Generate an interactive tree visualization of your codebase
+allowed-tools: Bash(python *)
+---
+
+# Codebase Visualizer
+Run the visualization script from your project root:
+```bash
+python ${CLAUDE_SKILL_DIR}/scripts/visualize.py .
+```</code></pre>
+
+  <p>La variable <code>${CLAUDE_SKILL_DIR}</code> apunta a la carpeta del skill. Así Claude puede encontrar y ejecutar scripts que vienen dentro del skill.</p>
+
+  <h3>Activar pensamiento extendido</h3>
+
+  <p>Si quieres que Claude piense más profundamente dentro de un skill, incluye la palabra <code>ultrathink</code> en cualquier parte del contenido. Esto activa el modo de pensamiento extendido.</p>
+
+  <h3>Logger de sesión</h3>
+
+  <pre><code class="lang-text">---
+name: session-logger
+description: Log activity for this session
+---
+
+Log the following to logs/${CLAUDE_SESSION_ID}.log:
+
+$ARGUMENTS</code></pre>
+
+  <p>Crea archivos de log únicos por sesión usando <code>${CLAUDE_SESSION_ID}</code>.</p>
+
+  <h2 id="cap16-ecosistema-comunidad">Ecosistema de Skills de la Comunidad</h2>
+
+  <p>La comunidad ha creado colecciones de skills listas para usar. Antes de crear algo desde cero, vale la pena revisar si alguien ya lo hizo.</p>
+
+  <h3>Directorios y colecciones destacadas</h3>
+
+  <ul class="deflist">
+    <li><strong>anthropics/skills</strong> (<code><a href="https://github.com/anthropics/skills" target="_blank" rel="noopener">github.com/anthropics/skills</a></code>) — Repositorio oficial de Anthropic con skills mantenidos directamente por el equipo. Empieza por aquí: tienes la garantía de que están alineados con la dirección del producto y se mantienen actualizados.</li>
+    <li><strong>awesome-claude-code</strong> (<code><a href="https://github.com/hesreallyhim/awesome-claude-code" target="_blank" rel="noopener">github.com/hesreallyhim/awesome-claude-code</a></code>) — Lista curada de skills, hooks, slash commands, plugins y orquestadores de agentes. El mejor punto de partida para descubrir lo que hay en la comunidad.</li>
+    <li><strong>awesome-claude-skills</strong> (<code><a href="https://github.com/travisvn/awesome-claude-skills" target="_blank" rel="noopener">github.com/travisvn/awesome-claude-skills</a></code>) — Lista curada alterna, complementaria a awesome-claude-code, con foco específico en skills.</li>
+    <li><strong>Trail of Bits Security Skills</strong> (<code><a href="https://github.com/trailofbits/skills" target="_blank" rel="noopener">github.com/trailofbits/skills</a></code>) — Skills profesionales de seguridad de la firma Trail of Bits. Incluyen auditoría de código, detección de vulnerabilidades y análisis con CodeQL y Semgrep.</li>
+    <li><strong>Superpowers</strong> (<code><a href="https://github.com/obra/superpowers" target="_blank" rel="noopener">github.com/obra/superpowers</a></code>) — Competencias de ingeniería de software de Jesse Vincent. Cubren planificación, revisión, testing y debugging.</li>
+    <li><strong>Fullstack Dev Skills</strong> (<code><a href="https://github.com/jeffallan/claude-skills" target="_blank" rel="noopener">github.com/jeffallan/claude-skills</a></code>) — 65 skills especializados para desarrollo full-stack con 9 comandos de workflow de proyecto.</li>
+    <li><strong>Context Engineering Kit</strong> (<code><a href="https://github.com/NeoLabHQ/context-engineering-kit" target="_blank" rel="noopener">github.com/NeoLabHQ/context-engineering-kit</a></code>) — Técnicas avanzadas de context engineering con mínimo footprint de tokens.</li>
+  </ul>
+
+  <h3>Cómo instalar skills de la comunidad</h3>
+
+  <p>La mayoría de skills de la comunidad se instalan clonando el repositorio y copiando la carpeta del skill a tu directorio personal o de proyecto:</p>
+
+  <pre><code class="lang-bash"># Clonar el repositorio
+git clone https://github.com/trailofbits/skills /tmp/tob-skills
+
+# Copiar el skill que te interese
+cp -r /tmp/tob-skills/security-audit ~/.claude/skills/
+
+# O como plugin si tiene estructura de plugin
+claude --plugin-dir /tmp/tob-skills</code></pre>
+
+  <p>Verifica siempre el contenido del skill antes de instalarlo. Revisa el <code>SKILL.md</code> y cualquier script incluido. Un skill puede ejecutar comandos en tu terminal.</p>
+
+  <h2 id="cap16-errores-comunes">Errores Comunes y Cómo Resolverlos</h2>
+
+  <ul class="deflist">
+    <li><strong>El skill no se activa automáticamente</strong> — Revisa que la <code>description</code> incluya palabras clave relevantes. Prueba con <code>/skills</code> para ver si aparece. Si no aparece, invócalo directamente con <code>/nombre</code>.</li>
+    <li><strong>El skill se activa demasiado</strong> — Tu <code>description</code> es muy genérica. Hazla más específica o agrega <code>disable-model-invocation: true</code>.</li>
+    <li><strong>Claude no ve todos mis skills</strong> — Tienes demasiados skills y el listado se está desbordando. Corre <code>/doctor</code> para ver qué skills quedaron cortados. Soluciones: sube <code>skillListingBudgetFraction</code> (ej. <code>0.02</code>) o setea <code>SLASH_COMMAND_TOOL_CHAR_BUDGET</code>, baja entradas de baja prioridad a <code>name-only</code> en <code>skillOverrides</code>, o recorta <code>description</code> y <code>when_to_use</code> dejando el caso clave primero.</li>
+    <li><strong>El directorio debe ser <code>commands</code> (plural)</strong> — Un error típico es escribir <code>command</code> en singular. No funciona.</li>
+    <li><strong>La extensión debe ser <code>.md</code></strong> — Los archivos <code>.txt</code> o sin extensión no se reconocen.</li>
+    <li><strong><code>$ARGUMENTS</code> no funciona</strong> — Debe escribirse exactamente así, todo en mayúsculas.</li>
+    <li><strong>Subagente retorna sin resultado</strong> — Estás usando <code>context: fork</code> en un skill de referencia. Los skills de referencia deben ejecutarse inline.</li>
+    <li><strong>Skills de plugin no aparecen</strong> — Verifica que las carpetas estén a nivel raíz del plugin, no dentro de <code>.claude-plugin/</code>. Si la estructura está bien, corre <code>/reload-plugins</code>; si persiste, borra el caché con <code>rm -rf ~/.claude/plugins/cache</code>, reinicia Claude Code y reinstala.</li>
+    <li><strong>"Plugin not found in any marketplace"</strong> — El marketplace no está añadido o el listado está desactualizado. Refresca con <code>/plugin marketplace update claude-plugins-official</code>. Si nunca lo añadiste, hazlo con <code>/plugin marketplace add</code>.</li>
+    <li><strong>"Files not found after plugin installation"</strong> — El plugin referencia archivos que están fuera de su directorio. Los plugins se copian a un caché, así que paths externos no funcionan. Mantén todos los recursos dentro del directorio del plugin y usa <code>${CLAUDE_SKILL_DIR}</code> para las rutas.</li>
+    <li><strong><code>/pr-comments</code> no funciona</strong> — Fue removido en la versión 2.1.91. Pide directamente a Claude que vea los comentarios del PR.</li>
+    <li><strong><code>/vim</code> no funciona</strong> — Fue removido en la versión 2.1.92. Ahora puedes alternar entre modo Vim y Normal desde <code>/config</code> → Editor mode.</li>
+    <li><strong>"Unknown command: /cd"</strong> — Tu versión de Claude Code es anterior a la 2.1.169, cuando se agregó <code>/cd</code>. Actualiza a v2.1.169 o posterior.</li>
+    <li><strong>Un skill nuevo en disco no aparece en la sesión</strong> — Creaste o copiaste el skill mientras Claude Code ya estaba corriendo. Corre <code>/reload-skills</code> (desde v2.1.152) para re-escanear skills, o <code>/reload-plugins</code> si fue un cambio en plugins. Las ediciones a un <code>SKILL.md</code> existente se detectan en vivo; solo necesitas reiniciar Claude Code si creaste un directorio de skills de nivel superior que no existía al arrancar la sesión.</li>
+    <li><strong>Quiero deshabilitar la ejecución de shell en skills</strong> — Agrega <code>disableSkillShellExecution: true</code> en tu <code>settings.json</code>. Esto reemplaza cada comando <code>!`...`</code> y bloque <code>```!</code> con un mensaje de política. Los skills bundled y managed no se ven afectados por esta configuración.</li>
+  </ul>
+
+  <h2 id="cap16-ejemplos-practicos">Ejemplos Prácticos</h2>
+
+  <h3>Crear un skill personal para explicar código</h3>
+
+  <pre><code class="lang-bash">mkdir -p ~/.claude/skills/explain-code
+cat &gt; ~/.claude/skills/explain-code/SKILL.md &lt;&lt; 'EOF'
+---
+name: explain-code
+description: Explains code with visual diagrams and analogies. Use
+when explaining how code works or when the user asks "how does this
+work?"
+---
+
+When explaining code, always include:
+1. Start with an analogy from everyday life
+2. Draw an ASCII diagram showing the flow
+3. Walk through the code step-by-step
+4. Highlight a common mistake or gotcha
+EOF</code></pre>
+
+  <p>Creas la carpeta del skill en tu directorio personal. Luego escribes el <code>SKILL.md</code> con el frontmatter (name y description) y las instrucciones. Ahora puedes escribir <code>/explain-code</code> en cualquier proyecto.</p>
+
+  <h3>Crear un skill de proyecto para deploy seguro</h3>
+
+  <pre><code class="lang-bash">mkdir -p .claude/skills/deploy
+cat &gt; .claude/skills/deploy/SKILL.md &lt;&lt; 'EOF'
+---
+name: deploy
+description: Deploy the application to production
+context: fork
+disable-model-invocation: true
+---
+
+Deploy the application:
+1. Run the test suite: npm test
+2. Build the application: npm run build
+3. Push to production: npm run deploy
+4. Verify the deployment is healthy
+EOF</code></pre>
+
+  <p>Este skill usa <code>context: fork</code> para ejecutarse en un subagente aislado. Usa <code>disable-model-invocation</code> para que solo el usuario pueda ejecutarlo (Claude no lo activa solo). Ideal para acciones con efectos secundarios.</p>
+
+  <h3>Skill con inyección dinámica para revisar PRs</h3>
+
+  <pre><code class="lang-bash">mkdir -p .claude/skills/pr-review
+cat &gt; .claude/skills/pr-review/SKILL.md &lt;&lt; 'EOF'
+---
+name: pr-review
+description: Review the current pull request with detailed analysis
+context: fork
+agent: Explore
+allowed-tools: Bash(gh *)
+---
+
+## Context
+- Diff: !`gh pr diff`
+- Comments: !`gh pr view --comments`
+
+## Task
+Review this PR for:
+1. Code quality issues
+2. Security vulnerabilities
+3. Performance concerns
+EOF</code></pre>
+
+  <p>Los comandos <code>!`gh pr diff`</code> y <code>!`gh pr view --comments`</code> se ejecutan ANTES de que Claude vea el contenido. Claude recibe los datos reales del PR ya insertados en el prompt.</p>
+
+  <h3>Instalar un plugin desde el marketplace oficial</h3>
+
+  <pre><code class="lang-bash"># El marketplace oficial 'claude-plugins-official' viene activo por
+# defecto
+/plugin install code-review@claude-plugins-official
+
+# Recargar para que aparezcan los skills del plugin
+/reload-plugins
+
+# Usar un skill del plugin (siempre con namespace)
+/code-review:review</code></pre>
+
+  <p>Instala el plugin code-review desde el marketplace oficial 'claude-plugins-official' (siempre activo, con auto-update encendido). Los skills del plugin estarán disponibles con namespace: <code>/code-review:nombre-del-skill</code>.</p>
+
+  <h3>Ver todos los skills disponibles</h3>
+
+  <pre><code class="lang-bash">/skills</code></pre>
+
+  <p>Muestra una lista de todos los skills disponibles: built-in, bundled, personales, de proyecto y de plugins. Útil para verificar que tus skills se cargaron correctamente.</p>
+
+  <h3>Skill con frontmatter avanzado: effort, paths y shell</h3>
+
+  <pre><code class="lang-bash">mkdir -p .claude/skills/lint-components
+cat &gt; .claude/skills/lint-components/SKILL.md &lt;&lt; 'EOF'
+---
+name: lint-components
+description: Lint and fix React components following project
+conventions
+effort: high
+paths:
+  - src/components/**/*.tsx
+  - src/components/**/*.jsx
+shell: bash
+allowed-tools: Read, Grep, Glob, Edit
+---
+
+## Environment
+```!
+npm ls eslint 2&gt;/dev/null | head -3
+cat .eslintrc.json 2&gt;/dev/null | head -20
+```
+
+Lint the components matching the changed files.
+Fix issues automatically where possible.
+EOF</code></pre>
+
+  <p>Este skill usa <code>effort: high</code> para forzar análisis detallado, <code>paths</code> para activarse solo con archivos <code>.tsx</code>/<code>.jsx</code> en <code>src/components/</code>, <code>shell: bash</code> explícito, y un bloque <code>```!</code> multi-línea para inyectar contexto del entorno.</p>
+
+  <h3>Skill con argumentos nombrados (frontmatter arguments)</h3>
+
+  <pre><code class="lang-bash">mkdir -p .claude/skills/fix-issue
+cat &gt; .claude/skills/fix-issue/SKILL.md &lt;&lt; 'EOF'
+---
+name: fix-issue
+description: Fix a GitHub issue on a specific branch
+when_to_use: User mentions fixing issue numbers, hotfixes, or wants
+to address a GitHub bug report.
+arguments: [issue, branch]
+allowed-tools: Bash(gh *), Read, Edit
+---
+
+Fix GitHub issue #$issue on branch $branch following our coding
+standards.
+
+Steps:
+1. Fetch issue details: gh issue view $issue
+2. Switch to branch: git checkout $branch
+3. Implement the fix
+4. Run tests
+5. Open a PR linking back to issue #$issue
+EOF</code></pre>
+
+  <p>El campo <code>arguments: [issue, branch]</code> declara dos argumentos posicionales nombrados. Al invocar <code>/fix-issue 142 hotfix-auth</code>, <code>$issue=142</code> y <code>$branch=hotfix-auth</code>. Es más legible que <code>$0</code> y <code>$1</code>, sobre todo en skills largos. El campo <code>when_to_use</code> refuerza cuándo Claude debe activar el skill automáticamente.</p>
+
+  <h3>Reducir prompts de permiso con /fewer-permission-prompts</h3>
+
+  <pre><code class="lang-bash"># Tras unas semanas de uso en un proyecto, corre:
+/fewer-permission-prompts
+
+# El skill escanea tus transcripts y sugiere un allowlist como:
+# {
+#     "permissions": {
+#         "allow": [
+#             "Bash(npm test*)",
+#             "Bash(npm run lint*)",
+#             "Bash(git status*)",
+#             "Bash(git diff*)"
+#         ]
+#     }
+# }
+#
+# Y lo escribe a .claude/settings.json del proyecto.</code></pre>
+
+  <p>El bundled skill <code>/fewer-permission-prompts</code> analiza qué comandos Bash y MCP de solo lectura te aprueban una y otra vez, y los agrega como allowlist al <code>settings.json</code> del proyecto. Resultado: menos interrupciones en tu flujo, manteniendo el control sobre los comandos riesgosos.</p>
+
+  <h3>Usar slash commands vía el Agent SDK (TypeScript)</h3>
+
+  <pre><code class="lang-js">import { query } from "@anthropic-ai/claude-agent-sdk";
+
+// Enviar un slash command
+for await (const message of query({
+    prompt: "/compact",
+    options: { maxTurns: 1 }
+})) {
+    if (message.type === "result") {
+        console.log("Command executed:", message.result);
+    }
+}
+
+// Descubrir comandos disponibles
+for await (const message of query({
+    prompt: "Hello",
+    options: { maxTurns: 1 }
+})) {
+    if (message.type === "system" &amp;&amp; message.subtype === "init") {
+        console.log("Available slash commands:", message.slash_commands);
+    }
+}</code></pre>
+
+  <p>Los slash commands se pueden enviar programáticamente a través del Agent SDK. El mensaje de inicialización del sistema incluye la lista de comandos disponibles. El SDK soporta TypeScript y Python.</p>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>No necesitas memorizar el formato de <code>SKILL.md</code>. Pídele a Claude: "Crea un skill que haga X" y él genera el archivo completo con frontmatter y todo.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa <code>/context</code> para verificar cuánto espacio ocupan tus skills en la ventana de contexto. Si tienes muchos, algunas descripciones podrían no cargarse.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Si usas <code>context: fork</code> en un skill que solo contiene guías de referencia (sin tarea concreta), el subagente no tendrá nada que hacer y retornará vacío. Usa fork solo para skills de tarea.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>El campo <code>user-invocable: false</code> solo oculta el skill del menú. Claude aún puede invocarlo programáticamente. Para bloquearlo completamente, usa <code>disable-model-invocation: true</code>.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Los skills de plugins SIEMPRE llevan namespace (como <code>/greet:hello</code>). Esto evita conflictos si dos plugins tienen skills con el mismo nombre.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Incluir la palabra 'ultrathink' en un skill activa el pensamiento extendido de Claude, útil para tareas que requieren análisis profundo.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Comparte skills con tu equipo haciendo commit de la carpeta <code>.claude/skills/</code> al repositorio. Tu equipo los tendrá automáticamente sin instalar nada.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa el campo <code>paths</code> en el frontmatter para que un skill se active automáticamente solo cuando trabajas con archivos específicos. Es ideal para skills de linting o convenciones por carpeta.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Los comandos <code>/pr-comments</code> y <code>/vim</code> fueron removidos. Si los usas y no funcionan, revisa la sección de errores comunes para las alternativas.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Antes de crear un skill desde cero, revisa awesome-claude-code en GitHub. La comunidad tiene cientos de skills listos para instalar.</p>
+  </div>
+
+  <section class="recap">
+    <h2 id="cap16-resumen-del-capitulo">Resumen del Capítulo</h2>
+    <p>Claude Code tiene tres tipos de comandos <code>/</code>: built-in (del sistema), bundled (incluidos) y custom (tuyos). Las skills son carpetas con un archivo <code>SKILL.md</code> que contiene frontmatter YAML e instrucciones Markdown. Puedes controlar quién las invoca, ejecutarlas en subagentes aislados, inyectar contexto dinámico con comandos shell (inline o multi-línea), y compartirlas con tu equipo o el mundo vía plugins. El ecosistema de la comunidad ofrece cientos de skills listos para instalar.</p>
+  </section>
+</article>

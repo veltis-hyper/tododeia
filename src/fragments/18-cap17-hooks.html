@@ -1,0 +1,958 @@
+<article class="chapter" data-id="cap17" data-title="Hooks" data-part="3">
+  <header class="ch-head">
+    <p class="ch-kicker">Parte 3 · Claude Code · Capítulo 17</p>
+    <h1>Hooks</h1>
+    <p class="ch-sub">Automatiza tareas con acciones que se disparan solas en el momento justo</p>
+    <p class="ch-level">Intermedio</p>
+    <p class="ch-lede">Los hooks son acciones automáticas que se ejecutan solas cuando algo pasa en Claude Code. Piensa en ellos como trampas inteligentes: tú las preparas, y cuando Claude hace algo específico, la trampa se activa. En este capítulo vas a aprender a crear tus propios hooks para formatear código, proteger archivos, recibir notificaciones y mucho más.</p>
+  </header>
+
+  <h2 id="cap17-que-son-los-hooks-y-para-que-sirven">Qué son los hooks y para qué sirven</h2>
+  <p>Imagina que tienes un asistente en tu cocina. Cada vez que termina de cocinar, tú quieres que lave los platos automáticamente. No quieres pedirlo cada vez. Quieres que lo haga solo.</p>
+  <p>Eso es exactamente un hook. Es una instrucción que le dices a Claude Code: "Cuando pase ESTO, haz AQUELLO".</p>
+  <p>Sin hooks, dependes de que Claude "recuerde" hacer ciertas cosas. A veces lo hace, a veces no. Con hooks, la acción ocurre siempre. Es automática y garantizada.</p>
+
+  <h3>Por qué usar hooks en lugar de instrucciones</h3>
+  <p>Puedes escribir en tu <code>CLAUDE.md</code>: "Siempre formatea el código con Prettier después de editar". Pero Claude es un modelo de lenguaje. A veces se le olvida.</p>
+  <p>Un hook no se olvida nunca. Es como una alarma programada. No importa lo que pase, se ejecuta.</p>
+  <p>Usa hooks cuando necesites que algo pase el 100% de las veces. Usa instrucciones en <code>CLAUDE.md</code> cuando sea una preferencia, no una obligación.</p>
+
+  <h3>Los cinco tipos de hooks</h3>
+  <p>Hay cinco formas de crear un hook. Cada una tiene su propia personalidad:</p>
+  <ul class="deflist">
+    <li><strong>Command</strong> — Ejecuta un comando de terminal. Es el más común. Ejemplo: correr <code>prettier</code> para formatear código.</li>
+    <li><strong>HTTP</strong> — Envía datos a una URL. Útil para conectar con servicios externos. Ejemplo: notificar a un servidor cuando Claude termina una tarea.</li>
+    <li><strong>MCP tool</strong> — Invoca una tool de un servidor MCP que ya está conectado. Útil cuando el chequeo que quieres hacer ya existe como tool MCP. Ejemplo: lanzar un escáner de seguridad expuesto por tu servidor MCP interno.</li>
+    <li><strong>Prompt</strong> — Le pregunta a un modelo de IA si la acción está bien. Es como tener un segundo par de ojos. Ejemplo: verificar si Claude debería dejar de trabajar.</li>
+    <li><strong>Agent</strong> — Lanza un mini-agente que puede leer archivos y verificar cosas antes de decidir. Ejemplo: revisar que los tests pasen antes de dar luz verde.</li>
+  </ul>
+  <p>Los tres primeros (command, HTTP y MCP tool) son determinísticos: siempre hacen lo mismo. Los dos últimos (prompt y agent) usan juicio de IA: evalúan la situación y deciden.</p>
+
+  <h2 id="cap17-el-ciclo-de-vida-cuando-se-disparan-los-hooks">El ciclo de vida: cuándo se disparan los hooks</h2>
+  <p>Claude Code sigue un ciclo durante cada sesión. Es como una rutina. Los hooks se conectan a momentos específicos de esa rutina.</p>
+  <p>Piensa en tu día: te levantas, desayunas, trabajas, almuerzas, trabajas más, cenas, duermes. Podrías poner una "alarma" en cualquiera de esos momentos.</p>
+  <p>Así funciona con Claude Code. Estos son los momentos clave:</p>
+  <ol>
+    <li><strong>SessionStart</strong> — Claude arranca o se reanuda.</li>
+    <li><strong>UserPromptSubmit</strong> — Tú envías un mensaje.</li>
+    <li><strong>PreToolUse</strong> — Claude está a punto de usar una herramienta.</li>
+    <li><strong>PermissionRequest</strong> — Claude pide permiso para algo.</li>
+    <li><strong>PostToolUse</strong> — La herramienta terminó con éxito.</li>
+    <li><strong>PostToolUseFailure</strong> — La herramienta falló.</li>
+    <li><strong>PostToolBatch</strong> — Un grupo de herramientas paralelas terminó.</li>
+    <li><strong>CwdChanged</strong> — Claude cambió de directorio (hizo <code>cd</code>).</li>
+    <li><strong>PostCompact</strong> — Claude acaba de compactar el contexto.</li>
+    <li><strong>Stop</strong> — Claude termina de responder.</li>
+    <li><strong>SessionEnd</strong> — La sesión se cierra.</li>
+  </ol>
+  <p>Hay más eventos (los veremos todos), pero estos son los que vas a usar el 90% del tiempo.</p>
+
+  <h3>El flujo paso a paso</h3>
+  <p>Cuando inicias Claude Code, el flujo es así:</p>
+  <pre><code class="lang-text">SessionStart
+   └─ Tú escribes algo → UserPromptSubmit
+        └─ Claude quiere usar Bash → PreToolUse
+                └─ Si necesita permiso → PermissionRequest
+                └─ Bash se ejecuta bien → PostToolUse
+                └─ Bash falla → PostToolUseFailure
+        └─ Si lanza varias tools en paralelo → PostToolBatch
+        └─ Si hizo cd → CwdChanged
+        └─ Si el contexto crece y compacta → PostCompact
+        └─ Claude termina → Stop
+   └─ Cierras sesión → SessionEnd</code></pre>
+  <p>Los pasos del medio se repiten muchas veces. Claude usa herramientas constantemente. Cada uso dispara los hooks correspondientes.</p>
+  <p>Algunos eventos no aparecen en el flujo típico pero son igual de importantes: <strong>PostToolBatch</strong> dispara una vez por cada grupo de herramientas paralelas (no por cada herramienta), justo antes de que Claude vuelva a pensar. <strong>CwdChanged</strong> dispara cada vez que cambia el directorio actual y es perfecto para recargar entornos como direnv. <strong>PostCompact</strong> dispara después de cada compactación y sirve para volver a inyectar lo que importa. <strong>MessageDisplay</strong> dispara mientras la respuesta de Claude se escribe en pantalla y permite transformar u ocultar ese texto en la salida visible (por ejemplo, para tapar secretos).</p>
+
+  <h2 id="cap17-como-configurar-tu-primer-hook">Cómo configurar tu primer hook</h2>
+  <p>Hay dos formas de crear hooks: el menú interactivo o editando JSON directamente.</p>
+
+  <h3>Forma fácil: el menú /hooks</h3>
+  <p>Dentro de Claude Code, escribe <code>/hooks</code> y presiona Enter. Se abre un menú donde puedes:</p>
+  <ul>
+    <li>Ver todos los hooks configurados</li>
+    <li>Agregar nuevos hooks de tipo command</li>
+    <li>Eliminar hooks existentes</li>
+    <li>Deshabilitar todos los hooks con un toggle</li>
+  </ul>
+  <p>El menú muestra etiquetas: <code>[User]</code> para hooks globales, <code>[Project]</code> para hooks del proyecto, y <code>[Local]</code> para hooks locales.</p>
+  <p>Esta es la forma más fácil de empezar. Pero solo funciona para hooks de tipo <code>command</code>. Para HTTP, prompt o agent, necesitas editar el JSON a mano.</p>
+
+  <h3>Forma completa: editar el JSON</h3>
+  <p>Los hooks viven dentro de los archivos de settings. La estructura tiene tres niveles. Piensa en cajas dentro de cajas:</p>
+  <ol>
+    <li><strong>Caja grande:</strong> El evento (cuándo se dispara)</li>
+    <li><strong>Caja mediana:</strong> El matcher (qué filtra)</li>
+    <li><strong>Caja pequeña:</strong> El handler (qué hace)</li>
+  </ol>
+  <p>Así se ve en JSON:</p>
+  <pre><code class="lang-json">{
+    "hooks": {
+        "PostToolUse": [
+            {
+                "matcher": "Edit|Write",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "echo 'Se editó un archivo!'"
+                    }
+                ]
+            }
+        ]
+    }
+}</code></pre>
+  <p>Traducido al español: "Después de que Claude use Edit o Write, ejecuta este comando".</p>
+
+  <h3>Dónde guardar tus hooks</h3>
+  <p>Puedes guardar hooks en distintos lugares. Cada uno tiene un alcance diferente:</p>
+  <ul class="deflist">
+    <li><strong><code>~/.claude/settings.json</code></strong> — Usuario. Aplica a todos tus proyectos. No se comparte con el equipo.</li>
+    <li><strong><code>.claude/settings.json</code></strong> — Proyecto. Aplica solo a este proyecto. Se puede commitear al repo.</li>
+    <li><strong><code>.claude/settings.local.json</code></strong> — Local. Aplica solo a este proyecto, pero no se comparte (está en gitignore).</li>
+    <li><strong>Managed policy</strong> — Organización. Lo configura el admin. No se puede deshabilitar.</li>
+    <li><strong>Plugin <code>hooks/hooks.json</code></strong> — Hooks empaquetados con un plugin. Aplican mientras el plugin está activo. Útil para distribuir suites de hooks como una unidad.</li>
+    <li><strong>Frontmatter de skill o subagente</strong> — Hooks que viven mientras el componente está activo. Cuando termina, se limpian solos.</li>
+  </ul>
+  <p>Si un hook es personal (como notificaciones), ponlo en User. Si es del equipo (como formateo de código), ponlo en Project.</p>
+  <p>El menú <code>/hooks</code> ahora muestra de qué fuente viene cada hook: <code>[User]</code>, <code>[Project]</code>, <code>[Local]</code>, <code>[Plugin]</code>, <code>[Session]</code> (los inyectados por skills o subagentes activos) y <code>[Built-in]</code> (los que vienen con Claude Code).</p>
+
+  <h2 id="cap17-matchers-filtrar-cuando-se-dispara-un-hook">Matchers: filtrar cuándo se dispara un hook</h2>
+  <p>Un matcher es un filtro. Le dice al hook: "Solo dispárate cuando coincida con esto".</p>
+  <p>Es como un portero de discoteca. No deja pasar a todos. Solo a los que están en la lista.</p>
+  <p>El matcher usa expresiones regulares (regex). No te asustes. Los patrones más comunes son simples:</p>
+  <ul class="deflist">
+    <li><strong><code>"Bash"</code></strong> — Solo cuando la herramienta es Bash.</li>
+    <li><strong><code>"Edit|Write"</code></strong> — Cuando es Edit O Write (la barra <code>|</code> significa "o").</li>
+    <li><strong><code>"mcp__github__.*"</code></strong> — Cualquier herramienta del servidor MCP de GitHub (el <code>.*</code> significa "cualquier cosa después").</li>
+    <li><strong><code>""</code> o sin matcher</strong> — Se dispara SIEMPRE, sin filtro.</li>
+  </ul>
+
+  <h3>Qué filtra cada evento</h3>
+  <p>Cada evento filtra por un campo diferente. Aquí está la guía rápida:</p>
+  <ul class="deflist">
+    <li><strong>PreToolUse, PostToolUse, PostToolUseFailure, PermissionRequest, PermissionDenied</strong> — Filtran por <code>tool_name</code>. Ejemplo: <code>"Bash"</code>, <code>"Edit"</code>, <code>"mcp__memory__create_entities"</code>.</li>
+    <li><strong>SessionStart</strong> — Filtra por <code>source</code>. Valores posibles: <code>startup</code>, <code>resume</code>, <code>clear</code>, <code>compact</code>.</li>
+    <li><strong>Setup</strong> — Filtra por <code>trigger</code>. Valores: <code>init</code>, <code>maintenance</code>.</li>
+    <li><strong>SessionEnd</strong> — Filtra por <code>reason</code>. Valores: <code>clear</code>, <code>resume</code>, <code>logout</code>, <code>prompt_input_exit</code>, <code>bypass_permissions_disabled</code>, <code>other</code>.</li>
+    <li><strong>Notification</strong> — Filtra por <code>notification_type</code>. Valores: <code>permission_prompt</code>, <code>idle_prompt</code>, <code>auth_success</code>, <code>elicitation_dialog</code>, <code>elicitation_complete</code>, <code>elicitation_response</code>.</li>
+    <li><strong>SubagentStart, SubagentStop</strong> — Filtran por <code>agent_type</code>. Ejemplo: <code>"Explore"</code>, <code>"Plan"</code>.</li>
+    <li><strong>ConfigChange</strong> — Filtra por <code>source</code>. Valores: <code>user_settings</code>, <code>project_settings</code>, <code>local_settings</code>, <code>policy_settings</code>, <code>skills</code>.</li>
+    <li><strong>PreCompact, PostCompact</strong> — Filtran por <code>trigger</code>. Valores: <code>manual</code>, <code>auto</code>.</li>
+    <li><strong>InstructionsLoaded</strong> — Filtra por <code>load_reason</code>. Valores: <code>session_start</code>, <code>nested_traversal</code>, <code>path_glob_match</code>, <code>include</code>, <code>compact</code>.</li>
+    <li><strong>StopFailure</strong> — Filtra por tipo de error API. Valores: <code>rate_limit</code>, <code>authentication_failed</code>, <code>oauth_org_not_allowed</code>, <code>billing_error</code>, <code>invalid_request</code>, <code>server_error</code>, <code>max_output_tokens</code>, <code>unknown</code>.</li>
+    <li><strong>UserPromptExpansion</strong> — Filtra por <code>command_name</code> o por el nombre del skill/comando que se expandió.</li>
+    <li><strong>FileChanged</strong> — ¡Ojo! Su matcher no es regex: se splittea por <code>|</code> como lista literal de nombres de archivo. <code>".envrc|.env"</code> matchea esos dos archivos exactos.</li>
+    <li><strong>Elicitation, ElicitationResult</strong> — Filtran por nombre del servidor MCP.</li>
+  </ul>
+  <p>Algunos eventos no soportan matchers y siempre se disparan: UserPromptSubmit, PostToolBatch, Stop, TeammateIdle, TaskCreated, TaskCompleted, WorktreeCreate, WorktreeRemove y CwdChanged.</p>
+  <div class="callout note">
+    <p class="callout-label">Corrección importante</p>
+    <p>Al contrario de lo que decía la documentación antigua, InstructionsLoaded sí soporta matchers. Puedes filtrar por <code>load_reason</code> para distinguir entre la carga inicial, la carga lazy por traversal, los includes y la recarga tras compactar.</p>
+  </div>
+
+  <h2 id="cap17-como-se-comunican-los-hooks-con-claude-code">Cómo se comunican los hooks con Claude Code</h2>
+  <p>Los hooks hablan con Claude Code de dos formas: exit codes y JSON output.</p>
+  <p>Piensa en los exit codes como semáforos:</p>
+  <ul class="deflist">
+    <li><strong>Exit 0 (verde)</strong> — Todo bien. La acción puede continuar.</li>
+    <li><strong>Exit 2 (rojo)</strong> — Alto. Bloquea la acción.</li>
+    <li><strong>Cualquier otro (amarillo)</strong> — Hubo un problema, pero no es grave. La acción continúa.</li>
+  </ul>
+
+  <h3>Exit codes en detalle</h3>
+  <p>Con exit 0, Claude Code busca JSON en stdout. Si encuentra JSON válido, lo procesa. Si encuentra texto plano, lo agrega como contexto para Claude.</p>
+  <p>Con exit 2, Claude Code ignora stdout. Lee stderr y se lo muestra a Claude como error. El efecto depende del evento:</p>
+  <ul class="deflist">
+    <li><strong>En <code>PreToolUse</code></strong> — bloquea la herramienta.</li>
+    <li><strong>En <code>UserPromptSubmit</code></strong> — borra el prompt completo.</li>
+    <li><strong>En <code>Stop</code></strong> — obliga a Claude a seguir trabajando.</li>
+    <li><strong>En <code>TaskCompleted</code></strong> — impide marcar la tarea como completada.</li>
+  </ul>
+  <p>Con cualquier otro código (1, 3, 127, etc.): stderr se muestra en modo verbose (<code>Ctrl+O</code>) y la vida sigue.</p>
+
+  <h3>JSON output para control fino</h3>
+  <p>Los exit codes son simples: sí o no. Pero a veces necesitas más control. Ahí entra el JSON output.</p>
+  <p>Tu hook puede imprimir JSON en stdout. Estos son los campos más útiles:</p>
+  <pre><code class="lang-json">{
+    "decision": "block",
+    "reason": "No puedes hacer eso porque..."
+}</code></pre>
+  <p>O para PreToolUse, que usa un formato especial:</p>
+  <pre><code class="lang-json">{
+    "hookSpecificOutput": {
+        "hookEventName": "PreToolUse",
+        "permissionDecision": "deny",
+        "permissionDecisionReason": "Archivo protegido"
+    }
+}</code></pre>
+  <p>Campos universales que funcionan en todos los eventos:</p>
+  <ul class="deflist">
+    <li><strong><code>continue</code></strong> — Si lo pones en <code>false</code>, Claude deja de procesar por completo.</li>
+    <li><strong><code>stopReason</code></strong> — Mensaje para el usuario cuando continue es false.</li>
+    <li><strong><code>suppressOutput</code></strong> — Si es <code>true</code>, oculta el output en modo verbose.</li>
+    <li><strong><code>systemMessage</code></strong> — Muestra un mensaje de advertencia al usuario.</li>
+    <li><strong><code>terminalSequence</code></strong> — Escribe secuencias de escape de terminal (window title, notificaciones del SO, progreso en la barra de tareas).</li>
+  </ul>
+  <p><strong>terminalSequence:</strong> los hooks no pueden escribir a <code>/dev/tty</code>. Si querías parpadear el icono del Dock o cambiar el título de la ventana, este es el camino. Las secuencias permitidas son OSC 0 (icono + título), OSC 1 (icono), OSC 2 (título), OSC 9 (notificaciones de iTerm2, ConEmu, Windows Terminal y WezTerm, más progreso en la barra), OSC 99 (Kitty), OSC 777 (urxvt, Ghostty, Warp) y el BEL pelado. Sintaxis: <code>\033]NUM;contenido\007</code> (con BEL) o <code>\033]NUM;contenido\033\\</code> (con ST).</p>
+  <p><strong>Límite de 10.000 caracteres:</strong> el output total de un hook (stdout, <code>additionalContext</code> y <code>systemMessage</code>) está capado a 10.000 caracteres. Si te pasas, Claude Code escribe el exceso a un archivo y le pasa al modelo un preview con la ruta. Tu hook sigue funcionando, pero el modelo solo verá el preview a menos que abra el archivo. Si vas a inyectar mucho contexto, escríbelo tú mismo a un archivo y referencia la ruta.</p>
+
+  <h3>Qué datos recibe tu hook</h3>
+  <p>Cuando un hook se dispara, recibe información sobre lo que está pasando. Para hooks de tipo <code>command</code>, estos datos llegan por stdin en formato JSON.</p>
+  <p>Todos los hooks reciben estos campos básicos:</p>
+  <ul class="deflist">
+    <li><strong><code>session_id</code></strong> — ID único de la sesión.</li>
+    <li><strong><code>transcript_path</code></strong> — Ruta al archivo de la conversación.</li>
+    <li><strong><code>cwd</code></strong> — Directorio de trabajo actual.</li>
+    <li><strong><code>permission_mode</code></strong> — Modo de permisos (default, plan, dontAsk, etc.).</li>
+    <li><strong><code>hook_event_name</code></strong> — Nombre del evento que disparó el hook.</li>
+  </ul>
+  <p>Además de estos, cada evento agrega sus propios campos. Por ejemplo, PreToolUse incluye <code>tool_name</code> y <code>tool_input</code> con los parámetros de la herramienta.</p>
+
+  <h2 id="cap17-referencia-completa-de-eventos">Referencia completa de eventos</h2>
+  <p>Aquí tienes todos los eventos disponibles. Para cada uno, te explico cuándo se dispara, qué datos recibe y qué puedes hacer con él.</p>
+
+  <h3>SessionStart</h3>
+  <p><strong>Cuándo:</strong> La sesión arranca o se reanuda.</p>
+  <p><strong>Matcher:</strong> Filtra por <code>source</code> — <code>startup</code>, <code>resume</code>, <code>clear</code>, <code>compact</code>.</p>
+  <p><strong>Qué puedes hacer:</strong> El stdout se agrega como contexto para Claude. No puede bloquear.</p>
+  <p><strong>Tipos soportados:</strong> Solo <code>command</code>.</p>
+  <p><strong>Dato especial:</strong> Tiene acceso a <code>$CLAUDE_ENV_FILE</code> para persistir variables de entorno para toda la sesión.</p>
+  <p><strong>Campos de output nuevos (v2.1.152):</strong> además del <code>additionalContext</code> de siempre, SessionStart ahora acepta varios campos en su JSON de salida:</p>
+  <ul class="deflist">
+    <li><strong><code>reloadSkills: true</code></strong> — Vuelve a escanear los skills disponibles. Útil si tu hook acaba de instalar o generar skills nuevos.</li>
+    <li><strong><code>sessionTitle</code></strong> — Pone un título a la sesión.</li>
+    <li><strong><code>watchPaths</code></strong> — Lista de rutas a vigilar (alimenta eventos como FileChanged).</li>
+    <li><strong><code>initialUserMessage</code></strong> — Inyecta un primer mensaje del usuario. Solo funciona en modo no interactivo (por ejemplo, con <code>-p</code>).</li>
+  </ul>
+  <p><strong>Ejemplo típico:</strong> Re-inyectar recordatorios después de compactar:</p>
+  <pre><code class="lang-json">{
+    "hooks": {
+        "SessionStart": [{
+          "matcher": "compact",
+          "hooks": [{
+               "type": "command",
+               "command": "echo 'Recordatorio: usa Bun en lugar de npm.'"
+          }]
+        }]
+    }
+}</code></pre>
+
+  <h3>UserPromptSubmit</h3>
+  <p><strong>Cuándo:</strong> Tú envías un mensaje, antes de que Claude lo procese.</p>
+  <p><strong>Matcher:</strong> No soporta matchers. Siempre se dispara.</p>
+  <p><strong>Qué puedes hacer:</strong> Bloquear el prompt (exit 2 lo borra completamente) o agregar contexto.</p>
+  <p><strong>Tipos soportados:</strong> command, http, prompt, agent.</p>
+  <p><strong>Campos especiales:</strong> <code>prompt</code> contiene el texto que enviaste.</p>
+
+  <h3>PreToolUse</h3>
+  <p><strong>Cuándo:</strong> Claude está a punto de usar una herramienta. Es tu última oportunidad para detenerlo.</p>
+  <p><strong>Matcher:</strong> Filtra por <code>tool_name</code> — <code>Bash</code>, <code>Edit</code>, <code>Write</code>, <code>Read</code>, <code>Glob</code>, <code>Grep</code>, <code>Agent</code>, <code>WebFetch</code>, <code>WebSearch</code>, <code>AskUserQuestion</code>, <code>ExitPlanMode</code>, <code>mcp__servidor__herramienta</code>.</p>
+  <p><strong>Qué puedes hacer:</strong></p>
+  <ul class="deflist">
+    <li><strong><code>permissionDecision: "allow"</code></strong> — Dar permiso automático (salta el diálogo de permisos). Ojo: esto NO sobrescribe reglas <code>deny</code> ni <code>ask</code> definidas en managed settings. Las reglas <code>deny</code> siempre ganan.</li>
+    <li><strong><code>permissionDecision: "deny"</code></strong> — Bloquear la herramienta.</li>
+    <li><strong><code>permissionDecision: "ask"</code></strong> — Mostrar el diálogo de permisos al usuario.</li>
+    <li><strong><code>permissionDecision: "defer"</code></strong> — Solo en modo headless (<code>-p</code>). Preserva el tool call sin ejecutarlo para que un wrapper del SDK lo procese fuera.</li>
+    <li><strong><code>updatedInput</code></strong> — Modificar los parámetros antes de ejecutar.</li>
+    <li><strong><code>additionalContext</code></strong> — Agregar contexto para Claude.</li>
+  </ul>
+  <p><strong>Tipos soportados:</strong> command, http, mcp_tool, prompt, agent.</p>
+  <p>Soporta el campo <code>if</code> para filtrado granular tipo permission rule (ej: <code>"if": "Bash(git *)"</code>).</p>
+  <p>Este es probablemente el evento más poderoso. Te permite proteger archivos, bloquear comandos peligrosos, o auto-aprobar acciones seguras.</p>
+
+  <h3>PostToolUse y PostToolUseFailure</h3>
+  <p>PostToolUse se dispara cuando una herramienta termina con éxito. PostToolUseFailure se dispara cuando falla.</p>
+  <p><strong>Matcher:</strong> Filtra por <code>tool_name</code>.</p>
+  <p><strong>Importante:</strong> La herramienta ya se ejecutó. No puedes deshacerla. Pero puedes:</p>
+  <ul>
+    <li>Formatear código después de una edición.</li>
+    <li>Logear lo que pasó.</li>
+    <li>Agregar contexto sobre el resultado.</li>
+  </ul>
+  <p><strong>Campo nuevo <code>continueOnBlock: true</code> (v2.1.139):</strong> normalmente, cuando un PostToolUse devuelve <code>decision: "block"</code>, Claude se frena con ese feedback. Con <code>continueOnBlock: true</code>, la razón del rechazo se le pasa a Claude pero el turno continúa en lugar de cortarse. Sirve para dejar una nota ("este patrón está deprecado, úsalo así") sin interrumpir el flujo de trabajo.</p>
+  <p><strong>Tipos soportados:</strong> command, http, prompt, agent.</p>
+  <p><strong>Campos especiales:</strong> <code>tool_name</code>, <code>tool_input</code>, <code>tool_response</code> (solo en PostToolUse), <code>error</code> (solo en PostToolUseFailure).</p>
+
+  <h3>Stop y SubagentStop</h3>
+  <p>Stop se dispara cuando el agente principal termina de responder. SubagentStop se dispara cuando un subagente termina.</p>
+  <p><strong>Matcher:</strong> No soporta matchers.</p>
+  <p><strong>Qué puedes hacer:</strong> Bloquear con <code>decision: "block"</code> para obligar a Claude a seguir trabajando.</p>
+  <p><strong>Feedback sin marcar error (v2.1.152):</strong> Stop y SubagentStop ahora soportan <code>hookSpecificOutput.additionalContext</code>. Así puedes inyectarle un comentario a Claude y dejar que el turno siga su curso sin tratarlo como un bloqueo ni un error. Es más suave que <code>decision: "block"</code>: no fuerza a Claude a seguir, solo le añade contexto.</p>
+  <p><strong>Tope de bloqueos consecutivos (v2.1.143):</strong> si tu Stop hook bloquea una y otra vez, Claude Code corta por lo sano. Tras 8 bloqueos seguidos, el turno termina con un warning para evitar que te quedes atrapado. Puedes ajustar ese tope con la variable de entorno <code>CLAUDE_CODE_STOP_HOOK_BLOCK_CAP</code> (por defecto 8). Por ejemplo, <code>CLAUDE_CODE_STOP_HOOK_BLOCK_CAP=3</code> baja el límite a tres.</p>
+  <div class="callout warn">
+    <p class="callout-label">Muy importante</p>
+    <p>Siempre verifica <code>stop_hook_active</code> en el JSON input. Si es <code>true</code>, significa que Claude ya intentó parar una vez y el hook lo obligó a continuar. Haz exit 0 para dejarlo parar. Si no verificas esto, creas un loop infinito.</p>
+  </div>
+  <pre><code class="lang-bash">#!/bin/bash
+INPUT=$(cat)
+if [ "$(echo "$INPUT" | jq -r '.stop_hook_active')" = "true" ]; then
+  exit 0   # Dejarlo parar
+fi
+# ... tu lógica aquí</code></pre>
+
+  <h3>Notification</h3>
+  <p><strong>Cuándo:</strong> Claude Code envía una notificación (pidiendo permisos, esperando tu atención, etc.).</p>
+  <p><strong>Matcher:</strong> Filtra por <code>notification_type</code> — <code>permission_prompt</code>, <code>idle_prompt</code>, <code>auth_success</code>.</p>
+  <p><strong>Qué puedes hacer:</strong> No puede bloquear. Solo para side effects como enviar una notificación al escritorio.</p>
+  <p><strong>Tipos soportados:</strong> Solo <code>command</code>.</p>
+
+  <h3>Setup</h3>
+  <p><strong>Cuándo:</strong> Claude Code se lanza con <code>--init-only</code>, o con <code>--init</code> / <code>--maintenance</code> en modo <code>-p</code>. Está pensado para preparación one-shot en CI o scripts.</p>
+  <p><strong>Matcher:</strong> Filtra por <code>trigger</code> — <code>init</code>, <code>maintenance</code>.</p>
+  <p><strong>Qué puedes hacer:</strong> Preparar el entorno antes de que la sesión arranque de verdad. No es bloqueable.</p>
+  <p><strong>Tipos soportados:</strong> <code>command</code> (también acepta otros, pero con limitaciones: los servidores MCP pueden no estar conectados todavía).</p>
+
+  <h3>UserPromptExpansion</h3>
+  <p><strong>Cuándo:</strong> Tú escribes un comando (slash command o un prompt MCP) y Claude Code lo expande a un prompt real, antes de que llegue al modelo.</p>
+  <p><strong>Matcher:</strong> Filtra por <code>command_name</code> o por nombre de skill/comando.</p>
+  <p><strong>Qué puedes hacer:</strong> Inyectar contexto al prompt expandido, o bloquear la expansión con exit 2.</p>
+  <p><strong>Input especial:</strong> <code>expansion_type</code> (<code>slash_command</code> o <code>mcp_prompt</code>), <code>command_name</code>, <code>command_args</code>, <code>command_source</code> (<code>builtin</code>, <code>user</code> o <code>plugin</code>) y <code>prompt</code> (el texto resultante).</p>
+
+  <h3>PostToolBatch</h3>
+  <p><strong>Cuándo:</strong> Claude lanzó varias tools en paralelo y todas terminaron. Dispara una sola vez por batch, antes de la siguiente llamada al modelo.</p>
+  <p><strong>Matcher:</strong> No soporta matchers.</p>
+  <p><strong>Input especial:</strong> <code>batch_size</code> y <code>tool_calls</code> (la lista completa con sus inputs y resultados).</p>
+  <p><strong>Qué puedes hacer:</strong> Validar el conjunto de resultados como un todo. Soporta <code>decision: "block"</code> que se reporta a Claude antes de continuar. Ideal para verificaciones que solo tienen sentido después de varias tools (ej: "si editaste estos 3 archivos juntos, corre el linter una vez").</p>
+
+  <h3>PermissionDenied</h3>
+  <p><strong>Cuándo:</strong> Una tool call es denegada por el clasificador de modo auto.</p>
+  <p><strong>Matcher:</strong> Igual que PreToolUse: filtra por <code>tool_name</code>.</p>
+  <p><strong>Qué puedes hacer:</strong> Decirle al modelo que puede reintentar:</p>
+  <pre><code class="lang-json">{
+    "hookSpecificOutput": {
+        "hookEventName": "PermissionDenied",
+        "retry": true
+    }
+}</code></pre>
+  <p>Útil cuando tu lógica determina que la denegación fue un falso positivo y vale la pena reintentar con un ajuste.</p>
+
+  <h3>StopFailure</h3>
+  <p><strong>Cuándo:</strong> El turno termina por un error de API (no porque Claude terminó bien).</p>
+  <p><strong>Matcher:</strong> Filtra por tipo de error — <code>rate_limit</code>, <code>overloaded</code>, <code>authentication_failed</code>, <code>oauth_org_not_allowed</code>, <code>billing_error</code>, <code>invalid_request</code>, <code>model_not_found</code>, <code>server_error</code>, <code>max_output_tokens</code>, <code>unknown</code>.</p>
+  <p><strong>Qué puedes hacer:</strong> Loggear errores, alertar a un canal de Slack, o cambiar a un modelo más barato la próxima vez. No es bloqueable (output y exit code se ignoran).</p>
+
+  <h3>TaskCreated</h3>
+  <p><strong>Cuándo:</strong> Se crea una task (via TaskCreate).</p>
+  <p><strong>Matcher:</strong> No soporta matchers.</p>
+  <p><strong>Input especial:</strong> <code>task_id</code>, <code>task_name</code>, <code>task_description</code>.</p>
+  <p><strong>Qué puedes hacer:</strong> Loggear, sincronizar con un tracker externo, o bloquear la creación con <code>decision: "block"</code>.</p>
+
+  <h3>CwdChanged</h3>
+  <p><strong>Cuándo:</strong> Cambia el working directory de Claude (por ejemplo cuando Claude hace <code>cd</code> en Bash).</p>
+  <p><strong>Matcher:</strong> No soporta matchers.</p>
+  <p><strong>Input especial:</strong> <code>new_cwd</code>, <code>old_cwd</code>. También recibe <code>CLAUDE_ENV_FILE</code>, así que puedes persistir variables nuevas en el entorno.</p>
+  <p><strong>Caso de uso típico — direnv:</strong> el comando Bash de Claude no recoge cambios de direnv automáticamente. Con un hook CwdChanged que escriba <code>direnv export bash &gt;&gt; "$CLAUDE_ENV_FILE"</code>, cada cambio de directorio recarga el entorno y los siguientes Bash heredan las variables correctas.</p>
+
+  <h3>FileChanged</h3>
+  <p><strong>Cuándo:</strong> Un archivo vigilado cambia en disco (lo modificó Claude, el usuario o cualquier otro proceso).</p>
+  <p><strong>Matcher:</strong> ¡Ojo! No es regex. El matcher se splittea por <code>|</code> como una lista literal de nombres. <code>".envrc|.env|config.toml"</code> matchea esos tres archivos exactos, nada más.</p>
+  <p><strong>Input especial:</strong> <code>file_path</code>. También recibe <code>CLAUDE_ENV_FILE</code>.</p>
+  <p><strong>Qué puedes hacer:</strong> Recargar entorno cuando cambia un <code>.envrc</code>, invalidar caches, o avisar al equipo.</p>
+
+  <h3>PostCompact</h3>
+  <p><strong>Cuándo:</strong> Justo después de que la compactación de contexto termina.</p>
+  <p><strong>Matcher:</strong> Igual que PreCompact — <code>manual</code> o <code>auto</code>.</p>
+  <p><strong>Qué puedes hacer:</strong> Loggear, o re-inyectar contexto que el resumen perdió. Por ejemplo, recordatorios de stack, convenciones del proyecto, o el sprint actual.</p>
+
+  <h3>Elicitation y ElicitationResult</h3>
+  <p>Cuando un servidor MCP necesita pedirle algo al usuario durante una tool call (por ejemplo "confirma este pago"), dispara una elicitation.</p>
+  <p>Elicitation dispara antes de mostrarle el diálogo al usuario. Puedes auto-responder con:</p>
+  <pre><code class="lang-json">{
+    "hookSpecificOutput": {
+        "hookEventName": "Elicitation",
+        "action": "accept",
+        "content": { ... }
+    }
+}</code></pre>
+  <p>Los valores válidos para <code>action</code> son <code>accept</code>, <code>decline</code> o <code>cancel</code>.</p>
+  <p>ElicitationResult dispara después de que el usuario responde, antes de enviar la respuesta al servidor. Útil para auditar o modificar respuestas.</p>
+  <p><strong>Matcher:</strong> En ambos, el nombre del servidor MCP.</p>
+
+  <h3>MessageDisplay</h3>
+  <p><strong>Cuándo:</strong> Mientras el texto de la respuesta de Claude se muestra y se va escribiendo en pantalla (streaming). Es un evento nuevo (v2.1.152, mayo 2026).</p>
+  <p><strong>Matcher:</strong> No soporta matchers.</p>
+  <p><strong>Qué puedes hacer:</strong> Transformar u ocultar el texto que ve el usuario. Lo logras con <code>hookSpecificOutput.displayContent</code>, que reemplaza el texto solo en pantalla. Ojo con esto: no toca el contexto real de la conversación. Claude sigue "viendo" el texto original; solo cambia lo que aparece en tu terminal.</p>
+  <pre><code class="lang-json">{
+    "hookSpecificOutput": {
+        "hookEventName": "MessageDisplay",
+        "displayContent": "[texto censurado]"
+    }
+}</code></pre>
+  <p><strong>Caso de uso típico:</strong> redactar u ocultar secretos en la salida visible. Si Claude imprime sin querer un token o una contraseña, un hook MessageDisplay puede taparlo en pantalla mientras el contexto interno queda intacto.</p>
+
+  <h3>Otros eventos</h3>
+  <p>Estos eventos son menos comunes pero igualmente útiles:</p>
+  <ul class="deflist">
+    <li><strong>PermissionRequest</strong> — Se dispara cuando aparece el diálogo de permisos. Puedes auto-aprobar o denegar. El output usa el formato <code>hookSpecificOutput.decision.{behavior: "allow"|"deny"}</code> (más explícito que <code>permissionDecision</code> directo). Soporta <code>updatedInput</code>, <code>permissionRule</code> y <code>updatedPermissions</code> (array con entradas tipo <code>setMode</code> para cambiar el modo de permisos en caliente). No funciona en modo <code>-p</code> (no interactivo). Usa PreToolUse en su lugar.</li>
+    <li><strong>SubagentStart</strong> — Un subagente se crea. Puedes inyectar instrucciones extra. Solo <code>command</code>.</li>
+    <li><strong>TeammateIdle</strong> — Un teammate va a dejar de trabajar. Exit 2 lo obliga a seguir. Solo <code>command</code>.</li>
+    <li><strong>TaskCompleted</strong> — Una tarea va a marcarse como completada. Exit 2 lo impide. Todos los tipos.</li>
+    <li><strong>ConfigChange</strong> — Un archivo de configuración cambió. Puedes bloquear el cambio (excepto policy settings). Solo <code>command</code>.</li>
+    <li><strong>InstructionsLoaded</strong> — Un archivo CLAUDE.md se cargó. Para audit y logging. Sí soporta matchers (<code>session_start</code>, <code>nested_traversal</code>, <code>path_glob_match</code>, <code>include</code>, <code>compact</code>). Solo <code>command</code>.</li>
+    <li><strong>SessionEnd</strong> — La sesión termina. Timeout de solo 1.5 segundos. Solo <code>command</code>.</li>
+    <li><strong>WorktreeCreate / WorktreeRemove</strong> — Crear o eliminar un worktree. Permite usar SVN u otros VCS en vez de git. Solo <code>command</code>.</li>
+  </ul>
+
+  <h2 id="cap17-los-cinco-tipos-de-hooks-en-detalle">Los cinco tipos de hooks en detalle</h2>
+  <p>Ya vimos que hay cinco tipos. Ahora vamos a profundizar en cómo funciona cada uno.</p>
+
+  <h3>Command hooks</h3>
+  <p>El tipo más común. Ejecuta un comando de terminal.</p>
+  <pre><code class="lang-json">{
+    "type": "command",
+    "command": "jq -r '.tool_input.file_path' | xargs npx prettier --write",
+    "timeout": 600,
+    "async": false
+}</code></pre>
+  <p>Campos disponibles:</p>
+  <ul class="deflist">
+    <li><strong><code>command</code> (obligatorio)</strong> — El comando shell a ejecutar.</li>
+    <li><strong><code>args</code> (opcional)</strong> — Si la pones, cambia a exec form.</li>
+    <li><strong><code>shell</code> (opcional)</strong> — Shell a usar en shell form. En Unix por defecto <code>bash</code>. En Windows por defecto Git Bash, pero puedes elegir <code>powershell</code>.</li>
+    <li><strong><code>timeout</code> (opcional)</strong> — Segundos antes de cancelar. Por defecto: 600 (10 minutos). En UserPromptSubmit baja a 30 segundos.</li>
+    <li><strong><code>async</code> (opcional)</strong> — Si es <code>true</code>, se ejecuta en background sin bloquear a Claude.</li>
+    <li><strong><code>asyncRewake</code> (opcional)</strong> — Como async, pero exit 2 "despierta" a Claude con stderr como system reminder.</li>
+    <li><strong><code>statusMessage</code> (opcional)</strong> — Texto que aparece en el spinner mientras el hook corre.</li>
+  </ul>
+  <p>El hook recibe datos JSON por stdin. Para leerlos, usa <code>jq</code> o lee stdin en tu script.</p>
+  <p><strong>Exec form vs shell form:</strong></p>
+  <ul class="deflist">
+    <li><strong>Shell form (solo <code>command</code>, sin <code>args</code>)</strong> — el comando se interpreta por el shell. Pipes (<code>|</code>), <code>&amp;&amp;</code>, globs y expansión de variables funcionan. Es la forma cómoda para comandos cortos.</li>
+    <li><strong>Exec form (<code>command</code> + <code>args</code>)</strong> — se llama al binario directamente, sin shell de por medio. No hay pipes, no hay <code>&amp;&amp;</code>, no hay globs. Más seguro y rápido. Requerido para archivos <code>.cmd</code> o <code>.bat</code> en Windows.</li>
+  </ul>
+  <pre><code class="lang-json">{
+    "type": "command",
+    "command": "node",
+    "args": ["${CLAUDE_PLUGIN_ROOT}/check.js", "--fix"]
+}</code></pre>
+
+  <h3>HTTP hooks</h3>
+  <p>Envían un POST a una URL con los datos del evento como body.</p>
+  <pre><code class="lang-json">{
+    "type": "http",
+    "url": "http://localhost:8080/hooks/tool-use",
+    "headers": {
+      "Authorization": "Bearer $MY_TOKEN"
+    },
+    "allowedEnvVars": ["MY_TOKEN"]
+}</code></pre>
+  <p>Campos disponibles:</p>
+  <ul class="deflist">
+    <li><strong><code>url</code> (obligatorio)</strong> — URL del endpoint.</li>
+    <li><strong><code>headers</code> (opcional)</strong> — Headers HTTP. Soportan variables de entorno con <code>$VAR</code> o <code>${VAR}</code>.</li>
+    <li><strong><code>allowedEnvVars</code> (opcional)</strong> — Lista de variables permitidas. Las no listadas se reemplazan con strings vacíos.</li>
+  </ul>
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>HTTP hooks solo se pueden configurar editando el JSON. El menú <code>/hooks</code> no los soporta.</p>
+  </div>
+  <p>La respuesta del servidor usa el mismo formato que command hooks. Respuesta 2xx con JSON se procesa igual. Errores de conexión o non-2xx son errores no bloqueantes.</p>
+
+  <h3>MCP tool hooks</h3>
+  <p>Invocan una tool de un servidor MCP que ya está conectado. Útiles cuando lo que quieres chequear ya existe como tool MCP (por ejemplo un escáner de seguridad expuesto por un servidor interno).</p>
+  <pre><code class="lang-json">{
+    "type": "mcp_tool",
+    "server": "security_scanner",
+    "tool": "scan_file",
+    "input": {
+        "file_path": "${tool_input.file_path}"
+    }
+}</code></pre>
+  <p>Campos disponibles:</p>
+  <ul class="deflist">
+    <li><strong><code>server</code> (obligatorio)</strong> — Nombre del servidor MCP conectado.</li>
+    <li><strong><code>tool</code> (obligatorio)</strong> — Nombre de la tool a invocar.</li>
+    <li><strong><code>input</code> (opcional)</strong> — Inputs para la tool. Soporta interpolación con <code>${tool_input.campo}</code> para pasar datos del evento original.</li>
+    <li><strong><code>timeout</code> (opcional)</strong> — 600 segundos por defecto.</li>
+  </ul>
+  <p><strong>Ojo con el orden:</strong> el servidor MCP tiene que estar conectado cuando dispara el hook. Si lo usas en SessionStart o Setup, puede dispararse antes de la conexión y fallar. Para eventos seguros: PreToolUse, PostToolUse, UserPromptSubmit y los que disparan en medio de la sesión.</p>
+
+  <h3>Prompt hooks</h3>
+  <p>Le preguntan a un modelo de IA si algo está bien. Es como tener un revisor automático.</p>
+  <pre><code class="lang-json">{
+    "type": "prompt",
+    "prompt": "Analiza si Claude debería parar. Contexto: $ARGUMENTS. Responde {\"ok\": true} o {\"ok\": false, \"reason\": \"...\"}",
+    "model": "haiku",
+    "timeout": 30
+}</code></pre>
+  <p>El modelo (Haiku por defecto) lee el prompt y responde con JSON:</p>
+  <ul class="deflist">
+    <li><strong><code>{"ok": true}</code></strong> — Permite la acción.</li>
+    <li><strong><code>{"ok": false, "reason": "..."}</code></strong> — Bloquea la acción.</li>
+  </ul>
+  <p>Usa <code>$ARGUMENTS</code> en el prompt para inyectar los datos del evento. Si no lo incluyes, se agregan al final automáticamente.</p>
+  <p><strong>Campo <code>model</code>:</strong> por defecto el hook usa Haiku (rápido y barato). Si tu chequeo necesita más cabeza, puedes pedir Opus u otro modelo concreto: <code>"model": "claude-opus-4-1-20250805"</code>. Solo aplica a hooks de tipo <code>prompt</code>.</p>
+
+  <h3>Agent hooks</h3>
+  <p>El tipo más poderoso. Lanza un mini-agente que puede leer archivos, buscar código y verificar cosas.</p>
+  <pre><code class="lang-json">{
+    "type": "agent",
+    "prompt": "Verifica que todos los tests unitarios pasen. $ARGUMENTS",
+    "timeout": 120
+}</code></pre>
+  <p>El agente tiene acceso a herramientas: Read, Grep, Glob. Puede hacer hasta 50 turnos de herramientas. Responde con el mismo formato que prompt hooks: <code>{"ok": true/false}</code>.</p>
+  <p>Timeout por defecto: 60 segundos. Usa agent hooks cuando la verificación requiere inspeccionar archivos reales.</p>
+
+  <h2 id="cap17-el-campo-if-filtros-condicionales-finos">El campo if: filtros condicionales finos</h2>
+  <p>El matcher filtra por nombre de herramienta. Pero a veces necesitas filtrar más fino: "solo cuando el Bash es un <code>git push</code>", o "solo cuando el Edit toca un <code>.ts</code>".</p>
+  <p>Para eso existe el campo <code>if</code>. Usa la misma sintaxis que las reglas de permisos del capítulo de permisos: <code>Tool(patrón)</code>.</p>
+  <pre><code class="lang-json">{
+    "hooks": {
+        "PreToolUse": [
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "if": "Bash(git *)",
+                        "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/check-git-policy.sh"
+                    }
+                ]
+            }
+        ]
+    }
+}</code></pre>
+  <p>El proceso del hook solo se lanza cuando el tool call matchea la condición. Es más eficiente que filtrar dentro del script, porque te ahorras el spawn cuando no aplica.</p>
+  <p>Ejemplos típicos:</p>
+  <ul class="deflist">
+    <li><strong><code>"if": "Bash(git *)"</code></strong> — solo cuando Claude corre algo que empiece por <code>git</code>.</li>
+    <li><strong><code>"if": "Edit(*.ts)"</code></strong> — solo cuando edita un archivo TypeScript.</li>
+    <li><strong><code>"if": "Write(src/**)"</code></strong> — solo cuando escribe dentro de <code>src/</code>.</li>
+  </ul>
+  <p>Para comandos Bash compuestos (<code>npm test &amp;&amp; git push</code>), evalúa cada subcomando.</p>
+  <p>Requisitos y limitaciones:</p>
+  <ul>
+    <li>Necesitas Claude Code v2.1.85 o superior. Versiones anteriores lo ignoran y el hook corre siempre.</li>
+    <li>Solo funciona en eventos de tool: <code>PreToolUse</code>, <code>PostToolUse</code>, <code>PostToolUseFailure</code>, <code>PermissionRequest</code> y <code>PermissionDenied</code>. Ponerlo en otros eventos hace que el hook nunca corra.</li>
+    <li><strong>Correcciones de versión:</strong> los patrones de ruta como <code>Edit(src/**)</code>, <code>Read(~/.ssh/**)</code> y <code>Read(.env)</code> se corrigieron en v2.1.176; antes podían no coincidir bien. Los wildcards de PowerShell como <code>PowerShell(git push*)</code> se arreglaron en v2.1.147 (antes solo coincidía <code>PowerShell(*)</code>). Si usas estos patrones, asegúrate de estar en una versión reciente.</li>
+  </ul>
+
+  <h2 id="cap17-hooks-asincronos-no-bloquear-a-claude">Hooks asíncronos: no bloquear a Claude</h2>
+  <p>Por defecto, los hooks bloquean a Claude. Él espera a que terminen antes de continuar. Si tu hook tarda 30 segundos, Claude espera 30 segundos.</p>
+  <p>Con <code>async: true</code>, el hook se ejecuta en el fondo. Claude sigue trabajando sin esperar.</p>
+  <pre><code class="lang-json">{
+    "type": "command",
+    "command": "npm test",
+    "async": true,
+    "timeout": 300
+}</code></pre>
+  <p>Limitaciones de hooks async:</p>
+  <ul>
+    <li>Solo funciona con <code>type: "command"</code>. Prompt y agent no pueden ser async.</li>
+    <li>No pueden bloquear herramientas ni retornar decisiones. La acción ya procedió.</li>
+    <li>Los resultados llegan en el siguiente turno de conversación.</li>
+    <li>Cada ejecución crea un proceso separado. No hay deduplicación.</li>
+  </ul>
+  <p>Usa hooks async para tareas largas como correr tests o hacer builds.</p>
+  <p><strong>asyncRewake: lo mejor de los dos mundos.</strong> Si pones <code>"asyncRewake": true</code>, el hook corre en background como un async normal. Pero si eventualmente sale con exit 2, "despierta" a Claude: el stderr aparece como un system reminder en el siguiente turno. Es la forma de reaccionar a fallos en background (un CI que se cayó, un test que falló) sin bloquear el flujo actual.</p>
+  <pre><code class="lang-json">{
+    "type": "command",
+    "command": "./background-ci-check.sh",
+    "asyncRewake": true
+}</code></pre>
+
+  <h2 id="cap17-variables-de-entorno-especiales">Variables de entorno especiales</h2>
+  <p>Claude Code define variables útiles que puedes usar en tus hooks:</p>
+  <ul class="deflist">
+    <li><strong><code>$CLAUDE_PROJECT_DIR</code></strong> — La raíz de tu proyecto. Siempre úsala entre comillas: <code>"$CLAUDE_PROJECT_DIR"</code>.</li>
+    <li><strong><code>$CLAUDE_ENV_FILE</code></strong> — Disponible en SessionStart, Setup, CwdChanged y FileChanged. Escribe aquí variables que quieres persistir para toda la sesión (formato <code>export VAR=value</code>).</li>
+    <li><strong><code>${CLAUDE_PLUGIN_ROOT}</code></strong> — Directorio raíz del plugin actual. Para scripts empaquetados con un plugin.</li>
+    <li><strong><code>${CLAUDE_PLUGIN_DATA}</code></strong> — Directorio persistente donde tu plugin puede guardar datos entre sesiones (logs, caches, estado). Disponible en hooks declarados por un plugin.</li>
+    <li><strong><code>$CLAUDE_EFFORT</code></strong> — Nivel de esfuerzo del turno actual. Disponible solo en eventos de tool-use. Sus valores posibles son <code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code> y <code>max</code>. Útil para ajustar el comportamiento del hook según si Claude está en "modo rápido" o "modo a fondo".</li>
+    <li><strong><code>$CLAUDE_CODE_SESSION_ID</code></strong> — ID de la sesión actual. Desde v2.1.163, cuando reanudas con <code>--resume</code>, los servidores MCP de tipo stdio reciben este mismo ID que tus hooks y comandos Bash. Así puedes correlacionar lo que hace el hook con lo que hace el servidor MCP en la misma sesión.</li>
+    <li><strong><code>$CLAUDE_CODE_REMOTE</code></strong> — Vale <code>true</code> en entornos web remotos.</li>
+  </ul>
+  <p>Para el timeout de SessionEnd (que por defecto es muy corto, 1.5 segundos), puedes usar:</p>
+  <pre><code class="lang-bash">CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS=5000 claude</code></pre>
+
+  <h3>Persistir variables con CLAUDE_ENV_FILE</h3>
+  <p>Este es un truco muy útil. En un hook de SessionStart, puedes escribir variables de entorno que estarán disponibles para todos los comandos Bash de la sesión:</p>
+  <pre><code class="lang-bash">#!/bin/bash
+if [ -n "$CLAUDE_ENV_FILE" ]; then
+   echo 'export NODE_ENV=production' &gt;&gt; "$CLAUDE_ENV_FILE"
+   echo 'export DEBUG_LOG=true' &gt;&gt; "$CLAUDE_ENV_FILE"
+fi
+exit 0</code></pre>
+  <p>Es como preparar el terreno al inicio del día. Todas las herramientas que Claude use después tendrán esas variables disponibles.</p>
+
+  <h2 id="cap17-seguridad-lo-que-debes-saber">Seguridad: lo que debes saber</h2>
+  <p>Los command hooks se ejecutan con todos tus permisos de usuario. Pueden leer, modificar o borrar cualquier archivo que tú puedas acceder. Esto es poderoso pero peligroso.</p>
+
+  <h3>Buenas prácticas de seguridad</h3>
+  <ul class="deflist">
+    <li><strong>Siempre pon las variables entre comillas</strong> — Escribe <code>"$VAR"</code>, no <code>$VAR</code>. Sin comillas, un path con espacios puede romper tu script.</li>
+    <li><strong>Valida los inputs</strong> — No confíes ciegamente en el JSON que recibes. Verifica paths y valores.</li>
+    <li><strong>Bloquea path traversal</strong> — Si un path contiene <code>..</code>, podría salirse de tu proyecto. Verifícalo.</li>
+    <li><strong>Usa paths absolutos</strong> — Con <code>$CLAUDE_PROJECT_DIR</code> en lugar de paths relativos.</li>
+    <li><strong>Evita archivos sensibles</strong> — No dejes que hooks lean <code>.env</code>, <code>.git/</code> o archivos de claves.</li>
+  </ul>
+
+  <h3>El sistema de snapshot</h3>
+  <p>Claude Code toma una foto de tus hooks al inicio de la sesión. Usa esa foto durante toda la sesión.</p>
+  <p>Si alguien (o algo) modifica los hooks mientras trabajas, Claude Code te avisa. Los cambios no aplican hasta que los revises en el menú <code>/hooks</code>.</p>
+  <p>Esto previene que código malicioso modifique tus hooks y tome control mid-sesión.</p>
+  <p>Los hooks que agregas directamente desde <code>/hooks</code> sí toman efecto inmediatamente.</p>
+
+  <h3>Deshabilitar todos los hooks</h3>
+  <p>Para deshabilitar todos los hooks sin borrarlos:</p>
+  <ul>
+    <li>Abre <code>/hooks</code> y usa el toggle al final del menú.</li>
+    <li>O agrega <code>"disableAllHooks": true</code> en tu settings.</li>
+  </ul>
+  <p><strong>Ojo:</strong> Si un admin configuró hooks vía managed policy, tu <code>disableAllHooks</code> no los afecta. Solo <code>disableAllHooks</code> a nivel managed puede deshabilitar managed hooks.</p>
+  <p>Para entornos enterprise estrictos, managed policy tiene dos settings adicionales:</p>
+  <ul class="deflist">
+    <li><strong><code>"allowManagedHooksOnly": true</code></strong> — Bloquea todos los hooks de usuario, proyecto y plugin. Solo corren los hooks definidos en managed policy. Útil cuando seguridad necesita garantizar que solo los hooks auditados de la organización están activos.</li>
+    <li><strong><code>"enabledPlugins": { "mi-plugin": true }</code></strong> — Lista blanca de plugins exentos del bloqueo. Aunque <code>allowManagedHooksOnly</code> esté activo, los plugins listados aquí sí pueden registrar sus hooks. Sirve para vetar plugins uno por uno tras una auditoría.</li>
+  </ul>
+
+  <h2 id="cap17-hooks-en-skills-y-agents">Hooks en Skills y Agents</h2>
+  <p>Puedes definir hooks directamente en skills y subagentes usando frontmatter YAML al inicio del archivo:</p>
+  <pre><code class="lang-text">---
+name: secure-operations
+description: Operaciones con verificación de seguridad
+hooks:
+   PreToolUse:
+      - matcher: "Bash"
+        hooks:
+           - type: command
+             command: "./scripts/security-check.sh"
+---</code></pre>
+  <p>Estos hooks tienen vida limitada. Solo funcionan mientras el skill o agente está activo. Cuando termina, se limpian solos.</p>
+  <p>Para subagentes, los hooks Stop se convierten automáticamente a SubagentStop.</p>
+  <p>El campo <code>once: true</code> hace que el hook se ejecute una sola vez y se remueva. Solo funciona en skills.</p>
+
+  <h2 id="cap17-deduplicacion-y-combinacion-de-varios-hooks">Deduplicación y combinación de varios hooks</h2>
+  <p>Como hay seis lugares donde puedes guardar hooks (user, project, local, managed, plugin, frontmatter de skill/agent), es muy fácil terminar con el mismo hook registrado dos veces. Claude Code maneja esto solo.</p>
+
+  <h3>Deduplicación automática</h3>
+  <p>Los handlers idénticos se deduplican automáticamente:</p>
+  <ul class="deflist">
+    <li><strong>Command hooks</strong> — se deduplican por <code>command</code> + <code>args</code>. Si el mismo comando exacto está en tus settings de usuario y en los del proyecto, solo corre una vez.</li>
+    <li><strong>HTTP hooks</strong> — se deduplican por <code>url</code>. Si dos archivos definen el mismo endpoint, se llama una sola vez.</li>
+  </ul>
+  <p>Esto evita que prettier corra cuatro veces sobre el mismo archivo porque tres compañeros y tú lo configuraron por separado.</p>
+
+  <h3>Cuando varios hooks distintos matchean el mismo evento</h3>
+  <p>Si tienes varios hooks distintos conectados al mismo evento, todos se ejecutan en paralelo y todos llegan a completar antes de mezclar resultados. Un hook que dice "deny" no detiene los side effects de sus hermanos (los logs ya se escribieron, las notificaciones ya se enviaron).</p>
+  <p>Cuando hay que combinar decisiones:</p>
+  <ul class="deflist">
+    <li><strong>PreToolUse</strong> — gana la decisión más restrictiva. <code>deny</code> &gt; <code>ask</code> &gt; <code>allow</code>. Si un hook dice <code>allow</code> y otro <code>deny</code>, la herramienta se bloquea.</li>
+    <li><strong>additionalContext</strong> — todos los fragmentos se concatenan y se pasan juntos a Claude. No tienes que preocuparte por elegir uno.</li>
+    <li><strong><code>decision: "block"</code> en eventos como Stop, PostToolUse o ConfigChange</strong> — basta con que un hook diga block para que tenga efecto.</li>
+  </ul>
+  <p>Esto es muy útil para componer: un hook escribe un log, otro hace un chequeo de seguridad, otro envía a Slack. Cada uno hace su parte sin coordinarse con los demás.</p>
+
+  <h2 id="cap17-debugging-cuando-tu-hook-no-funciona">Debugging: cuando tu hook no funciona</h2>
+  <p>Los hooks pueden fallar silenciosamente. Aquí tienes las herramientas para encontrar el problema.</p>
+
+  <h3>Herramientas de debugging</h3>
+  <ul class="deflist">
+    <li><strong>Modo verbose (<code>Ctrl+O</code>)</strong> — Muestra el output de hooks en el transcript. Es lo primero que debes activar.</li>
+    <li><strong>Flag --debug</strong> — Ejecuta <code>claude --debug</code> para ver detalles completos: qué hooks coincidieron, exit codes, output.</li>
+    <li><strong>Prueba manual</strong> — Simula el hook desde la terminal:</li>
+  </ul>
+  <pre><code class="lang-bash">echo '{"tool_name":"Bash","tool_input":{"command":"ls"}}' | ./mi-hook.sh
+echo $?</code></pre>
+  <p>Si el exit code no es 0 y no es 2, tienes un error no bloqueante.</p>
+
+  <h3>Errores comunes y soluciones</h3>
+  <p><strong>"Mi hook no se dispara"</strong></p>
+  <ul>
+    <li>El matcher es case-sensitive. <code>"bash"</code> no es lo mismo que <code>"Bash"</code>.</li>
+    <li>Estás usando PermissionRequest en modo <code>-p</code>. Ese evento no se dispara en modo no interactivo. Usa PreToolUse.</li>
+    <li>Verifica con <code>/hooks</code> que el hook aparece bajo el evento correcto.</li>
+  </ul>
+  <p><strong>"Error en el transcript"</strong></p>
+  <ul>
+    <li>El script no es ejecutable. Corre <code>chmod +x ./mi-hook.sh</code>.</li>
+    <li><code>jq</code> no está instalado. Instala <code>jq</code> en tu sistema.</li>
+    <li>El comando no se encuentra. Usa paths absolutos.</li>
+  </ul>
+  <p><strong>"/hooks muestra 'no hooks configured'"</strong></p>
+  <ul>
+    <li>Tu JSON tiene errores (trailing commas, comentarios). JSON puro no acepta eso, y un JSON inválido sí rompe todo el archivo.</li>
+    <li>El archivo está en la ubicación incorrecta.</li>
+    <li>Reinicia la sesión o abre <code>/hooks</code> para recargar.</li>
+  </ul>
+  <div class="callout note">
+    <p class="callout-label">Nota (mediados de 2026)</p>
+    <p>Antes, escribir mal el nombre de un evento (un typo como <code>PreToolUze</code>) hacía que se ignorara todo el archivo de settings. Eso ya no pasa: un nombre de evento no reconocido se descarta solo, sin tumbar el resto de tu configuración. Pero ojo, esto es solo para nombres de evento desconocidos; un JSON inválido (con comas finales o sintaxis rota) sí sigue rompiendo el archivo entero.</p>
+  </div>
+  <p><strong>"Loop infinito con Stop hook"</strong></p>
+  <ul>
+    <li>Tu Stop hook no verifica <code>stop_hook_active</code>. Si no lo verificas, Claude nunca puede parar.</li>
+  </ul>
+  <p><strong>"JSON validation failed"</strong></p>
+  <ul>
+    <li>Tu shell profile (<code>~/.zshrc</code> o <code>~/.bashrc</code>) tiene echo statements que se mezclan con el JSON del hook. Envuélvelos así:</li>
+  </ul>
+  <pre><code class="lang-bash">if [[ $- == *i* ]]; then
+   echo 'Shell ready'
+fi</code></pre>
+  <p><strong>"Mi FileChanged con regex no matchea nada"</strong></p>
+  <ul>
+    <li>FileChanged no usa regex. Splittea el matcher por <code>|</code> como una lista literal de nombres. <code>"^\.env.*"</code> nunca matchea. Usa <code>".envrc|.env|.env.local"</code> con nombres exactos. Para patrones más complejos, filtra dentro del script con un matcher vacío.</li>
+  </ul>
+  <p><strong>"Mi MCP tool hook dice que no encuentra el servidor"</strong></p>
+  <ul>
+    <li>El hook disparó antes de que el servidor MCP conectara. Pasa típicamente cuando lo pones en SessionStart o Setup. Mueve la lógica a un evento que dispare después de la conexión (UserPromptSubmit, PreToolUse) o usa <code>type: command</code> y verifica la conexión manualmente.</li>
+  </ul>
+  <p><strong>"PermissionRequest aprueba TODO"</strong></p>
+  <ul>
+    <li>Tu matcher está vacío o es <code>.*</code>. Con eso, el hook auto-aprueba cada permiso. Restringe el matcher a tools específicas (<code>ExitPlanMode</code>, un Bash concreto, etc.). Es la regla de oro: PermissionRequest nunca debe ir sin matcher.</li>
+  </ul>
+  <p><strong>"Mi hook escribe a /dev/tty pero no sale nada"</strong></p>
+  <ul>
+    <li><code>/dev/tty</code> no está disponible para hooks. Si necesitas tocar el terminal (cambiar título, lanzar una notificación nativa), usa el campo <code>terminalSequence</code> en el JSON output con secuencias OSC permitidas.</li>
+  </ul>
+  <p><strong>"Mi additionalContext se ve truncado"</strong></p>
+  <ul>
+    <li>El output total (stdout + additionalContext + systemMessage) está capado a 10.000 caracteres. El exceso se escribe a un archivo y el modelo solo ve un preview con la ruta. Reduce el output o escribe tú mismo a un archivo y referencia la ruta.</li>
+  </ul>
+  <p><strong>"Mi if no filtra como espero"</strong></p>
+  <ul>
+    <li>Tu versión de Claude Code es anterior a 2.1.85 (lo ignora y el hook corre siempre), o pusiste <code>if</code> en un evento que no es de tool (PreToolUse, PostToolUse, PostToolUseFailure, PermissionRequest o PermissionDenied) — fuera de esos eventos el hook nunca corre.</li>
+  </ul>
+
+  <h2 id="cap17-ejemplos-practicos">Ejemplos Prácticos</h2>
+
+  <h3>Notificación en macOS cuando Claude necesita atención</h3>
+  <pre><code class="lang-json">{
+    "hooks": {
+        "Notification": [
+            {
+                "matcher": "",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "osascript -e 'display notification \"Claude Code necesita tu atención\" with title \"Claude Code\"'"
+                    }
+                ]
+            }
+        ]
+    }
+}</code></pre>
+  <p>Agrega esto a <code>~/.claude/settings.json</code>. Cada vez que Claude necesite tu atención, verás una notificación nativa de macOS. El matcher vacío significa que se dispara para todas las notificaciones.</p>
+
+  <h3>Auto-formatear con Prettier después de cada edición</h3>
+  <pre><code class="lang-json">{
+    "hooks": {
+        "PostToolUse": [
+            {
+                "matcher": "Edit|Write",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "jq -r '.tool_input.file_path' | xargs npx prettier --write"
+                    }
+                ]
+            }
+        ]
+    }
+}</code></pre>
+  <p>Agrega esto a <code>.claude/settings.json</code> del proyecto. Después de cada Edit o Write, extrae el path del archivo con jq y lo pasa a Prettier para formatearlo. Así el código siempre queda limpio.</p>
+
+  <h3>Proteger archivos sensibles con un script</h3>
+  <pre><code class="lang-bash">#!/bin/bash
+# .claude/hooks/protect-files.sh
+INPUT=$(cat)
+FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
+
+PROTECTED_PATTERNS=(".env" "package-lock.json" ".git/")
+for pattern in "${PROTECTED_PATTERNS[@]}"; do
+ if [[ "$FILE_PATH" == *"$pattern"* ]]; then
+    echo "Bloqueado: $FILE_PATH coincide con patrón protegido '$pattern'" &gt;&amp;2
+    exit 2
+ fi
+done
+exit 0</code></pre>
+  <p>Este script se guarda como <code>.claude/hooks/protect-files.sh</code> (no olvides <code>chmod +x</code>). Lee el JSON de stdin, extrae el file_path, y verifica si coincide con patrones protegidos. Si coincide, sale con exit 2 para bloquear la edición. Regístralo como hook PreToolUse con matcher <code>Edit|Write</code>.</p>
+
+  <h3>Bloquear comandos destructivos (rm -rf)</h3>
+  <pre><code class="lang-bash">#!/bin/bash
+# .claude/hooks/block-rm.sh
+COMMAND=$(jq -r '.tool_input.command')
+if echo "$COMMAND" | grep -q 'rm -rf'; then
+   jq -n '{
+        hookSpecificOutput: {
+            hookEventName: "PreToolUse",
+            permissionDecision: "deny",
+            permissionDecisionReason: "Comando destructivo bloqueado"
+        }
+   }'
+else
+   exit 0
+fi</code></pre>
+  <p>PreToolUse hook para Bash que detecta comandos <code>rm -rf</code> y los bloquea usando JSON output con permissionDecision deny. Más elegante que exit 2 porque da una razón clara a Claude.</p>
+
+  <h3>Correr tests en background después de ediciones</h3>
+  <pre><code class="lang-json">{
+    "hooks": {
+        "PostToolUse": [
+            {
+                "matcher": "Write|Edit",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/run-tests-async.sh",
+                        "async": true,
+                        "timeout": 300
+                    }
+                ]
+            }
+        ]
+    }
+}</code></pre>
+  <p>Hook asíncrono que ejecuta tests en background mientras Claude sigue trabajando. Los resultados se entregan en el siguiente turno de conversación. El timeout de 300 segundos da suficiente tiempo para tests largos.</p>
+
+  <h3>Prompt hook para verificar si Claude debe parar</h3>
+  <pre><code class="lang-json">{
+    "hooks": {
+        "Stop": [
+            {
+                "hooks": [
+                    {
+                        "type": "prompt",
+                        "prompt": "Analiza si Claude debería parar. Contexto: $ARGUMENTS. Verifica si: 1) Todas las tareas están completas, 2) No hay errores pendientes. Responde con JSON: {\"ok\": true} para permitir parar, o {\"ok\": false, \"reason\": \"explicación\"} para continuar.",
+                        "timeout": 30
+                    }
+                ]
+            }
+        ]
+    }
+}</code></pre>
+  <p>Un modelo de IA (Haiku) evalúa si Claude debería dejar de trabajar. Si hay tareas pendientes, responde ok: false con una razón, y Claude continúa. Si todo está listo, responde ok: true y Claude para.</p>
+
+  <h3>Filtrar con if: solo correr el hook para comandos git</h3>
+  <pre><code class="lang-json">{
+    "hooks": {
+        "PreToolUse": [
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "if": "Bash(git *)",
+                        "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/check-git-policy.sh"
+                    }
+                ]
+            }
+        ]
+    }
+}</code></pre>
+  <p>Con el campo if, el proceso del hook solo se lanza cuando el comando Bash empieza por git. Más eficiente que tener un script que se lanza para cada Bash y filtra adentro. Requiere Claude Code v2.1.85+.</p>
+
+  <h3>Recargar direnv al cambiar de directorio (CwdChanged)</h3>
+  <pre><code class="lang-json">{
+    "hooks": {
+        "SessionStart": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "direnv export bash &gt;&gt; \"$CLAUDE_ENV_FILE\""
+                    }
+                ]
+            }
+        ],
+        "CwdChanged": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "direnv export bash &gt;&gt; \"$CLAUDE_ENV_FILE\""
+                    }
+                ]
+            }
+        ]
+    }
+}</code></pre>
+  <p>El comando Bash de Claude no recoge cambios de direnv automáticamente. Este combo arregla eso: SessionStart carga el entorno inicial y CwdChanged lo recarga cada vez que Claude hace cd. CLAUDE_ENV_FILE se ejecuta como preamble en cada Bash siguiente, así que las variables nuevas están disponibles.</p>
+
+  <h3>Auto-aprobar ExitPlanMode sin diálogo</h3>
+  <pre><code class="lang-json">{
+    "hooks": {
+        "PermissionRequest": [
+            {
+                "matcher": "ExitPlanMode",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "echo '{\"hookSpecificOutput\": {\"hookEventName\": \"PermissionRequest\", \"decision\": {\"behavior\": \"allow\"}}}'"
+                    }
+                ]
+            }
+        ]
+    }
+}</code></pre>
+  <p>Cuando Claude termina un plan, pide salir de plan mode. Este hook auto-aprueba SOLO para ExitPlanMode usando el nuevo formato hookSpecificOutput.decision.behavior. Mantén el matcher estrecho: con vacío o <code>.*</code> se auto-aprobaría TODO.</p>
+
+  <h3>Logging a servicio externo con HTTP hook</h3>
+  <pre><code class="lang-json">{
+    "hooks": {
+        "PostToolUse": [
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    {
+                        "type": "http",
+                        "url": "https://audit.miempresa.com/claude-events",
+                        "headers": {
+                          "Authorization": "Bearer $AUDIT_TOKEN"
+                        },
+                        "allowedEnvVars": ["AUDIT_TOKEN"],
+                        "timeout": 30,
+                        "async": true
+                    }
+                ]
+            }
+        ]
+    }
+}</code></pre>
+  <p>Envía cada Bash ejecutado a un servicio de auditoría externo. <code>async: true</code> hace que el POST no bloquee a Claude. <code>allowedEnvVars</code> permite interpolar el token sin filtrarlo al resto del entorno del hook. Errores de red son no bloqueantes.</p>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Empieza simple. Tu primer hook debería ser una notificación de escritorio (Notification). Es fácil de configurar y ves resultados inmediatos.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa el menú <code>/hooks</code> para crear y probar hooks rápidamente. Cuando te sientas cómodo, edita el JSON directamente para hooks más avanzados.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Siempre verifica <code>stop_hook_active</code> en hooks de tipo Stop. Si no lo haces, creas un loop infinito donde Claude nunca puede dejar de trabajar.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Los command hooks tienen tus permisos completos. Un error en un hook puede borrar archivos. Prueba tus scripts manualmente antes de registrarlos.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>PermissionRequest NO se dispara en modo no interactivo (<code>-p</code>). Si automatizas con <code>--print</code>, usa PreToolUse para controlar permisos.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Los hooks HTTP solo se configuran editando JSON directamente. El menú <code>/hooks</code> no los soporta.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>El timeout de SessionEnd es de solo 1.5 segundos por defecto. Si tu hook de limpieza necesita más tiempo, ajústalo con <code>CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS</code>.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Para debugging, usa <code>Ctrl+O</code> (modo verbose) para ver el output de hooks. Si necesitas más detalle, ejecuta <code>claude --debug</code>.</p>
+  </div>
+
+  <section class="recap">
+    <h2 id="cap17-resumen-del-capitulo">Resumen del Capítulo</h2>
+    <p>Los hooks son acciones automáticas que se disparan en momentos específicos del ciclo de vida de Claude Code. Los configuras en archivos settings JSON con tres niveles: evento, matcher y handler. Hay cinco tipos de handlers (command, http, mcp_tool, prompt, agent), una familia amplia de eventos (SessionStart, Setup, UserPromptSubmit, PreToolUse, PostToolUse, PostToolBatch, PermissionRequest, PermissionDenied, Stop, StopFailure, TaskCreated, CwdChanged, FileChanged, PreCompact, PostCompact, Elicitation, MessageDisplay, y más), el campo <code>if</code> para filtrado granular por contenido del tool call, y tres exit codes clave (0 para éxito, 2 para bloquear, otros para errores no bloqueantes). Usa <code>Ctrl+O</code> y <code>--debug</code> para depurar problemas.</p>
+  </section>
+</article>

@@ -1,0 +1,1507 @@
+Referencia Completa de
+Settings
+Tabla exhaustiva de TODOS los settings de Claude Code con ubicación, tipo,
+valor por defecto y descripción
+
+
+    INTERMEDIO                                                     @soyenriquerocha
+
+
+
+
+                                      757                           @soyenriquerocha
+APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+    Este apéndice es tu diccionario de settings. Aquí encontrarás TODOS los ajustes que
+    puedes cambiar en Claude Code, organizados por categoría. Cada setting tiene su tipo,
+    su valor por defecto y dónde puedes usarlo. Úsalo como referencia rápida cuando
+    necesites configurar algo específico.
+
+
+
+
+Cómo Funciona la Configuración
+
+Claude Code guarda sus ajustes en archivos JSON. Piensa en estos archivos como capas de ropa. Cada
+capa puede agregar o cambiar algo. Las capas de arriba tienen más poder que las de abajo.
+
+El orden de poder (de más fuerte a más débil) es:
+
+  1. Managed Settings — Las reglas del jefe. Nadie puede cambiarlas. Son políticas de empresa.
+  2. Argumentos de línea de comandos — Flags como --model sonnet . Solo duran esa sesión.
+  3. Settings locales del proyecto — El archivo .claude/settings.local.json . Tus preferencias
+    personales para este proyecto.
+  4. Settings compartidos del proyecto — El archivo .claude/settings.json . Los comparte todo
+    el equipo.
+  5. Settings de usuario — El archivo ~/.claude/settings.json . Tus preferencias globales.
+
+Dato clave: Los settings que son listas (arrays) se fusionan entre niveles. No se reemplazan. Si agregas
+un permiso en el nivel de usuario y otro en el de proyecto, Claude Code usa ambos.
+
+Archivos de Configuración
+Estos son todos los archivos donde Claude Code busca configuración:
+
+   • ~/.claude/settings.json — Tus settings globales. Aplican a todos tus proyectos.
+   • .claude/settings.json — Settings del proyecto. Se commitean al repo. Todo el equipo los ve.
+   • .claude/settings.local.json — Tus overrides personales para este proyecto. Están en
+     .gitignore .
+
+   • managed-settings.json — Políticas enterprise. Ubicación según SO: macOS en /Library/
+    Application Support/ClaudeCode/ , Linux en /etc/claude-code/ , Windows en C:
+    \Program Files\ClaudeCode\ .
+
+   • managed-settings.d/*.json — Directorio drop-in para fragmentos de política. Se fusionan
+    alfabéticamente con el archivo base. Archivos ocultos (con punto) se ignoran. Usa prefijos
+    numéricos (10-telemetry.json, 20-security.json) para controlar el orden.
+
+
+
+
+                                                    758                                   @soyenriquerocha
+                                                             APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+   • ~/.claude.json — Preferencias, OAuth, servidores MCP, caches.
+   • .mcp.json — Servidores MCP del proyecto.
+   • CLAUDE.md — Instrucciones para Claude. No es un setting, pero influye en su comportamiento.
+   • .claude/rules/*.md — Reglas modulares por tema.
+   • .claude/agents/ — Subagentes personalizados.
+
+Managed settings por MDM/OS: En macOS, usa perfiles de configuración con el dominio
+com.anthropic.claudecode          (Jamf,      Kandji).       En   Windows,   usa   la     clave   de    registro
+HKLM\SOFTWARE\Policies\ClaudeCode con valor Settings (REG_SZ con JSON). También se
+soporta HKCU\SOFTWARE\Policies\ClaudeCode con menor prioridad. Precedencia dentro de
+managed: server-managed > MDM/OS > file-based > HKCU.
+
+Tip: Agrega "$schema": "https://json.schemastore.org/claude-code-settings.json" al
+inicio de tu archivo settings.json. Esto te da autocompletado y validación en tu editor.
+
+
+Ver Tus Settings Activos
+Para ver qué settings están activos y de dónde vienen, usa estos comandos dentro de Claude Code:
+
+   • /status — Muestra cada capa de configuración con su origen.
+   • /config — Abre una interfaz con pestañas para ver y modificar settings.
+
+
+
+Settings Principales (Core)
+
+Estos son los ajustes más básicos. Controlan qué modelo usa Claude, en qué idioma te responde y
+cómo piensa.
+
+Modelo e Idioma
+Setting                       Tipo            Default        Alcance Descripción
+                                              Depende                Cambia el modelo. Acepta aliases
+ model                        string          de tu          Todos   ( sonnet , opus , haiku , opusplan )
+                                              cuenta                 o nombres completos.
+                                                                     Restringe qué modelos pueden elegir
+                                              Sin
+ availableModels              array[string]                  Todos   los usuarios. Con [] vacío, solo queda
+                                              restricción
+                                                                     el modelo Default.
+                                                                     Mapea IDs de modelo Anthropic a IDs
+ modelOverrides               object          N/A            Todos   de tu proveedor (Bedrock ARNs,
+                                                                     Foundry deployments, etc.).
+ advisorModel                 string          N/A            Todos
+
+
+
+
+                                                       759                                        @soyenriquerocha
+APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+                                                                Modelo para la herramienta advisor del
+                                                                lado servidor. Acepta aliases o nombres
+                                                                completos. Disponible desde v2.1.90.
+                                                                Si está en true y availableModels
+                                                                no está vacío, fuerza que el modelo por
+enforceAvailableModels boolean         false         Todos
+                                                                defecto quede dentro de la allowlist.
+                                                                Disponible desde v2.1.175.
+                                                                Cadena de modelos de respaldo
+                                                                (máximo 3) que se usan cuando el
+fallbackModel             array[string] N/A          Todos      modelo primario no está disponible. El
+                                                                valor default se expande al modelo
+                                                                por defecto.
+                                                                Nivel de esfuerzo: low , medium ,
+                                                                high , xhigh (según las docs
+                                       medium                   oficiales). Solo para Opus 4.8 y Sonnet
+                                       (Max/                    4.6. El nivel max existe pero NO se
+effortLevel               string                     Todos
+                                       Team) o                  puede guardar en settings — solo se usa
+                                       high                     con /effort max o la variable
+                                                                CLAUDE_CODE_EFFORT_LEVEL=max
+                                                                (solo Opus 4.8).
+                                                                Idioma de las respuestas. Ejemplos:
+language                  string       English       Todos
+                                                                spanish , japanese , french .
+
+                                                                Estilo de salida. Ejemplo:
+outputStyle               string       Default       Todos
+                                                                Explanatory .
+
+                                                                Activa el pensamiento extendido en
+alwaysThinkingEnabled     boolean      false         Todos
+                                                                todas las sesiones.
+                                                                Ejecuta el hilo principal como un
+                                                                subagente con nombre. Aplica el
+                                                     User/
+                                                                system prompt, restricciones y modelo
+agent                     string       N/A           Project/
+                                                                de ese subagente (debe existir en
+                                                     Local
+                                                                ~/.claude/agents/ o .claude/
+                                                                agents/ ).
+
+                                                                Shell por defecto para comandos ! del
+defaultShell              string       bash          Todos      input-box. Acepta bash o
+                                                                powershell .
+
+La prioridad para elegir modelo es:     /model       (en sesión) >       --model      (flag al iniciar) >
+ANTHROPIC_MODEL (variable de entorno) > model (en settings).
+
+
+
+
+                                               760                                           @soyenriquerocha
+                                                          APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+Autenticación y API
+
+Estos settings controlan cómo Claude Code se conecta a los servidores de Anthropic o a tu proveedor
+cloud.
+
+Setting                    Tipo           Descripción
+                                          Script que genera tu clave API. Se ejecuta en /bin/sh . El
+ apiKeyHelper              string
+                                          resultado se envía como header X-Api-Key .
+                                          Fuerza el método de login: claudeai (cuentas Claude.ai) o
+ forceLoginMethod          string
+                                           console (cuentas API).
+
+                                          Selecciona la organización automáticamente durante el login.
+                           string |       Con un solo UUID, pre-selecciona esa org. Con un array,
+ forceLoginOrgUUID
+                           array[string] cualquier org listada es aceptada sin pre-selección. Array
+                                          vacío bloquea el login.
+ awsAuthRefresh            string         Script para refrescar credenciales AWS.
+ awsCredentialExport string               Script que genera JSON con credenciales AWS.
+                                          Script que refresca las GCP Application Default Credentials
+ gcpAuthRefresh            string
+                                          (para Vertex AI).
+TTL y debounce: El resultado de             apiKeyHelper       se cachea según el TTL definido por
+CLAUDE_CODE_API_KEY_HELPER_TTL_MS               (milisegundos). El script de otelHeadersHelper se
+vuelve         a         ejecutar         con         un            debounce        controlado          por
+CLAUDE_CODE_OTEL_HEADERS_HELPER_DEBOUNCE_MS .
+
+
+
+
+Permisos
+
+Los permisos son como las reglas de una casa. Dicen qué puede hacer Claude y qué no. Funcionan con
+tres listas: allow (permitir), ask (preguntar) y deny (prohibir).
+
+Las reglas se evalúan en este orden: primero deny , luego ask , luego allow . La primera regla que
+coincide gana. Deny siempre manda.
+
+Settings de Permisos
+Setting                                                       Tipo         Alcance Descripción
+                                                                                    Herramientas
+ permissions.allow                                            array[string] Todos   permitidas sin pedir
+                                                                                    confirmación.
+                                                                                    Herramientas que
+ permissions.ask                                              array[string] Todos   requieren tu
+
+
+
+
+                                                    761                                     @soyenriquerocha
+APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+                                                                          confirmación antes de
+                                                                          usarse.
+                                                                          Herramientas
+permissions.deny                                    array[string] Todos   prohibidas. Siempre
+                                                                          tiene precedencia.
+                                                                          Directorios extra que
+                                                                          Claude puede acceder.
+permissions.additionalDirectories                   array[string] Todos
+                                                                          Equivalente a --add-
+                                                                          dir .
+
+                                                                          Modo por defecto.
+                                                                          Según las docs
+permissions.defaultMode                             string      Todos     oficiales actuales:
+                                                                          ask , auto , plan ,
+                                                                          bypassPermissions .
+
+                                                                          Pon disable para
+                                                                Solo
+permissions.disableBypassPermissionsMode            string                bloquear el modo
+                                                                Managed
+                                                                          bypassPermissions.
+                                                                          Solo aplican reglas de
+                                                                Solo      permisos managed.
+allowManagedPermissionRulesOnly                     boolean
+                                                                Managed Las de usuario/
+                                                                          proyecto se ignoran.
+                                                                          Pon disable para
+                                                                          prevenir que auto
+disableAutoMode                                     string      Todos     mode sea activado.
+                                                                          Remueve auto del
+                                                                          ciclo Shift+Tab.
+                                                                          Personaliza lo que el
+                                                                          clasificador de auto
+                                                                          mode bloquea y
+                                                                User/     permite. Contiene
+autoMode                                            object      Local/    arrays: environment ,
+                                                                Managed allow y soft_deny .
+                                                                          NO se lee desde
+                                                                          project settings
+                                                                          compartidos.
+                                                                          Salta el prompt de
+                                                                User/
+                                                                          confirmación de
+permissions.skipDangerousModePermissionPrompt boolean           Local/
+                                                                          bypass permissions
+                                                                Managed
+                                                                          mode. Se IGNORA en
+
+
+
+                                              762                                   @soyenriquerocha
+                                                      APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+                                                                               project settings por
+                                                                               seguridad.
+                                                                      User/    Omite el prompt de
+skipAutoPermissionPrompt                                  boolean     Local/   opt-in de auto mode.
+                                                                      Managed Default: false .
+                                                                               Si el plan mode usa
+                                                                               semántica de auto
+                                                                      User/    mode. Default: true .
+useAutoModeDuringPlan                                     boolean     Local/   Aparece en /config .
+                                                                      Managed NO se lee desde
+                                                                               project settings
+                                                                               compartidos.
+
+
+Sintaxis de Reglas de Permisos
+Las reglas de permisos usan patrones. Aquí tienes los más comunes:
+
+   • Bash o Bash(*) — Coincide con todos los comandos Bash.
+   • Bash(npm run *) — Coincide con comandos que empiezan con npm run . El * es un comodín.
+   • Read(./.env) — Controla lectura de archivos. Sigue la sintaxis de gitignore.
+   • Edit(/docs/**) — Controla edición de archivos. ** coincide recursivamente.
+   • WebFetch(domain:example.com) — Controla solicitudes web a un dominio.
+   • mcp__servidor__herramienta — Controla herramientas MCP específicas.
+   • Agent(nombre) — Controla qué subagentes puede usar Claude.
+   • Write(ruta) — Controla escritura de archivos nuevos. Sigue la misma sintaxis de rutas que
+    Edit.
+   • NotebookEdit(ruta) — Controla edición de notebooks Jupyter.
+   • Task(nombre) — Controla qué tareas en background puede crear Claude.
+   • Skill(nombre) — Controla qué skills puede ejecutar Claude.
+   • MCP(servidor:herramienta) — Controla herramientas MCP. Alternativa a
+    mcp__servidor__herramienta .
+
+Prefijos de ruta para Read/Edit:
+
+   • //ruta — Ruta absoluta desde la raíz del sistema.
+   • ~/ruta — Relativa a tu home.
+   • /ruta — Relativa a la raíz del proyecto.
+   • ./ruta — Relativa al directorio actual.
+
+
+
+                                                763                                    @soyenriquerocha
+APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+Cuidado: Bash(ls *) coincide con ls -la pero NO con lsof . El espacio antes de * importa.
+Bash(ls*) coincide con ambos.
+
+
+
+
+Sandbox
+
+El sandbox es como una caja de arena. Claude puede jugar dentro, pero no puede salir. Solo aplica a
+comandos Bash (no a Read, Edit o WebFetch).
+
+Setting                                 Tipo         Default Descripción
+                                                              Activa el sandbox. Disponible en
+sandbox.enabled                         boolean      false
+                                                              macOS, Linux y WSL2.
+                                                              Aprueba comandos bash
+sandbox.autoAllowBashIfSandboxed boolean             true     automáticamente cuando el sandbox
+                                                              está activo.
+                                                              Comandos que se ejecutan fuera del
+sandbox.excludedCommands                array[string] N/A
+                                                              sandbox (ej: git , docker ).
+                                                              Permite el escape
+sandbox.allowUnsandboxedCommands boolean             true     dangerouslyDisableSandbox . Pon
+                                                              false para políticas estrictas.
+
+                                                              Sale con error al inicio si el sandbox no
+                                                              puede arrancar. Pensado para políticas
+sandbox.failIfUnavailable               boolean      false
+                                                              managed que requieren sandboxing
+                                                              obligatorio.
+
+Sandbox: Sistema de Archivos
+Setting                                                Tipo            Descripción
+                                                                       Rutas donde comandos
+sandbox.filesystem.allowWrite                          array[string] sandboxed pueden escribir. Se
+                                                                       fusiona entre niveles.
+                                                                       Rutas donde comandos
+sandbox.filesystem.denyWrite                           array[string] sandboxed NO pueden escribir.
+                                                                       Se fusiona entre niveles.
+                                                                       Rutas donde comandos
+sandbox.filesystem.denyRead                            array[string] sandboxed NO pueden leer. Se
+                                                                       fusiona entre niveles.
+                                                                       Rutas para re-permitir lectura
+                                                                       dentro de regiones denyRead.
+sandbox.filesystem.allowRead                           array[string]
+                                                                       Tiene precedencia sobre
+
+
+
+
+                                               764                                        @soyenriquerocha
+                                                        APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+                                                                            denyRead. Se fusiona entre
+                                                                            niveles.
+                                                                            Solo las rutas allowRead de
+ sandbox.filesystem.allowManagedReadPathsOnly boolean                       managed settings se respetan.
+                                                                            Solo Managed.
+Los prefijos de ruta son: // = absoluta, ~/ = relativa a home, / = relativa al directorio del settings.
+
+
+Sandbox: Red
+Setting                                             Tipo            Default Descripción
+                                                                              Unix sockets accesibles (ej:
+ sandbox.network.allowUnixSockets                   array[string] N/A
+                                                                              SSH agents).
+                                                                              Permite todas las conexiones
+ sandbox.network.allowAllUnixSockets                boolean         false
+                                                                              Unix socket.
+                                                                              Permite bindear a puertos
+ sandbox.network.allowLocalBinding                  boolean         false
+                                                                              localhost. Solo macOS.
+                                                                              Dominios permitidos para
+ sandbox.network.allowedDomains                     array[string] N/A         tráfico saliente. Soporta
+                                                                               *.example.com . Se fusiona.
+
+                                                                              Solo dominios de managed
+ sandbox.network.allowManagedDomainsOnly boolean                    false
+                                                                              settings. Solo Managed.
+ sandbox.network.httpProxyPort                      number          Auto      Puerto del proxy HTTP.
+ sandbox.network.socksProxyPort                     number          N/A       Puerto del proxy SOCKS5.
+
+
+Sandbox: Opciones Avanzadas
+Setting                                         Tipo       Plataforma Descripción
+                                                           Linux,         Sandbox más débil para Docker
+ sandbox.enableWeakerNestedSandbox              boolean
+                                                           WSL2           sin privilegios. Reduce seguridad.
+                                                                          Permite acceso a
+                                                                            com.apple.trustd.agent para
+ sandbox.enableWeakerNetworkIsolation boolean macOS
+                                                                          verificación TLS con proxy MITM.
+                                                                          Reduce seguridad.
+
+
+
+Hooks
+
+Los hooks son como alarmas automáticas. Cuando pasa algo específico, se dispara un comando que tú
+defines. Por ejemplo: "cada vez que Claude edite un archivo, ejecuta el linter".
+
+
+
+
+                                                  765                                           @soyenriquerocha
+APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+Settings de Hooks
+Setting                      Tipo        Alcance         Descripción
+                                                         Configura comandos en eventos del ciclo de
+hooks                        object      Todos           vida. Soporta 25 eventos diferentes. 4 tipos de
+                                                         handlers: command , http , prompt , agent .
+                                                         Desactiva todos los hooks y la status line. En
+disableAllHooks              boolean     Todos           user/project/local no puede deshabilitar hooks
+                                                         managed.
+                                         Solo            Solo permite hooks managed y SDK. Bloquea
+allowManagedHooksOnly        boolean
+                                         Managed hooks de usuario y proyecto.
+                                                         URLs permitidas para HTTP hooks. Soporta * .
+allowedHttpHookUrls          array[string] Todos
+                                                         Se fusiona entre niveles.
+                                                         Variables de entorno que los HTTP hooks
+httpHookAllowedEnvVars array[string] Todos
+                                                         pueden usar. Se fusiona.
+Importante: Los hooks se capturan al inicio de la sesión. Si los cambias durante una sesión, necesitas
+revisar los cambios en /hooks o reiniciar.
+
+
+Eventos de Hooks Disponibles
+Hay 25 eventos en los que puedes enganchar hooks:
+
+                                                                                            Puede
+Evento                  Cuando se dispara
+                                                                                            bloquear
+SessionStart            Cuando inicia o se resume una sesión                                No
+UserPromptSubmit        Cuando envías un prompt, antes de que Claude lo procese             Sí
+PreToolUse              Antes de ejecutar una herramienta. Puede bloquearla                 Sí
+PermissionRequest       Cuando aparece un diálogo de permisos                               Sí
+PostToolUse             Después de que una herramienta termina con éxito                    No
+PostToolUseFailure Después de que una herramienta falla                                     No
+Notification            Cuando Claude envía una notificación                                No
+SubagentStart           Cuando se crea un subagente                                         No
+SubagentStop            Cuando un subagente termina                                         Sí
+Stop                    Cuando Claude termina de responder                                  Sí
+TeammateIdle            Cuando un teammate está por quedar inactivo                         Sí
+TaskCompleted           Cuando una tarea se marca como completada                           Sí
+InstructionsLoaded Cuando un CLAUDE.md se carga en contexto                                 No
+ConfigChange            Cuando cambia un archivo de configuración                           Sí
+WorktreeCreate          Cuando se crea un worktree                                          Sí
+
+
+
+
+                                                   766                                        @soyenriquerocha
+                                                         APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+WorktreeRemove          Cuando se elimina un worktree                                     No
+PreCompact              Antes de compactar el contexto                                    No
+                        Cuando el clasificador de auto mode deniega una llamada de
+PermissionDenied                                                                          No
+                        herramienta
+StopFailure             Cuando el turno termina por un error de API                       No
+TaskCreated             Cuando se está creando una tarea                                  Sí
+CwdChanged              Cuando el directorio de trabajo cambia                            No
+FileChanged             Cuando un archivo observado cambia en disco                       No
+PostCompact             Después de que la compactación de contexto se completa            No
+                        Cuando un servidor MCP solicita input del usuario durante una
+Elicitation                                                                               Sí
+                        llamada de herramienta
+ElicitationResult       Después de que un usuario responde a una elicitation MCP          No
+
+
+
+MCP Servers
+
+Los servidores MCP (Model Context Protocol) son como enchufes extra. Le dan a Claude herramientas
+adicionales que no tiene por defecto.
+
+Setting                           Tipo            Alcance     Descripción
+                                                  Solo        Lista de servidores MCP permitidos. Se
+allowedMcpServers                 array[object]
+                                                  Managed fusiona dentro del tier managed.
+                                                  Solo        Lista de servidores MCP bloqueados. Tiene
+deniedMcpServers                  array[object]
+                                                  Managed precedencia sobre la allowlist.
+                                                  Solo        Solo permite servidores MCP definidos en
+allowManagedMcpServersOnly boolean
+                                                  Managed managed settings.
+                                                              Aprueba automáticamente todos los
+enableAllProjectMcpServers boolean                Todos       servidores MCP del .mcp.json del
+                                                              proyecto.
+                                                              Lista de servidores MCP específicos del
+enabledMcpjsonServers             array[string] Todos
+                                                              .mcp.json a aprobar.
+
+                                                              Lista de servidores MCP específicos del
+disabledMcpjsonServers            array[string] Todos
+                                                              .mcp.json a rechazar.
+
+                                                  Solo        Carga los conectores de claude.ai junto al
+allowAllClaudeAiMcps              boolean
+                                                  Managed     managed-mcp.json .
+
+
+
+
+                                                   767                                     @soyenriquerocha
+APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+Plugins y Marketplaces
+
+Los plugins extienden lo que Claude Code puede hacer. Los marketplaces son como tiendas de apps
+donde encuentras plugins.
+
+Setting                               Tipo            Alcance      Descripción
+                                                      User/        Activa o desactiva plugins. Formato:
+enabledPlugins                        object          Project/      "plugin-name@marketplace":
+                                                      Local        true .
+
+                                                      User/
+                                                                   Lista de plugins a desactivar
+disabledPlugins                       array[string] Project/
+                                                                   explícitamente.
+                                                      Local
+                                                                   Marketplaces cuyos plugins pueden
+                                                      Solo
+pluginSuggestionMarketplaces          array[object]                aparecer como sugerencias de
+                                                      Managed
+                                                                   instalación.
+                                                                   Si está en true , limita skills y agents
+strictPluginOnlyCustomization boolean                 Todos
+                                                                   a entregarse únicamente vía plugins.
+                                                      User/        Pre-registra marketplaces. Se auto-
+extraKnownMarketplaces                object
+                                                      Project      instala para miembros del equipo.
+                                                      Solo         Allowlist de marketplaces. Array vacío
+strictKnownMarketplaces               array[object]
+                                                      Managed      bloquea todos.
+                                                      Solo
+blockedMarketplaces                   array[object]                Blocklist de fuentes de marketplace.
+                                                      Managed
+                                                      Solo         Mensaje personalizado en la
+pluginTrustMessage                    string
+                                                      Managed      advertencia de confianza del plugin.
+
+
+
+Interfaz y Experiencia de Usuario
+
+Estos settings controlan cómo se ve y se siente Claude Code en tu terminal.
+
+Setting                             Tipo          Default Descripción
+                                                              Status line personalizada. Ejecuta un script
+statusLine                          object        N/A         que recibe JSON con datos de la sesión
+                                                              (modelo, costo, contexto, etc.).
+                                                              Script para autocompletado de archivos
+fileSuggestion                      object        N/A
+                                                              con @ .
+                                                              El file picker @ respeta patrones de
+respectGitignore                    boolean       true
+                                                                .gitignore .
+
+
+
+
+                                                 768                                         @soyenriquerocha
+                                              APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+spinnerTipsEnabled            boolean   true      Muestra tips mientras Claude trabaja.
+spinnerTipsOverride           object    N/A       Reemplaza los tips del spinner.
+                                                  Personaliza los verbos de acción en el
+spinnerVerbs                  object    N/A
+                                                  spinner.
+prefersReducedMotion          boolean   false     Reduce animaciones para accesibilidad.
+                                                  Canal de actualizaciones: stable (una
+autoUpdatesChannel            string    latest
+                                                  semana de antigüedad) o latest .
+                                                  Muestra resúmenes de extended thinking
+showThinkingSummaries         boolean   false     en sesiones interactivas. El modo no-
+                                                  interactivo ( -p ) siempre los recibe.
+                                                  Muestra la opción 'clear context' en la
+showClearContextOnPlanAccept boolean    false
+                                                  pantalla de aceptación del plan.
+                                                  Habilita push-to-talk voice dictation.
+voiceEnabled                  boolean   false     Requiere cuenta Claude.ai. Se activa con /
+                                                  voice .
+
+                                        Default Probabilidad de que la encuesta de calidad
+                              number
+feedbackSurveyRate                      del       aparezca. Pon 0 para suprimirla
+                              (0-1)
+                                        sistema completamente.
+                                                  Pon disable para prevenir el registro del
+disableDeepLinkRegistration   string    N/A
+                                                  protocol handler claude-cli:// .
+                                                  En el render fullscreen, sigue la salida
+autoScrollEnabled             boolean   true
+                                                  nueva hasta el final automáticamente.
+                                                  Muestra un resumen de una línea al volver
+                                                  tras estar ausente varios minutos.
+awaySummaryEnabled            boolean   true
+                                                  Relacionado con
+                                                   CLAUDE_CODE_ENABLE_AWAY_SUMMARY .
+
+                                                  Método de notificación: auto ,
+                                                   terminal_bell , iterm2 ,
+preferredNotifChannel         string    auto
+                                                   iterm2_with_bell , kitty , ghostty ,
+                                                   notifications_disabled .
+
+                                                  Permite push notifications proactivas
+agentPushNotifEnabled         boolean   false     cuando Remote Control está conectado.
+                                                  Disponible desde v2.1.119.
+                                                  Envía push cuando hay un prompt de
+inputNeededNotifEnabled       boolean   false     permiso o pregunta esperando tu
+                                                  respuesta. Disponible desde v2.1.119.
+                                                  Render amigable para lectores de pantalla:
+axScreenReader                boolean   false     texto plano sin bordes ni animaciones.
+
+
+
+                                        769                                       @soyenriquerocha
+APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+                                                           Accesibilidad. Disponible desde v2.1.181.
+                                                           También se activa con
+                                                            CLAUDE_AX_SCREEN_READER=1 .
+
+                                                           Renderer de la interfaz de terminal: auto ,
+tui                                string        auto
+                                                            classic o fullscreen .
+
+                                                           Preferencia de tema de la interfaz (ej:
+theme                              string        N/A
+                                                            dark , light ).
+
+                                                           Renderiza badges clicables en el footer
+                                                           cuando un regex coincide. Cada entrada
+footerLinksRegexes                 array[object] []        tiene pattern , url (con {name} ) y
+                                                            label opcional. Disponible desde
+                                                           v2.1.176.
+
+
+
+Archivos y Directorios
+
+Settings que controlan dónde Claude guarda cosas y qué archivos carga.
+
+Setting                 Tipo         Default           Descripción
+                                     ~/.claude/
+                                     projects/         Directorio para auto memory. NO se acepta en
+autoMemoryDirectory string
+                                     <project>/        project settings (seguridad).
+                                     memory/
+
+                                                       Activa o desactiva la auto memory. También se
+autoMemoryEnabled       boolean      true              controla con
+                                                        CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 .
+
+                                                       Días de inactividad antes de eliminar sesiones.
+cleanupPeriodDays       number       30                El valor 0 se rechaza con error de validación.
+                                                       Mínimo: 1 .
+                                     ~/.claude/
+plansDirectory          string                         Donde se guardan los archivos de planes.
+                                     plans
+
+                                                       Excluye archivos CLAUDE.md por ruta o patrón
+claudeMdExcludes        array[string] N/A
+                                                       glob. Los managed NO pueden ser excluidos.
+
+
+
+Atribución y Comportamiento
+
+Controlan las firmas en commits/PRs y comportamientos generales de Claude Code.
+
+
+
+
+                                                770                                       @soyenriquerocha
+                                                    APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+Atribución
+Setting                 Tipo      Descripción
+attribution.commit      string    Texto de atribución en git commits. String vacío lo oculta.
+                                  Texto de atribución en descripciones de PR. String vacío lo
+attribution.pr          string
+                                  oculta.
+includeCoAuthoredBy     boolean DEPRECADO. Usa attribution.commit en su lugar.
+                                  Incluye instrucciones de workflow commit/PR en el system
+includeGitInstructions boolean
+                                  prompt.
+                                  Template de URL para el badge de PR. Sustituye {host} ,
+prUrlTemplate           string
+                                   {owner} , {repo} , {number} y {url} .
+
+
+
+Comportamiento General
+Setting                        Tipo         Default Descripción
+                                                     El fast mode no persiste entre sesiones. Cada
+fastModePerSessionOptIn        boolean      false
+                                                     sesión inicia sin él.
+                                                     Anuncios que se muestran al inicio. Se ciclan
+companyAnnouncements           array[string] N/A
+                                                     aleatoriamente.
+                                                     Permite sesiones Remote Control y web. Solo
+allow_remote_sessions          boolean      true
+                                                     Managed.
+                                                     Bloquea el inicio hasta obtener managed settings
+forceRemoteSettingsRefresh boolean          false    frescos del servidor. Si falla, el CLI sale. Solo
+                                                     Managed.
+                                                     Compacta la conversación automáticamente
+                                                     cuando el contexto se acerca al límite. Disponible
+autoCompactEnabled             boolean      true
+                                                     desde v2.1.119. También se desactiva con
+                                                      DISABLE_AUTO_COMPACT=1 .
+
+                                                     Toma un snapshot de los archivos antes de cada
+                                                     edición, para poder usar /rewind . Disponible
+fileCheckpointingEnabled       boolean      true
+                                                     desde v2.1.119. También se desactiva con
+                                                      CLAUDE_CODE_DISABLE_FILE_CHECKPOINTING=1 .
+
+                                                     Desactiva por completo la función Remote Control.
+disableRemoteControl           boolean      false
+                                                     Disponible desde v2.1.128.
+                                                     Desactiva la herramienta Artifact (publicación de
+disableArtifact                boolean      false    páginas web en claude.ai). También se controla con
+                                                      CLAUDE_CODE_DISABLE_ARTIFACT=1 .
+
+disableAgentView               boolean      false
+
+
+
+
+                                              771                                         @soyenriquerocha
+APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+                                                             Desactiva los agentes en background, la vista de
+                                                             agentes y el supervisor. También se controla con
+                                                             CLAUDE_CODE_DISABLE_AGENT_VIEW=1 .
+
+                                                             Definiciones de agentes personalizados
+ agents                             object        {}
+                                                             directamente en settings.
+                                                             Versión mínima de Claude Code requerida para
+ requiredMinimumVersion             string        N/A
+                                                             arrancar. Solo Managed.
+                                                             Versión máxima permitida para arrancar. Solo
+ requiredMaximumVersion             string        N/A
+                                                             Managed.
+                                                             Piso que evita downgrades; bloquea auto-updates
+ minimumVersion                     string        N/A
+                                                             por debajo de esta versión.
+                                                             Ejecutable desplegado por el admin que calcula
+ policyHelper                       object        N/A        managed settings dinámicamente al arranque.
+                                                             Disponible desde v2.1.136. Solo Managed.
+                                                             Cómo interactúan los settings del padre con el tier
+                                                  first-
+ parentSettingsBehavior             string                   admin: first-wins o merge . Disponible desde
+                                                  wins
+                                                             v2.1.133. Solo Managed.
+
+
+
+Monitoreo y Variables de Entorno
+
+Setting                Tipo Descripción
+                                Script para generar headers de OpenTelemetry. Se ejecuta al inicio y
+ otelHeadersHelper string
+                                cada ~29 min.
+                                Variables de entorno aplicadas a cada sesión. Ejemplo: "env":
+ env                   object
+                                {"FOO": "bar"} .
+
+
+
+
+Variables de Entorno
+
+Las variables de entorno son como notas que pegas en la puerta del refrigerador. Claude Code las lee
+al iniciar y ajusta su comportamiento. Las defines en tu terminal o dentro del setting env .
+
+Autenticación
+Variable                            Descripción
+ ANTHROPIC_API_KEY                  Tu clave API. Se envía como header X-Api-Key .
+ ANTHROPIC_AUTH_TOKEN               Token personalizado de autorización (prefijado con Bearer).
+                                    Headers personalizados. Formato: Name: Value , separados por
+ ANTHROPIC_CUSTOM_HEADERS
+                                    salto de línea.
+
+
+
+                                                       772                                     @soyenriquerocha
+                                                     APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+ANTHROPIC_FOUNDRY_API_KEY    API key para Microsoft Foundry.
+ANTHROPIC_FOUNDRY_BASE_URL URL base para recurso Foundry.
+
+ANTHROPIC_FOUNDRY_RESOURCE Nombre del recurso Foundry.
+
+AWS_BEARER_TOKEN_BEDROCK     API key de Bedrock.
+
+
+Selección de Modelo
+Variable                            Descripción
+ANTHROPIC_MODEL                     Sobreescribe el modelo a usar.
+                                    Sobreescribe el modelo Haiku. También para tareas en
+ANTHROPIC_DEFAULT_HAIKU_MODEL
+                                    background.
+                                    Sobreescribe el modelo Opus. También para opusplan en Plan
+ANTHROPIC_DEFAULT_OPUS_MODEL
+                                    Mode.
+                                    Sobreescribe el modelo Sonnet. También para opusplan fuera
+ANTHROPIC_DEFAULT_SONNET_MODEL
+                                    de Plan Mode.
+CLAUDE_CODE_SUBAGENT_MODEL          Modelo para subagentes.
+CLAUDE_CODE_EFFORT_LEVEL            Nivel de esfuerzo: low , medium , high .
+
+
+Proveedores Cloud
+Variable                        Default Descripción
+CLAUDE_CODE_USE_BEDROCK         0           Usar AWS Bedrock.
+CLAUDE_CODE_USE_FOUNDRY         0           Usar Microsoft Foundry.
+CLAUDE_CODE_USE_VERTEX          0           Usar Google Vertex AI.
+CLAUDE_CODE_SKIP_BEDROCK_AUTH 0             Saltar auth AWS para Bedrock (para LLM gateways).
+CLAUDE_CODE_SKIP_FOUNDRY_AUTH 0             Saltar auth Azure para Foundry.
+CLAUDE_CODE_SKIP_VERTEX_AUTH    0           Saltar auth Google para Vertex.
+
+
+Bash y Contexto
+Variable                                                 Default Descripción
+                                                                Timeout por defecto para
+BASH_DEFAULT_TIMEOUT_MS                                  N/A
+                                                                comandos bash de larga duración.
+                                                                Máximo de caracteres en salida de
+BASH_MAX_OUTPUT_LENGTH                                   N/A
+                                                                bash antes de truncar.
+                                                                Timeout máximo para comandos
+BASH_MAX_TIMEOUT_MS                                      N/A
+                                                                bash.
+                                                                Retorna al directorio original
+CLAUDE_CODE_BASH_MAINTAIN_PROJECT_WORKING_DIR false
+                                                                después de cada comando.
+
+
+
+                                               773                                       @soyenriquerocha
+APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+CLAUDE_CODE_SHELL                                     Auto    Sobreescribe la detección del shell.
+                                                              Prefijo para todos los comandos
+CLAUDE_CODE_SHELL_PREFIX                              N/A
+                                                              bash (logging/auditoría).
+                                                              Porcentaje de contexto al que se
+CLAUDE_AUTOCOMPACT_PCT_OVERRIDE                       95
+                                                              activa auto-compactación.
+                                                              Máximo tokens de salida por
+CLAUDE_CODE_MAX_OUTPUT_TOKENS                         32000
+                                                              request (max: 64000).
+                                                              Límite de tokens para lectura de
+CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS               N/A
+                                                              archivos.
+                                                              Presupuesto fijo de thinking
+MAX_THINKING_TOKENS                                   N/A     (cuando adaptive thinking está
+                                                              deshabilitado).
+
+
+Activar y Desactivar Features
+Variable                                      Default Descripción
+CLAUDE_CODE_DISABLE_AUTO_MEMORY               0      Desactiva auto memory.
+CLAUDE_CODE_DISABLE_BACKGROUND_TASKS          0      Desactiva tareas en background.
+CLAUDE_CODE_DISABLE_CRON                      0      Desactiva tareas programadas y /loop.
+CLAUDE_CODE_DISABLE_FAST_MODE                 0      Desactiva fast mode.
+CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY           0      Desactiva encuestas de feedback.
+                                                     Desactiva instrucciones integradas de
+CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS          0
+                                                     commit/PR.
+                                                     Desactiva actualizaciones del título del
+CLAUDE_CODE_DISABLE_TERMINAL_TITLE            0
+                                                     terminal.
+CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS 0             Desactiva headers anthropic-beta.
+                                                     Desactiva ventana de 1M tokens
+CLAUDE_CODE_DISABLE_1M_CONTEXT                0
+                                                     (compliance).
+                                                     Desactiva razonamiento adaptativo.
+CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING         0
+                                                     Revierte a presupuesto fijo.
+CLAUDE_CODE_ENABLE_TELEMETRY                  0      Activa recolección OpenTelemetry.
+                                                     System prompt mínimo, solo Bash/Read/
+CLAUDE_CODE_SIMPLE                            0
+                                                     Edit.
+                                                     Desactiva la compactación automática del
+DISABLE_AUTO_COMPACT                          0      contexto (equivale a
+                                                      autoCompactEnabled: false ).
+
+                                                     Desactiva los snapshots de archivos para /
+CLAUDE_CODE_DISABLE_FILE_CHECKPOINTING 0
+                                                     rewind .
+
+
+
+
+                                              774                                     @soyenriquerocha
+                                                        APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+                                                           Controla el resumen de regreso tras estar
+CLAUDE_CODE_ENABLE_AWAY_SUMMARY                 0
+                                                           ausente.
+                                                           Activa el render amigable para lectores de
+CLAUDE_AX_SCREEN_READER                         0
+                                                           pantalla (accesibilidad).
+                                                           Desactiva agentes en background, vista de
+CLAUDE_CODE_DISABLE_AGENT_VIEW                  0
+                                                           agentes y supervisor.
+CLAUDE_CODE_DISABLE_BUNDLED_SKILLS              0          Desactiva las skills y workflows bundled.
+                                                           Desactiva los workflows dinámicos y
+CLAUDE_CODE_DISABLE_WORKFLOWS                   0
+                                                           comandos de workflow bundled.
+CLAUDE_CODE_DISABLE_ARTIFACT                    0          Desactiva la herramienta Artifact.
+
+
+Tráfico y Telemetría
+Variable                                            Default Descripción
+                                                             Desactiva todo: autoupdater, /bug, error
+CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC 0
+                                                             reporting, telemetría.
+DISABLE_AUTOUPDATER                                 0        Desactiva actualizaciones automáticas.
+DISABLE_BUG_COMMAND                                 0        Desactiva el comando /bug.
+DISABLE_ERROR_REPORTING                             0        Desactiva reporte de errores.
+DISABLE_TELEMETRY                                   0        Desactiva telemetría.
+                                                             Desactiva prompt caching para todos los
+DISABLE_PROMPT_CACHING                              0
+                                                             modelos.
+
+
+Rutas, Certificados y Otros
+Variable                                  Descripción
+CLAUDE_CONFIG_DIR                         Sobreescribe la ubicación de archivos de configuración.
+CLAUDE_CODE_TMPDIR                        Sobreescribe directorio temporal.
+CLAUDE_CODE_CLIENT_CERT                   Ruta al certificado del cliente para mTLS.
+CLAUDE_CODE_CLIENT_KEY                    Ruta a la clave privada del cliente para mTLS.
+CLAUDE_CODE_CLIENT_KEY_PASSPHRASE Passphrase para clave encriptada.
+
+CLAUDE_CODE_GIT_BASH_PATH                 Ruta a Git Bash en Windows.
+USE_BUILTIN_RIPGREP                       Pon 0 para Alpine y distribuciones musl-based.
+CLAUDE_CODE_PROXY_RESOLVES_HOSTS          Permite que el proxy haga la resolución DNS.
+
+
+
+Aliases de Modelos
+
+En vez de escribir el nombre completo del modelo, puedes usar atajos:
+
+
+
+                                                775                                        @soyenriquerocha
+APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+Alias         Descripción
+              Modelo recomendado según tu cuenta. Max/Team Premium: Opus 4.8. Pro/Team
+default
+              Standard: Sonnet 4.6.
+best          Modelo más capaz disponible. Actualmente equivalente a opus (Opus 4.8).
+sonnet        Último modelo Sonnet (Sonnet 4.6). Para tareas diarias de código.
+opus          Último modelo Opus (Opus 4.8). Para razonamiento complejo.
+haiku         Modelo Haiku (Haiku 4.5). Rápido y eficiente para tareas simples.
+sonnet[1m] Sonnet con ventana de 1 millón de tokens. Beta.
+
+opus[1m]      Opus con ventana de 1 millón de tokens. Beta.
+opusplan      Modo híbrido: Opus durante planificación, Sonnet durante ejecución.
+Puedes agregar [1m] a cualquier alias para activar la ventana de 1M tokens.
+
+
+
+Channels
+
+Los channels permiten que plugins externos (como Telegram) envíen mensajes a Claude Code. Por
+seguridad, están desactivados por defecto y solo se pueden habilitar desde managed settings.
+
+Setting                     Tipo      Default         Alcance    Descripción
+                                                                 Habilita channels para usuarios Team y
+                                                      Solo       Enterprise. Sin esto, ningún channel
+channelsEnabled             boolean false
+                                                      Managed funciona aunque el usuario pase --
+                                                                 channels .
+
+                                                                 Allowlist de channel plugins que pueden
+                                      Lista default Solo         enviar mensajes. Array vacío bloquea
+allowedChannelPlugins array
+                                      de Anthropic Managed todos. Requiere channelsEnabled:
+                                                                 true .
+
+
+
+
+Worktree
+
+Estos settings controlan cómo Claude Code crea y maneja worktrees de git (copias aisladas del
+repositorio para subagentes).
+
+Setting                            Tipo          Default Alcance Descripción
+                                                                        Directorios a symlink desde el repo
+                                                             User/
+                                                                        principal a cada worktree. Evita
+worktree.symlinkDirectories array[string] []                 Project/
+                                                                        duplicar directorios grandes como
+                                                             Local
+                                                                          node_modules .
+
+worktree.sparsePaths               array[string] []
+
+
+
+                                                  776                                         @soyenriquerocha
+                                                      APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+                                                                    Directorios a hacer checkout vía git
+                                                        User/
+                                                                    sparse-checkout (cone mode). Solo
+                                                        Project/
+                                                                    las rutas listadas se escriben a
+                                                        Local
+                                                                    disco. Útil en monorepos grandes.
+Tip: Para copiar archivos gitignored (como        .env ) a nuevos worktrees, usa un archivo
+.worktreeinclude .
+
+
+
+
+Skills
+
+Controlan el comportamiento de skills y comandos personalizados.
+
+Setting                         Tipo     Default Alcance        Descripción
+                                                                Deshabilita la ejecución inline de shell para
+                                                 Todos          bloques !`...` y ```! en skills de fuentes
+disableSkillShellExecution boolean false         (típicamente user, project y plugin. Los comandos se
+                                                 Managed)       reemplazan con un placeholder. Skills bundled
+                                                                y managed no se afectan.
+                                                                Desactiva las skills y workflows bundled,
+                                                                manteniendo los comandos built-in que
+disableBundledSkills            boolean false    Todos
+                                                                puedes tipear. También se controla con
+                                                                   CLAUDE_CODE_DISABLE_BUNDLED_SKILLS=1 .
+
+                                                                Desactiva los workflows dinámicos y los
+                                                                comandos de workflow bundled. También se
+disableWorkflows                boolean false    Todos
+                                                                controla con
+                                                                   CLAUDE_CODE_DISABLE_WORKFLOWS=1 .
+
+                                                                Tope de caracteres por skill sobre los campos
+maxSkillDescriptionChars        number 1536      Todos             description + when_to_use combinados.
+                                                                Disponible desde v2.1.105.
+
+
+
+Global Config (~/.claude.json)
+
+Estos settings viven en ~/.claude.json , NO en settings.json . Son preferencias de interfaz y
+comportamiento local. Si los pones en settings.json, Claude Code lanza un error de validación.
+
+Setting                         Tipo     Default Descripción
+                                                 Conecta automáticamente a un IDE al iniciar desde
+autoConnectIde                  boolean false
+                                                 terminal externa. Aparece en /config .
+autoInstallIdeExtension         boolean true
+
+
+
+
+                                                777                                        @soyenriquerocha
+APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+                                                      Instala automáticamente la extensión de Claude
+                                                      Code IDE al ejecutar desde terminal VS Code.
+                                                      Modo de key binding: normal o vim . Aparece en
+editorMode                         string    normal
+                                                      /config .
+
+                                                      Muestra cuánto tardó cada respuesta (ej: 'Cooked
+showTurnDuration                   boolean true
+                                                      for 1m 6s').
+                                                      Barra de progreso en terminales soportados
+terminalProgressBarEnabled boolean true
+                                                      (ConEmu, Ghostty 1.2.0+, iTerm2 3.6.6+).
+                                                      Cómo se muestran teammates: auto , in-
+teammateMode                       string    auto
+                                                      process o tmux .
+
+Cuidado: No mezcles estos settings con los de settings.json . Si agregas editorMode o
+showTurnDuration a settings.json , obtendrás un error de validación de schema.
+
+
+
+
+Ejemplos Prácticos
+
+
+
+   Settings mínimos de usuario
+
+
+
+       {
+           "$schema": "https://json.schemastore.org/claude-code-
+       settings.json",
+           "permissions": {
+               "deny": ["Read(./.env)", "Read(./secrets/**)", "Bash(curl *)"]
+           }
+       }
+
+
+
+   Este es un archivo básico para ~/.claude/settings.json. Bloquea lectura de archivos .env y secrets, y
+   prohíbe comandos curl. Es un buen punto de partida para proteger tus archivos sensibles.
+
+
+
+
+                                                    778                                       @soyenriquerocha
+                                                     APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+Configuración enterprise con sandbox
+
+
+
+    {
+        "permissions": {
+             "allow": ["Bash(npm run *)", "Bash(git *)"],
+             "deny": ["WebFetch", "Read(~/credentials)"]
+        },
+        "sandbox": {
+             "enabled": true,
+             "filesystem": {
+                 "denyRead": ["~/.aws/credentials"]
+             },
+             "network": {
+                 "allowedDomains": ["github.com", "*.npmjs.org"],
+                 "allowManagedDomainsOnly": true
+             }
+        },
+        "allowManagedPermissionRulesOnly": true
+    }
+
+
+
+Configuración para empresas. Permite git y npm, bloquea fetch web y credenciales, activa el
+sandbox con dominios restringidos, y fuerza que solo las reglas managed apliquen.
+
+
+
+
+Restringir modelos disponibles
+
+
+
+    {
+        "model": "sonnet",
+        "availableModels": ["sonnet", "haiku"]
+    }
+
+
+
+Fuerza Sonnet como modelo por defecto y solo deja que los usuarios elijan entre Sonnet y Haiku.
+Útil para controlar costos.
+
+
+
+
+                                               779                                     @soyenriquerocha
+APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+   Entorno sin conexión (air-gapped)
+
+
+
+       {
+           "env": {
+               "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+               "DISABLE_AUTOUPDATER": "1"
+           }
+       }
+
+
+
+   Desactiva toda la telemetría, reportes de errores, actualizaciones automáticas y el comando /bug.
+   Ideal para redes restringidas.
+
+
+
+
+   Hook: lint automático después de ediciones
+
+
+
+       {
+           "hooks": {
+               "PostToolUse": [
+                   {
+                       "matcher": "Edit|Write",
+                       "hooks": [
+                           {
+                               "type": "command",
+                               "command": "npx eslint --fix $(echo $CLAUDE_PROJECT_DIR)"
+                           }
+                       ]
+                   }
+               ]
+           }
+       }
+
+
+
+   Cada vez que Claude edita o escribe un archivo, se ejecuta ESLint automáticamente. El hook se
+   dispara después de que la herramienta Edit o Write termina.
+
+
+
+
+                                                    780                                    @soyenriquerocha
+                                                       APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+Status line con modelo y costo
+
+
+
+    {
+        "statusLine": {
+            "type": "command",
+            "command": "jq -r '\"[\\(.model.display_name)] \\
+    (.context_window.used_percentage // 0)% context | $\\
+    (.cost.total_cost_usd // 0)\"'"
+        }
+    }
+
+
+
+Muestra en la barra inferior el modelo activo, el porcentaje de contexto usado y el costo total de la
+sesión. Usa jq para formatear el JSON que recibe por stdin.
+
+
+
+
+Usar AWS Bedrock con modelos pinneados
+
+
+
+    {
+        "env": {
+            "CLAUDE_CODE_USE_BEDROCK": "1",
+            "ANTHROPIC_DEFAULT_OPUS_MODEL": "us.anthropic.claude-opus-4-8-
+    v1",
+            "ANTHROPIC_DEFAULT_SONNET_MODEL": "us.anthropic.claude-
+    sonnet-4-6-v1",
+            "ANTHROPIC_DEFAULT_HAIKU_MODEL": "us.anthropic.claude-haiku-4-5-
+    v1"
+        }
+    }
+
+
+
+Configura Claude Code para usar AWS Bedrock. Al pinnear versiones específicas de cada modelo,
+evitas roturas cuando Anthropic lanza nuevas versiones.
+
+
+
+
+                                                 781                                        @soyenriquerocha
+APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+   Windows: configurar Git Bash
+
+
+
+       {
+           "env": {
+               "CLAUDE_CODE_GIT_BASH_PATH": "C:\\Program Files\\Git\\bin\
+       \bash.exe"
+           }
+       }
+
+
+
+   En Windows, si Claude Code no encuentra Git Bash automáticamente, usa esta variable para
+   indicarle la ruta exacta.
+
+
+
+
+     Consejo
+
+     Agrega "$schema": "https://json.schemastore.org/claude-code-settings.json" al inicio de tu
+     settings.json para obtener autocompletado y validación en tu editor.
+
+
+
+
+     Consejo
+
+     Usa /status dentro de Claude Code para ver todas las capas de configuración activas y de dónde
+     vienen.
+
+
+
+
+     Consejo
+
+     Los arrays se fusionan entre niveles, no se reemplazan. Si defines permisos en usuario y en
+     proyecto, Claude Code usa ambos.
+
+
+
+
+     Advertencia
+
+     Las reglas deny siempre ganan. Si un tool está denegado en cualquier nivel, ningún otro nivel
+     puede permitirlo.
+
+
+
+
+                                                   782                                      @soyenriquerocha
+                                                     APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+Advertencia
+
+Los hooks se capturan al inicio de la sesión. Si los cambias mientras Claude trabaja, necesitas ir
+a /hooks o reiniciar.
+
+
+
+
+Advertencia
+
+El sandbox solo aplica a comandos Bash. Las herramientas Read, Edit y WebFetch no están
+afectadas.
+
+
+
+
+Advertencia
+
+Las reglas de permisos Bash para restringir argumentos de comandos son frágiles. Prefiere deny
+rules y WebFetch con dominios específicos.
+
+
+
+
+Advertencia
+
+Los settings de ~/.claude.json (editorMode, showTurnDuration, terminalProgressBarEnabled,
+autoConnectIde, teammateMode) NO van en settings.json. Si los mezclas, obtendrás un error de
+validación.
+
+
+
+
+Nota
+
+CLAUDE.md es contexto, no configuración forzada. Claude intenta seguirlo, pero no hay garantía
+de cumplimiento estricto.
+
+
+
+
+Nota
+
+Auto memory solo carga las primeras 200 líneas de MEMORY.md al inicio de cada sesión.
+
+
+
+
+                                               783                                       @soyenriquerocha
+APÉNDICE B: REFERENCIA COMPLETA DE SETTINGS
+
+
+
+
+     Nota
+
+     En rutas de permisos Read/Edit, /Users/alice/file es relativa a la raíz del proyecto. Para ruta
+     absoluta, usa //Users/alice/file (doble barra).
+
+
+
+
+     Nota
+
+     includeCoAuthoredBy y ANTHROPIC_SMALL_FAST_MODEL están deprecados. Usa
+     attribution.commit y ANTHROPIC_DEFAULT_HAIKU_MODEL respectivamente.
+
+
+
+
+    Resumen
+
+    Claude Code usa un sistema de configuración por capas donde los managed settings tienen
+    máxima prioridad y los de usuario la mínima. Hay más de 100 settings y 60 variables de entorno
+    organizados en categorías: modelo, permisos, sandbox, hooks, MCP, channels, worktree, skills, UI
+    y más. Los arrays se fusionan entre niveles (no se reemplazan) y las reglas deny siempre ganan.
+    Los settings de ~/.claude.json (interfaz local) no deben mezclarse con settings.json.
+
+
+
+
+                                                     784                                        @soyenriquerocha
+Apéndice C

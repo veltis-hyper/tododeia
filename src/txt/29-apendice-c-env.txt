@@ -1,0 +1,1381 @@
+Referencia Completa de
+Variables de Entorno
+Tabla exhaustiva de TODAS las variables de entorno que afectan a Claude Code y
+la API
+
+
+     INTERMEDIO                                                    @soyenriquerocha
+
+
+
+
+                                     785                           @soyenriquerocha
+APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+    Las variables de entorno son como los controles de un tablero de mandos. Cada una
+    ajusta algo específico en Claude Code: desde qué modelo usar, hasta cómo conectarse a
+    la red. A junio de 2026, Claude Code reconoce más de 230 variables documentadas. Este
+    apéndice lista TODAS las variables conocidas, organizadas por categoría. Úsalas como
+    referencia rápida cuando necesites cambiar el comportamiento de Claude Code.
+
+
+
+
+Cómo configurar variables de entorno
+
+Antes de ir a la tabla gigante, necesitas saber dónde poner estas variables. Tienes tres opciones:
+
+Opción 1: En tu terminal (shell)
+Escribe export antes de lanzar Claude Code. Es rápido pero temporal. Cuando cierres la terminal, la
+variable desaparece.
+
+
+
+   export ANTHROPIC_MODEL=claude-opus-4-8
+   claude
+
+
+
+Para que sea permanente, agrega el export a tu archivo ~/.bashrc o ~/.zshrc .
+
+
+Opción 2: En settings.json (recomendado para equipos)
+Puedes poner variables dentro del campo "env" en cualquier archivo settings.json . Es como un
+tablero de configuración permanente.
+
+
+
+   {
+       "env": {
+           "ANTHROPIC_MODEL": "claude-opus-4-8",
+           "CLAUDE_CODE_EFFORT_LEVEL": "high"
+       }
+   }
+
+
+
+Regla importante: todos los valores en settings.json deben ser strings (texto entre comillas).
+Aunque sea un número, ponlo entre comillas: "1" , no 1 .
+
+
+
+
+                                                  786                                     @soyenriquerocha
+                                      APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+Los archivos settings.json viven en estas ubicaciones:
+
+   • ~/.claude/settings.json — Tu configuración personal
+   • .claude/settings.json — Configuración del proyecto (compartida con el equipo)
+   • .claude/settings.local.json — Tu configuración local del proyecto (no se sube al repo)
+   • managed-settings.json — Configuración forzada por la empresa (ver Apéndice B)
+
+
+Opción 3: Con CLAUDE_ENV_FILE (para scripts)
+Cada comando Bash en Claude Code se ejecuta en un shell nuevo. Eso significa que las variables que
+definas en un comando no existen en el siguiente. Es como si cada comando empezara desde cero.
+
+CLAUDE_ENV_FILE resuelve esto. Le dices a Claude Code: "antes de cada comando, carga este
+archivo".
+
+
+
+   # Crea el archivo con las variables que necesitas
+   echo 'export MI_TOKEN=abc123' > ~/.claude/env-setup.sh
+
+
+   # Dile a Claude Code que lo use
+   export CLAUDE_ENV_FILE=~/.claude/env-setup.sh
+   claude
+
+
+
+Ahora cada comando Bash tendrá acceso a MI_TOKEN .
+
+
+Orden de precedencia
+Si la misma opción está definida en varios lugares, Claude Code usa este orden de prioridad (de mayor
+a menor):
+
+  1. Managed settings (la empresa manda)
+  2. Argumentos CLI (flags como --model ) y comandos en sesión (como /model )
+  3. Variables de entorno (lo que defines con export o en el bloque env )
+  4. Settings local ( settings.local.json )
+  5. Settings de proyecto ( .claude/settings.json )
+  6. Settings de usuario ( ~/.claude/settings.json )
+
+Piensa en esto como una cadena de mando. El jefe (managed settings) siempre gana.
+
+Corrección importante (junio 2026): como regla general, las variables de entorno tienen prioridad
+sobre los campos de settings.json . Por ejemplo, ANTHROPIC_MODEL gana sobre el ajuste model ,
+y CLAUDE_CODE_AUTO_CONNECT_IDE gana sobre autoConnectIde .
+
+
+
+                                                787                                    @soyenriquerocha
+APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+Eso sí, hay matices según la función:
+
+   • --model y /model ganan sobre ANTHROPIC_MODEL .
+   • En cambio, CLAUDE_CODE_EFFORT_LEVEL gana sobre /effort y sobre el ajuste effortLevel .
+
+Para credenciales AWS, el orden de la región es: AWS_REGION > AWS_DEFAULT_REGION > la región del
+perfil AWS activo > us-east-1 (fallback). Este orden aplica desde la versión 2.1.172.
+
+
+
+Patrones de nombres: cómo entender las variables sin memorizar
+
+No necesitas memorizar 200 variables. Solo aprende los patrones de sus nombres. Es como aprender
+los prefijos de los números de teléfono: una vez que entiendes el patrón, puedes adivinar qué hace
+cada variable.
+
+   • CLAUDE_CODE_DISABLE_* — Apaga una funcionalidad. Ejemplo:
+     CLAUDE_CODE_DISABLE_THINKING .
+
+   • CLAUDE_CODE_ENABLE_* — Enciende una funcionalidad. Ejemplo:
+     CLAUDE_CODE_ENABLE_TELEMETRY .
+
+   • DISABLE_* — Apaga un comando o feature más antiguo. Ejemplo: DISABLE_AUTOUPDATER .
+   • ENABLE_* — Enciende una feature experimental. Ejemplo: ENABLE_LSP_TOOL .
+   • ANTHROPIC_* — Configuración de la API de Anthropic. Ejemplo: ANTHROPIC_API_KEY .
+   • AWS_* — Variables estándar del SDK de AWS. Ejemplo: AWS_REGION .
+   • OTEL_* — Variables estándar de OpenTelemetry. Ejemplo: OTEL_TRACES_EXPORTER .
+   • MCP_* — Configuración del Model Context Protocol. Ejemplo: MCP_TIMEOUT .
+
+
+
+API y Autenticación
+
+Estas variables controlan cómo Claude Code se conecta a la API. Son las llaves de la puerta.
+
+   • ANTHROPIC_API_KEY — Tu clave API principal. Si usas suscripción (Pro/Max/Team), no la
+    configures. Si la configuras, usarás la API de pago por uso y podrías recibir cargos inesperados.
+   • ANTHROPIC_AUTH_TOKEN — Token de autorización alternativo. Para gateways LLM como LiteLLM.
+    Tiene prioridad sobre ANTHROPIC_API_KEY .
+   • ANTHROPIC_BASE_URL — URL base personalizada. Por defecto: https://api.anthropic.com .
+    Cámbiala para proxies o gateways.
+   • ANTHROPIC_CUSTOM_HEADERS — Cabeceras HTTP extra en cada solicitud. Formato: Nombre:
+    Valor separados por \n .
+
+
+
+
+                                                  788                                     @soyenriquerocha
+                                       APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+   • ANTHROPIC_BETAS — Funciones beta separadas por comas. Se envían como header
+    anthropic-beta .
+
+   • ANTHROPIC_LOG — Nivel de logging del SDK: debug para ver todo.
+   • API_TIMEOUT_MS — Timeout de solicitudes API en milisegundos. Por defecto: 600000 (10
+    minutos).
+
+
+
+Configuración de Modelos
+
+Estas variables te permiten elegir qué modelo usa Claude Code y cómo se comporta al pensar.
+
+   • ANTHROPIC_MODEL — El modelo principal. Acepta aliases ( sonnet , opus , haiku , fable ) o
+    nombres completos como claude-opus-4-8 . Desde la versión 2.1.154, Opus 4.8 es el modelo
+    Opus por defecto.
+   • ANTHROPIC_DEFAULT_HAIKU_MODEL — Qué modelo se usa cuando dices "haiku". Debe ser un
+    nombre completo, no un alias.
+   • ANTHROPIC_DEFAULT_SONNET_MODEL — Qué modelo se usa cuando dices "sonnet". Crítico para
+    Bedrock/Vertex/Foundry: fíjalo a una versión específica.
+   • ANTHROPIC_DEFAULT_OPUS_MODEL — Qué modelo se usa cuando dices "opus". Por defecto
+    apunta a Opus 4.8.
+   • ANTHROPIC_DEFAULT_FABLE_MODEL — Qué modelo se usa cuando dices "fable". Novedad de
+    junio 2026. El alias fable apunta a Claude Fable 5 (clase Mythos), que entró en disponibilidad
+    general en la versión 2.1.170.
+   • ANTHROPIC_CUSTOM_MODEL_OPTION — ID de un modelo extra que quieres añadir como entrada
+    personalizada en el selector /model (para modelos no estándar o de gateway).
+   • ANTHROPIC_DEFAULT_<TIER>_MODEL_NAME / _DESCRIPTION / _SUPPORTED_CAPABILITIES —
+    Personalizan el nombre, la descripción y las capacidades que se muestran en el selector /model
+    para cada familia ( HAIKU , SONNET , OPUS , FABLE ). Capacidades válidas: thinking , effort ,
+    interleaved_thinking , adaptive_thinking , max_effort .
+
+   • CLAUDE_CODE_SUBAGENT_MODEL — Modelo para sub-agentes (los agentes que Claude Code lanza
+    internamente).
+   • CLAUDE_CODE_MAX_OUTPUT_TOKENS — Tokens máximos por respuesta. Nota: mencionada en
+    guías, pero no verificada literalmente en la página oficial de variables de entorno de junio 2026;
+    úsala con cautela.
+   • CLAUDE_CODE_EFFORT_LEVEL — Cuánto "piensa" el modelo. Acepta low , medium , high ,
+    xhigh , max y auto . Low es más rápido; high y superiores razonan más profundo. Tiene
+    prioridad sobre el comando /effort y el ajuste effortLevel . Desde la versión 2.1.172, Opus
+    4.8 entra en high por defecto.
+
+
+
+                                                 789                                     @soyenriquerocha
+APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+   • CLAUDE_CODE_ALWAYS_ENABLE_EFFORT — Pon 1 para enviar el parámetro de esfuerzo en cada
+    petición incluso con IDs de modelo desconocidos (gateways). Excluye modelos que lo rechazan
+    (Claude 3, Sonnet 4.0/4.5, Opus 4.0/4.1, Haiku 4.5).
+   • MAX_THINKING_TOKENS — Número fijo de tokens para razonamiento extendido.
+    MAX_THINKING_TOKENS=0 desactiva el thinking extendido en la API de Anthropic. Funciona junto
+    con CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1 .
+   • ANTHROPIC_SMALL_FAST_MODEL — DEPRECADA. Usa ANTHROPIC_DEFAULT_HAIKU_MODEL en
+    su lugar.
+   • ANTHROPIC_SMALL_FAST_MODEL_AWS_REGION — Región AWS separada para el modelo Haiku en
+    Bedrock, si difiere de la principal.
+   • FALLBACK_FOR_ALL_PRIMARY_MODELS — Si el modelo principal está sobrecargado, usa un
+    modelo de respaldo automáticamente. Útil en momentos de alta demanda.
+
+Importante           sobre          el       razonamiento:           MAX_THINKING_TOKENS                  y
+CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING             no tienen efecto en Fable 5 ni en Opus 4.7 y
+posteriores. Esos modelos siempre piensan (Fable 5) o son siempre adaptativos (Opus 4.7+), así que
+no puedes apagar ni fijar su razonamiento con esas variables. El sufijo [1m] en los nombres de
+modelo (contexto de 1M) se normaliza automáticamente desde la versión 2.1.172.
+
+
+
+AWS Bedrock
+
+Bedrock es el servicio de AWS que te permite usar Claude dentro de tu cuenta de Amazon. Piensa en
+Bedrock como un "puente" entre tu infraestructura AWS y Claude.
+
+   • CLAUDE_CODE_USE_BEDROCK — El interruptor principal. Pon 1 para activar Bedrock.
+   • AWS_REGION — La región AWS. Corrección (junio 2026): desde la versión 2.1.172, Claude Code sí
+    lee la región de tus archivos de config de AWS ( .aws/config ). En la versión 2.1.171 y anteriores,
+    en cambio, es obligatorio exportarla a mano. El orden de resolución es: AWS_REGION >
+    AWS_DEFAULT_REGION > la región del perfil AWS activo > us-east-1 (fallback).
+
+   • AWS_ACCESS_KEY_ID + AWS_SECRET_ACCESS_KEY — Credenciales AWS clásicas. Nunca las
+    hardcodees en scripts.
+   • AWS_SESSION_TOKEN — Para credenciales temporales de AWS STS.
+   • AWS_PROFILE — Nombre del perfil de credenciales. Útil con aws sso login .
+   • AWS_DEFAULT_REGION — Respaldo si AWS_REGION no está definida.
+   • AWS_BEARER_TOKEN_BEDROCK — API key simplificada de Bedrock. Más simple que las
+    credenciales completas.
+
+
+
+
+                                                  790                                     @soyenriquerocha
+                                       APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+   • ANTHROPIC_BEDROCK_SERVICE_TIER — Service tier de Bedrock: default , flex o priority .
+    Se envía como cabecera X-Amzn-Bedrock-Service-Tier . La disponibilidad varía por modelo y
+    región.
+   • CLAUDE_CODE_SKIP_BEDROCK_AUTH — Omite autenticación AWS. Usa cuando un gateway
+    maneja la auth.
+   • BEDROCK_BASE_URL / ANTHROPIC_BEDROCK_BASE_URL — Endpoints personalizados para
+    proxies.
+   • ENABLE_PROMPT_CACHING_1H_BEDROCK — Cache de prompts de 1 hora en Bedrock.
+
+Limitaciones de Bedrock: cuando usas Bedrock, el comando /logout no está disponible y la
+herramienta WebSearch no funciona. Además, el alias haiku apunta por defecto al modelo
+principal (no a un Haiku real) salvo que fijes ANTHROPIC_DEFAULT_HAIKU_MODEL .
+
+Bedrock Mantle y Claude Platform on AWS
+A junio de 2026 hay dos formas nuevas de hablar con Claude dentro de AWS, además del Bedrock
+clásico:
+
+Bedrock Mantle deja que Claude Code use la API nativa de Anthropic en vez de la Invoke API de
+Bedrock. Requiere la versión 2.1.94 o superior.
+
+   • CLAUDE_CODE_USE_MANTLE — Pon 1 (o true ) para usar el endpoint Mantle de Bedrock. Se
+    puede combinar con CLAUDE_CODE_USE_BEDROCK .
+   • CLAUDE_CODE_SKIP_MANTLE_AUTH — Pon 1 para saltar la autenticación en el cliente cuando un
+    gateway inyecta las credenciales en el servidor.
+   • ANTHROPIC_BEDROCK_MANTLE_BASE_URL — Sobrescribe el endpoint de Bedrock Mantle. Por
+    defecto se deriva de la región AWS.
+
+Claude Platform on AWS es otra opción que usa workload identity federation y una API key de
+workspace sacada de la consola de AWS.
+
+   • ANTHROPIC_AWS_API_KEY — Clave de API de workspace para Claude Platform on AWS. Se envía
+    como x-api-key y tiene prioridad sobre la firma SigV4 de AWS.
+   • ANTHROPIC_AWS_BASE_URL — Sobrescribe el endpoint de Claude Platform on AWS. Por defecto:
+     https://aws-external-anthropic.{AWS_REGION}.api.aws .
+
+   • ANTHROPIC_AWS_WORKSPACE_ID — Requerida para Claude Platform on AWS. Se envía como
+    cabecera anthropic-workspace-id en cada petición.
+   • ANTHROPIC_WORKSPACE_ID — ID de workspace para workload identity federation. Necesaria
+    cuando la regla de federación abarca varios workspaces. Añadida en la versión 2.1.141.
+
+
+
+
+                                                  791                                  @soyenriquerocha
+APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+Google Vertex AI
+
+Vertex AI es el equivalente de Google Cloud para correr Claude. Es otro "puente", pero hacia la nube de
+Google.
+
+   • CLAUDE_CODE_USE_VERTEX — Interruptor principal. Pon 1 para activar.
+   • ANTHROPIC_VERTEX_PROJECT_ID — OBLIGATORIA. El ID de tu proyecto en Google Cloud.
+   • CLOUD_ML_REGION — OBLIGATORIA. Puede ser global o una región específica como us-
+    east5 . Nota: en algunas guías aparece como CLAUDE_ML_REGION ; ese nombre no está verificado
+    en la página oficial de variables de entorno. Usa CLOUD_ML_REGION , que es el documentado para
+    Vertex.
+   • GOOGLE_APPLICATION_CREDENTIALS — Ruta al JSON de cuenta de servicio. Alternativa a
+     gcloud auth .
+
+   • GOOGLE_CLOUD_PROJECT / GCLOUD_PROJECT — Formas alternativas de especificar el proyecto.
+   • GOOGLE_CLOUD_QUOTA_PROJECT — Proyecto de facturación, si difiere del principal.
+   • CLAUDE_CODE_SKIP_VERTEX_AUTH — Omite autenticación GCP. Para gateways.
+   • VERTEX_BASE_URL / ANTHROPIC_VERTEX_BASE_URL — Endpoints personalizados.
+
+También existen variables VERTEX_REGION_CLAUDE_* para fijar regiones por modelo. Útiles cuando
+CLOUD_ML_REGION=global y algún modelo no soporta endpoints globales:
+
+   • VERTEX_REGION_CLAUDE_3_5_HAIKU
+   • VERTEX_REGION_CLAUDE_3_5_SONNET
+   • VERTEX_REGION_CLAUDE_3_7_SONNET
+   • VERTEX_REGION_CLAUDE_4_0_OPUS
+   • VERTEX_REGION_CLAUDE_4_0_SONNET
+   • VERTEX_REGION_CLAUDE_4_1_OPUS
+
+
+
+Microsoft Azure Foundry
+
+Foundry es la opción de Microsoft para correr Claude en Azure.
+
+   • CLAUDE_CODE_USE_FOUNDRY — Interruptor principal. Pon 1 para activar.
+   • ANTHROPIC_FOUNDRY_API_KEY — Clave API del portal de Foundry. Sin ella, usa
+     DefaultAzureCredential .
+
+   • ANTHROPIC_FOUNDRY_BASE_URL — URL completa: https://
+    {recurso}.services.ai.azure.com/anthropic .
+
+
+
+
+                                                 792                                     @soyenriquerocha
+                                       APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+   • ANTHROPIC_FOUNDRY_RESOURCE — Solo el nombre del recurso. Más simple que la URL completa.
+   • CLAUDE_CODE_SKIP_FOUNDRY_AUTH — Omite autenticación Azure.
+
+
+
+OAuth y Autenticación Avanzada
+
+Estas variables son para escenarios avanzados de autenticación. La mayoría de usuarios nunca las
+necesitará.
+
+   • CLAUDE_CODE_OAUTH_TOKEN — Token de acceso OAuth pre-configurado.
+   • CLAUDE_CODE_OAUTH_REFRESH_TOKEN — Token de refresco para renovación automática.
+   • CLAUDE_CODE_OAUTH_SCOPES — Permisos requeridos.
+   • CLAUDE_CODE_OAUTH_CLIENT_ID — Client ID para OAuth personalizado.
+   • CLAUDE_CODE_CUSTOM_OAUTH_URL — URL del servidor OAuth corporativo.
+   • CLAUDE_CODE_API_KEY_HELPER_TTL_MS — Tiempo de cache del helper de API key. Útil con
+     apiKeyHelper para rotar claves.
+
+   • CLAUDE_CODE_API_KEY_FILE_DESCRIPTOR — Descriptor de archivo para leer la API key de
+    forma segura.
+   • CLAUDE_CODE_OAUTH_TOKEN_FILE_DESCRIPTOR — Descriptor de archivo para leer el token
+    OAuth.
+
+
+
+Configuración de Bash y Shell
+
+Estas variables controlan cómo Claude Code ejecuta comandos en tu terminal. Piensa en ellas como
+los ajustes del "motor" que corre los comandos.
+
+   • BASH_DEFAULT_TIMEOUT_MS — Timeout por defecto: 120000 (2 minutos). Auméntalo para
+    builds largos.
+   • BASH_MAX_TIMEOUT_MS — Tope máximo que Claude puede pedir: 600000 (10 min). Pon
+     7200000 para 2 horas.
+
+   • BASH_MAX_OUTPUT_LENGTH — Caracteres máximos de salida antes de truncar: 30000 . Máximo:
+     150000 .
+
+   • CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR — Resetea al directorio del proyecto después
+    de cada comando.
+   • CLAUDE_CODE_SHELL — Fuerza un shell específico (ej: /bin/zsh ).
+   • CLAUDE_CODE_SHELL_PREFIX — Comando que se ejecuta antes de cada comando Bash. Útil
+    para logging.
+
+
+
+
+                                                  793                              @soyenriquerocha
+APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+   • CLAUDE_ENV_FILE — Script que se carga antes de cada comando. Resuelve el problema de
+    variables que no persisten.
+   • CLAUDE_CODE_BASH_SANDBOX_SHOW_INDICATOR — Muestra cuando un comando corre en
+    sandbox.
+   • FORCE_CODE_TERMINAL — Fuerza el modo terminal/CLI.
+   • CLAUDECODE — Variable de solo lectura. Claude Code la pone en 1 automáticamente en shells
+    que él crea (herramienta Bash, tmux). Úsala en scripts para detectar si se ejecutan dentro de
+    Claude Code: if [ "$CLAUDECODE" = "1" ]; then ...
+   • CLAUDE_CODE_GIT_BASH_PATH — Solo Windows. Ruta a bash.exe de Git for Windows.
+    Ejemplo: C:\Program Files\Git\bin\bash.exe .
+   • CLAUDE_CODE_USE_POWERSHELL_TOOL — Solo Windows (preview). Habilita la herramienta
+    PowerShell en lugar de Bash.
+
+
+
+Configuración Core de Claude Code
+
+Variables generales que controlan el comportamiento básico de Claude Code.
+
+   • CLAUDE_CONFIG_DIR — Donde guarda configuración. Por defecto: ~/.claude .
+   • CLAUDE_CODE_TMPDIR — Directorio temporal.
+   • CLAUDE_CODE_SIMPLE — Modo minimalista: solo Bash y archivos. No carga CLAUDE.md.
+   • CLAUDE_CODE_ACTION — Indica ejecución como GitHub Action.
+   • CLAUDE_CODE_BASE_REF — Ref base de Git para diffs (ej: main ).
+   • CLAUDE_CODE_EXTRA_BODY — JSON adicional en cada solicitud API.
+   • CLAUDE_CODE_STREAMING_TEXT — Texto streaming (muestra texto a medida que llega).
+   • CLAUDE_CODE_SYNTAX_HIGHLIGHT — Resaltado de sintaxis en la salida. Activado por defecto.
+   • CLAUDE_CODE_ACCESSIBILITY — Modo accesibilidad para lectores de pantalla.
+   • CLAUDE_CODE_RESUME_INTERRUPTED_TURN — Reanuda turnos interrumpidos automáticamente.
+   • CLAUDE_DEBUG — Logging detallado de depuración.
+   • CLAUDE_CODE_DEBUG_LOGS_DIR — Donde guardar logs de debug. Por defecto: ~/.claude/
+    debug .
+
+   • CLAUDE_CODE_DIAGNOSTICS_FILE — Archivo para información de diagnóstico.
+   • CLAUDE_CODE_MAX_RETRIES — Reintentos para solicitudes API fallidas.
+   • CLAUDE_CODE_TAGS — Tags para telemetría (ej: team:backend ).
+   • CLAUDE_CODE_HIDE_ACCOUNT_INFO — Oculta email/org. Para pantallas compartidas.
+
+
+
+
+                                                 794                                     @soyenriquerocha
+                                     APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+• CLAUDE_CODE_FORCE_FULL_LOGO — Muestra el logo ASCII grande al iniciar.
+• CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD — Carga CLAUDE.md desde múltiples
+ ubicaciones.
+• CLAUDE_CODE_NEW_INIT — Ejecuta /init con el flujo de configuración interactiva mejorado.
+• CLAUDE_CODE_DEBUG_LOG_LEVEL — Nivel de detalle de los logs de debug: verbose , debug ,
+ info , warn o error . Por defecto: debug .
+
+• CLAUDE_ENABLE_STREAM_WATCHDOG — Aborta streams de API que se quedan estancados.
+ Funciona con CLAUDE_STREAM_IDLE_TIMEOUT_MS .
+• CLAUDE_STREAM_IDLE_TIMEOUT_MS — Milisegundos de inactividad antes de abortar un stream
+ estancado. Por defecto: 90000 . Requiere CLAUDE_ENABLE_STREAM_WATCHDOG=1 .
+• CLAUDE_CODE_CHILD_SESSION — Variable de solo lectura. Claude Code la pone en 1 en los
+ subprocesos que lanza vía Bash, PowerShell, Monitor, hooks y statusline (pero no en servidores
+ MCP stdio). Sirve para distinguir una sesión anidada de la sesión principal. Añadida en la versión
+ 2.1.172.
+• CLAUDE_PROJECT_DIR — Variable de solo lectura con la ruta del directorio del proyecto. Útil
+ dentro de hooks. Desde la versión 2.1.181 también se pasa a los servidores MCP stdio.
+• CLAUDE_CLIENT_PRESENCE_FILE — Novedad de junio 2026 (versión 2.1.181). Ruta a un
+ archivo que se crea al desbloquear la pantalla y se borra al bloquearla. Mientras ese archivo
+ exista, Claude Code se salta las notificaciones push móviles de Remote Control (para no avisarte
+ al teléfono cuando estás frente a la máquina). Se comprueba una vez por evento de push, no se
+ sondea.
+• API_FORCE_IDLE_TIMEOUT — Sobrescribe el timeout de inactividad de 5 minutos en respuestas
+ en streaming. 0 lo desactiva; 1 lo activa en todos los proveedores. Por defecto está inactivo en
+ la API directa y AWS, y activo en Vertex/Foundry/Mantle/Bedrock/gateways. Añadida en la versión
+ 2.1.166.
+• CLAUDE_CODE_SAFE_MODE — Pon 1 para arrancar con todas las personalizaciones desactivadas
+ (skills, plugins, settings personalizados). Útil para diagnosticar si una personalización está
+ causando problemas. Añadida en la versión 2.1.147.
+• CLAUDE_AX_SCREEN_READER — Pon 1 para una salida amigable con lectores de pantalla (texto
+ plano, sin bordes ni animaciones). Pon 0 para forzar el modo normal pese a axScreenReader:
+ true . El flag --ax-screen-reader tiene prioridad. Disponible desde la versión 2.1.181.
+
+• CLAUDE_CODE_ALT_SCREEN_FULL_REPAINT — Pon 1 para repintar toda la pantalla en cada
+ frame en lugar de hacer actualizaciones incrementales. Útil si ves texto obsoleto o residuos en
+ pantalla. Se auto-activa en sesiones de fondo y agent view en Windows.
+
+
+
+
+                                                795                                      @soyenriquerocha
+APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+UI y Display
+Variables que controlan la apariencia visual de Claude Code.
+
+   • CLAUDE_CODE_NO_FLICKER — Renderizado fullscreen (research preview). Reduce el parpadeo al
+    redibujar la pantalla.
+   • CLAUDE_CODE_SCROLL_SPEED — Velocidad de scroll del ratón en modo fullscreen. Rango: 1 a
+     20 . Por defecto: 1 .
+
+
+
+
+Variables para Deshabilitar Funcionalidades
+
+Estas variables son interruptores de "apagado". Pon 1 para apagar la funcionalidad. Son útiles para
+simplificar Claude Code o cumplir políticas de seguridad.
+
+Features deshabilitables
+   • CLAUDE_CODE_DISABLE_1M_CONTEXT — Quita la ventana de 1M tokens del selector de modelos.
+   • CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING — Desactiva razonamiento adaptivo. Revierte a
+     MAX_THINKING_TOKENS .
+
+   • CLAUDE_CODE_DISABLE_ATTACHMENTS — No permite adjuntar archivos.
+   • CLAUDE_CODE_DISABLE_AUTO_MEMORY — No crea ni actualiza MEMORY.md.
+   • CLAUDE_CODE_DISABLE_BACKGROUND_TASKS — Sin tareas de fondo.
+   • CLAUDE_CODE_DISABLE_CLAUDE_MDS — No carga archivos CLAUDE.md del proyecto.
+   • CLAUDE_CODE_DISABLE_COMMAND_INJECTION_CHECK — Cuidado: reduce la seguridad.
+   • CLAUDE_CODE_DISABLE_CRON — Sin tareas programadas.
+   • CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS — Sin cabeceras beta experimentales.
+    Recomendado para gateways LLM.
+   • CLAUDE_CODE_DISABLE_FAST_MODE — Sin modo rápido.
+   • CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY — Sin encuestas de feedback.
+   • CLAUDE_CODE_DISABLE_FILE_CHECKPOINTING — Sin puntos de restauración de archivos.
+   • CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS — Sin instrucciones de git en el system prompt.
+   • CLAUDE_CODE_DISABLE_TERMINAL_TITLE — No actualiza el título de la terminal.
+   • CLAUDE_CODE_DISABLE_THINKING — Sin razonamiento interno. Más rápido pero menor calidad.
+   • CLAUDE_CODE_DONT_INHERIT_ENV — No hereda variables del shell padre.
+   • CLAUDE_CODE_SKIP_PROMPT_HISTORY — Sin historial de prompts.
+   • DISABLE_INTERLEAVED_THINKING — Sin thinking entre tool uses.
+
+
+
+
+                                                 796                                 @soyenriquerocha
+                                         APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+   • CLAUDE_CODE_DISABLE_NONSTREAMING_FALLBACK — Desactiva el fallback no-streaming cuando
+    el streaming falla.
+   • CLAUDE_CODE_DISABLE_MOUSE — Desactiva el seguimiento del ratón en modo fullscreen.
+   • CLAUDE_CODE_DISABLE_ARTIFACT — Desactiva la herramienta Artifact. Equivale al ajuste
+     disableArtifact .
+
+   • CLAUDE_CODE_DISABLE_ADVISOR_TOOL — Desactiva la herramienta advisor ( /advisor , --
+    advisor y advisorModel quedan no disponibles). Disponible desde la versión 2.1.98.
+
+   • CLAUDE_CODE_DISABLE_WORKFLOWS — Desactiva los workflows. Equivale al ajuste
+     disableWorkflows .
+
+   • CLAUDE_CODE_DISABLE_BUNDLED_SKILLS — Desactiva las skills y workflows incluidos de
+    fábrica. No afecta a skills de plugins ni de .claude/skills/ . Añadida en la versión 2.1.181.
+   • CLAUDE_CODE_DISABLE_AGENT_VIEW — Desactiva los background agents y la agent view
+    ( claude agents , --bg , /background , supervisor). Equivale a disableAgentView .
+   • CLAUDE_CODE_DISABLE_POLICY_SKILLS — No carga las skills del directorio de skills
+    gestionadas a nivel de sistema. Útil para contenedores y CI.
+   • CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN — Desactiva el renderizado a pantalla completa y
+    usa el renderer clásico. Tiene prioridad sobre CLAUDE_CODE_NO_FLICKER y el ajuste tui .
+   • CLAUDE_CODE_DISABLE_VIRTUAL_SCROLL — Desactiva el scroll virtual en pantalla completa
+    (renderiza cada mensaje en vez de solo lo visible).
+
+
+Cache de prompts
+El prompt caching es como guardar una receta que ya preparaste. La próxima vez que necesites la
+misma receta, no la buscas desde cero.
+
+   • DISABLE_PROMPT_CACHING — Desactiva cache para TODOS los modelos.
+   • DISABLE_PROMPT_CACHING_HAIKU — Solo para Haiku.
+   • DISABLE_PROMPT_CACHING_SONNET — Solo para Sonnet.
+   • DISABLE_PROMPT_CACHING_OPUS — Solo para Opus.
+
+
+Compactación de contexto
+La compactación es como hacer un resumen. Cuando la conversación se hace muy larga, Claude Code
+resume lo anterior para liberar espacio.
+
+   • DISABLE_COMPACT — Desactiva toda compactación.
+   • DISABLE_AUTO_COMPACT — Solo permite compactar manualmente con /compact .
+   • DISABLE_MICROCOMPACT — Desactiva la micro-compactación.
+
+
+
+
+                                                  797                                    @soyenriquerocha
+APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+Tráfico no esencial (atajo maestro)
+CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC es el botón nuclear. Apaga todo lo que no sea
+esencial: actualizaciones, telemetría, reporte de errores y el comando /bug . Ideal para entornos sin
+internet.
+
+Es equivalente a configurar estas cuatro a la vez:
+
+   • DISABLE_AUTOUPDATER=1
+   • DISABLE_BUG_COMMAND=1
+   • DISABLE_ERROR_REPORTING=1
+   • DISABLE_TELEMETRY=1
+
+
+Comandos deshabilitables individualmente
+   • DISABLE_AUTOUPDATER — Sin actualizaciones automáticas.
+   • DISABLE_BUG_COMMAND — Sin comando /bug .
+   • DISABLE_COST_WARNINGS — Sin alertas de costos.
+   • DISABLE_DOCTOR_COMMAND — Sin comando /doctor .
+   • DISABLE_ERROR_REPORTING — Sin reporte de errores a Anthropic.
+   • DISABLE_TELEMETRY — Sin telemetría.
+   • DISABLE_FEEDBACK_COMMAND — Sin comando /feedback .
+   • DISABLE_EXTRA_USAGE_COMMAND — Sin info de uso extra.
+   • DISABLE_INSTALL_GITHUB_APP_COMMAND — Sin instalar GitHub App.
+   • DISABLE_INSTALLATION_CHECKS — Sin chequeos de instalación al inicio.
+   • DISABLE_LOGIN_COMMAND — Sin /login . Se activa auto con Bedrock/Vertex/Foundry.
+   • DISABLE_LOGOUT_COMMAND — Sin /logout .
+   • DISABLE_UPGRADE_COMMAND — Sin /upgrade .
+   • DISABLE_AUTO_MIGRATE_TO_NATIVE — Sin migración automática de npm a nativo.
+
+
+
+Variables para Habilitar Funcionalidades
+
+Estas variables encienden funcionalidades que vienen apagadas por defecto. Son como features
+opcionales que activas cuando las necesitas.
+
+   • CLAUDE_CODE_ENABLE_TELEMETRY — Telemetría OpenTelemetry. Activada por defecto.
+   • CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION — Sugerencias de prompt. Activada por defecto.
+
+
+
+
+                                                     798                               @soyenriquerocha
+                                       APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+   • CLAUDE_CODE_ENABLE_TASKS — Seguimiento de tareas en modo no interactivo.
+   • ENABLE_LSP_TOOL — Herramienta LSP (Language Server Protocol) para completado de código.
+   • ENABLE_TOOL_SEARCH — Búsqueda y carga diferida de herramientas. Auto por defecto.
+   • ENABLE_SESSION_BACKGROUNDING — Enviar sesiones al fondo con Ctrl+B.
+   • ENABLE_BTW — Sugerencias proactivas "By the way" al final de respuestas.
+   • ENABLE_CLAUDEAI_MCP_SERVERS — Servidores MCP hospedados en claude.ai.
+   • CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS — Equipos de agentes colaborativos
+    (experimental).
+   • CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING — Checkpoints de archivos en el SDK.
+   • ENABLE_CLAUDE_CODE_SM_COMPACT — Compactación de memoria de sesión.
+   • FALLBACK_FOR_ALL_PRIMARY_MODELS — Si el modelo principal falla, usa un respaldo.
+   • CLAUDE_CODE_ENABLE_FINE_GRAINED_TOOL_STREAMING — Streaming granular del input de
+    herramientas. Muestra el progreso de cada herramienta a medida que se genera.
+   • CLAUDE_CODE_ENHANCED_TELEMETRY_BETA — Habilita tracing de spans (beta). Necesario para
+    exportar traces y usar OTEL_LOG_TOOL_CONTENT . Requiere
+     CLAUDE_CODE_ENABLE_TELEMETRY=1 .
+
+   • CLAUDE_CODE_ENABLE_AUTO_MODE — Pon 1 para activar el auto mode en Amazon Bedrock,
+    Google Vertex AI y Microsoft Foundry. No tiene efecto en la API directa de Anthropic (donde el auto
+    mode ya está disponible por defecto). Para Opus 4.7 y posteriores. Disponible desde la versión
+    2.1.158.
+
+
+
+Rendimiento y Compactación
+
+Variables para afinar el rendimiento. Son como los tornillos de ajuste fino de un motor.
+
+   • CLAUDE_AUTOCOMPACT_PCT_OVERRIDE — Porcentaje de contexto que activa compactación
+    automática (1-100). Ej: 80 = al 80% lleno, compacta.
+   • CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS — Máximo de tokens al leer archivos.
+   • CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS — Timeout para hooks de fin de sesión. Por
+    defecto: 1500 .
+   • CLAUDE_CODE_EXIT_AFTER_STOP_DELAY — Retraso antes de salir tras inactividad.
+   • CLAUDE_CODE_SLOW_OPERATION_THRESHOLD_MS — Umbral para diagnosticar operaciones de
+    disco lentas.
+   • SLASH_COMMAND_TOOL_CHAR_BUDGET — Presupuesto de caracteres para slash commands.
+   • TASK_MAX_OUTPUT_LENGTH — Longitud máxima de salida de tareas.
+
+
+
+                                                  799                                      @soyenriquerocha
+APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+   • CLAUDE_CODE_AUTO_COMPACT_WINDOW — Capacidad de tokens para los cálculos de auto-
+     compactación. Por defecto usa la ventana de contexto del modelo.
+
+
+
+MCP (Model Context Protocol)
+
+El Model Context Protocol (MCP) es como un enchufe universal. Permite conectar herramientas
+externas a Claude Code. Estas variables controlan esas conexiones.
+
+   • MCP_TIMEOUT — Timeout de conexión: 30000 (30 seg). Aumenta para servidores remotos.
+   • MCP_TOOL_TIMEOUT — Timeout de ejecución de herramientas MCP individuales.
+   • MAX_MCP_OUTPUT_TOKENS — Tokens máximos de salida MCP: 25000 . Aumenta si las respuestas
+     se truncan. Nota: documentada históricamente, pero no verificada literalmente en la página
+     oficial de variables de entorno de junio 2026.
+   • MCP_SERVER_CONNECTION_BATCH_SIZE — Servidores locales que conectan en paralelo: 3 .
+   • MCP_REMOTE_SERVER_CONNECTION_BATCH_SIZE — Servidores remotos en paralelo: 20 .
+   • MCP_CONNECTION_NONBLOCKING — Conexiones no bloqueantes. Claude Code no espera a que
+     todos los MCP conecten antes de estar listo.
+   • MCP_CLIENT_SECRET — Secreto OAuth para MCP.
+   • MCP_OAUTH_CALLBACK_PORT — Puerto para callback OAuth de MCP.
+
+
+
+Herramientas (Tools)
+
+Variables que controlan cómo funcionan las herramientas internas de Claude Code (Grep, Glob, Bash,
+etc.).
+
+   • CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY — Herramientas ejecutándose al mismo tiempo:
+         10 .
+
+   • CLAUDE_CODE_GLOB_TIMEOUT_SECONDS — Timeout para búsqueda de archivos: 20 seg ( 60 en
+     WSL).
+   • CLAUDE_CODE_GLOB_HIDDEN — Incluir archivos ocultos (que empiezan con . ). Activado por
+     defecto.
+   • CLAUDE_CODE_GLOB_NO_IGNORE — Ignorar reglas de .gitignore al buscar. Activado por
+     defecto.
+   • USE_BUILTIN_RIPGREP / RIPGREP_EMBEDDED — Usar el ripgrep incluido en Claude Code.
+   • CLAUDE_CODE_ENABLE_FINE_GRAINED_TOOL_STREAMING — Streaming granular del input de
+     herramientas. Muestra el progreso a medida que se genera.
+
+
+
+
+                                                      800                             @soyenriquerocha
+                                       APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+Proxy, TLS y Red
+
+Si trabajas en una empresa con proxy o certificados especiales, estas variables son tu salvación.
+
+Proxy
+   • HTTPS_PROXY — URL del proxy HTTPS. El método recomendado. Soporta auth básica: http://
+    user:pass@proxy:8080 . No soporta SOCKS.
+
+   • HTTP_PROXY — Proxy HTTP. Usa solo si HTTPS no está disponible.
+   • NO_PROXY — Dominios que no pasan por el proxy. Acepta valores separados por comas o por
+    espacios. Usa * para bypasear todo. Nota: está confirmado como soportado oficialmente en la
+    documentación de red (algunas guías antiguas decían que no funcionaba).
+   • CLAUDE_CODE_PROXY_RESOLVES_HOSTS — El proxy resuelve los nombres DNS. Necesario en
+    algunas redes corporativas.
+
+
+Certificados TLS
+   • NODE_EXTRA_CA_CERTS — Certificados CA adicionales. Esencial para proxies que re-firman
+    tráfico.
+   • NODE_TLS_REJECT_UNAUTHORIZED — Poner a 0 desactiva validación TLS. NUNCA en
+    producción. Solo para diagnóstico temporal.
+   • NODE_USE_SYSTEM_CA — Usa el almacén de certificados del sistema operativo (Node.js 22+).
+   • CLAUDE_CODE_CERT_STORE — Lista separada por comas de orígenes de certificados CA:
+     bundled (el set de CA de Mozilla que viene incluido) y/o system (el almacén de confianza del
+    sistema operativo). Por defecto: bundled,system . No tiene clave dedicada en settings.json ;
+    ponla en el bloque env .
+
+
+mTLS (certificados de cliente)
+   • CLAUDE_CODE_CLIENT_CERT — Certificado de cliente en formato PEM.
+   • CLAUDE_CODE_CLIENT_KEY — Clave privada del certificado.
+   • CLAUDE_CODE_CLIENT_KEY_PASSPHRASE — Passphrase si la clave está encriptada.
+
+
+Seguridad de subprocesos
+   • CLAUDE_CODE_SUBPROCESS_ENV_SCRUB — Elimina credenciales sensibles (API keys, tokens) del
+    entorno de los subprocesos que Claude Code lanza. Útil como medida de seguridad extra en
+    entornos enterprise.
+
+
+
+
+                                                  801                                     @soyenriquerocha
+APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+OpenTelemetry (Observabilidad)
+
+OpenTelemetry (OTEL) es un estándar para monitorear aplicaciones. Con estas variables, puedes
+enviar datos de Claude Code a tu sistema de monitoreo favorito (Datadog, Grafana, etc.).
+
+   • OTEL_EXPORTER_OTLP_ENDPOINT — Donde enviar los datos. Ej: https://otel-
+    collector:4317 .
+
+   • OTEL_EXPORTER_OTLP_HEADERS — Cabeceras de autenticación para el recolector.
+   • OTEL_EXPORTER_OTLP_PROTOCOL — Protocolo: grpc o http/protobuf .
+   • OTEL_TRACES_EXPORTER — Tipo de exportador de trazas: otlp o console .
+   • OTEL_METRICS_EXPORTER — Exportador de métricas.
+   • OTEL_LOGS_EXPORTER — Exportador de logs.
+   • OTEL_LOG_USER_PROMPTS — Incluye prompts en logs. Cuidado: puede incluir info sensible.
+   • OTEL_LOG_TOOL_CONTENT — Incluye contenido de herramientas en logs.
+   • OTEL_LOG_TOOL_DETAILS — Detalles de herramientas (nivel intermedio).
+   • CLAUDE_CODE_OTEL_SHUTDOWN_TIMEOUT_MS — Timeout de cierre OTEL: 2000 .
+   • CLAUDE_CODE_OTEL_FLUSH_TIMEOUT_MS — Timeout de flush: 5000 .
+   • CLAUDE_CODE_OTEL_HEADERS_HELPER_DEBOUNCE_MS — Refresco de cabeceras: 1740000 (29
+    min).
+   • OTEL_EXPORTER_OTLP_INSECURE — Conexiones sin TLS. Solo para desarrollo local.
+   • OTEL_EXPORTER_PROMETHEUS_HOST / OTEL_EXPORTER_PROMETHEUS_PORT — Endpoint
+    Prometheus en http://host:port/metrics .
+   • CLAUDE_CODE_ENHANCED_TELEMETRY_BETA — Habilita tracing de spans (beta). Necesario para
+    exportar traces con OTEL_TRACES_EXPORTER .
+   • OTEL_EXPORTER_OTLP_METRICS_PROTOCOL — Protocolo específico para métricas. Sobreescribe
+     OTEL_EXPORTER_OTLP_PROTOCOL solo para métricas.
+
+   • OTEL_EXPORTER_OTLP_METRICS_ENDPOINT — Endpoint específico para métricas. Sobreescribe
+    el endpoint general.
+   • OTEL_EXPORTER_OTLP_LOGS_PROTOCOL — Protocolo específico para logs.
+   • OTEL_EXPORTER_OTLP_LOGS_ENDPOINT — Endpoint específico para logs.
+   • OTEL_EXPORTER_OTLP_TRACES_PROTOCOL — Protocolo específico para traces.
+   • OTEL_EXPORTER_OTLP_TRACES_ENDPOINT — Endpoint específico para traces.
+   • OTEL_EXPORTER_OTLP_METRICS_CLIENT_KEY — Clave de cliente para autenticación mTLS en el
+    exportador de métricas.
+
+
+
+
+                                                 802                                       @soyenriquerocha
+                                       APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+   • OTEL_EXPORTER_OTLP_METRICS_CLIENT_CERTIFICATE — Certificado de cliente para mTLS en
+    métricas.
+   • OTEL_METRIC_EXPORT_INTERVAL — Intervalo de exportación de métricas en milisegundos. Por
+    defecto: 60000 (1 minuto). Reduce para debugging.
+   • OTEL_LOGS_EXPORT_INTERVAL — Intervalo de exportación de logs: 5000 (5 seg).
+   • OTEL_TRACES_EXPORT_INTERVAL — Intervalo de exportación de spans por lotes: 5000 (5 seg).
+   • OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE — Preferencia de temporalidad:
+    delta (por defecto) o cumulative . Algunos backends requieren cumulative .
+
+   • OTEL_METRICS_INCLUDE_SESSION_ID — Incluir session.id en métricas. Por defecto: true .
+    Desactiva para reducir cardinalidad.
+   • OTEL_METRICS_INCLUDE_VERSION — Incluir app.version en métricas. Por defecto: false .
+   • OTEL_METRICS_INCLUDE_ACCOUNT_UUID — Incluir user.account_uuid en métricas. Por
+    defecto: true .
+   • OTEL_RESOURCE_ATTRIBUTES — Atributos personalizados de recurso para todas las señales.
+    Formato: clave=valor separados por coma. Ejemplo:
+    department=engineering,team.id=platform . Los valores con espacios o caracteres
+    especiales deben ir percent-encoded.
+   • OTEL_METRICS_INCLUDE_ENTRYPOINT — Incluye el atributo app.entrypoint en las métricas.
+    Por defecto: false . Disponible desde la versión 2.1.152.
+   • OTEL_METRICS_INCLUDE_RESOURCE_ATTRIBUTES — Incluye las claves de
+    OTEL_RESOURCE_ATTRIBUTES como atributos en cada datapoint. Por defecto: true .
+
+   • OTEL_LOG_RAW_API_BODIES — Emite el JSON completo de petición y respuesta de la Messages
+    API. Pon 1 para cuerpos inline truncados a 60 KB, o file:<dir> para volcar los cuerpos sin
+    truncar a disco. Cuidado: incluye todo el historial de conversación.
+   • CLAUDE_CODE_PROPAGATE_TRACEPARENT — Pon 1 para propagar el contexto de traza (cabecera
+    traceparent ) cuando corres detrás de un proxy con ANTHROPIC_BASE_URL .
+
+Importante: Claude Code no pasa las variables OTEL_* a los subprocesos que genera (Bash, hooks,
+servidores MCP, language servers). Si una herramienta lanzada por Claude Code necesita exportar su
+propia telemetría, define las variables OTEL_* dentro de ese comando.
+
+
+
+Sistema de Plugins
+
+   • CLAUDE_CODE_PLUGIN_CACHE_DIR — Cache de plugins. Por defecto: ~/.claude/plugins .
+   • CLAUDE_CODE_PLUGIN_SEED_DIR — Plugins pre-instalados. Para despliegues enterprise.
+   • CLAUDE_CODE_PLUGIN_GIT_TIMEOUT_MS — Timeout para git de plugins: 120000 (2 min).
+
+
+
+                                                 803                                 @soyenriquerocha
+APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+   • FORCE_AUTOUPDATE_PLUGINS — Actualiza plugins sin preguntar.
+   • CLAUDE_CODE_PLUGIN_KEEP_MARKETPLACE_ON_FAILURE — Mantiene el caché del marketplace
+    si falla la actualización. Evita quedarte sin plugins por un error de red.
+   • CLAUDE_CODE_SYNC_PLUGIN_INSTALL — Espera a que los plugins se instalen antes de la primera
+    consulta (modo no interactivo).
+   • CLAUDE_CODE_SYNC_PLUGIN_INSTALL_TIMEOUT_MS — Timeout para la instalación síncrona de
+    plugins.
+   • CLAUDE_CODE_DISABLE_OFFICIAL_MARKETPLACE_AUTOINSTALL — No agrega automáticamente
+    el marketplace oficial de plugins.
+
+
+
+Equipos de Agentes y Cowork
+
+Variables para cuando múltiples agentes Claude trabajan juntos en una tarea.
+
+   • CLAUDE_CODE_PLAN_MODE_REQUIRED — El agente debe presentar un plan y recibir aprobación
+    antes de actuar.
+   • CLAUDE_CODE_TEAMMATE_MODE — Visualización: auto , in-process , o tmux (cada agente en
+    un panel).
+   • CLAUDE_CODE_IS_COWORK — Indica modo colaborativo. Se activa automáticamente.
+   • CLAUDE_CODE_TEAM_NAME — Nombre del equipo.
+   • CLAUDE_CODE_TASK_LIST_ID — ID de lista de tareas compartida entre sesiones.
+   • CLAUDE_AUTO_BACKGROUND_TASKS — Lanza tareas de fondo automáticamente.
+
+
+
+Agent SDK
+
+Variables para desarrolladores que integran Claude Code vía el SDK programático.
+
+   • CLAUDE_AGENT_SDK_VERSION — Versión del SDK (se configura automáticamente).
+   • CLAUDE_AGENT_SDK_CLIENT_APP — Nombre de tu aplicación.
+   • CLAUDE_AGENT_SDK_MCP_NO_PREFIX — No prefijar herramientas MCP con
+    mcp__servername__ .
+
+   • CLAUDE_AGENT_SDK_DISABLE_BUILTIN_AGENTS — Desactiva agentes integrados (Explore, Plan,
+    etc.).
+   • DEBUG_SDK — Logging de depuración del SDK.
+   • CLAUDE_CODE_ACCOUNT_UUID + CLAUDE_CODE_USER_EMAIL +
+    CLAUDE_CODE_ORGANIZATION_UUID — Los tres deben configurarse juntos para el SDK.
+
+
+
+
+                                                   804                             @soyenriquerocha
+                                       APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+IDE, Tmux y Sesiones Remotas
+
+Estas variables controlan cómo Claude Code se conecta a editores de código y funciona en sesiones
+remotas o multiplexores de terminal.
+
+IDE y Extensiones
+   • CLAUDE_CODE_AUTO_CONNECT_IDE — Conecta automáticamente al IDE (VS Code, Cursor, etc.).
+   • CLAUDE_CODE_IDE_HOST_OVERRIDE — Dirección personalizada del IDE.
+   • CLAUDE_CODE_IDE_SKIP_AUTO_INSTALL — No instalar extensiones automáticamente.
+   • CLAUDE_CODE_IDE_SKIP_VALID_CHECK — Omitir validaciones del IDE.
+
+
+Tmux
+   • CLAUDE_CODE_TMUX_SESSION — Nombre de la sesión tmux.
+   • CLAUDE_CODE_TMUX_PREFIX — Tecla prefijo personalizada.
+   • CLAUDE_CODE_TMUX_PREFIX_CONFLICTS — Detecta conflictos de teclas (interno).
+
+
+Sesiones Remotas
+   • CLAUDE_CODE_REMOTE — Modo remoto (activado automáticamente).
+   • CLAUDE_CODE_REMOTE_SESSION_ID — ID de sesión para reconexión.
+   • CLAUDE_CODE_REMOTE_MEMORY_DIR — Directorio de memoria compartida entre instancias.
+   • CLAUDE_CODE_REMOTE_SEND_KEEPALIVES — Pings keepalive para mantener la conexión.
+   • CLAUDE_REMOTE_CONTROL_SESSION_NAME_PREFIX — Prefijo para nombres de sesión auto-
+    generados de Remote Control. Por defecto: hostname del sistema.
+
+
+
+CI/CD y Detección de Terminal
+
+Estas variables son de solo lectura. Claude Code las lee del entorno para saber dónde está corriendo.
+No las configures manualmente.
+
+Detección de CI/CD
+Claude Code detecta automáticamente estos entornos y adapta su comportamiento:
+
+   • GITHUB_ACTIONS — GitHub Actions
+   • GITLAB_CI — GitLab CI
+   • CIRCLECI — CircleCI
+   • BUILDKITE — Buildkite
+
+
+
+                                                805                                    @soyenriquerocha
+APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+   • CODESPACES — GitHub Codespaces
+
+
+Detección de Terminal
+   • TERM — Tipo de terminal (ej: xterm-256color ). Afecta colores.
+   • TERM_PROGRAM — Programa de terminal (ej: iTerm.app ).
+   • COLORTERM — Capacidad de color (ej: truecolor para 24 bits).
+   • FORCE_COLOR — Fuerza colores aunque la terminal no parezca soportarlos.
+
+
+
+Errores Comunes y Cómo Resolverlos
+
+Cuando algo no funciona, casi siempre es una variable mal configurada. Aquí van los errores más
+frecuentes:
+
+   • "API key not found" — Verifica con echo $ANTHROPIC_API_KEY . Si usas suscripción, no
+    configures esta variable.
+   • "Model not found / 404" en Bedrock/Vertex — Fija versiones con
+    ANTHROPIC_DEFAULT_*_MODEL . Verifica que el modelo esté habilitado en tu región.
+
+   • "on-demand throughput isn't supported" — En Bedrock, usa IDs de inference profile (con
+    prefijo us. o global. ), no model IDs directos.
+   • "Región incorrecta en Bedrock" — Desde la versión 2.1.172, Claude Code lee la región de tu
+    .aws/config ; en la 2.1.171 y anteriores es obligatorio exportar AWS_REGION a mano. Ejecuta /
+    status para ver la región resuelta. El orden es AWS_REGION > AWS_DEFAULT_REGION > perfil
+    AWS > us-east-1 .
+   • "AWS credentials expired" — Configura awsAuthRefresh en settings.json:
+    {"awsAuthRefresh": "aws sso login --profile myprofile"} .
+
+   • "ChainedTokenCredential failed" (Foundry) — Ejecuta az login o configura
+    ANTHROPIC_FOUNDRY_API_KEY .
+
+   • "CERTIFICATE_ERROR / TLS failed" — Configura NODE_EXTRA_CA_CERTS con tu CA corporativo.
+    Nunca uses NODE_TLS_REJECT_UNAUTHORIZED=0 en producción.
+   • "Timeout exceeded" — Aumenta BASH_DEFAULT_TIMEOUT_MS y BASH_MAX_TIMEOUT_MS .
+   • "Variable no persiste entre comandos" — Usa CLAUDE_ENV_FILE para cargar variables en cada
+    comando.
+   • "MCP tool output truncated" — Aumenta MAX_MCP_OUTPUT_TOKENS (ej: 50000 ).
+   • "Cargos inesperados con suscripción" — ANTHROPIC_API_KEY está configurada y bypasea tu
+    suscripción. Haz unset ANTHROPIC_API_KEY .
+
+
+
+
+                                                806                                    @soyenriquerocha
+                                      APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+Ejemplos Prácticos
+
+
+
+  Configuración básica con API key
+
+
+
+      export ANTHROPIC_API_KEY=sk-ant-api03-...
+      claude
+
+
+
+  La forma más simple. Configura la clave y lanza Claude Code. Si usas suscripción Pro/Max, no
+  necesitas esta variable.
+
+
+
+
+  Configuración completa para AWS Bedrock
+
+
+
+      export CLAUDE_CODE_USE_BEDROCK=1
+      export AWS_REGION=us-east-1
+      export AWS_PROFILE=my-bedrock-profile
+      export ANTHROPIC_DEFAULT_OPUS_MODEL='us.anthropic.claude-opus-4-8'
+      export ANTHROPIC_DEFAULT_SONNET_MODEL='us.anthropic.claude-
+      sonnet-4-6'
+      export ANTHROPIC_DEFAULT_HAIKU_MODEL='us.anthropic.claude-
+      haiku-4-5-20251001-v1:0'
+      claude
+
+
+
+  Configuración de Bedrock con versiones de modelo fijadas. Fijar versiones es CRÍTICO: evita que
+  una actualización de Claude Code rompa tu instalación al intentar usar un modelo no habilitado.
+
+
+
+
+                                                 807                                      @soyenriquerocha
+APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+   Configuración para Google Vertex AI
+
+
+
+      export CLAUDE_CODE_USE_VERTEX=1
+      export CLOUD_ML_REGION=global
+      export ANTHROPIC_VERTEX_PROJECT_ID=my-project-123
+      export ANTHROPIC_DEFAULT_SONNET_MODEL='claude-sonnet-4-6'
+      export ANTHROPIC_DEFAULT_HAIKU_MODEL='claude-haiku-4-5@20251001'
+      claude
+
+
+
+   Vertex AI con endpoint global y modelos fijados. Usa 'global' para endpoints globales cuando estén
+   disponibles.
+
+
+
+
+   Configuración para Microsoft Foundry
+
+
+
+      export CLAUDE_CODE_USE_FOUNDRY=1
+      export ANTHROPIC_FOUNDRY_RESOURCE=my-claude-resource
+      export ANTHROPIC_FOUNDRY_API_KEY=your-azure-api-key
+      export ANTHROPIC_DEFAULT_SONNET_MODEL='claude-sonnet-4-6'
+      claude
+
+
+
+   Azure Foundry con autenticación por API key. El nombre del recurso es suficiente; Claude Code
+   construye la URL.
+
+
+
+
+                                                  808                                      @soyenriquerocha
+                                     APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+Variables compartidas en settings.json del equipo
+
+
+
+   {
+       "env": {
+           "CLAUDE_CODE_USE_BEDROCK": "1",
+           "AWS_REGION": "us-east-1",
+           "ANTHROPIC_DEFAULT_SONNET_MODEL": "us.anthropic.claude-
+   sonnet-4-6",
+           "CLAUDE_CODE_EFFORT_LEVEL": "high",
+           "DISABLE_AUTOUPDATER": "1"
+       }
+   }
+
+
+
+Guarda esto en .claude/settings.json del proyecto. Todo el equipo usará la misma configuración.
+Recuerda: todos los valores deben ser strings entre comillas.
+
+
+
+
+Entorno air-gapped (sin internet extra)
+
+
+
+   export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+   claude
+
+
+
+Un solo interruptor apaga actualizaciones, telemetría, reporte de errores y el comando /bug.
+Perfecto para redes restringidas.
+
+
+
+
+                                                809                                     @soyenriquerocha
+APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+   Proxy corporativo con certificados mTLS
+
+
+
+      export HTTPS_PROXY=https://proxy.corp.com:8080
+      export NODE_EXTRA_CA_CERTS=/path/to/corporate-ca.pem
+      export CLAUDE_CODE_CLIENT_CERT=/path/to/client.pem
+      export CLAUDE_CODE_CLIENT_KEY=/path/to/client-key.pem
+      claude
+
+
+
+   La configuración completa para empresas con proxy HTTPS, CA personalizada y autenticación
+   mutua TLS.
+
+
+
+
+   Monitoreo con OpenTelemetry
+
+
+
+      export CLAUDE_CODE_ENABLE_TELEMETRY=1
+      export OTEL_EXPORTER_OTLP_ENDPOINT=https://otel-collector:4317
+      export OTEL_EXPORTER_OTLP_HEADERS=api-key=my-key
+      export OTEL_TRACES_EXPORTER=otlp
+      export OTEL_METRICS_EXPORTER=otlp
+      export OTEL_LOGS_EXPORTER=otlp
+      claude
+
+
+
+   Envía trazas, métricas y logs a tu recolector OTEL. Conecta con Datadog, Grafana, Honeycomb o
+   cualquier sistema compatible.
+
+
+
+
+                                                 810                                     @soyenriquerocha
+                                    APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+Timeouts extendidos para builds largos
+
+
+
+      {
+          "env": {
+              "BASH_DEFAULT_TIMEOUT_MS": "1800000",
+              "BASH_MAX_TIMEOUT_MS": "7200000",
+              "API_TIMEOUT_MS": "600000"
+          }
+      }
+
+
+
+Bash por defecto 30 min, máximo 2 horas, API 10 min. Guárdalo en settings.json para que persista.
+
+
+
+
+Gateway LLM con LiteLLM
+
+
+
+      export ANTHROPIC_BEDROCK_BASE_URL=https://litellm-server:4000/bedrock
+      export CLAUDE_CODE_SKIP_BEDROCK_AUTH=1
+      export CLAUDE_CODE_USE_BEDROCK=1
+      export ANTHROPIC_AUTH_TOKEN=sk-litellm-key
+      claude
+
+
+
+Conecta Claude Code a Bedrock a través de un proxy LiteLLM que maneja toda la autenticación por
+ti.
+
+
+
+
+  Consejo
+
+  No necesitas memorizar las más de 230 variables. Aprende los patrones de nombres
+  (CLAUDE_CODE_DISABLE_*, ANTHROPIC_*, etc.) y busca en esta referencia cuando lo necesites.
+
+
+
+
+  Advertencia
+
+  Si usas suscripción Pro/Max/Team, NO configures ANTHROPIC_API_KEY. Hacerlo bypasea tu
+  suscripción y te cobra por uso de API.
+
+
+
+
+                                               811                                      @soyenriquerocha
+APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+     Advertencia
+
+     NUNCA pongas NODE_TLS_REJECT_UNAUTHORIZED=0 en producción. Solo úsalo
+     temporalmente para diagnosticar problemas de certificados.
+
+
+
+
+     Consejo
+
+     Para entornos enterprise con Bedrock/Vertex/Foundry, SIEMPRE fija las versiones de modelo con
+     ANTHROPIC_DEFAULT_*_MODEL. Así evitas roturas cuando Anthropic lanza nuevas versiones.
+
+
+
+
+     Nota
+
+     Todos los valores en settings.json deben ser strings entre comillas, incluso números y booleanos.
+     Escribe "1", no 1.
+
+
+
+
+     Nota
+
+     Muchas variables no documentadas oficialmente pueden cambiar sin aviso entre versiones.
+     Úsalas bajo tu propio riesgo.
+
+
+
+
+     Consejo
+
+     Si muchas variables DISABLE_* te confunden, recuerda el atajo maestro:
+     CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1 apaga todo el tráfico no esencial de un
+     golpe.
+
+
+
+
+     Nota
+
+     Claude Code necesita acceso a api.anthropic.com, claude.ai y platform.claude.com. Asegura que
+     estén en el allowlist de tu proxy/firewall.
+
+
+
+
+                                                  812                                       @soyenriquerocha
+                                    APÉNDICE C: REFERENCIA COMPLETA DE VARIABLES DE ENTORNO
+
+
+
+
+ Consejo
+
+ En Windows, usa CLAUDE_CODE_GIT_BASH_PATH para apuntar a tu bash.exe y
+ CLAUDE_CODE_USE_POWERSHELL_TOOL=1 si prefieres PowerShell (preview).
+
+
+
+
+Resumen
+
+Claude Code reconoce más de 230 variables de entorno organizadas en 16 categorías. Las más
+importantes controlan la autenticación (ANTHROPIC_API_KEY), el modelo (ANTHROPIC_MODEL),
+los proveedores cloud (Bedrock/Vertex/Foundry) y la red (HTTPS_PROXY,
+NODE_EXTRA_CA_CERTS). Puedes configurarlas en el shell, en settings.json o con
+CLAUDE_ENV_FILE. Recuerda: en settings.json todo va entre comillas, y para proveedores cloud
+siempre fija las versiones de modelo.
+
+
+
+
+                                             813                                     @soyenriquerocha
+APÉNDICE D: GLOSARIO
+
+
+
+

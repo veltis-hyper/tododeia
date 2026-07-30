@@ -1,0 +1,708 @@
+<article class="chapter" data-id="cap24" data-title="Enterprise y Equipos" data-part="4">
+  <header class="ch-head">
+    <p class="ch-kicker">Parte 4 · Avanzado y Desarrollador · Capítulo 24</p>
+    <h1>Enterprise y Equipos</h1>
+    <p class="ch-lede">Claude para empresas: planes Team y Enterprise, seguridad avanzada y gestión de equipos.</p>
+  </header>
+
+  <p>Cuando una persona usa Claude, todo es simple: te registras, pagas y listo. Pero cuando una empresa entera quiere usar Claude, las cosas cambian. Necesitas controlar quién entra, qué puede hacer, dónde se guardan los datos y cómo se paga. Este capítulo te explica los planes Team y Enterprise de Claude. Vamos a ver cada herramienta que tienen los administradores para gestionar equipos de forma segura.</p>
+
+  <h2 id="cap24-los-dos-planes-para-organizaciones">Los dos planes para organizaciones</h2>
+
+  <p>Claude tiene dos planes pensados para empresas: Team y Enterprise. Piensa en ellos como dos tallas de traje. Team es para equipos medianos. Enterprise es para organizaciones grandes con necesidades de seguridad muy estrictas.</p>
+  <p>Ambos incluyen todo lo que tiene el plan Pro (el plan individual). Pero además agregan herramientas de administración. Es como pasar de conducir tu propio auto a gestionar una flota de vehículos.</p>
+
+  <h3>Plan Team: para equipos de 5 a 150 personas</h3>
+  <p>El plan Team es autoservicio. Lo contratas tú mismo, sin hablar con nadie de ventas. Funciona para equipos de 5 a 150 miembros.</p>
+  <p>Tiene dos tipos de asiento (piensa en «asiento» como una licencia individual):</p>
+  <ul class="deflist">
+    <li><strong>Standard</strong> — $20/mes (anual) o $25/mes (mensual). Te da 1.25 veces el uso del plan Pro, con límites por sesión de 5 horas y un tope semanal.</li>
+    <li><strong>Premium</strong> — $100/mes (anual) o $125/mes (mensual). Te da 6.25 veces el uso del Pro, con el doble de límite semanal. Acceso a todos los modelos más un límite extra para Sonnet.</li>
+  </ul>
+  <p>Puedes mezclar asientos Standard y Premium en el mismo equipo. Por ejemplo: 8 personas con Standard y 2 power users con Premium.</p>
+  <p>El plan Team incluye:</p>
+  <ul>
+    <li>SSO (login centralizado)</li>
+    <li>Domain Capture (redirige a empleados automáticamente)</li>
+    <li>JIT provisioning (cuentas se crean al primer login)</li>
+    <li>Roles y permisos</li>
+    <li>Enterprise Search (buscar en tus herramientas)</li>
+    <li>Todos los modelos de IA</li>
+    <li>Claude Code, Cowork y Design (la página de precios los lista juntos como parte del plan Team)</li>
+    <li>Projects con contexto de 200K tokens</li>
+    <li>Acceso prioritario y funciones nuevas antes que nadie</li>
+  </ul>
+
+  <h3>Plan Enterprise: para organizaciones grandes</h3>
+  <p>El plan Enterprise es para organizaciones que necesitan el máximo control. No tiene límite máximo de miembros. El precio es personalizado.</p>
+  <p>Funciona diferente al Team. Pagas dos cosas por separado:</p>
+  <ol>
+    <li>Un costo fijo anual por cada asiento (la licencia de cada persona).</li>
+    <li>El uso real, facturado por consumo de tokens a tarifas de API.</li>
+  </ol>
+  <p>Es como un plan de celular: pagas la línea y luego pagas por los datos que uses.</p>
+  <p>Enterprise incluye todo lo del plan Team más:</p>
+  <ul>
+    <li>Contexto expandido: 500K tokens en chat con Sonnet 4.6 y 1 millón de tokens en Claude Code + Sonnet 4.6</li>
+    <li>Audit logs (registro de todo lo que pasa)</li>
+    <li>SCIM (sincronización automática de usuarios)</li>
+    <li>Compliance API (acceso programático a datos de uso)</li>
+    <li>Analytics API (métricas de adopción)</li>
+    <li>Retención de datos personalizable</li>
+    <li>IP Allowlisting (solo IPs permitidas)</li>
+    <li>Tenant Restrictions (bloquear cuentas personales)</li>
+    <li>HIPAA-ready (para datos de salud, con BAA)</li>
+    <li>Sin límites de uso por asiento</li>
+  </ul>
+  <p>Hay dos formas principales de contratar Enterprise, con mínimos de asientos distintos:</p>
+  <ul class="deflist">
+    <li><strong>Self-serve (desde 20 asientos)</strong> — lo contratas tú mismo desde la web. Pagas con tarjeta de crédito o ACH, siempre en USD. Compras créditos prepagados; cuando se acaban, el servicio se pausa hasta que compres más. Es la vía más rápida, pero sin contrato personalizado.</li>
+    <li><strong>Sales-assisted (desde 50 asientos)</strong> — lo contratas hablando con el equipo de ventas. Pagas por factura, en la divisa que necesites (multi-divisa), con MSA y PO. Permite usage commitments, product bundling, trials y compra a través de AWS Marketplace. Es la única vía que incluye HIPAA-ready y BAA. El servicio nunca se detiene aunque el consumo suba.</li>
+  </ul>
+  <p>En resumen: si tu organización tiene entre 20 y 49 asientos puedes entrar a Enterprise por self-serve; si tienes 50 o más y necesitas contrato, factura o BAA, vas por sales-assisted.</p>
+
+  <h3>Comparativa rápida: Team vs Enterprise</h3>
+  <p>Esta tabla resume las diferencias clave:</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Característica</th><th>Team</th><th>Enterprise</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Miembros</td><td>5-150</td><td>Sin límite</td></tr>
+        <tr><td>Precio</td><td>Fijo por asiento</td><td>Asiento + uso</td></tr>
+        <tr><td>SSO</td><td>Sí</td><td>Sí</td></tr>
+        <tr><td>SCIM</td><td>No</td><td>Sí</td></tr>
+        <tr><td>Audit Logs</td><td>No</td><td>Sí</td></tr>
+        <tr><td>Compliance API</td><td>No</td><td>Sí</td></tr>
+        <tr><td>Analytics API</td><td>No</td><td>Sí</td></tr>
+        <tr><td>IP Allowlisting</td><td>No</td><td>Sí</td></tr>
+        <tr><td>Tenant Restrictions</td><td>No</td><td>Sí</td></tr>
+        <tr><td>Retención personalizada</td><td>No</td><td>Sí</td></tr>
+        <tr><td>HIPAA</td><td>No</td><td>Sí (asistido por ventas)</td></tr>
+        <tr><td>Contexto máximo</td><td>200K</td><td>Hasta 1M tokens</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="cap24-roles-y-permisos">Roles y permisos: quién puede hacer qué</h2>
+
+  <p>En una empresa no todos necesitan el mismo poder. Un empleado normal no debería poder borrar la cuenta entera. Por eso Claude tiene un sistema de roles. Un rol es como un gafete de acceso: define a qué puertas puedes entrar.</p>
+  <p>Hay 4 roles, de mayor a menor poder:</p>
+
+  <h3>Primary Owner: el super administrador</h3>
+  <p>Solo hay uno por organización. Es la persona con control total. Puede hacer absolutamente todo: ver facturas, configurar seguridad, manejar SSO, agregar y quitar miembros, exportar datos y provisionar asientos nuevos.</p>
+  <p>Un dato interesante: el Primary Owner puede ser una cuenta de servicio. Esto significa que no tiene que ser la cuenta personal de alguien. Es como tener una llave maestra que no pertenece a ninguna persona en particular.</p>
+  <p>El Primary Owner usa una licencia del plan. Así que cuenta como un asiento.</p>
+
+  <h3>Owner: administrador senior</h3>
+  <p>Puedes tener varios Owners. Son administradores de alto nivel. Pueden ver facturas, invitar y quitar miembros (incluyendo otros Admins y Owners), configurar integraciones, SSO, audit logs, retención de datos y ver analytics.</p>
+  <p>Es el rol ideal para el VP de Ingeniería o el Director de IT.</p>
+
+  <h3>Admin: gestión media</h3>
+  <p>Los Admins pueden invitar y quitar miembros, y cancelar invitaciones pendientes. En Enterprise también pueden ver analytics. Pero no pueden ver facturas ni configurar SSO.</p>
+  <p>Es perfecto para Team Leads o Engineering Managers.</p>
+
+  <h3>User: miembro regular</h3>
+  <p>Es el rol por defecto. Los Users pueden crear chats, modificar sus conversaciones y usar Projects. No tienen capacidades administrativas.</p>
+  <p>Es para el miembro regular del equipo que solo necesita trabajar con Claude.</p>
+
+  <h3>Custom Roles con permisos de admin (Enterprise, junio 2026)</h3>
+  <p>Hasta hace poco, los 4 roles de arriba eran fijos: o eras User, o tenías un cargo de administrador completo. Desde el 2 de junio de 2026, el plan Enterprise permite algo más fino: <strong>roles personalizados con permisos de admin puntuales</strong>.</p>
+  <p>La idea es simple. Antes, si querías que alguien viera la facturación o gestionara la privacidad, tenías que convertirlo en Owner, lo que le daba muchísimo más poder del necesario. Ahora puedes conceder solo ese permiso concreto (por ejemplo, acceso a billing o a privacy) a un rol personalizado, sin que la persona tenga que ser Owner.</p>
+  <p>Es como darle a alguien la llave de una sola sala en vez de la llave maestra del edificio. El responsable de finanzas puede ver las facturas sin poder tocar la configuración de seguridad. El encargado de cumplimiento puede gestionar privacidad sin poder borrar miembros.</p>
+  <p>Esta función es exclusiva del plan Enterprise. Matiza la regla de «solo hay 4 roles fijos»: esos siguen siendo la base, pero ahora puedes construir roles a medida encima de ellos con permisos administrativos sueltos.</p>
+
+  <h2 id="cap24-console-api-roles-y-workspaces">Console API: roles y workspaces</h2>
+
+  <p>Los roles que acabamos de ver (Primary Owner, Owner, Admin, User) son para la interfaz web de Claude en planes Team y Enterprise. Pero si tu equipo usa la API de Claude a través de la Console (<code><a href="https://platform.claude.com" target="_blank" rel="noopener">platform.claude.com</a></code>), hay un sistema de roles diferente. Piensa en ello como dos edificios distintos: uno es la oficina de Claude web y otro es el laboratorio de la API. Cada uno tiene sus propios gafetes de acceso.</p>
+
+  <h3>Los 6 roles de la Console API</h3>
+  <p>La Console tiene 6 roles, ordenados de menor a mayor poder:</p>
+  <ol>
+    <li><strong><code>user</code></strong>: solo puede usar el Workbench (el playground de la API). Es el rol más restrictivo.</li>
+    <li><strong><code>claude_code_user</code></strong>: todo lo del user más acceso a Claude Code. Para personas que solo necesitan programar con Claude.</li>
+    <li><strong><code>limited_developer</code></strong>: todo lo del user más Workbench, Claude Code, crear y gestionar API keys, gestionar webhook endpoints, ver usage y cost, y gestionar vaults y credentials. Pensado para desarrolladores que necesitan operar la API sin ver datos sensibles de sesión.</li>
+    <li><strong><code>developer</code></strong>: todo lo del limited_developer más ver session traces y descargar files. Es el rol típico del desarrollador que construye aplicaciones y necesita depurar el detalle de cada sesión.</li>
+    <li><strong><code>billing</code></strong>: todo lo del user más gestionar la facturación. Hereda automáticamente el rol de Workspace Billing en todos los workspaces.</li>
+    <li><strong><code>admin</code></strong>: puede hacer todo lo anterior más gestionar usuarios. Es el único rol que puede crear Admin API keys (las llaves especiales con prefijo <code>sk-ant-admin</code>).</li>
+  </ol>
+  <p>Las invitaciones a la organización en Console expiran a los 21 días. Las API keys persisten aunque elimines al usuario que las creó, porque pertenecen a la organización, no a la persona.</p>
+
+  <h3>Workspaces: organizar el uso de la API</h3>
+  <p>Un workspace es como un departamento dentro de tu organización de API. Sirve para separar proyectos, entornos o equipos. Imagina que tu empresa tiene un equipo de backend, otro de data science y otro de soporte. Cada uno puede tener su propio workspace con sus propias API keys, límites de gasto y miembros.</p>
+  <p>Datos clave de los workspaces:</p>
+  <ul>
+    <li>Cada organización tiene un Default Workspace que no se puede renombrar, archivar ni eliminar.</li>
+    <li>Puedes crear hasta 100 workspaces por organización (los archivados no cuentan).</li>
+    <li>Los identificadores tienen el prefijo <code>wrkspc_</code>.</li>
+    <li>Las API keys están vinculadas a un workspace específico. Una key del workspace de producción no funciona en el de desarrollo.</li>
+  </ul>
+  <p>Casos de uso comunes:</p>
+  <ul class="deflist">
+    <li><strong>Por entorno</strong> — un workspace para desarrollo, otro para staging y otro para producción.</li>
+    <li><strong>Por equipo</strong> — un workspace por departamento para controlar costos por separado.</li>
+    <li><strong>Por proyecto</strong> — un workspace por aplicación o cliente.</li>
+  </ul>
+
+  <h3>Roles dentro de un workspace</h3>
+  <p>Dentro de cada workspace hay 5 roles:</p>
+  <ul class="deflist">
+    <li><strong>Workspace Admin</strong> — control total sobre la configuración y miembros del workspace. Los admins de la organización obtienen este rol automáticamente en todos los workspaces.</li>
+    <li><strong>Workspace Developer</strong> — puede crear y gestionar API keys y usar la API.</li>
+    <li><strong>Workspace Limited Developer</strong> — puede crear y gestionar API keys y usar la API, pero sin acceso a session traces ni descarga de files. Es el equivalente a <code>limited_developer</code> dentro de un workspace específico.</li>
+    <li><strong>Workspace User</strong> — solo puede usar el Workbench.</li>
+    <li><strong>Workspace Billing</strong> — puede ver la facturación del workspace. No se asigna manualmente; se hereda automáticamente del rol <code>billing</code> de la organización. No aparece en el selector de roles cuando agregas a un miembro al workspace.</li>
+  </ul>
+  <p>Los recursos de cada workspace (archivos, message batches, skills) están aislados de los demás. Desde febrero de 2026, las cachés de prompts también están aisladas por workspace en Anthropic Cloud.</p>
+
+  <h2 id="cap24-admin-api">Admin API: gestionar tu organización por código</h2>
+
+  <p>La Admin API te permite gestionar tu organización de Claude de forma programática. En vez de hacer clic en botones de la consola de administración, puedes automatizarlo todo con scripts y herramientas.</p>
+  <p>Piensa en ello como la diferencia entre configurar tu teléfono tocando la pantalla versus usar comandos. El resultado es el mismo, pero con código puedes automatizar tareas repetitivas.</p>
+
+  <h3>La llave especial: Admin API key</h3>
+  <p>Para usar la Admin API necesitas una llave especial que empieza con <code>sk-ant-admin...</code>. Es diferente a las API keys normales que usas para enviar mensajes a Claude.</p>
+  <p>Solo los org admins pueden crear estas llaves desde la Console. Es como una llave maestra que abre las puertas de administración, no las de uso.</p>
+  <p>Cada petición requiere dos headers:</p>
+  <pre><code class="lang-text">x-api-key: sk-ant-admin-...
+anthropic-version: 2023-06-01</code></pre>
+
+  <h3>Qué puedes hacer con la Admin API</h3>
+  <p>La Admin API tiene cuatro áreas principales:</p>
+  <ol>
+    <li><strong>Miembros de la organización</strong>: listar todos los miembros, actualizar roles y eliminar usuarios.</li>
+    <li><strong>Invitaciones</strong>: crear invitaciones por email, listarlas y eliminar las pendientes. Las invitaciones expiran a los 21 días.</li>
+    <li><strong>Workspaces</strong>: crear nuevos workspaces, listar los existentes, archivar los que ya no uses, y gestionar los miembros de cada workspace.</li>
+    <li><strong>API keys</strong>: listar las keys existentes y actualizar su nombre o estado (activar/desactivar).</li>
+  </ol>
+  <p>Dos limitaciones importantes:</p>
+  <ul>
+    <li>No puedes crear nuevas API keys vía la Admin API. Solo puedes hacerlo desde la Console.</li>
+    <li>No puedes eliminar org admins vía la API. Es una medida de seguridad para evitar que un script borre a todos los administradores por accidente.</li>
+  </ul>
+  <p>También tienes acceso a la Usage and Cost API para rastrear cuánto gasta cada workspace, y la Claude Code Analytics API para medir la productividad de los desarrolladores.</p>
+
+  <h3>Ejemplos prácticos de la Admin API</h3>
+  <p>Listar los miembros de tu organización:</p>
+  <pre><code class="lang-bash">curl "https://api.anthropic.com/v1/organizations/users?limit=10" \
+   --header "anthropic-version: 2023-06-01" \
+   --header "x-api-key: $ANTHROPIC_ADMIN_KEY"</code></pre>
+  <p>Invitar a un nuevo miembro:</p>
+  <pre><code class="lang-bash">curl --request POST \
+   "https://api.anthropic.com/v1/organizations/invites" \
+   --header "anthropic-version: 2023-06-01" \
+   --header "x-api-key: $ANTHROPIC_ADMIN_KEY" \
+   --data '{"email": "dev@tuempresa.com", "role": "developer"}'</code></pre>
+  <p>Crear un workspace:</p>
+  <pre><code class="lang-bash">curl --request POST \
+   "https://api.anthropic.com/v1/organizations/workspaces" \
+   --header "anthropic-version: 2023-06-01" \
+   --header "x-api-key: $ANTHROPIC_ADMIN_KEY" \
+   --data '{"name": "Production"}'</code></pre>
+  <p>Ver la info de tu organización:</p>
+  <pre><code class="lang-bash">curl "https://api.anthropic.com/v1/organizations/me" \
+   --header "anthropic-version: 2023-06-01" \
+   --header "x-api-key: $ANTHROPIC_ADMIN_KEY"</code></pre>
+
+  <h2 id="cap24-sso">SSO: un solo login para todo</h2>
+
+  <p>SSO significa Single Sign-On (inicio de sesión único). Es como tener una llave maestra que abre todas las puertas. En vez de que cada persona cree una cuenta separada en Claude, todos entran con las mismas credenciales que usan para el resto de herramientas de la empresa.</p>
+  <p>Por dentro, Anthropic delega la autenticación a WorkOS, un broker de identidad que actúa como intermediario entre Claude y tu proveedor corporativo. Esto es transparente para los usuarios, pero conviene saberlo cuando depures problemas de configuración o leas guías del soporte (la mayoría dicen «sigue la guía de WorkOS»).</p>
+  <p>WorkOS soporta SAML 2.0 (la opción recomendada y la mejor documentada por Anthropic) y también OIDC. SAML 2.0 sigue siendo el estándar más común en empresas para autenticación centralizada y es la vía recomendada para Claude.</p>
+  <p>Los proveedores de identidad (IdP) soportados incluyen: Okta, Entra ID (antes Azure AD), Google Workspace, OneLogin, JumpCloud, PingIdentity y Duo.</p>
+  <div class="callout warn">
+    <p class="callout-label">Gotcha importante</p>
+    <p>El email que envía el IdP por SAML debe coincidir exactamente con el email que SCIM aprovisiona (incluyendo mayúsculas, alias y dominio). Si SAML envía <code>Juan.Perez@empresa.com</code> y SCIM creó <code>juan.perez@empresa.com</code>, el login falla aunque el IdP autentique al usuario. Alinea el claim de email en ambos lados desde el principio.</p>
+  </div>
+
+  <h3>Cómo configurar SSO paso a paso</h3>
+  <p>Configurar SSO tiene 4 pasos principales:</p>
+  <ol class="steps">
+    <li><strong>Verificar tu dominio</strong>: Ve a Organization settings y agrega tu dominio. Claude te pide crear un registro DNS TXT para demostrar que el dominio es tuyo. La verificación tarda entre 10 minutos y 48 horas (depende de la propagación DNS).</li>
+    <li><strong>Configurar SSO</strong>: En Identity and access settings, sigue las guías de WorkOS para tu IdP específico. Cada proveedor tiene instrucciones diferentes.</li>
+    <li><strong>Elegir enforcement</strong>: Decides si SSO es obligatorio para todos o si es opcional.</li>
+    <li><strong>Elegir provisioning</strong>: Cómo se crean las cuentas nuevas (manual, JIT o SCIM).</li>
+  </ol>
+  <p>Puedes verificar múltiples dominios. Pero todos deben usar un solo IdP. No puedes tener parte del equipo con Okta y otra parte con Google.</p>
+  <p>Si necesitas desactivar SSO, puedes hacerlo en cualquier momento. Hay dos opciones: apagar el toggle (suave) o hacer un reset completo que cierra todas las sesiones activas.</p>
+
+  <h3>Domain Capture: redirigir empleados automáticamente</h3>
+  <p>Domain Capture es como un portero que redirige a la gente al lugar correcto. Una vez que verificas tu dominio, cualquier persona con un correo <code>@tuempresa.com</code> que intente registrarse en Claude será automáticamente canalizada a tu organización.</p>
+  <p>Esto evita que los empleados creen cuentas personales sueltas. Todos terminan en el mismo workspace corporativo.</p>
+
+  <h2 id="cap24-provisioning">Provisioning: cómo se crean las cuentas</h2>
+
+  <p>Provisioning es el proceso de crear cuentas de usuario. Piensa en ello como la matrícula de nuevos empleados. Hay tres modos:</p>
+
+  <h3>Invite Only (manual)</h3>
+  <p>Es el modo por defecto. Un administrador invita a cada persona por email o con un link de invitación. Simple pero laborioso si tienes muchos empleados.</p>
+
+  <h3>JIT (Just-In-Time)</h3>
+  <p>Disponible en Team, Enterprise y Console. La cuenta se crea automáticamente la primera vez que alguien hace login vía SSO. El rol asignado es User por defecto.</p>
+  <p>La ventaja: no tienes que invitar a nadie manualmente. La desventaja: cuando alguien se va de la empresa, tienes que eliminarlo a mano de Claude. JIT no hace deprovision automática.</p>
+
+  <h3>SCIM: sincronización automática completa</h3>
+  <p>SCIM (System for Cross-domain Identity Management) es la opción más potente. Solo disponible en Enterprise y Console.</p>
+  <p>SCIM sincroniza tu directorio de usuarios automáticamente. Cuando agregas a alguien en tu IdP (como Okta), aparece en Claude. Cuando lo quitas de Okta, desaparece de Claude. Todo automático.</p>
+  <p>Además, SCIM soporta Group Mapping. Puedes crear grupos en tu IdP con nombres como <code>anthropic-claude-owner</code>, <code>anthropic-claude-admin</code> o <code>anthropic-claude-user</code>. Claude asigna el rol automáticamente según el grupo.</p>
+  <div class="callout warn">
+    <p class="callout-label">Advertencia crítica</p>
+    <p>Cuando configures Group Mapping, primero asigna los usuarios a los grupos en tu IdP. Después guarda la configuración en Claude. Si lo haces al revés (guardar primero, asignar después), Claude puede eliminar masivamente a los usuarios que no están en ningún grupo.</p>
+  </div>
+
+  <h2 id="cap24-seguridad-de-red">Seguridad de red: controlar desde dónde se accede</h2>
+
+  <p>Además de controlar quién entra, Enterprise te permite controlar desde dónde entran. Hay dos herramientas para esto. Ambas son exclusivas de Enterprise.</p>
+
+  <h3>IP Allowlisting: solo IPs aprobadas</h3>
+  <p>Imagina un club con lista de invitados. Solo entran las personas de la lista. IP Allowlisting funciona igual: solo permite acceso desde direcciones IP que tú apruebes.</p>
+  <p>Configuras rangos CIDR (una forma de escribir rangos de IPs). Por ejemplo, <code>10.0.0.0/8</code> permite todas las IPs que empiecen con 10. Puedes incluir oficinas, puntos de salida de VPN y cualquier otra IP autorizada.</p>
+  <div class="callout warn">
+    <p class="callout-label">Importante</p>
+    <p>Esta configuración no es autoservicio. Tienes que contactar a tu representante de Anthropic o al equipo de ventas para activarla.</p>
+  </div>
+  <p>Si olvidas incluir un rango de IPs, los usuarios de esas IPs quedarán bloqueados. Tendrán que contactar a su administrador de IT para resolver el problema.</p>
+
+  <h3>Tenant Restrictions: bloquear cuentas personales</h3>
+  <p>IP Allowlisting controla desde dónde se accede. Tenant Restrictions controla a qué cuenta se accede.</p>
+  <p>Funciona así: tu proxy de red inyecta un header HTTP en cada petición a Claude. Ese header dice: «solo permitir acceso a estas organizaciones». Si alguien intenta usar una cuenta personal de Claude desde la red corporativa, será bloqueado.</p>
+  <p>El header es:</p>
+  <pre><code class="lang-text">anthropic-allowed-org-ids: 550e8400-e29b-41d4-a716-446655440000</code></pre>
+  <p>Donde el UUID es el identificador único de tu organización. Lo encuentras en Settings.</p>
+  <p>Para que funcione necesitas:</p>
+  <ol class="steps">
+    <li>Obtener el UUID de tu organización.</li>
+    <li>Configurar tu proxy de red con una regla que inyecte el header.</li>
+    <li>Aplicarlo a estos dominios: <code><a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a></code>, <code><a href="https://api.anthropic.com" target="_blank" rel="noopener">api.anthropic.com</a></code>, <code><a href="https://claude.com" target="_blank" rel="noopener">claude.com</a></code>, <code><a href="https://anthropic.com" target="_blank" rel="noopener">anthropic.com</a></code>.</li>
+    <li>Tener TLS inspection habilitado en el proxy.</li>
+  </ol>
+  <p>Proxies compatibles: Zscaler ZIA, Palo Alto Prisma Access, Cato Networks, Netskope, o cualquier proxy HTTPS con capacidad de inyectar headers.</p>
+  <p>Beneficios clave: previene pérdida de datos, asegura compliance, controla el «shadow IT» y mantiene un audit trail completo.</p>
+
+  <h2 id="cap24-auditoria-y-compliance">Auditoría y compliance: saber qué pasa y cumplir normas</h2>
+
+  <p>En una empresa grande, necesitas saber qué está pasando. Quién entró, qué hizo, cuándo lo hizo. También necesitas demostrar a auditores que cumples con normas de seguridad. Claude Enterprise tiene varias herramientas para esto.</p>
+
+  <h3>Audit Logs: el registro de todo</h3>
+  <p>Los audit logs son como las cámaras de seguridad de un edificio. Registran más de 28 tipos de eventos: logins, logouts, creación de projects, cambios de nombre, invitaciones, cambios de configuración SSO, subida de archivos, exportaciones y más.</p>
+  <p>Algunos nombres concretos de eventos que vas a encontrar en el CSV:</p>
+  <ul>
+    <li><code>claude_chat_created</code> — un usuario abrió un chat nuevo.</li>
+    <li><code>user_invited</code> / <code>user_removed</code> — alta o baja de un miembro.</li>
+    <li><code>sso_configured</code> — cambios en la configuración SSO.</li>
+    <li><code>project_created</code> / <code>project_deleted</code> / <code>project_visibility_changed</code> — ciclo de vida de un project.</li>
+    <li><code>file_uploaded</code> — subida de un archivo.</li>
+    <li><code>session_login_sso</code>, <code>session_login_google</code>, <code>session_login_apple</code>, <code>session_login_magic_link</code> — autenticación por cada método.</li>
+    <li><code>role_changed</code> — cambio de rol de un miembro.</li>
+    <li><code>workspace_created</code> / <code>workspace_archived</code> — gestión de workspaces.</li>
+  </ul>
+  <p>Datos clave:</p>
+  <ul class="deflist">
+    <li><strong>Quién puede verlos</strong> — solo Owners y Primary Owners.</li>
+    <li><strong>Dónde</strong> — Organization settings &gt; Data and Privacy &gt; Export logs.</li>
+    <li><strong>Cuánto tiempo cubren</strong> — los últimos 180 días.</li>
+    <li><strong>Cómo se entregan</strong> — un archivo enviado por email. El enlace de descarga dura 24 horas.</li>
+  </ul>
+  <p>Cada evento registra: fecha/hora, información del actor, tipo de evento, detalles del evento, IP, dispositivo y plataforma.</p>
+  <div class="callout note">
+    <p class="callout-label">Limitación importante</p>
+    <p>Los audit logs no incluyen el contenido de los chats ni de los projects. Solo registran IDs únicos. Si necesitas el contenido real, usa la Compliance API o la exportación de datos.</p>
+  </div>
+
+  <h3>Compliance API: acceso programático a datos</h3>
+  <p>La Compliance API es para organizaciones que necesitan integrar los datos de Claude con sus sistemas de seguridad. Solo disponible en Enterprise (excepto Public Sector). Se lanzó el 20 de agosto de 2025.</p>
+  <p>Con esta API puedes acceder a:</p>
+  <ul>
+    <li>Activity logs (registros de actividad)</li>
+    <li>Datos de chat (contenido real de las conversaciones)</li>
+    <li>Contenido de archivos</li>
+    <li>Eventos de audit log filtrados por usuario y rango de tiempo</li>
+  </ul>
+  <p>Hay dos tipos de claves diferentes para usar esta API, y eligen niveles de acceso muy distintos:</p>
+  <ul class="deflist">
+    <li><strong>Compliance Access Key</strong> — se crea desde <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a> (no desde la Console). Da acceso completo: Activity Feed más el contenido real de chats, files y projects. Es la llave que necesitas si quieres recuperar conversaciones o adjuntos para una investigación de compliance. Solo el Primary Owner puede provisionarla después de habilitar la Compliance API.</li>
+    <li><strong>Admin API key</strong> (la misma con prefijo <code>sk-ant-admin</code> que usas para la Admin API) — da acceso solo al Activity Feed. No puede leer chats, files ni projects. Es la llave correcta si solo necesitas alimentar tu SIEM con eventos.</li>
+  </ul>
+  <p>El endpoint principal es <code>GET /v1/compliance/activities</code>, con scope <code>read:compliance_activities</code> y paginación por cursor (parámetros <code>limit</code>, y respuesta con <code>has_more</code>, <code>first_id</code>, <code>last_id</code>). Se recomienda hacer polling guardando el <code>last_id</code> y avanzando desde ahí en cada llamada.</p>
+  <p>Para activarla:</p>
+  <ol class="steps">
+    <li>El Primary Owner la habilita en Organization settings &gt; Data and Privacy &gt; botón Enable bajo Compliance API.</li>
+    <li>Decide qué tipo de clave necesita cada integración (Activity Feed solo o acceso a contenido).</li>
+    <li>Provisiona las claves correspondientes y usa el header <code>x-api-key</code> para autenticar.</li>
+  </ol>
+  <p>La documentación técnica completa está en el Anthropic Trust Center y requiere un NDA (acuerdo de confidencialidad).</p>
+
+  <h3>Analytics API: métricas de adopción</h3>
+  <p>La Analytics API te dice cómo está usando tu equipo a Claude. Solo Enterprise.</p>
+  <p>Tiene 5 endpoints:</p>
+  <ol>
+    <li><strong>User Activity</strong>: conversaciones, mensajes, projects, archivos, artifacts, skills, conectores, y stats de Claude Code (commits, PRs, líneas de código).</li>
+    <li><strong>Activity Summary</strong>: usuarios activos diarios/semanales/mensuales (DAU/WAU/MAU), utilización de asientos, invitaciones pendientes. Máximo 31 días por consulta.</li>
+    <li><strong>Chat Project Usage</strong>: conversaciones y usuarios por cada project.</li>
+    <li><strong>Skill Usage</strong>: adopción de cada skill, separando sesiones de Claude chat y Claude Code.</li>
+    <li><strong>Connector Usage</strong>: uso de conectores y usuarios únicos por conector.</li>
+  </ol>
+  <p>Detalles técnicos:</p>
+  <ul>
+    <li>Datos agregados por organización y por día.</li>
+    <li>Histórico de hasta 90 días (disponible desde enero 2026).</li>
+    <li>Los datos tienen un retraso de 3 días.</li>
+    <li>Rate limit: 60 peticiones por minuto.</li>
+    <li>Autenticación vía header <code>x-api-key</code>.</li>
+  </ul>
+  <p>Limitación: los datos de Claude Code vía Amazon Bedrock no aparecen en esta API. Para esos casos, usa las métricas nativas de AWS CloudWatch.</p>
+
+  <h3>Certificaciones de seguridad</h3>
+  <p>Anthropic tiene varias certificaciones que demuestran que toma la seguridad en serio:</p>
+  <ul class="deflist">
+    <li><strong>SOC 2 Type I y Type II</strong> — una auditoría independiente que valida seguridad, disponibilidad y confidencialidad. El reporte detallado está disponible bajo NDA. Hay un resumen público (SOC 3) en el Trust Portal.</li>
+    <li><strong>ISO 27001:2022</strong> — estándar internacional de gestión de seguridad de la información.</li>
+    <li><strong>ISO/IEC 42001:2023</strong> — estándar de gestión de sistemas de IA. Es bastante nuevo y demuestra compromiso con la IA responsable.</li>
+    <li><strong>HIPAA-ready</strong> — con BAA disponible para datos de salud.</li>
+    <li><strong>GDPR compliance</strong> — cumplimiento con la regulación europea de protección de datos, anunciado en marzo 2026 junto con el lanzamiento de Claude 5.</li>
+  </ul>
+  <p>Además, Anthropic ofrece un SLA del 99.99% de disponibilidad, también anunciado con Claude 5 en marzo de 2026.</p>
+  <p>En el horizonte: BYOK (Bring Your Own Key) está programado para el primer semestre de 2026. Esto permitirá a las organizaciones gestionar sus propias claves de encriptación directamente.</p>
+  <p>Todo esto lo puedes consultar en <code><a href="https://trust.anthropic.com" target="_blank" rel="noopener">trust.anthropic.com</a></code>.</p>
+
+  <h2 id="cap24-hipaa-y-datos-de-salud">HIPAA y datos de salud</h2>
+
+  <p>HIPAA es una ley de Estados Unidos que protege la información de salud de los pacientes. Si tu organización maneja datos médicos, necesitas cumplir con HIPAA.</p>
+  <p>Claude Enterprise puede ser HIPAA-ready. Pero hay requisitos muy específicos.</p>
+
+  <h3>Quién necesita HIPAA</h3>
+  <p>Necesitas un plan HIPAA-ready si eres:</p>
+  <ul>
+    <li>Proveedor de salud (hospitales, clínicas, médicos)</li>
+    <li>Plan de salud o aseguradora</li>
+    <li>Procesador de datos de salud</li>
+    <li>Asociado de negocio que maneja información protegida de pacientes (PHI)</li>
+  </ul>
+
+  <h3>El proceso del BAA</h3>
+  <p>Un BAA (Business Associate Agreement) es un contrato legal que establece cómo se manejan los datos de salud. Así se activa:</p>
+  <ol class="steps">
+    <li>Contactas al equipo de ventas de Anthropic.</li>
+    <li>Revisas el BAA y la Implementation Guide (disponibles en el Trust Center).</li>
+    <li>Firmas el BAA.</li>
+    <li>El equipo de Anthropic configura tu plan Enterprise HIPAA-ready.</li>
+  </ol>
+  <p>Requisitos: solo disponible con plan Enterprise asistido por ventas. No funciona con autoservicio ni con Team.</p>
+  <p><strong>Qué cubre el BAA</strong>: chat con Claude, Projects, artifacts, voice mode, conectores, Enterprise Search, creación de archivos, ejecución de código (sin acceso a redes externas), búsqueda web, research y skills habilitadas por el admin.</p>
+  <p><strong>Qué cubre en la API (Claude Platform 1P API)</strong>: Messages API con caching, structured outputs, memory, web search, Token Counting, Models, Org Management y Compliance APIs.</p>
+  <p><strong>Qué NO cubre</strong>:</p>
+  <ul>
+    <li>Workbench/Console</li>
+    <li>Planes Free, Pro, Max o Team</li>
+    <li>Batch API, Files API, Skills API</li>
+    <li>Computer Use, Code Execution, Web Fetch</li>
+    <li>MCPs/Connectors (flujos a servicios de terceros)</li>
+    <li>Claude Code sin ZDR habilitado (si habilitas Zero Data Retention, Claude Code puede ser elegible)</li>
+    <li>Cowork y Claude for Office (actualmente en beta, sin cobertura BAA)</li>
+  </ul>
+  <p>Si tienes un BAA firmado antes del 2 de diciembre de 2025, solo cubre la API. Necesitas un BAA nuevo para cubrir Enterprise. Los BAA firmados después de esa fecha pueden cubrir API y Enterprise juntos.</p>
+
+  <h2 id="cap24-datos-retencion-exportacion-y-privacidad">Datos: retención, exportación y privacidad</h2>
+
+  <p>Los datos de tu equipo son de tu organización. Anthropic actúa como procesador de datos, no como controlador. Esto significa que Anthropic maneja los datos por ti, pero tú decides qué hacer con ellos. Anthropic no usa datos de clientes para entrenar sus modelos sin consentimiento explícito.</p>
+
+  <h3>Retención de datos personalizada</h3>
+  <p>Solo Enterprise. Por defecto, los datos se guardan indefinidamente. Pero puedes configurar un período de retención. El mínimo es 30 días.</p>
+  <p>Cómo funciona:</p>
+  <ul class="deflist">
+    <li><strong>Chats</strong> — el reloj cuenta desde el último mensaje.</li>
+    <li><strong>Projects</strong> — el reloj cuenta desde la última modificación (un chat nuevo o una actualización de knowledge base cuenta).</li>
+    <li><strong>Los Projects anulan la configuración de chats</strong> — si un project tiene actividad reciente, sus chats se mantienen.</li>
+  </ul>
+  <p>Las eliminaciones se ejecutan a medianoche UTC.</p>
+  <p>Configuración: Organization settings &gt; Data and Privacy.</p>
+  <div class="callout warn">
+    <p class="callout-label">Advertencia crítica</p>
+    <p>Si cambias el período de retención a uno más corto, los datos que estén fuera del nuevo período se eliminan inmediatamente. Esta eliminación es permanente e irrecuperable. Exporta tus datos antes de cambiar esta configuración.</p>
+  </div>
+
+  <h3>Zero Data Retention (ZDR)</h3>
+  <p>Zero Data Retention es el compromiso de Anthropic de no guardar nada después de responder. Los datos se procesan en tiempo real y se descartan inmediatamente. Sin logs, sin almacenamiento de prompts ni de respuestas.</p>
+  <p>Aplica a APIs elegibles y productos que usan la API key de una organización comercial, incluyendo Claude Code.</p>
+  <p>Hay excepciones: cumplimiento legal y combate de abuso.</p>
+  <p>Excepción importante que conviene tener clara: si una sesión se marca por una posible violación de la Usage Policy de Anthropic, los inputs y outputs de esa sesión pueden retenerse hasta 2 años, incluso si tu organización tiene ZDR activado. Es decir, ZDR no es absoluto: protege el uso legítimo, pero no impide la retención forense ante abusos sospechosos. Si esto choca con tu política interna, documéntalo y revísalo antes de incorporar ZDR a tus controles.</p>
+  <p>Sin ZDR, la retención estándar es de 30 días para la mayoría de productos y 7 días para logs de API (desde septiembre 2025).</p>
+
+  <h3>Exportación de datos</h3>
+  <p>El Primary Owner puede exportar todos los datos de la organización. Esto incluye conversaciones y datos de usuarios.</p>
+  <p>Se hace desde Organization settings &gt; Data and Privacy &gt; Export Data. Recibes un enlace por email que dura 24 horas.</p>
+  <p>Los datos eliminados previamente no se incluyen en la exportación. Puede haber un retraso mientras se genera el archivo.</p>
+
+  <h2 id="cap24-residencia-de-datos">Residencia de datos: dónde viven tus datos</h2>
+
+  <p>Muchas empresas necesitan que sus datos se almacenen en una región específica. Por ley, por regulación o por política interna.</p>
+  <p>Claude ofrece dos conceptos separados:</p>
+  <ul class="deflist">
+    <li><strong>Data Residency</strong> — dónde se guardan tus prompts, respuestas e historial de conversaciones.</li>
+    <li><strong>Inference Residency</strong> — dónde Claude procesa tus peticiones y genera respuestas.</li>
+  </ul>
+  <p>Se pueden configurar de forma independiente.</p>
+  <p>Regiones disponibles (actualizado a junio 2026):</p>
+  <ul class="deflist">
+    <li><strong>Estados Unidos</strong> — disponible en todas las plataformas. Puedes fijar (pin) tanto el almacenamiento de datos como la inferencia a un endpoint regional en EE.UU.</li>
+    <li><strong>Europa</strong> — disponible desde junio de 2026. Ahora puedes fijar tanto el almacenamiento de datos como la inferencia a un endpoint regional europeo. Antes figuraba como «llegando en 2026»; ya es una opción operativa.</li>
+    <li><strong>Asia-Pacific</strong> — disponible. Permite fijar almacenamiento e inferencia a un endpoint regional de Asia-Pacífico.</li>
+    <li><strong>Canadá</strong> — llegando en 2026.</li>
+  </ul>
+  <p>En la práctica, esto significa que una organización europea puede mantener tanto sus prompts y conversaciones como el procesamiento del modelo dentro de Europa, algo clave para requisitos de GDPR y políticas internas de soberanía de datos.</p>
+  <p>Las plataformas de despliegue son:</p>
+  <ul class="deflist">
+    <li><strong>Anthropic Cloud (SaaS)</strong> — acceso directo vía <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>.</li>
+    <li><strong>AWS Bedrock</strong> — integración con IAM, CloudTrail, VPC y Private Service Connect.</li>
+    <li><strong>Google Vertex AI</strong> — Private Service Connect para aislamiento total, sin salida de datos.</li>
+    <li><strong>Microsoft Foundry</strong> — despliegue regional. Importante: los workspaces de Claude en Foundry están en beta, no en disponibilidad general. Conviene tratarlo como una opción en validación hasta que pase a GA.</li>
+  </ul>
+  <p><strong>Aislamiento de prompt caches</strong>: en Anthropic Cloud las cachés de prompts están aisladas por workspace, lo que te permite separar dev/staging/prod. Pero en Bedrock y Vertex AI las cachés están aisladas por organización, no por workspace. Si tu modelo de aislamiento depende de cachés separadas por entorno, planifícalo cuando elijas la plataforma de despliegue.</p>
+  <p>Variables de configuración para despliegue:</p>
+  <pre><code class="lang-bash">ANTHROPIC_BASE_URL                # Anthropic Cloud
+ANTHROPIC_BEDROCK_BASE_URL        # AWS Bedrock
+ANTHROPIC_VERTEX_BASE_URL         # Google Vertex AI</code></pre>
+
+  <h3>Parámetros de API para residencia de datos</h3>
+  <p>Si usas la API de Claude directamente, puedes controlar la residencia de datos con estos parámetros:</p>
+  <ul class="deflist">
+    <li><strong><code>inference_geo</code></strong> — controla dónde se ejecuta la inferencia del modelo en cada request. Valores: <code>"global"</code> (por defecto, cualquier región para rendimiento óptimo) o <code>"us"</code> (solo infraestructura en EE.UU.). Se envía como parámetro en <code>POST /v1/messages</code>. Solo funciona con Claude Opus 4.6 y modelos posteriores. Modelos legacy devuelven error 400.</li>
+    <li><strong><code>workspace_geo</code></strong> — controla dónde se almacenan datos en reposo. Se configura al crear el workspace y no se puede cambiar después. Actualmente solo <code>"us"</code> está disponible.</li>
+    <li><strong><code>allowed_inference_geos</code></strong> — restringe qué regiones puede usar un workspace. Si un request especifica un geo no permitido, la API devuelve error.</li>
+    <li><strong><code>default_inference_geo</code></strong> — el geo por defecto cuando un request no especifica <code>inference_geo</code>.</li>
+  </ul>
+  <p>Precio: usar <code>inference_geo: "us"</code> cuesta 1.1x la tarifa estándar para Opus 4.6 y modelos nuevos. El routing global no tiene sobrecosto.</p>
+  <p>Limitaciones: los rate limits se comparten entre todas las regiones. El parámetro <code>inference_geo</code> no funciona en plataformas de terceros (Bedrock, Vertex AI, Foundry). Para esas plataformas, la región se determina por la URL del endpoint.</p>
+  <p>Ejemplo en Python:</p>
+  <pre><code class="lang-python">response = client.messages.create(
+    model="claude-opus-4-6",
+    max_tokens=1024,
+    inference_geo="us",
+    messages=[{"role": "user", "content": "Analiza este contrato."}]
+)
+print(f"Geo usado: {response.usage.inference_geo}")</code></pre>
+
+  <h2 id="cap24-enterprise-search">Enterprise Search: buscar en todas tus herramientas</h2>
+
+  <p>Imagina poder preguntarle a Claude algo y que busque la respuesta en Google Drive, Slack, GitHub y el email de tu empresa. Eso es Enterprise Search.</p>
+  <p>Disponible en Team y Enterprise. Funciona a través de un project pre-configurado llamado Ask Your Org.</p>
+
+  <h3>Conectores disponibles</h3>
+  <p>Los conectores son como puentes que conectan Claude con tus herramientas. Los que están disponibles tanto en Team como en Enterprise:</p>
+  <ul>
+    <li>Google Drive</li>
+    <li>Gmail</li>
+    <li>Google Calendar</li>
+    <li>GitHub</li>
+    <li>Microsoft 365 (SharePoint, Outlook)</li>
+    <li>Slack</li>
+    <li>Conectores personalizados vía remote MCP</li>
+  </ul>
+  <p>Enterprise agrega además algunos conectores que no están en Team:</p>
+  <ul>
+    <li>Atlassian (Jira, Confluence)</li>
+    <li>Cloudflare</li>
+    <li>Intercom</li>
+    <li>Google Docs cataloging: indexación específica para acelerar búsquedas en grandes catálogos de documentos.</li>
+  </ul>
+  <p>Un Owner o Primary Owner los habilita. Después, cada usuario se autentica individualmente con cada servicio. Los resultados respetan los permisos del sistema original. Si no tienes acceso a un documento en Google Drive, tampoco lo verás a través de Claude.</p>
+
+  <h3>Cómo funciona por dentro</h3>
+  <p>Enterprise Search no indexa tus datos externamente. Las búsquedas se hacen en tiempo real vía llamadas MCP. Los system prompts están optimizados por Anthropic para dar mejores resultados.</p>
+  <p>Soporta filtrado por rango de fechas. El uso cuenta hacia los límites regulares de tu plan. Las conversaciones siguen las políticas de retención de la organización.</p>
+
+  <h3>Enterprise-Managed MCP Connectors (beta, junio 2026)</h3>
+  <p>Conectar herramientas a Claude solía ser trabajo de cada persona: cada usuario autorizaba sus propios conectores uno por uno. Desde el 18 de junio de 2026, Claude ofrece los <strong>Enterprise-Managed MCP Connectors</strong>, una forma centralizada de gestionar este acceso desde el proveedor de identidad (IdP) de la empresa.</p>
+  <p>La gran ventaja es lo que Anthropic llama el modelo <strong>zero-touch</strong> («sin intervención»). Funciona así: el administrador autoriza un conector MCP una sola vez, y a partir de ahí los usuarios heredan el acceso automáticamente a través de los grupos y roles que ya tienen en su IdP. Cuando un empleado hace su primer login, ya tiene listos los conectores que le corresponden según su grupo. Nadie tiene que autorizar nada de forma individual.</p>
+  <p>Piénsalo como las apps de trabajo que ya aparecen instaladas el primer día que enciendes la laptop de la empresa: alguien las preparó por ti según tu puesto.</p>
+  <p>Datos clave:</p>
+  <ul>
+    <li>En beta para los planes Team y Enterprise.</li>
+    <li>Soporte inicial con Okta como proveedor de identidad (más IdP llegarán después).</li>
+    <li>La autorización centralizada funciona en Claude chat, Claude Code y Cowork, así que el acceso es coherente en las tres superficies.</li>
+    <li>Proveedores MCP que ya lo soportan: Asana, Atlassian, Canva, Figma, Granola, Linear y Supabase. Slack llegará próximamente.</li>
+  </ul>
+  <p>Al estar en beta, conviene tratarlo como una función en validación y probarlo con un grupo pequeño antes de extenderlo a toda la organización.</p>
+
+  <h2 id="cap24-claude-code-en-enterprise">Claude Code en Enterprise</h2>
+
+  <p>Claude Code está incluido en el plan Enterprise. Funciona como agente de codificación que escribe, depura y refactoriza código desde la terminal o cualquier IDE.</p>
+  <p>En Enterprise, el uso de Claude Code se factura por consumo de tokens a tarifas de API. Los administradores pueden controlar el acceso. La Analytics API proporciona métricas detalladas: commits, PRs y líneas de código por usuario.</p>
+  <p>Claude Code se puede desplegar vía Anthropic API, AWS Bedrock o Google Vertex AI.</p>
+  <p>Tres limitaciones importantes:</p>
+  <ul>
+    <li>Los datos de Claude Code vía Amazon Bedrock no aparecen en la Analytics API.</li>
+    <li>Los asientos bundled de Claude Code no están cubiertos por HIPAA (a menos que tengas ZDR habilitado).</li>
+    <li>En Claude Platform on AWS, la mayoría de endpoints de la Admin API no están disponibles: solo los endpoints de workspaces. Si tu integración de onboarding depende de gestionar usuarios o invitaciones por API, tendrás que hacerlo desde la Console o reservar esa parte del flujo para entornos en Anthropic Cloud.</li>
+  </ul>
+  <p><strong>Claude Code Artifacts a nivel de organización (beta, junio 2026)</strong>: desde el 18 de junio de 2026, Claude Code permite generar artifacts, páginas web compartibles directamente desde Code, con su propio historial de versiones. Por defecto son privadas a la organización: nadie de fuera las ve. El administrador controla todo con un toggle de admin para activar o desactivar la función, puede limitar el acceso por rol (scoping por rol) y la actividad queda visible en la Compliance API, así que entra dentro de tus controles de auditoría. Está en beta para los planes Team y Enterprise. Es útil cuando un desarrollador quiere compartir un prototipo o una pequeña herramienta web con el resto del equipo sin sacarla de los límites de la empresa.</p>
+
+  <h2 id="cap24-controles-de-gasto">Controles de gasto</h2>
+
+  <p>Para evitar sorpresas en la factura, puedes configurar límites de gasto en tres niveles:</p>
+  <ul class="deflist">
+    <li><strong>Límite de organización</strong> — el máximo que puede gastar toda la empresa.</li>
+    <li><strong>Límite por workspace</strong> — el máximo que puede gastar cada workspace al mes. También puedes configurar rate limits por workspace (requests por minuto, tokens de entrada por minuto, tokens de salida por minuto). Los límites de un workspace nunca pueden superar los de la organización. Nota: no se pueden establecer límites en el Default Workspace.</li>
+    <li><strong>Límite por usuario</strong> — el máximo que puede gastar cada persona.</li>
+  </ul>
+  <p>Funcionan de forma jerárquica. Si la organización tiene un límite de $5,000/mes, un workspace tiene $2,000/mes y un usuario tiene $200/mes, cada nivel actúa como tope para los niveles inferiores.</p>
+  <p><strong>Spend notifications por umbrales</strong>: además de los topes duros, puedes configurar alertas por email que se disparan cuando el gasto alcanza umbrales del 50%, 80% y 100% del límite. Es la red de seguridad blanda: te avisa antes de que el corte se active. Sirve para que finanzas reaccione a tiempo sin tener que esperar a que el servicio se bloquee.</p>
+  <p>En Enterprise autoservicio, cuando se acaban los créditos el servicio se detiene hasta que compres más. En Enterprise asistido por ventas, el uso alto incrementa la factura mensual pero el servicio nunca se bloquea.</p>
+  <p>Para monitorear el gasto de forma programática, puedes usar la Usage and Cost API. Te permite obtener reportes de uso agrupados por workspace con granularidad diaria.</p>
+  <p>Si lo que necesitas es auditar la configuración (no el gasto), existe también la Rate Limits API, de solo lectura. Expone los RPM (requests por minuto), ITPM (input tokens por minuto) y OTPM (output tokens por minuto) configurados para la organización y para cada workspace, separados por modelo. Es útil para dashboards de capacidad y para verificar que ningún cambio reciente haya dejado un workspace con un límite más bajo del que necesita.</p>
+
+  <h2 id="cap24-errores-comunes">Errores comunes y cómo resolverlos</h2>
+
+  <p>Estas son las situaciones problemáticas que más se repiten en implementaciones Enterprise:</p>
+  <ul class="deflist">
+    <li><strong>Deprovision masivo al configurar SCIM</strong> — si guardas los group mappings en Claude antes de asignar usuarios a los grupos en tu IdP, Claude puede eliminar a todos. Solución: siempre asigna primero los usuarios en tu IdP.</li>
+    <li><strong>Datos eliminados al cambiar retención</strong> — reducir el período elimina datos inmediatamente. Solución: exporta datos antes de cambiar.</li>
+    <li><strong>Servicio detenido en autoservicio</strong> — los créditos se agotaron. Solución: comprar más créditos o migrar a facturación asistida por ventas.</li>
+    <li><strong>Usuarios bloqueados por IP Allowlisting</strong> — la IP del usuario (VPN, oficina remota) no está en la lista. Solución: agregar los rangos CIDR faltantes contactando a Anthropic.</li>
+    <li><strong>Certificados SSO expirados</strong> — los certificados X.509 del IdP expiraron. Solución: actualizar vía Metadata Config en SSO settings antes de que expiren.</li>
+    <li><strong>Verificación de dominio lenta</strong> — la propagación DNS puede tardar hasta 48 horas. Solución: verificar que el TXT record está bien configurado y esperar.</li>
+    <li><strong>Usuarios JIT fantasma</strong> — cuando alguien deja la empresa, su cuenta JIT permanece activa. Solución: eliminar manualmente o migrar a SCIM.</li>
+    <li><strong>Claude Code no cubierto por HIPAA</strong> — los asientos bundled no están en el BAA sin ZDR. Solución: habilitar ZDR o no usar Claude Code con datos PHI.</li>
+    <li><strong>Login SSO falla con «user not found»</strong> — el IdP autentica correctamente pero Claude responde que el usuario no existe. Causa típica: el email enviado por SAML no coincide exactamente con el que SCIM aprovisionó (mayúsculas, alias o dominio diferente). Solución: alinear los claims de email en SSO y SCIM (por ejemplo, usar siempre <code>user.mail</code> o siempre <code>user.userPrincipalName</code>) y normalizar a minúsculas.</li>
+    <li><strong>Cowork sin audit trail</strong> — si intentas auditar tareas hechas por Cowork no encuentras registros en audit logs, Compliance API ni en data exports. Causa: Cowork está excluido de estos mecanismos hasta mayo de 2026. Solución: para flujos regulados (finanzas, salud, legal) no uses Cowork todavía; espera a que la cobertura entre en vigor o realiza el flujo desde un chat o project normal.</li>
+  </ul>
+
+  <h2 id="cap24-ejemplos-practicos">Ejemplos Prácticos</h2>
+
+  <h3>Crear una organización Team para un equipo de desarrollo</h3>
+  <ol class="steps">
+    <li>Ir a <code><a href="https://claude.ai/upgrade" target="_blank" rel="noopener">claude.ai/upgrade</a></code></li>
+    <li>Seleccionar Team plan</li>
+    <li>Elegir facturación anual ($20/asiento/mes Standard)</li>
+    <li>Agregar 10 asientos (5 Standard + 5 Premium)</li>
+    <li>Invitar miembros por email</li>
+  </ol>
+  <p>Setup básico de un equipo de 10 personas. Los 5 asientos Standard son para desarrolladores que usan Claude ocasionalmente. Los 5 Premium son para quienes lo usan todo el día y necesitan más capacidad.</p>
+
+  <h3>Configurar SSO con Okta para Enterprise</h3>
+  <pre><code class="lang-text">1. Organization settings &gt; Identity and access
+2. Add domain &gt; verificar via DNS TXT record
+3. Setup SSO &gt; seleccionar Okta SAML
+4. Seguir guia WorkOS para configurar app en Okta
+5. Toggle: Require SSO for Claude access
+6. Seleccionar SCIM provisioning
+7. Configurar groups:
+    - anthropic-claude-owner
+    - anthropic-claude-admin
+    - anthropic-claude-user</code></pre>
+  <p>Configuración completa de SSO con Okta. Incluye SCIM para que los usuarios se creen y eliminen automáticamente, y group mapping para que los roles se asignen según el grupo en Okta.</p>
+
+  <h3>Configurar Tenant Restrictions con un proxy de red</h3>
+  <pre><code class="lang-text">Regla en proxy:
+   Header: anthropic-allowed-org-ids: 550e8400-e29b-41d4-a716-446655440000
+   Aplicaciones: claude.ai, api.anthropic.com, claude.com, anthropic.com
+   Acción: Inject Header
+   TLS Inspection: Habilitado
+
+Verificar:
+curl -H 'anthropic-allowed-org-ids: ' \
+       -H 'x-api-key: ' \
+       https://api.anthropic.com/v1/messages</code></pre>
+  <p>Configura el proxy para inyectar un header que restringe el acceso solo a tu organización. Cualquier persona que intente usar una cuenta personal de Claude desde la red de la empresa será bloqueada.</p>
+
+  <h3>Consultar la Analytics API para ver adopción</h3>
+  <pre><code class="lang-bash">curl -X GET \
+  'https://api.claude.com/analytics/v1/user-activity?start_date=2026-03-01&amp;end_date=2026-03-09' \
+  -H 'x-api-key: YOUR_ANALYTICS_KEY'</code></pre>
+  <p>Consulta las métricas de actividad por usuario. Devuelve datos de conversaciones, mensajes, projects creados, archivos, artifacts, skills y estadísticas de Claude Code.</p>
+
+  <h3>Configurar retención de datos de 90 días</h3>
+  <pre><code class="lang-text">1. Login como Owner o Primary Owner
+2. Organization settings &gt; Data and Privacy
+3. Ingresar período: 90 días
+4. Guardar cambios
+
+ADVERTENCIA: datos existentes fuera del período
+se eliminan inmediatamente al guardar.</code></pre>
+  <p>Establece una política de retención de 90 días. Los chats sin actividad por más de 90 días y los projects sin modificaciones por más de 90 días se eliminan automáticamente a medianoche UTC. Exporta tus datos ANTES de hacer este cambio.</p>
+
+  <h3>Deployment en AWS Bedrock con aislamiento de red</h3>
+  <pre><code class="lang-bash">export ANTHROPIC_BEDROCK_BASE_URL=https://bedrock-runtime.us-east-1.amazonaws.com
+
+# Configurar IAM Identity Center con OIDC
+# Habilitar VPC isolation y private endpoints
+# Activar CloudTrail para audit logging</code></pre>
+  <p>Despliega Claude en AWS Bedrock con tus datos completamente aislados en tu VPC. No hay salida de datos fuera de tu red. Compatible con SOC 2 Type II.</p>
+
+  <h3>Gestionar workspaces y miembros via Admin API</h3>
+  <pre><code class="lang-bash"># Crear workspace
+curl --request POST \
+   "https://api.anthropic.com/v1/organizations/workspaces" \
+   --header "anthropic-version: 2023-06-01" \
+   --header "x-api-key: $ANTHROPIC_ADMIN_KEY" \
+   --data '{"name": "Production"}'
+
+# Agregar miembro al workspace
+curl --request POST \
+   "https://api.anthropic.com/v1/organizations/workspaces/{workspace_id}/members" \
+   --header "anthropic-version: 2023-06-01" \
+   --header "x-api-key: $ANTHROPIC_ADMIN_KEY" \
+   --data '{"user_id": "user_xxx", "workspace_role": "workspace_developer"}'</code></pre>
+  <p>Crea un workspace de producción y agrega un desarrollador. Los workspaces permiten separar entornos (dev/staging/prod) con API keys, límites de gasto y miembros independientes.</p>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Si tienes entre 5 y 150 personas, empieza con el plan Team. Es autoservicio y puedes migrar a Enterprise después si necesitas más control.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Usa SCIM en vez de JIT siempre que puedas. JIT crea cuentas automáticamente pero no las elimina. SCIM hace ambas cosas.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Configura los controles de gasto ANTES de que todo el equipo empiece a usar Claude. Es más fácil prevenir facturas inesperadas que corregirlas después.</p>
+  </div>
+
+  <div class="callout tip">
+    <p class="callout-label">Consejo</p>
+    <p>Si tu organización estaba en un plan Enterprise anterior (con asientos Chat/Chat+Claude Code o Standard/Premium), tus términos se mantienen hasta la renovación del contrato. Después migrarás automáticamente al modelo unificado Enterprise con un solo tipo de asiento y uso facturado por separado.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Al configurar SCIM Group Mapping, SIEMPRE asigna usuarios a los grupos en tu IdP ANTES de guardar en Claude. Hacerlo al revés puede causar deprovision masivo.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Reducir el período de retención de datos elimina datos inmediatamente. Esta acción es permanente e irrecuperable. Exporta antes de cambiar.</p>
+  </div>
+
+  <div class="callout warn">
+    <p class="callout-label">Advertencia</p>
+    <p>Claude Code sin ZDR habilitado NO está cubierto por HIPAA. Si manejas datos de salud protegidos (PHI), habilita ZDR o no uses Claude Code con esos datos.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Anthropic no usa datos de clientes para entrenar sus modelos sin consentimiento explícito. Para Team y Enterprise, Anthropic es procesador de datos, no controlador.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Desde junio de 2026, la residencia de datos en Europa y Asia-Pacífico ya está operativa: puedes fijar tanto el almacenamiento como la inferencia a un endpoint regional en Europa, EE.UU. o Asia-Pacífico. Canadá sigue en camino durante 2026. Si necesitas una región aún no disponible, puedes usar AWS Bedrock o Google Vertex AI con regiones específicas.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Los audit logs guardan 180 días de historia pero no incluyen el contenido de chats. Para el contenido, usa la Compliance API o la exportación de datos.</p>
+  </div>
+
+  <div class="callout note">
+    <p class="callout-label">Nota</p>
+    <p>Los roles de la Console API (<code>user</code>, <code>claude_code_user</code>, <code>limited_developer</code>, <code>developer</code>, <code>billing</code>, <code>admin</code>) son diferentes a los roles de Team/Enterprise (Primary Owner, Owner, Admin, User). Son dos sistemas de permisos separados para dos interfaces distintas.</p>
+  </div>
+
+  <section class="recap">
+    <h2 id="cap24-resumen-del-capitulo">Resumen del Capítulo</h2>
+    <p>Claude ofrece dos planes para organizaciones: Team (5-150 miembros, autoservicio, desde $20/asiento/mes) y Enterprise (precio personalizado, sin límite máximo; self-serve desde 20 asientos con tarjeta o ACH, sales-assisted desde 50 asientos con factura, MSA, multi-divisa y AWS Marketplace). Solo el camino sales-assisted incluye HIPAA-ready y BAA. Enterprise agrega SCIM, audit logs, Compliance API (lanzada el 20 de agosto de 2025, con dos tipos de claves: Compliance Access Key para contenido y Admin API key solo para Activity Feed), Analytics API, Rate Limits API, IP allowlisting, tenant restrictions, retención personalizada y soporte HIPAA. La seguridad se gestiona con roles jerárquicos en dos niveles (Team/Enterprise y Console API con 6 roles, más 5 roles dentro de cada workspace), SSO vía WorkOS con SAML 2.0 (recomendado) u OIDC, controles de red y certificaciones SOC 2, ISO 27001, ISO 42001, GDPR y un SLA del 99.99%. La API se organiza en workspaces con la Admin API para gestión programática (en Claude Platform on AWS solo están disponibles los endpoints de workspaces). El despliegue puede ser vía Anthropic Cloud, AWS Bedrock, Google Vertex AI o Microsoft Foundry (en beta), con opciones de residencia de datos controlables por parámetros como <code>inference_geo</code> y <code>workspace_geo</code>; desde junio de 2026 se puede fijar tanto el almacenamiento como la inferencia a un endpoint regional en Europa, EE.UU. o Asia-Pacífico (Canadá sigue en camino). Entre las novedades de junio de 2026 destacan los Enterprise-Managed MCP Connectors (beta Team/Enterprise, con un modelo zero-touch en el que el admin autoriza un conector una vez y los usuarios heredan el acceso por grupos del IdP; soporte inicial con Okta y proveedores como Asana, Atlassian, Canva, Figma, Granola, Linear y Supabase), los Custom Roles con permisos de admin para Enterprise (conceder acceso puntual a billing o privacy sin convertir a alguien en Owner) y los Claude Code Artifacts a nivel de organización (páginas web compartibles con historial de versiones, privadas a la org por defecto, con toggle de admin, scoping por rol y visibilidad en la Compliance API). Cowork permanece excluido de audit logs, Compliance API y data exports hasta mayo de 2026, lo que conviene tener presente en sectores regulados.</p>
+  </section>
+</article>
