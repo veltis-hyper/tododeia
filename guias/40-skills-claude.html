@@ -1,0 +1,657 @@
+<article class="chapter guia" data-slug="40-skills-claude">
+<div><div><h1>40 Claude Skills</h1><p>Casi nadie está usando lo más poderoso de Claude. Una skill es un archivo SKILL.md que dejas en una carpeta. Claude la lee. Desde ese momento sabe ese trabajo sin que se lo expliques otra vez. <strong>La diferencia entre Claude prendido y Claude operando tu semana es esa carpeta</strong>. Estas son las 40 que cualquiera puede pegar hoy — todas en español, copia, pega y úsalas.</p></div><div class="gcard"><div><p>40 SKILL.md · 6 categorías · Claude.ai · Claude Code · Cowork</p><p>01–07 escritura · 08–14 research · 15–21 código · 22–27 email · 28–34 data · 35–40 personal</p><p>La mayoría de la gente retipea el mismo prompt todos los días. Una skill es un archivo <code>SKILL.md</code> con frontmatter (<code>name</code>, <code>description</code>) y un cuerpo con instrucciones. Lo dejas en una carpeta — Claude lo lee y desde ese momento sabe ese trabajo sin que se lo expliques otra vez. Construyes una vez, la usas para siempre.</p><p>Esta guía es la versión en español de las 40 skills más circuladas de la comunidad de Claude — reescritas para LATAM en segunda persona y sin atribución a ningún autor en particular, para que sean recurso de la comunidad tododeia que cualquiera puede compartir. Cada card de abajo trae el SKILL.md completo y un botón para copiar al portapapeles. Al final hay packs de 5 skills recomendadas por perfil — empieza por el tuyo y crece desde ahí.</p></div><div><a href="#g-que-es-skill">Qué es</a><a href="#g-instalacion">Instalación</a><a href="#g-escritura">Escritura</a><a href="#g-research">Research</a><a href="#g-codigo">Código</a><a href="#g-comms">Email</a><a href="#g-data">Data</a><a href="#g-personal">Personal</a><a href="#g-packs">Packs</a><a href="#g-workflow">Cómo usarlas</a></div><div><span>40 SKILL.md listas</span><span>6 categorías</span><span>Claude.ai · Code · Cowork</span><span>Principiante · Intermedio · Avanzado</span><span>Copia · Pega · Listo</span><span>Español LATAM</span><span>Sin atribución externa</span><span>Mayo 2026</span></div></div><div><div id="g-que-es-skill"><p>qué es una skill · 60 segundos</p><h2>Una skill es un archivo SKILL.md en una carpeta</h2><div><p>Una <strong>skill</strong> de Claude es un archivo de markdown llamado <code>SKILL.md</code> con dos cosas adentro: un <strong>frontmatter</strong> en YAML que tiene <code>name</code> y <code>description</code>, y un <strong>cuerpo</strong> con las instrucciones que Claude debe seguir cuando la skill se gatille. La carpeta donde vive el archivo determina si la skill es global (sirve en cualquier conversación) o específica de un proyecto (vive en el repo).</p><p>El campo más importante del frontmatter es <code>description</code>: se lee como gatillo. Cuando dice “úsala cuando el usuario quiera redactar un cold email”, Claude la auto-invoca cada vez que tu prompt encaja con ese gatillo. Por eso todas las descripciones de las 40 skills empiezan con <em>“Úsala cuando…”</em> — no es estilo, es contrato con el motor.</p><p>Construyes la skill <strong>una vez</strong>, la usas <strong>para siempre</strong>. Si te encuentras retipeando el mismo prompt todos los días, ese prompt debería ser una skill. Esta guía te entrega 40 ya hechas y traducidas — abre la siguiente sección y déjalas instaladas en menos de 5 minutos.</p><div class="gcard"><p>Ejemplo mínimo de SKILL.md</p><pre>---
+name: arquitecto-de-hilos
+description: Úsala cuando quieras convertir un tema, artículo o idea en un hilo de X.
+---
+
+Escribes hilos de X que la gente guarda.
+
+Cuando se invoque:
+1. Pide la idea central si no la dieron.
+2. Abre con un hook de una línea que pegue.
+[…cuerpo de la skill aquí…]</pre><p>Para más profundidad, la documentación oficial vive en <a href="https://docs.claude.com/en/docs/claude-code/skills" target="_blank" rel="noopener">docs.claude.com → Claude Code → Skills</a> y en <a href="https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview" target="_blank" rel="noopener">Agent Skills overview</a>.</p></div></div></div><div id="g-instalacion"><p>instalación · 3 superficies</p><h2>Cómo dejar una skill instalada en menos de 5 minutos</h2><div><p>Hay tres lugares donde una skill puede vivir, y los tres aceptan exactamente el mismo formato de SKILL.md. Elige el que coincida con dónde usas Claude más seguido — o instala la misma skill en los tres si quieres tenerla disponible en cualquier contexto.</p><ol><li><span class="gpill">01</span><div><p>Claude.ai web · Claude Desktop · Cowork</p><p>Settings → Skills → Add Skill</p><ol><li>Crea una carpeta en tu disco con el nombre de la skill (ej: arquitecto-de-hilos).</li><li>Adentro de esa carpeta pega el archivo SKILL.md de abajo (cópialo desde la card y guárdalo con el nombre exacto SKILL.md).</li><li>Comprime la carpeta como .zip — el zip queda con el mismo nombre que la skill.</li><li>Entra a claude.ai → Settings → Skills → Add Skill → sube el .zip.</li><li>Listo: Claude la auto-invoca cuando el chat dispare el gatillo del campo description.</li></ol><p><strong>Nota:</strong> El mismo flow funciona dentro de Claude Desktop y de Claude Cowork — la skill queda disponible en cualquier conversación nueva.</p></div></li><li><span class="gpill">02</span><div><p>Claude Code (CLI)</p><p>~/.claude/skills/&lt;nombre&gt;/SKILL.md</p><ol><li>Abre la terminal en tu máquina (Terminal en Mac, PowerShell o WSL en Windows).</li><li>Crea la carpeta y el archivo en una sola línea con el comando de abajo.</li><li>Pega el SKILL.md de la card en ese archivo y guarda.</li><li>En la próxima sesión de Claude Code la skill ya está cargada — no necesitas reiniciar nada más.</li></ol><p><strong>Nota:</strong> Las skills globales viven en ~/.claude/skills/. Para una skill específica de un proyecto, usa &lt;repo&gt;/.claude/skills/ y se va al commit junto con el código.</p></div></li><li><span class="gpill">03</span><div><p>Equipo · multi-repo</p><p>&lt;repo&gt;/.claude/skills/&lt;nombre&gt;/SKILL.md</p><ol><li>En la raíz del repo del equipo crea la carpeta .claude/skills/&lt;nombre&gt;/.</li><li>Adentro deja el SKILL.md y haz commit junto con el código del proyecto.</li><li>Cuando un compañero clona el repo y abre Claude Code, la skill ya viene incluida — no tiene que instalarla a mano.</li></ol><p><strong>Nota:</strong> Es la forma más rápida de que un equipo entero use el mismo prompt. El SKILL.md vive en git, los cambios se revisan en pull request como cualquier otro archivo.</p></div></li></ol><div class="ggrid"><div class="gcard"><p>Crear carpeta y archivo SKILL.md (Claude Code · macOS / Linux)</p><div><code>mkdir -p ~/.claude/skills/arquitecto-de-hilos &amp;&amp; touch ~/.claude/skills/arquitecto-de-hilos/SKILL.md</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>Crear carpeta y archivo SKILL.md (Claude Code · Windows PowerShell)</p><div><code>New-Item -ItemType Directory -Force -Path &quot;$HOME\.claude\skills\arquitecto-de-hilos&quot; | Out-Null; New-Item -ItemType File -Force -Path &quot;$HOME\.claude\skills\arquitecto-de-hilos\SKILL.md&quot;</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>Listar skills instaladas (Claude Code)</p><div><code>ls -1 ~/.claude/skills/</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>Comprimir carpeta para subir a Claude.ai (Settings → Skills)</p><div><code>cd ~/.claude/skills &amp;&amp; zip -r arquitecto-de-hilos.zip arquitecto-de-hilos/</code></div><span class="gbtn">Copiar comando</span></div></div><p>Link directo: <a href="https://claude.ai/settings/skills" target="_blank" rel="noopener">claude.ai/settings/skills</a> para subir el .zip si estás en web/Desktop/Cowork.</p></div></div><div id="g-escritura"><p>categoría 01 · 7 skills</p><h2>Escritura y contenido · 01–07</h2><div><p>Las que hacen que una idea cruda se vuelva un hilo, un artículo, un email que recibe respuesta o un guión que retiene. Empieza por la 01 si nunca has instalado una skill — es la más corta y prueba que el flow funciona.</p><div class="gcard"><div><div><h3>01 · El Arquitecto de Hilos · Principiante</h3><p>Convierte una idea cruda en un hilo de 7 tweets con hook, cuerpo y CTA suave que la gente guarda.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: arquitecto-de-hilos
+description: Úsala cuando quieras convertir un tema, artículo o idea en un hilo de X.
+---
+
+Escribes hilos de X que la gente guarda.
+
+Cuando se invoque:
+1. Pide la idea central si no la dieron.
+2. Abre con un hook de una línea que pegue. Sin setup. Sin &quot;¿Alguna vez...&quot;.
+3. Agrega una línea tipo &quot;Guarda esto&quot; o &quot;Para volver&quot; en el tweet 2.
+4. Cuerpo: 5 tweets, una idea por tweet, números específicos, segunda persona.
+5. Cierra con una línea final fuerte y un CTA suave de seguimiento.
+
+Reglas: cero em dashes. Cero en dashes. Sin emojis salvo que te los pidan. Cada tweet bajo 280 caracteres.</pre></div></div><div class="gcard"><div><div><h3>02 · El Esqueleto de Artículo · Principiante</h3><p>Genera un outline completo de artículo desde una sola frase — listo para sobrevivir al draft.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: esqueleto-de-articulo
+description: Úsala cuando el usuario te dé un tema y quiera un outline completo de artículo.
+---
+
+Construyes outlines de artículo que sobreviven al draft.
+
+Cuando se invoque:
+1. Reformula el tema en una sola frase.
+2. Propón 3 opciones de hook. El usuario elige una.
+3. Arma el outline: hook, contraste de setup, 4–6 secciones numeradas, verdad incómoda, línea final.
+4. Cada sección lleva una tesis de una línea y 3 bullets.
+5. Suma el word count target y el reading time.
+
+Output en markdown con encabezados H2. Sin párrafos introductorios.</pre></div></div><div class="gcard"><div><div><h3>03 · El Email en Frío · Intermedio</h3><p>Redacta un cold email que se lee como humano a las 9 am — y que de verdad recibe respuesta.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: email-en-frio
+description: Úsala cuando el usuario quiera redactar un email en frío para un prospecto.
+---
+
+Escribes cold emails que reciben respuesta.
+
+Cuando se invoque, pide: rol del destinatario, empresa del destinatario, qué ofrece quien escribe, un trigger event específico que notaste.
+
+Después redacta:
+- Subject de menos de 6 palabras, en minúsculas, sin buzzwords.
+- Línea 1: referencia el trigger event de manera específica.
+- Línea 2: una frase sobre lo que haces para empresas como la suya.
+- Línea 3: un ask suave. &quot;¿Te late una llamada de 15 minutos?&quot;
+- Sign-off: solo el nombre.
+
+Sin signos de exclamación. Sin &quot;Espero que este correo te encuentre bien&quot;. Sin &quot;haciendo follow up&quot;.</pre></div></div><div class="gcard"><div><div><h3>04 · El Repurposeador · Principiante</h3><p>Convierte un artículo largo en 5 posts nativos para 5 plataformas distintas con la voz original intacta.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: repurposeador
+description: Úsala cuando el usuario quiera convertir una pieza larga en posts cortos para distintas plataformas.
+---
+
+Conviertes contenido largo en posts cortos nativos por plataforma.
+
+Cuando se invoque, pide el artículo de origen y las plataformas destino.
+
+Genera una variante por plataforma:
+- X: hilo de 7 tweets, hook + 5 cuerpo + CTA.
+- LinkedIn: post de 6 párrafos, ángulo contrario, cierra con 1 pregunta.
+- Intro de newsletter: 120 palabras, conversacional, termina con el link.
+- Caption de Instagram: 4 líneas, salto de línea entre cada una.
+- Script de YouTube short: 45 segundos, 3 beats.
+
+Match a la voz original. Saca números específicos del fuente.</pre></div></div><div class="gcard"><div><div><h3>05 · La Forja de Titulares · Intermedio</h3><p>Saca 10 variantes de titular afinadas a 10 ángulos distintos de curiosidad — sin caer en clickbait.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: forja-de-titulares
+description: Úsala cuando el usuario quiera opciones de titular para un artículo o post.
+---
+
+Escribes titulares que se ganan el click.
+
+Cuando se invoque, pide: tema, audiencia, un número o dato específico de la pieza.
+
+Genera 10 variantes en estos ángulos:
+1. Número + outcome (&quot;Cómo 10× mi…&quot;)
+2. La mayoría no sabe que…
+3. El error que costó…
+4. Acción copy-paste
+5. Urgencia con tiempo
+6. Verdad contraintuitiva
+7. Entidad con nombre específico
+8. Pregunta que persigue
+9. Transformación antes/después
+10. El ángulo incómodo
+
+Marca cada uno con una banda predicha de CTR. Nada de clickbait. Los números tienen que ser reales.</pre></div></div><div class="gcard"><div><div><h3>06 · El Imitador de Voz · Avanzado</h3><p>Estudia 3 muestras de escritura y produce contenido nuevo en esa misma voz con precisión quirúrgica.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: imitador-de-voz
+description: Úsala cuando el usuario quiera matchear la voz de una persona o marca existente.
+---
+
+Replicas voz de escritura con precisión quirúrgica.
+
+Cuando se invoque:
+1. Pide 3 muestras de escritura de la voz objetivo.
+2. Extrae el perfil de voz: distribución de longitud de oración, nivel de vocabulario, densidad de párrafo, frases firma, hábitos de puntuación, patrones de apertura, patrones de cierre.
+3. Devuelve el perfil de voz como un brief de 10 bullets.
+4. Pídele al usuario que confirme el brief.
+5. Redacta el contenido nuevo matcheando cada dimensión.
+
+Nunca inventes muletillas que las muestras no enseñan. Marca cualquier desviación en el draft.</pre></div></div><div class="gcard"><div><div><h3>07 · El Doctor de Guiones · Intermedio</h3><p>Reescribe cualquier guión con hook de 30 segundos y un pattern interrupt cada 5 segundos.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: doctor-de-guiones
+description: Úsala cuando el usuario tenga un guión de video o audio que necesite apretar.
+---
+
+Aprietas guiones de video para retención.
+
+Cuando se invoque, pide el guión fuente y la duración objetivo.
+
+Después:
+1. Reconstruye los primeros 5 segundos como un hook con stakes.
+2. Mete un pattern interrupt cada 5 segundos (corte, contraste, pregunta, número, nombre).
+3. Quita filler: &quot;solo&quot;, &quot;really&quot;, &quot;básicamente&quot;, &quot;muy&quot;, &quot;actualmente&quot;.
+4. Convierte voz pasiva a activa.
+5. Termina con un CTA de una línea, nada de &quot;dale al subscribe&quot;.
+
+Output en columnas: línea original, línea apretada, razón de retención.</pre></div></div></div></div><div id="g-research"><p>categoría 02 · 7 skills</p><h2>Research y análisis · 08–14</h2><div><p>Las que aprietan a Claude para que cite fuentes primarias, audite citas existentes, mapee competencia y prepare las preguntas que la gente se olvida de hacer en una junta.</p><div class="gcard"><div><div><h3>08 · El Cazador de Fuentes · Intermedio</h3><p>Devuelve 5 fuentes primarias con quote y link para cualquier afirmación — nada de Wikipedia ni resúmenes de IA.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: cazador-de-fuentes
+description: Úsala cuando el usuario necesite fuentes primarias verificadas para una afirmación o artículo.
+---
+
+Encuentras fuentes primarias y sacas quotes textuales.
+
+Cuando se invoque, pide la afirmación específica que necesita sourcing.
+
+Después:
+1. Busca 5 fuentes primarias: court filings, documentos de la SEC, papers peer-reviewed, comunicados oficiales, piezas firmadas por reporteros.
+2. Para cada fuente: link, fecha de publicación, autor o institución, quote textual que respalde la afirmación, referencia de página o párrafo.
+3. Rechaza Wikipedia, Reddit, agregadores de blog, resúmenes generados por IA.
+4. Marca cualquier afirmación donde no exista fuente primaria.
+
+Output como tabla numerada. Siempre incluye el URL.</pre></div></div><div class="gcard"><div><div><h3>09 · La Autopsia de Competencia · Avanzado</h3><p>Mapea posicionamiento, pricing y huecos de un competidor en 6 secciones con honestidad brutal.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: autopsia-de-competencia
+description: Úsala cuando el usuario quiera un análisis estructurado de un competidor.
+---
+
+Analizas competidores con honestidad brutal.
+
+Cuando se invoque, pide el nombre del competidor y el ángulo o producto propio del usuario.
+
+Genera 6 secciones:
+1. Posicionamiento: cómo se describen ellos vs cómo los describen los clientes.
+2. Pricing: cada precio público, ciclo de cobro, tier escondido.
+3. Foso más fuerte: la única cosa que hacen mejor que nadie.
+4. Costura más débil: el hueco sin proteger por donde un competidor puede atacar.
+5. Movimientos recientes: 3 cambios de producto o marketing en los últimos 90 días.
+6. Veredicto: dónde puedes ganar, dónde mejor evítalos.
+
+Usa números y links específicos. Nada de &quot;parece que ellos…&quot;.</pre></div></div><div class="gcard"><div><div><h3>10 · El Estimador de Mercado · Avanzado</h3><p>Construye un TAM/SAM/SOM defendible desde 3 fuentes independientes con la matemática a la vista.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: estimador-de-mercado
+description: Úsala cuando el usuario necesite un estimado defendible de tamaño de mercado.
+---
+
+Construyes modelos de tamaño de mercado con rigor de citation grade.
+
+Cuando se invoque, pide producto, geografía y horizonte de tiempo.
+
+Después:
+1. Define al comprador en una sola frase.
+2. Saca 3 fuentes de datos independientes para conteo de comprador y disposición a pagar.
+3. Calcula TAM (todos), SAM (los que puedes servir), SOM (los que puedes ganar en 3 años).
+4. Muestra cada multiplicación. Etiqueta cada supuesto.
+5. Stress test: corta cada supuesto a la mitad. ¿En qué se convierte el SOM?
+
+Output como brief de 1 página con la matemática visible. Cita cada número.</pre></div></div><div class="gcard"><div><div><h3>11 · El Mapeador de Tendencias · Intermedio</h3><p>Saca 5 tendencias emergentes en cualquier nicho con 3 puntos de prueba reales — no vibes.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: mapeador-de-tendencias
+description: Úsala cuando el usuario quiera tendencias emergentes en una industria específica.
+---
+
+Detectas tendencias antes de que pegen en mainstream press.
+
+Cuando se invoque, pide el nicho y la ventana de tiempo (default 90 días).
+
+Para cada una de 5 tendencias, entrega:
+- Nombre de la tendencia en 5 palabras.
+- 3 puntos de prueba concretos: un launch, un hire, una ronda de funding, un tweet de un operador.
+- Rating de velocidad: lento, acelerando, hockey stick.
+- Quién gana, quién pierde.
+- Una opinión contraintuitiva.
+
+Nada de &quot;la IA está hot&quot;. Específicos o saltas.</pre></div></div><div class="gcard"><div><div><h3>12 · El Auditor de Citas · Avanzado</h3><p>Verifica cada cita en un documento y marca las inventadas, las paráfrasis y los links muertos.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: auditor-de-citas
+description: Úsala cuando el usuario tenga un documento con citas que necesitan verificación.
+---
+
+Auditas citas como fact-checker contra deadline.
+
+Cuando se invoque, pide el documento.
+
+Para cada cita:
+1. Confirma que la fuente exista en el URL linkeado.
+2. Confirma que el texto citado aparezca textual en la fuente.
+3. Confirma que la fuente respalde la afirmación a la que está pegada.
+4. Marca cualquiera de: link muerto, paráfrasis presentada como cita directa, fuente que contradice la afirmación, fuente generada por IA.
+
+Output: cita original, status (verificada, rota, engañosa, inventada), fix sugerido.</pre></div></div><div class="gcard"><div><div><h3>13 · El Sintetizador de Research · Intermedio</h3><p>Comprime 10 artículos en un brief de decisión de 400 palabras con cada claim citado.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: sintetizador-de-research
+description: Úsala cuando el usuario tenga varios artículos o papers que necesitan síntesis.
+---
+
+Comprimes research en acción.
+
+Cuando se invoque, pide los archivos o links fuente y la decisión que el usuario está tomando.
+
+Después:
+1. Extrae las 3 afirmaciones más fuertes en todas las fuentes.
+2. Anota cualquier contradicción entre fuentes. Márcala explícita.
+3. Saca 5 datos específicos con atribución a la fuente.
+4. Identifica la opinión consenso y la contraintuitiva.
+5. Cierra con una frase de recomendación atada a la decisión del usuario.
+
+Tope de 400 palabras. Cita cada claim.</pre></div></div><div class="gcard"><div><div><h3>14 · El Generador de Preguntas · Principiante</h3><p>Saca 20 preguntas afiladas para cualquier junta o entrevista — diagnóstico, stakes, historia y cierre.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: generador-de-preguntas
+description: Úsala cuando el usuario se está preparando para una entrevista, llamada de venta o junta con un experto.
+---
+
+Escribes las preguntas que los demás se olvidan de hacer.
+
+Cuando se invoque, pide: tipo de junta, nombre del contraparte, tu objetivo.
+
+Genera 20 preguntas en 4 cubetas:
+- Diagnóstico (5): saca a flote qué está realmente roto.
+- Stakes (5): revela el costo de no actuar.
+- Historia (5): qué ya intentaron.
+- Cierre (5): compromételos a un siguiente paso.
+
+Cada pregunta bajo 15 palabras. Sin preguntas de sí/no. Sin preguntas leading.</pre></div></div></div></div><div id="g-codigo"><p>categoría 03 · 7 skills</p><h2>Código e ingeniería · 15–21</h2><div><p>Para usar dentro de Claude Code: descripción de PR limpia, repro mínimo de bug, suite de tests con edge cases, plan de refactor en commits independientes, diseño de API y schema de DB. Si trabajas en repos, las 7 te bajan tiempo de review esta semana.</p><div class="gcard"><div><div><h3>15 · La Descripción de PR · Principiante</h3><p>Escribe una descripción de pull request limpia desde un git diff en 30 segundos.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: descripcion-de-pr
+description: Úsala cuando el usuario quiera la descripción de un pull request a partir de un diff.
+---
+
+Escribes descripciones de PR que los reviewers de verdad leen.
+
+Cuando se invoque, pide el diff o el nombre de la rama.
+
+Output exacto:
+- Title: voz imperativa, bajo 60 caracteres.
+- What: resumen de 2 bullets del cambio.
+- Why: 1 frase con la razón user-facing.
+- How: 3 bullets sobre la implementación.
+- Test plan: 3 pasos específicos que un reviewer puede correr.
+- Screenshots: placeholder si cambia UI, omite si no.
+
+Sin &quot;este PR&quot;. Sin &quot;minor refactor&quot;. Específico.</pre></div></div><div class="gcard"><div><div><h3>16 · El Repro de Bug · Intermedio</h3><p>Convierte un reporte de bug vago en una reproducción mínima con root causes ranqueadas.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: repro-de-bug
+description: Úsala cuando el usuario tenga un reporte de bug que carece de pasos de reproducción.
+---
+
+Aíslas bugs en repros mínimos.
+
+Cuando se invoque, pide la descripción del bug y el contexto del codebase.
+
+Después:
+1. Reformula el bug como: esperado vs real.
+2. Lista 5 hechos mínimos del entorno (OS, versión de runtime, versiones de paquetes).
+3. Reduce el fallo al código más chico que aún falla. Bajo 30 líneas.
+4. Da los pasos exactos de reproducción en lista numerada.
+5. Sugiere 3 root causes probables ranqueadas por probabilidad.
+
+Nunca adivines. Marca lo desconocido explícito.</pre></div></div><div class="gcard"><div><div><h3>17 · El Generador de Tests · Intermedio</h3><p>Genera una suite completa de tests para cualquier función con edge cases mapeados.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: generador-de-tests
+description: Úsala cuando el usuario tenga una función y quiera cobertura de tests.
+---
+
+Escribes tests que cachan bugs reales.
+
+Cuando se invoque, pide la función y el framework de testing.
+
+Genera:
+- 1 test de happy path.
+- 3 tests de boundary (input vacío, input máximo, off-by-one).
+- 2 tests de input inválido (tipo equivocado, malformado).
+- 1 test de race o concurrencia si aplica.
+- 1 test de regresión por cualquier historial de bug mencionado.
+
+Cada test recibe un nombre que describe lo que valida. Sin &quot;test1&quot;. Sin &quot;should work&quot;.</pre></div></div><div class="gcard"><div><div><h3>18 · El Planeador de Refactor · Avanzado</h3><p>Planea un refactor multi-archivo en 5–8 commits independientes y shippables — sin big bang.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: planeador-de-refactor
+description: Úsala cuando el usuario quiera refactorizar sin romper producción.
+---
+
+Planeas refactors que se shipean una rebanada a la vez.
+
+Cuando se invoque, pide: el código, el objetivo, la tolerancia al riesgo.
+
+Después:
+1. Mapea el call graph de las funciones afectadas.
+2. Parte el refactor en 5–8 commits, cada uno shippable independiente.
+3. Para cada commit: cambios, tests añadidos, plan de rollback.
+4. Identifica el commit con más probabilidad de romper producción.
+5. Sugiere una estrategia de feature flag si el riesgo de downtime es alto.
+
+Nada de big-bang refactors. Cada paso ship.</pre></div></div><div class="gcard"><div><div><h3>19 · El Diseñador de API · Avanzado</h3><p>Diseña una API REST o RPC con naming, errores y versioning que envejecen bien.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: disenador-de-api
+description: Úsala cuando el usuario esté diseñando una nueva superficie de API.
+---
+
+Diseñas APIs que envejecen bien.
+
+Cuando se invoque, pide: dominio, callers esperados, presupuesto de performance.
+
+Output:
+1. Modelo de recursos: 3–7 sustantivos, 1 frase cada uno.
+2. Endpoints: método, path, auth, idempotencia, clase de rate limit.
+3. Shapes de request y response con payloads de ejemplo.
+4. Códigos de error con mensajes estructurados.
+5. Esquema de versioning y política de deprecation.
+6. Tres breaking changes que evitaste a propósito.
+
+Usa sustantivos en plural. Usa ISO 8601. Devuelve errores como objetos.</pre></div></div><div class="gcard"><div><div><h3>20 · El Esquema de Base de Datos · Intermedio</h3><p>Diseña un schema normalizado con índices atados a queries reales y plan de migración.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: esquema-de-base-de-datos
+description: Úsala cuando el usuario esté modelando datos para una nueva feature.
+---
+
+Diseñas schemas que escalan más allá del demo.
+
+Cuando se invoque, pide: descripción de la feature, patrones de query esperados, volumen de escritura.
+
+Output:
+1. Tablas con columnas, tipos, nullability, defaults.
+2. Llaves primarias, llaves foráneas, constraints únicos.
+3. Índices atados a queries específicos.
+4. Decisiones de denormalización y el tradeoff lectura/escritura.
+5. Script de migración para los próximos 30 días de cambios.
+
+Nombra tablas en snake_case plural. Siempre incluye created_at y updated_at.</pre></div></div><div class="gcard"><div><div><h3>21 · El Escritor de Docstrings · Principiante</h3><p>Mete docstrings limpios a un archivo sin tocar la lógica — match al estilo del proyecto.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: escritor-de-docstrings
+description: Úsala cuando el usuario quiera documentación añadida a código existente.
+---
+
+Escribes docstrings que los devs sí leen.
+
+Cuando se invoque, pide el archivo o la función.
+
+Para cada función pública:
+- Resumen de una línea en presente.
+- Args con tipo y restricción.
+- Returns con tipo y significado.
+- Raises si aplica.
+- Un ejemplo con input realista.
+
+Match al estilo de docstring existente del proyecto. Nunca modifiques el cuerpo de la función.</pre></div></div></div></div><div id="g-comms"><p>categoría 04 · 6 skills</p><h2>Email y comunicación · 22–27</h2><div><p>Las que viven en la bandeja: triaje, respuestas a correos hostiles, recap de junta que la gente forwardea, status update que un ejecutivo lee en 30 segundos, brief de negociación con BATNA y disculpa real que reconstruye confianza.</p><div class="gcard"><div><div><h3>22 · El Triaje de Inbox · Principiante</h3><p>Ordena tu inbox en cinco cubetas — responde-ahora, hoy, esta-semana, archiva, escala.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: triaje-de-inbox
+description: Úsala cuando el usuario quiera triajear un batch de correos.
+---
+
+Triajeas inboxes en cubetas limpias.
+
+Cuando se invoque, pide el batch de correos (asuntos + remitentes + primeros 200 caracteres).
+
+Para cada correo, asigna:
+- RESPONDE AHORA: estás bloqueando a alguien, deadline hoy, ask de un ejecutivo.
+- RESPONDE HOY: pregunta de cliente, deadline suave, agendar.
+- RESPONDE ESTA SEMANA: nice-to-have, FYI, update async.
+- ARCHIVA: newsletters, invites de calendario ya manejados.
+- ESCALA: legal, seguridad, riesgo de churn.
+
+Output como tabla de 5 columnas. Una línea por correo.</pre></div></div><div class="gcard"><div><div><h3>23 · La Respuesta Difícil · Avanzado</h3><p>Redacta respuesta a un correo hostil o legalmente sensible sin escalarlo ni conceder de más.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: respuesta-dificil
+description: Úsala cuando el usuario tenga que responder un correo enojado, acusatorio o legalmente sensible.
+---
+
+Escribes respuestas que desactivan sin conceder.
+
+Cuando se invoque, pide el correo original y el outcome que el usuario prefiere.
+
+Redacta una respuesta que:
+1. Reconozca la preocupación específica en 1 frase.
+2. Establezca hechos que el usuario puede defender.
+3. Ofrezca un siguiente paso concreto.
+4. Cierre la puerta a la especulación.
+
+Reglas: sin disculpas por cosas que el usuario no hizo. Sin acuerdo con caracterizaciones falsas. Sin promesas fuera de su control. Pasada final para detectar cualquier cosa quotable en corte.</pre></div></div><div class="gcard"><div><div><h3>24 · El Recap de Junta · Principiante</h3><p>Convierte notas crudas de junta en un recap limpio con decisiones, action items y owners.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: recap-de-junta
+description: Úsala cuando el usuario tenga notas de una junta que necesitan formato.
+---
+
+Escribes recaps que la gente forwardea.
+
+Cuando se invoque, pide las notas crudas y los asistentes.
+
+Output:
+- Subject: [Fecha] [Tema] recap y siguientes pasos
+- Decisiones: 3–5 bullets, cada uno un outcome.
+- Action items: nombre, tarea, fecha límite. Formato tabla.
+- Preguntas abiertas: 2–3 bullets, owner adjunto.
+- Próxima junta: fecha y goal en una línea.
+
+Quita conversaciones laterales. Quita nombres de personas que no estuvieron salvo que las decisiones los referencien.</pre></div></div><div class="gcard"><div><div><h3>25 · El Status Update · Principiante</h3><p>Escribe un status update semanal que un ejecutivo de verdad lee en 30 segundos.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: status-update
+description: Úsala cuando el usuario tenga que mandar un update semanal o de proyecto.
+---
+
+Escribes status updates que los ejecutivos leen en 30 segundos.
+
+Cuando se invoque, pide: proyecto, progreso de la semana, blockers, plan de la próxima.
+
+Formato:
+- Headline: 1 frase sobre el estado general. (Verde / Amarillo / Rojo.)
+- Shipped esta semana: 3 bullets, outcomes no actividades.
+- Shipping la próxima semana: 3 bullets con owners.
+- Blockers: bullet + la ayuda específica que necesitas.
+- Métrica de la semana: 1 número con 1 línea de contexto.
+
+Nada de &quot;estamos trabajando en…&quot;. Solo outcomes.</pre></div></div><div class="gcard"><div><div><h3>26 · El Brief de Negociación · Avanzado</h3><p>Te prepara para negociar con BATNA, anchor, walk-away y trades baratos para ti pero valiosos para ellos.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: brief-de-negociacion
+description: Úsala cuando el usuario tenga una negociación próxima.
+---
+
+Preparas negociaciones con matemática fría.
+
+Cuando se invoque, pide: contraparte, tipo de deal, tus alternativas reales.
+
+Output:
+1. Tu BATNA en una frase.
+2. La BATNA probable de ellos (tu adivinanza + nivel de confianza).
+3. Anchor: el primer número que deberías decir.
+4. Target: el deal con el que entras esperando.
+5. Walk-away: la línea que no cruzas.
+6. 3 trades: cosas que das barato y a ellos les valen mucho.
+7. 2 momentos de silencio: dónde callarte y dejar que ellos hablen.
+
+Solo números específicos. Porcentajes donde aplique.</pre></div></div><div class="gcard"><div><div><h3>27 · La Disculpa · Intermedio</h3><p>Escribe una disculpa real que no culpa al cliente ni se escabulle — y que reconstruye confianza.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: disculpa
+description: Úsala cuando el usuario necesite disculparse con un cliente, empleado o partner.
+---
+
+Escribes disculpas que reconstruyen confianza.
+
+Cuando se invoque, pide: qué pasó, quién salió afectado, qué se perdió.
+
+El draft tiene que:
+1. Nombrar la falla específica en voz activa.
+2. Reconocer el impacto en el destinatario por nombre.
+3. Saltarse el &quot;si te sentiste&quot; y el &quot;lamentamos cualquier inconveniente&quot;.
+4. Establecer 1 remedio concreto ya en marcha.
+5. Comprometerse a 1 cambio específico que previene la recurrencia.
+6. Cerrar sin pedir perdón.
+
+Bajo 200 palabras. Sin hedging corporativo.</pre></div></div></div></div><div id="g-data"><p>categoría 05 · 7 skills</p><h2>Data y reportes · 28–34</h2><div><p>Para volver una hoja en una historia: 5 insights con citas a fila y valor, tracker semanal de KPIs, análisis de cohortes con la matemática a la vista, forecast de 12 semanas con bandas, anomalías ranqueadas por impacto, audit de funnel y traductor a SQL para preguntas en español llano.</p><div class="gcard"><div><div><h3>28 · El Narrador de Hojas · Intermedio</h3><p>Lee un CSV y escribe los 5 insights que un humano se perdería — citados a fila y valor.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: narrador-de-hojas
+description: Úsala cuando el usuario tenga una hoja de cálculo que necesita interpretación.
+---
+
+Encuentras la historia adentro de los números.
+
+Cuando se invoque, pide el CSV y la pregunta que le importa al usuario.
+
+Después:
+1. Perfila los datos: número de filas, columnas, valores faltantes, rango de fechas.
+2. Saca a flote 5 insights, ranqueados por utilidad.
+3. Marca 2 cosas que se ven mal (issues de data quality).
+4. Anota 1 pregunta que los datos no pueden contestar.
+5. Sugiere 1 chart por insight con tipo de chart y ejes.
+
+Cita filas y valores específicos. Nada de &quot;las tendencias sugieren…&quot;.</pre></div></div><div class="gcard"><div><div><h3>29 · El Tracker de KPIs · Principiante</h3><p>Construye un reporte semanal de KPIs con deltas, status vs target y commentary corto.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: tracker-de-kpis
+description: Úsala cuando el usuario quiera un snapshot semanal de KPIs.
+---
+
+Reportas KPIs que mueven decisiones.
+
+Cuando se invoque, pide: lista de KPIs, valores actuales, valores del periodo anterior, target.
+
+Por KPI, output:
+- Nombre y definición (una frase).
+- Valor actual, valor anterior, delta como porcentaje y absoluto.
+- Status vs target: adelantado, on track, atrás.
+- Commentary de una línea sobre por qué.
+
+Ordena por status (atrás primero). Resalta cualquier KPI que se mueva más de 10 por ciento.</pre></div></div><div class="gcard"><div><div><h3>30 · El Analista de Cohortes · Avanzado</h3><p>Corre análisis de cohortes desde events crudos y explica qué cambió, con la matemática a la vista.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: analista-de-cohortes
+description: Úsala cuando el usuario tenga data de eventos y necesite insights por cohorte.
+---
+
+Lees cohortes como las lee un inversionista.
+
+Cuando se invoque, pide: data de eventos, dimensión de cohorte (mes de signup, canal, plan), métrica (retención, revenue, activación).
+
+Después:
+1. Construye la tabla de cohorte: filas = cohorte, columnas = periodo, celdas = métrica.
+2. Identifica la 1 cohorte que rompe el patrón.
+3. Calcula el cambio porcentual entre la mejor y peor cohorte.
+4. Lista 3 explicaciones plausibles para la divergencia.
+5. Sugiere 1 análisis de seguimiento para confirmar la causa.
+
+Muestra la matemática. Nunca redondees a &quot;como…&quot;.</pre></div></div><div class="gcard"><div><div><h3>31 · El Constructor de Forecast · Avanzado</h3><p>Construye forecast de 12 semanas con bandas low/base/high y las 2 asunciones más sensibles.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: constructor-de-forecast
+description: Úsala cuando el usuario necesite un forecast de corto plazo (revenue, headcount, demanda).
+---
+
+Construyes forecasts que puedes defender en una junta.
+
+Cuando se invoque, pide: métrica, historia (mínimo últimas 26 semanas), eventos conocidos.
+
+Después:
+1. Elige el modelo: lineal, estacional o judgment-driven. Justifica en 1 línea.
+2. Devuelve forecast para las próximas 12 semanas con bandas low/base/high.
+3. Lista cada supuesto con un rating de confianza.
+4. Identifica los 2 supuestos donde el forecast es más sensible.
+5. Stress test: ¿qué pasa si esos 2 supuestos se mueven 20 por ciento?
+
+Muestra la fórmula. Nunca escondas la matemática.</pre></div></div><div class="gcard"><div><div><h3>32 · El Cazador de Anomalías · Intermedio</h3><p>Marca picos y caídas raras en cualquier serie de tiempo con causas plausibles ranqueadas por impacto.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: cazador-de-anomalias
+description: Úsala cuando el usuario quiera encontrar patrones inusuales en data de serie de tiempo.
+---
+
+Cazas anomalías que importan.
+
+Cuando se invoque, pide la data de serie de tiempo y qué cuenta como &quot;inusual&quot;.
+
+Después:
+1. Calcula la baseline (rolling mean, desviación estándar).
+2. Marca puntos que excedan 2 sigma. Marca dirección (pico, caída).
+3. Para cada punto marcado: timestamp, magnitud, baseline, desviación.
+4. Ranquea por impacto, no por tamaño de desviación.
+5. Sugiere 3 causas probables por anomalía: issue de data, evento real, efecto estacional.
+
+Sin falsos positivos. Marca &quot;necesita revisión humana&quot; si es ambiguo.</pre></div></div><div class="gcard"><div><div><h3>33 · El Auditor de Funnel · Intermedio</h3><p>Audita un funnel de conversión y encuentra el paso más leaky con dólares perdidos cuantificados.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: auditor-de-funnel
+description: Úsala cuando el usuario tenga data de funnel y quiera encontrar el drop-off más grande.
+---
+
+Encuentras la fuga que más cuesta.
+
+Cuando se invoque, pide: pasos del funnel, volumen en cada paso, ventana de tiempo.
+
+Output:
+- Tasa de conversión por paso (absoluta y paso a paso).
+- El paso más leaky. Cuantifica el revenue o signups perdidos.
+- 3 hipótesis de por qué ese paso fuga.
+- 1 prueba barata para validar la hipótesis principal.
+- Benchmark de industria para ese paso si lo conoces.
+
+Números específicos. Dólares específicos donde sea posible.</pre></div></div><div class="gcard"><div><div><h3>34 · El Traductor a SQL · Principiante</h3><p>Convierte preguntas en español llano a una query SQL funcional con comentarios por cláusula.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: traductor-a-sql
+description: Úsala cuando el usuario quiera consultar una base de datos sin escribir SQL.
+---
+
+Traduces español llano a SQL.
+
+Cuando se invoque, pide: pregunta, schema de la tabla (o fila de muestra), dialecto SQL.
+
+Después:
+1. Reformula la pregunta en términos precisos.
+2. Escribe la query con comentarios en cada cláusula.
+3. Predice el conteo de filas del resultado.
+4. Marca cualquier supuesto sobre el schema.
+5. Sugiere una optimización (índice, partición, vista materializada).
+
+Usa CTEs antes que subqueries. Nunca SELECT *. Formatea para legibilidad.</pre></div></div></div></div><div id="g-personal"><p>categoría 06 · 6 skills</p><h2>Personal y productividad · 35–40</h2><div><p>Para el sistema de tu semana: revisión semanal honesta, diario de decisiones con condición de revisita, pipeline de lectura con tags de acción, traductor de metas anuales a calendario, diseñador de hábitos con plan de recuperación, y ordenador de brain dump que separa tarea de ruido.</p><div class="gcard"><div><div><h3>35 · La Revisión Semanal · Principiante</h3><p>Corre una review de viernes sobre tu calendario y devuelve las 3 prioridades de la semana siguiente.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: revision-semanal
+description: Úsala cuando el usuario quiera revisar la semana pasada y planear la siguiente.
+---
+
+Corres reviews semanales como operador de domingo en la mañana.
+
+Cuando se invoque, pide: historial de calendario (últimos 7 días), lista de tareas, metas actuales.
+
+Output:
+1. Wins: 3 cosas específicas que se shipearon.
+2. Drag: 3 cosas que comieron tiempo sin output.
+3. Alineación con metas: horas gastadas en cada meta vs target.
+4. Top 3 prioridades de la próxima semana, con el 1 trade-off que cada una requiere.
+5. Una cosa a la que decir no.
+
+Sin piedad. Honesto. Nada de &quot;sé amable contigo mismo&quot;.</pre></div></div><div class="gcard"><div><div><h3>36 · El Diario de Decisiones · Intermedio</h3><p>Logea una decisión con su lógica y la única condición que te haría cambiar de opinión.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: diario-de-decisiones
+description: Úsala cuando el usuario esté tomando una decisión no trivial que quiera revisitar.
+---
+
+Logeas decisiones para auditar a futuro.
+
+Cuando se invoque, pide: la decisión, las opciones consideradas, la elección, el razonamiento.
+
+Captura:
+- Fecha y decisión en una frase.
+- Opciones consideradas (mínimo 3) con tradeoff de una línea cada una.
+- Información disponible al momento.
+- Información faltante.
+- Outcome predicho con timeline.
+- Nivel de confianza (1–10).
+- Condición de revisita: el único hecho que te haría cambiar de opinión.
+
+Guárdalo como markdown con fecha. La condición de revisita es el campo más útil. Tu yo futuro puede auditar si se gatilló.</pre></div></div><div class="gcard"><div><div><h3>37 · El Pipeline de Lectura · Principiante</h3><p>Procesa artículos guardados en resúmenes de un párrafo con tags de acción concretos.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: pipeline-de-lectura
+description: Úsala cuando el usuario tenga un backlog de artículos guardados que procesar.
+---
+
+Limpias backlogs de lectura sin perder el valor.
+
+Cuando se invoque, pide los URLs o archivos guardados.
+
+Por artículo:
+- Resumen de una línea.
+- 3 takeaways específicos con timestamps o quotes.
+- Tag: APLICA, COMPARTE, ARCHIVA, IGNORA.
+- Si APLICA: una acción concreta con deadline.
+- Si COMPARTE: a quién mandárselo y por qué.
+
+Salta artículos que fallan el skim test de 30 segundos.</pre></div></div><div class="gcard"><div><div><h3>38 · El Traductor de Metas · Intermedio</h3><p>Parte una meta anual vaga en milestones de 90, 30 días y semana — todos verificables.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: traductor-de-metas
+description: Úsala cuando el usuario tenga una meta anual que necesita descomposición.
+---
+
+Traduces metas a entradas de calendario.
+
+Cuando se invoque, pide la meta, el estado actual, la deadline.
+
+Output:
+1. Reformula la meta como un outcome medible.
+2. Milestones de 90 días (3). Cada uno es un artefacto verificable.
+3. Milestones de 30 días (3 por trimestre). Cada uno toma menos de 2 semanas de trabajo enfocado.
+4. Las 3 acciones de esta semana. Cada una cabe en un bloque de calendario.
+5. La 1 cosa que sueltas para abrir espacio.
+
+Nada de vision boards. Nada de &quot;sé más confiado&quot;. Solo outcomes.</pre></div></div><div class="gcard"><div><div><h3>39 · El Diseñador de Hábitos · Principiante</h3><p>Diseña un hábito con trigger, acción de menos de 2 minutos y plan de recuperación cuando fallas.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: disenador-de-habitos
+description: Úsala cuando el usuario quiera instalar un nuevo hábito.
+---
+
+Diseñas hábitos que sobreviven semanas malas.
+
+Cuando se invoque, pide el hábito, frecuencia actual, frecuencia objetivo.
+
+Diseña:
+- Trigger: un evento existente específico (después del café, antes del email).
+- Acción: bajo 2 minutos durante los primeros 14 días.
+- Stack: a qué hábito le sigue.
+- Reducción de fricción: 1 cosa que dejas lista la noche anterior.
+- Regla de recuperación: si fallas, nunca falles dos veces.
+- Check-in: prompt de revisión semanal por 8 semanas.
+
+Cambio de comportamiento, no teatro de motivación.</pre></div></div><div class="gcard"><div><div><h3>40 · El Ordenador de Brain Dump · Principiante</h3><p>Toma un brain dump caótico y lo convierte en una lista limpia de tareas accionables.</p></div><span class="gbtn">Copiar</span></div><div><pre>---
+name: ordenador-de-brain-dump
+description: Úsala cuando el usuario tenga una lista caótica de pensamientos y necesite estructura.
+---
+
+Ordenas brain dumps en acción.
+
+Cuando se invoque, pide el dump crudo.
+
+Después:
+1. Clusteriza cada línea en una de: TAREA, IDEA, PREGUNTA, SENTIMIENTO, RUIDO.
+2. TAREAS: reescribe como imperativo + fecha límite (o &quot;sin fecha&quot; si no hay).
+3. IDEAS: tag con proyecto. Guarda a la lista de ideas.
+4. PREGUNTAS: identifica quién puede responderla. Redacta el mensaje.
+5. SENTIMIENTOS: deja como nota de diario de una línea.
+6. RUIDO: borra.
+
+Devuelve la lista limpia. El usuario abre su inbox y solo ve TAREAS.</pre></div></div></div></div><div id="g-packs"><p>packs por perfil · 5 skills cada uno</p><h2>No instales las 40 — empieza con tu pack</h2><div><p>La regla de adopción: elige las 5 que tu día de verdad usa, instálalas, úsalas todos los días por dos semanas. Si una no te sirve, la tiras y agarras otra del catálogo. En 30 días tienes un stack personalizado que vuelve a Claude 10× más útil que out-of-the-box.</p><div class="ggrid"><div class="gcard"><p>Freelancer</p><p>Cierra clientes, prepara llamadas y maneja conflicto sin escalar.</p><ul><li><span>03</span><span>·</span><span>El Email en Frío</span><span>(Escritura)</span></li><li><span>26</span><span>·</span><span>El Brief de Negociación</span><span>(Comms)</span></li><li><span>25</span><span>·</span><span>El Status Update</span><span>(Comms)</span></li><li><span>27</span><span>·</span><span>La Disculpa</span><span>(Comms)</span></li><li><span>14</span><span>·</span><span>El Generador de Preguntas</span><span>(Research)</span></li></ul></div><div class="gcard"><p>Creador de contenido</p><p>Una idea cruda en la mañana → 5 plataformas en la tarde.</p><ul><li><span>01</span><span>·</span><span>El Arquitecto de Hilos</span><span>(Escritura)</span></li><li><span>02</span><span>·</span><span>El Esqueleto de Artículo</span><span>(Escritura)</span></li><li><span>04</span><span>·</span><span>El Repurposeador</span><span>(Escritura)</span></li><li><span>05</span><span>·</span><span>La Forja de Titulares</span><span>(Escritura)</span></li><li><span>06</span><span>·</span><span>El Imitador de Voz</span><span>(Escritura)</span></li></ul></div><div class="gcard"><p>Engineer</p><p>Menos PRs trabados, menos refactors a ciegas, tests que sí cachan bugs.</p><ul><li><span>15</span><span>·</span><span>La Descripción de PR</span><span>(Código)</span></li><li><span>16</span><span>·</span><span>El Repro de Bug</span><span>(Código)</span></li><li><span>17</span><span>·</span><span>El Generador de Tests</span><span>(Código)</span></li><li><span>18</span><span>·</span><span>El Planeador de Refactor</span><span>(Código)</span></li><li><span>21</span><span>·</span><span>El Escritor de Docstrings</span><span>(Código)</span></li></ul></div><div class="gcard"><p>Founder</p><p>Inbox cero, KPIs leídos, decisiones auditables, metas que aterrizan.</p><ul><li><span>22</span><span>·</span><span>El Triaje de Inbox</span><span>(Comms)</span></li><li><span>35</span><span>·</span><span>La Revisión Semanal</span><span>(Personal)</span></li><li><span>29</span><span>·</span><span>El Tracker de KPIs</span><span>(Data)</span></li><li><span>36</span><span>·</span><span>El Diario de Decisiones</span><span>(Personal)</span></li><li><span>38</span><span>·</span><span>El Traductor de Metas</span><span>(Personal)</span></li></ul></div><div class="gcard"><p>Analyst</p><p>De CSV a recomendación con citas reales en una sesión.</p><ul><li><span>08</span><span>·</span><span>El Cazador de Fuentes</span><span>(Research)</span></li><li><span>28</span><span>·</span><span>El Narrador de Hojas</span><span>(Data)</span></li><li><span>30</span><span>·</span><span>El Analista de Cohortes</span><span>(Data)</span></li><li><span>31</span><span>·</span><span>El Constructor de Forecast</span><span>(Data)</span></li><li><span>33</span><span>·</span><span>El Auditor de Funnel</span><span>(Data)</span></li></ul></div></div></div></div><div id="g-workflow"><p>cómo usarlas de verdad</p><h2>La verdad incómoda y los siguientes 30 días</h2><div><p>La mayoría va a guardar esta página y nunca va a abrir la carpeta. Un grupo más chico va a copiar 5 skills y empezar mañana. Un grupo todavía más chico va a instalar las 40 y olvidarse de que Claude está haciendo el trabajo. La diferencia entre los tres grupos no es talento. Es si abriste la carpeta.</p><p>Claude es el motor. Las skills son el volante. Sin skills estás pisando el acelerador esperando llegar a algún lado bueno. La buena noticia: dejar el volante toma 5 minutos por skill — el comando de la sección de instalación, el copy-paste del SKILL.md, y listo.</p><div class="gcard"><p>Plan de adopción de 30 días</p><ul><li><span><strong>Día 1:</strong> elige tu pack (sección de arriba). Instala las 5 en una sola sentada usando el método que más usas (Claude.ai web o Claude Code).</span></li><li><span><strong>Días 2–14:</strong> usa cada skill al menos 2 veces. Anota cuáles se sienten naturales y cuáles no se gatillan solas — esas necesitan un <code>description</code> más afilado.</span></li><li><span><strong>Días 15–30:</strong> tira las 1–2 que no usaste. Cambia por otras del catálogo. Después de 30 días tienes 5 skills ajustadas a tu día — vale más que las 40 sin uso.</span></li></ul></div><p>Y si llegaste hasta acá pero todavía no abriste la primera carpeta — abre terminal, pega el primer comando de la sección de instalación, copia el SKILL.md de la skill 01, y termina la jugada. La diferencia entre los tres grupos arriba se decide en los próximos 5 minutos.</p></div></div></div><div><div><p>Guía de la comunidad</p><p>Esta es la biblioteca completa de 40 Claude Skills de la comunidad <a href="#/boveda">tododeia</a>, reescrita en español natural para que cualquier persona en LATAM pueda copiar, pegar y empezar a usar las skills hoy. Cada SKILL.md está ya con su frontmatter en español kebab-case y la mecánica original intacta — solo cambió el idioma y se quitó cualquier atribución externa para que la guía sea recurso libre de la comunidad. Bookmark esta página, copia las 5 que te toquen, y vuelve cuando quieras instalar más.</p></div><div class="ggrid"><a class="gcard" href="https://docs.claude.com/en/docs/claude-code/skills" target="_blank" rel="noopener"><div><p>Crea la carpeta de skills</p><p>Claude Code · ~/.claude/skills/&lt;nombre&gt;/SKILL.md</p></div></a><a class="gcard" href="https://claude.ai/settings/skills" target="_blank" rel="noopener"><div><p>Sube tu skill en Claude.ai</p><p>Settings → Skills → Add Skill (Cowork y Desktop usan el mismo flow)</p></div></a></div><div class="ggrid"><a class="gcard" href="#/g/jarvis-obsidian"><div><p>Tu JARVIS en Obsidian</p><p>Skills aplicadas a un segundo cerebro</p></div></a><a class="gcard" href="#/g/cloud-ads-flow"><div><p>Cloud Ads Flow</p><p>Cómo una skill (claude-ads) corre Facebook Ads</p></div></a><a class="gcard" href="#/g/claude-microsoft-365"><div><p>Claude para Microsoft 365</p><p>Skills al lado de Excel, Word y Outlook</p></div></a></div><div class="gcard"><p>Fuentes oficiales</p><div class="ggrid"><a href="https://docs.claude.com/en/docs/claude-code/skills" target="_blank" rel="noopener">Claude Code Skills · docs oficial</a><a href="https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview" target="_blank" rel="noopener">Agent Skills · overview</a><a href="https://www.anthropic.com/news/skills" target="_blank" rel="noopener">Anthropic news · introducción a Skills</a><a href="https://docs.claude.com/en/docs/claude-code/overview" target="_blank" rel="noopener">Claude Code · overview e instalación</a><a href="https://claude.ai/settings/skills" target="_blank" rel="noopener">Claude.ai · Settings · Skills</a><a href="https://claude.com/pricing" target="_blank" rel="noopener">Pricing · planes que soportan Skills</a></div></div><p>Notas de uso: estas 40 skills son una adaptación al español natural de prompts públicos de la comunidad de Claude. La mecánica de cada SKILL.md se preserva; los textos están reescritos para LATAM en segunda persona y sin atribución externa porque la guía es recurso libre de la comunidad tododeia, no de un autor en particular. Cada skill ejecuta lo que dice su cuerpo — revisa el output antes de mandarlo a un cliente, antes de presionar send, o antes de hacer commit.</p></div></div>
+</article>

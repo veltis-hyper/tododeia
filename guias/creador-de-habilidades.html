@@ -1,0 +1,205 @@
+<article class="chapter guia" data-slug="creador-de-habilidades">
+<div><div><h1>Skill Creator: la habilidad que crea todas tus demás habilidades</h1><p>Claude ya trae de fábrica una habilidad llamada Skill Creator. No tienes que instalar nada: <strong>es el meta-skill que toma cualquier proceso que repites en tu negocio y lo convierte en una habilidad reutilizable</strong>, lista para que tú o tu equipo la disparen con una sola frase. Aquí tienes la base completa: cómo activarlo, los 6 pasos, los prompts maestros listos para copiar y una plantilla real de SKILL.md.</p></div><div><p>De un vistazo</p><div class="ggrid"><div class="gcard"><div><span>01</span></div><p>Qué es y por qué es el meta-skill</p></div><div class="gcard"><div><span>02</span></div><p>Anatomía: SKILL.md + recursos</p></div><div class="gcard"><div><span>03</span></div><p>Ya viene por defecto: cómo activarlo</p></div><div class="gcard"><div><span>04</span></div><p>El proceso de 6 pasos</p></div><div class="gcard"><div><span>05</span></div><p>8 prompts maestros para copiar</p></div></div></div><div class="gcard"><div><p>qué es · anatomía · activarlo · 6 pasos · prompts · plantilla · prácticas · ideas · faq</p><p>Una habilidad es una carpeta. El Skill Creator la arma por ti.</p><p>Si haces lo mismo cada semana —responder cotizaciones, auditar tus anuncios, armar un reporte, calificar leads— eso es candidato a volverse una habilidad. Una skill es solo una carpeta con un archivo SKILL.md que le enseña a Claude tu proceso una vez, para que lo repita igual cada vez sin que tengas que explicarle el contexto. El Skill Creator es la habilidad que construye esas carpetas por ti: te entrevista, diseña la estructura, escribe el SKILL.md y lo deja listo para instalar. Esta guía asume que no programas; todo el trabajo pesado lo hace Claude con los prompts de abajo.</p></div><div><a href="#g-vistazo">Vistazo</a><a href="#g-anatomia">Anatomía</a><a href="#g-activar">Activarlo</a><a href="#g-proceso">6 pasos</a><a href="#g-prompts">Prompts</a><a href="#g-plantilla">Plantilla</a><a href="#g-practicas">Buenas prácticas</a><a href="#g-ideas">Ideas</a><a href="#g-faq">FAQ</a><a href="#g-checklist">Checklist</a></div><div><span>Habilidad por defecto de Claude</span><span>Funciona en Claude.ai y Claude Code</span><span>Aunque no programes</span><span>Enfoque en negocio</span><span>8 prompts listos para copiar</span></div></div><div><div id="g-vistazo"><p>qué es · el meta-skill</p><h2>Qué es el Skill Creator y por qué lo cambia todo</h2><div><p>Skill Creator es una habilidad (un “skill”) que ya viene incluida en Claude. Su único trabajo es ayudarte a crear otras habilidades. Por eso es el meta-skill: no resuelve una tarea de tu negocio directamente, sino que fabrica las herramientas que sí lo hacen. Aprende a usar este una vez y podrás producir todas las demás.</p><div class="ggrid"><div class="gcard"><div><p>Una skill = una carpeta</p></div><p>Cada habilidad es una carpeta con un archivo SKILL.md (obligatorio) y, si hace falta, carpetas de apoyo: scripts/, references/ y assets/. Nada más.</p></div><div class="gcard"><div><p>Le enseñas tu proceso una vez</p></div><p>En vez de explicarle el contexto a Claude cada vez, lo escribes una sola vez dentro del SKILL.md. Esa carpeta se vuelve memoria reutilizable de tu negocio.</p></div><div class="gcard"><div><p>Se dispara solo con una frase</p></div><p>Cuando tú o tu equipo dicen la frase correcta, Claude reconoce que esa habilidad aplica y la usa. No hay que copiar prompts a mano nunca más.</p></div><div class="gcard"><div><p>El Skill Creator arma la carpeta</p></div><p>Tú das la idea cruda; él te entrevista, planea los recursos, inicializa la estructura, escribe el SKILL.md, lo valida y lo empaqueta para instalar.</p></div></div><div class="gcard"><p>El ángulo de negocio</p><p>El ángulo de negocio es directo: cada proceso repetible que vive solo en tu cabeza o en la de un empleado es un riesgo y un cuello de botella. Convertirlo en una skill lo vuelve un activo: se ejecuta igual siempre, no depende de quién esté de turno, y lo puedes compartir con tu equipo. El Skill Creator es, en la práctica, la forma de empaquetar tu know-how.</p></div></div></div><div id="g-anatomia"><p>anatomía · cómo está hecha una skill</p><h2>Anatomía de una skill: una carpeta y poco más</h2><div><p>Quita el misterio: una skill es una carpeta. Lo único obligatorio es el archivo SKILL.md; el resto son carpetas opcionales que se suman cuando hacen falta. Así se ve por dentro.</p><div><pre>mi-skill/
+├── SKILL.md            (obligatorio)
+│   ├── frontmatter YAML
+│   │   ├── name:         minúsculas-con-guiones
+│   │   └── description:  qué hace + cuándo usarse  ← el disparador
+│   └── cuerpo en Markdown   (instrucciones y flujo)
+│
+└── recursos opcionales
+    ├── scripts/        código que debe salir igual siempre
+    ├── references/     detalle largo que se carga solo si hace falta
+    └── assets/         plantillas y archivos que el skill copia en su salida</pre></div><div class="ggrid"><div class="gcard"><div><p>SKILL.md (obligatorio)</p></div><p>El corazón de la skill. Lleva un frontmatter YAML con name y description, y debajo el cuerpo en Markdown con las instrucciones y el flujo de trabajo. Si una skill solo tuviera este archivo, ya funcionaría.</p></div><div class="gcard"><div><p>scripts/ — código determinista</p></div><p>Código (Python, Bash, lo que sea) para pasos que deben salir exactamente igual cada vez o que se reescribirían a mano una y otra vez. Ventaja: se pueden ejecutar sin cargarse al contexto, así que no gastan tokens.</p></div><div class="gcard"><div><p>references/ — detalle que se carga solo si hace falta</p></div><p>Documentación, criterios, esquemas o políticas que Claude consulta mientras trabaja. Mantiene el SKILL.md esbelto: el detalle largo vive aquí y solo se abre cuando se necesita. Regla: la info va en SKILL.md o en references, nunca duplicada en ambos.</p></div><div class="gcard"><div><p>assets/ — archivos para la salida</p></div><p>Plantillas, logos, fuentes o boilerplate que la skill copia o modifica en lo que produce. No se cargan al contexto para leerse: se usan dentro del resultado final.</p></div></div><p>Progressive disclosure: 3 niveles para no saturar el contexto</p><div><div class="gcard"><span>1</span><div><p>Metadatos (name + description)</p><p><span>Se carga: </span>Siempre cargados, en todo momento.</p><p>~100 tokens (piensa en pedacitos de palabra). Baratísimo: por eso pueden estar siempre presentes.</p></div></div><div class="gcard"><span>2</span><div><p>Cuerpo del SKILL.md</p><p><span>Se carga: </span>Se carga cuando la skill se dispara.</p><p>Menos de 5.000 tokens (unas 3.500-4.000 palabras). Por eso conviene tenerlo esbelto.</p></div></div><div class="gcard"><span>3</span><div><p>Recursos empaquetados (scripts / references / assets)</p><p><span>Se carga: </span>Solo cuando Claude los necesita para la tarea.</p><p>Prácticamente ilimitado: los scripts se ejecutan sin leerse y las references se abren una a una.</p></div></div></div><p>A esto se le llama progressive disclosure (revelación progresiva). Es lo que mantiene barato el contexto: Claude siempre conoce el nombre y la descripción de tus skills, pero solo carga las instrucciones completas cuando una se dispara, y solo abre los archivos pesados cuando de verdad los va a usar. Por eso puedes tener decenas de skills sin saturar nada.</p></div></div><div id="g-activar"><p>activarlo · ya viene por defecto</p><h2>Activar el Skill Creator (ya lo tienes)</h2><div><p>El Skill Creator ya es una habilidad por defecto de Claude: viene incluida tanto en las apps de Claude como en Claude Code. No tienes que descargar ni instalar ningún archivo. Lo único que necesitas es tener activada la ejecución de código (Code execution) en tu cuenta, disponible en los planes Pro, Max, Team y Enterprise. Estas son las formas de llegar a él.</p><div class="ggrid"><div class="gcard"><div><p>En Claude.ai (la app web o de escritorio)</p></div><ol><li><span>1.</span><span>Primero activa la ejecución de código: Settings (Configuración) → Capabilities → Code execution. Es el prerequisito para usar skills.</span></li><li><span>2.</span><span>Gestiona y activa tus skills en Settings → Features → Skills (en algunas cuentas aparece como Customize → Skills).</span></li><li><span>3.</span><span>En un chat nuevo, escribe algo como “quiero crear un skill que haga X” y Claude tomará el rol de Skill Creator.</span></li><li><span>4.</span><span>Ahí mismo, cuando termines, puedes subir tu skill ya empaquetada (un .zip) en esa misma sección de Skills.</span></li></ol></div><div class="gcard"><div><p>En Claude Code (la terminal)</p></div><ol><li><span>1.</span><span>El Skill Creator viene con Claude. Si usas Claude Code en la terminal y no aparece, instálalo desde el plugin oficial o copia la carpeta del repo anthropics/skills en ~/.claude/skills/ (es el mismo respaldo que describimos abajo).</span></li><li><span>2.</span><span>Solo dile lo que quieres: “quiero crear un skill que haga X” y tomará el mando del proceso.</span></li><li><span>3.</span><span>Claude Code detecta tus skills desde .claude/skills/ (a nivel proyecto) y desde ~/.claude/skills/ (a nivel global).</span></li><li><span>4.</span><span>Cuando empaqueta tu skill, queda lista para colocar en cualquiera de esas dos carpetas.</span></li></ol></div></div><p>¿Dónde vive una skill?</p><div class="ggrid"><div class="gcard"><p>Skill de proyecto</p><code>.claude/skills/&lt;nombre&gt;/SKILL.md</code><p>Vive dentro de un proyecto específico. Úsala cuando la habilidad solo tiene sentido en ese repositorio o cliente.</p></div><div class="gcard"><p>Skill global</p><code>~/.claude/skills/&lt;nombre&gt;/SKILL.md</code><p>Vive en tu cuenta y está disponible en todos tus proyectos. Úsala para procesos transversales de tu negocio.</p></div></div><div class="gcard"><p>Fallback para setups viejos</p><p>¿Tienes un setup viejo donde el Skill Creator todavía no aparece por defecto? Como respaldo puedes descargar el SKILL.md original y colocarlo tú mismo en la carpeta de skills. Es solo un fallback: el camino principal hoy es que ya viene incluido y no necesitas descargar nada.</p><a href="https://www.tododeia.com/docs/skill-creator-SKILL.md" target="_blank" rel="noopener">Descargar SKILL.md original</a></div></div></div><div id="g-proceso"><p>el método · 6 pasos en orden</p><h2>El proceso de 6 pasos del Skill Creator</h2><div><p>Crear una skill bien hecha sigue un flujo de 6 pasos, y el Skill Creator te va llevando por ellos (las versiones más nuevas además traen modos para evaluar y mejorar tus skills, pero el flujo de fondo es este). Conocerlos te ayuda a saber en qué parte vas y a no saltarte lo importante. Tú no tienes que ejecutarlos a mano; los prompts de la siguiente sección te llevan por cada uno.</p><div><div class="gcard"><div><span>1</span><div><div><p>Entender el caso de uso</p></div><p>Antes de escribir nada, el Skill Creator busca ejemplos concretos: qué le vas a dar al skill (entradas) y qué esperas de vuelta (salidas). Te hace pocas preguntas, las más importantes, sin abrumarte.</p><p><span>Qué esperar · </span>Espera una mini entrevista. Si no tienes ejemplos, él propone algunos y tú los corriges.</p></div></div></div><div class="gcard"><div><span>2</span><div><div><p>Planear los recursos reutilizables</p></div><p>Analiza cada ejemplo y decide qué conviene empaquetar: un script para lo que debe salir igual siempre, references para tus criterios y políticas, assets para plantillas. Si algo no hace falta, no lo crea.</p><p><span>Qué esperar · </span>Espera una propuesta de qué carpetas tendrá tu skill y por qué cada una.</p></div></div></div><div class="gcard"><div><span>3</span><div><div><p>Inicializar la skill</p></div><p>Genera la estructura de carpetas por ti: crea el SKILL.md con su frontmatter y, según lo que tu skill necesite, las subcarpetas de ejemplo (scripts/, references/, assets/), y descarta las que no uses.</p><p><span>Qué esperar · </span>Espera ver el árbol de carpetas creado, listo para llenar.</p></div></div></div><div class="gcard"><div><span>4</span><div><div><p>Escribir el SKILL.md</p></div><p>Redacta el cuerpo del SKILL.md con las instrucciones y el flujo de trabajo, en modo imperativo. El detalle largo lo manda a references/ para que el cuerpo quede esbelto. Aplica progressive disclosure.</p><p><span>Qué esperar · </span>Espera el SKILL.md completo más el contenido de cada archivo de references/.</p></div></div></div><div class="gcard"><div><span>5</span><div><div><p>Empaquetar (validar y empaquetar)</p></div><p>Valida automáticamente el frontmatter, los nombres, la descripción y la estructura. Si pasa, empaqueta la skill en un .zip listo para instalar o compartir. Si falla, te lista los errores y no empaqueta hasta arreglarlos.</p><p><span>Qué esperar · </span>Espera un reporte de validación y, si todo está bien, un .zip de tu skill.</p></div></div></div><div class="gcard"><div><span>6</span><div><div><p>Iterar</p></div><p>Usas la skill en una tarea real y notas qué falló: si no se disparó, si la salida no cumplió, si el contexto pesa mucho. Le dices al Skill Creator qué pasó y refina la description, el cuerpo o los recursos.</p><p><span>Qué esperar · </span>Espera mejoras concretas con su porqué, no un “ya quedó”.</p></div></div></div></div></div></div><div id="g-prompts"><p>el entregable · listos para copiar</p><h2>Prompts maestros para crear tus skills</h2><div><p>Estos ocho prompts te llevan por todo el proceso. Cópialos y pégalos en Claude (en la app o en Claude Code), rellena los <span>[corchetes]</span> con lo tuyo y deja que el Skill Creator haga el resto. Van en orden: del primer mensaje que lo activa hasta auditar una skill que ya tienes.</p><div><div class="gcard"><div><div><h3>P1 · Arrancar el Skill Creator con tu idea</h3><p>El primer mensaje que activa la habilidad Skill Creator y le pasa tu idea cruda para que tome el mando del proceso.</p></div><span class="gbtn">Copiar</span></div><div><pre>Usa la habilidad Skill Creator para ayudarme a crear un skill nuevo.
+
+Idea cruda (todavía sin pulir):
+- Qué quiero que el skill haga: [describe la tarea repetible en una frase, ej. &quot;auditar los textos de mis anuncios antes de publicarlos&quot;]
+- Para qué negocio o proyecto: [tu negocio, ej. &quot;mi tienda de ropa en línea&quot;]
+- Quién lo va a usar: [yo / mi equipo / mis clientes]
+- Cómo lo resuelvo hoy a mano: [tu proceso actual, paso a paso, aunque sea desordenado]
+- En qué app pienso usarlo: [Claude.ai / Claude Code / ambas]
+
+Antes de escribir nada, sigue el proceso del Skill Creator en orden:
+1. Entiende mi caso de uso real con ejemplos concretos (no asumas, pregúntame).
+2. Planea qué recursos vale la pena empaquetar (scripts, references, assets).
+3. Inicializa la estructura de carpetas.
+4. Escribe el SKILL.md.
+5. Empaqueta y valida.
+6. Iteremos.
+
+Por ahora quédate en el paso 1: hazme las 3 o 4 preguntas más importantes para entender bien el caso de uso. No me abrumes con un cuestionario largo; pregunta lo justo y avancemos.</pre></div></div><div class="gcard"><div><div><h3>P2 · Entrevista de caso de uso (paso 1)</h3><p>Obliga al Skill Creator a sacarte ejemplos concretos de entrada y salida y a definir el disparador antes de diseñar nada.</p></div><span class="gbtn">Copiar</span></div><div><pre>Estamos en el paso 1 del Skill Creator: entender mi caso de uso con ejemplos concretos.
+
+Ayúdame a aterrizarlo así, una cosa a la vez:
+
+1. ENTRADAS: ¿qué le voy a dar al skill cuando lo use? Dame 3 ejemplos reales de lo que yo escribiría o pegaría. Si no se me ocurren, propón tú 3 y los corrijo.
+
+2. SALIDAS: ¿qué espero recibir de vuelta en cada caso? Describe el formato y el &quot;se ve bien&quot; para cada ejemplo (ej. una tabla, un texto reescrito, un reporte con secciones fijas).
+
+3. DISPARADOR: ¿qué frases diría yo o mi equipo que deberían activar este skill automáticamente? Lista 5 frases reales.
+
+4. LÍMITES: ¿qué NO debe hacer el skill? ¿Dónde debería frenar o pedirme confirmación?
+
+Hazme las preguntas que falten para llenar estos cuatro puntos. Cuando los tengamos claros, resúmelos en una ficha corta (entradas / salidas / disparador / límites) y pídeme que la apruebe antes de pasar al paso 2.</pre></div></div><div class="gcard"><div><div><h3>P3 · Diseñar la estructura + el frontmatter disparador (pasos 2 y 3)</h3><p>Planea qué recursos empaquetar y redacta el name y la description que hacen que el skill se dispare de forma confiable.</p></div><span class="gbtn">Copiar</span></div><div><pre>Pasemos a los pasos 2 y 3 del Skill Creator: planear los recursos reutilizables e inicializar la estructura.
+
+Con la ficha de caso de uso que ya aprobé:
+
+1. PLAN DE RECURSOS. Dime, para mi caso, qué conviene empaquetar y por qué:
+   - scripts/ — ¿hay algún paso que deba salir SIEMPRE igual (determinista) y que se reescribe a mano cada vez? Si sí, propónlo.
+   - references/ — ¿qué conocimiento de mi negocio (políticas, plantillas, criterios, ejemplos buenos/malos) debería vivir aparte para no inflar el SKILL.md?
+   - assets/ — ¿hay plantillas o archivos que el skill debería copiar tal cual en su salida?
+   Si algo NO hace falta, dilo y no lo crees.
+
+2. ESTRUCTURA. Propón el árbol de carpetas final del skill, con nombres concretos de archivos.
+
+3. FRONTMATTER. Redacta el frontmatter YAML:
+   - name: en minúsculas-con-guiones, corto y claro.
+   - description: en tercera persona, que diga QUÉ hace el skill Y CUÁNDO usarse, bien específica, mencionando palabras y frases que de verdad usaría yo. Recuerda: la description es el disparador; si es vaga, el skill no se activa.
+   Dame 2 versiones de la description (una más corta, una más detallada) y recomiéndame cuál usar.
+
+Muéstrame todo para aprobarlo antes de escribir el cuerpo del SKILL.md.</pre></div></div><div class="gcard"><div><div><h3>P4 · Escribir el SKILL.md completo (pasos 3 y 4)</h3><p>Genera el SKILL.md final con cuerpo esbelto, instrucciones en modo imperativo y el detalle empujado a references/.</p></div><span class="gbtn">Copiar</span></div><div><pre>Inicializa el skill y escribe el SKILL.md completo (pasos 3 y 4 del Skill Creator).
+
+Reglas que quiero que respetes al escribirlo:
+
+- Empieza por la estructura: crea la carpeta con el SKILL.md y las subcarpetas de ejemplo (scripts/, references/, assets/), y borra las que mi skill no use.
+- SKILL.md esbelto: deja en el cuerpo solo las instrucciones y el flujo de trabajo esenciales. Todo el detalle largo (criterios, listas extensas, ejemplos, esquemas) va a references/ y desde el cuerpo lo referencias con una línea tipo &quot;Para X, ver references/criterios.md&quot;.
+- Escribe el cuerpo en modo imperativo/infinitivo (verbo primero, instrucciones para otra instancia de Claude), no en segunda persona.
+- Aplica progressive disclosure: piensa qué tiene que estar en el cuerpo (se carga al dispararse) y qué puede quedar en archivos que solo se abren cuando hacen falta.
+
+El cuerpo del SKILL.md debe tener al menos:
+1. Un título y un párrafo de propósito (qué hace y cuándo usarse).
+2. El flujo de trabajo paso a paso para resolver mi caso de uso.
+3. Las referencias a los archivos de references/ y a los scripts/ que definimos.
+4. Reglas claras de qué NO hacer y cuándo pedirme confirmación.
+
+Genera también el contenido de cada archivo de references/ que mencionaste. No dejes &quot;TODO&quot; ni placeholders: escríbelo todo de verdad. Cuando termines, muéstrame el árbol final y el SKILL.md completo.</pre></div></div><div class="gcard"><div><div><h3>P5 · Empaquetar y validar (paso 5)</h3><p>Valida el frontmatter, los nombres y la estructura, y empaqueta el skill en un .zip listo para instalar o compartir.</p></div><span class="gbtn">Copiar</span></div><div><pre>Pasemos al paso 5 del Skill Creator: validar y empaquetar.
+
+Antes de empaquetar, revisa y dime si algo falla:
+- ¿El frontmatter YAML tiene name y description y están bien formados?
+- ¿El name está en minúsculas-con-guiones y la description es específica (qué hace + cuándo)?
+- ¿La estructura de carpetas es la correcta y no quedan archivos de ejemplo basura?
+- ¿El SKILL.md quedó esbelto, con el detalle en references/ y sin duplicar información?
+
+Si todo está bien, empaqueta el skill en un .zip listo para distribuir o instalar y dime exactamente:
+1. Cómo lo instalo a nivel proyecto (carpeta .claude/skills/) y a nivel global (~/.claude/skills/).
+2. Cómo lo subo en Claude.ai (Settings → Features → Skills, con la ejecución de código activada en Settings → Capabilities).
+3. Qué frase debería decir para probar que se dispara.
+
+Si la validación falla, lístame los errores en orden de prioridad y arréglalos antes de volver a empaquetar.</pre></div></div><div class="gcard"><div><div><h3>P6 · Probar e iterar (paso 6)</h3><p>Verifica que el disparador funcione de verdad, que la salida cumpla y que el skill no gaste contexto de más.</p></div><span class="gbtn">Copiar</span></div><div><pre>Estamos en el paso 6 del Skill Creator: probar e iterar.
+
+Acabo de usar el skill en una tarea real. Esto es lo que pasó:
+- Frase que usé: [pega lo que escribiste]
+- ¿Se disparó solo el skill?: [sí / no / tuve que nombrarlo a la fuerza]
+- Salida que me dio: [pega o describe el resultado]
+- Qué estuvo bien: [...]
+- Qué estuvo mal o me faltó: [...]
+
+Diagnostica y propón arreglos concretos:
+
+1. DISPARO. Si no se activó solo, el problema casi siempre es una description vaga. Reescribe la description para que dispare con frases como las que de verdad uso, sin volverla tan amplia que se active cuando no debe.
+
+2. SALIDA. Si el resultado no cumplió, dime si falta una instrucción en el cuerpo del SKILL.md o un criterio en references/, y propón el texto exacto a agregar.
+
+3. CONTEXTO. Si el SKILL.md está muy largo y &quot;pesa&quot; en cada disparo, identifica qué bloques mover a references/ para dejar el cuerpo esbelto.
+
+Aplica los cambios, muéstrame el diff y dame la siguiente frase de prueba.</pre></div></div><div class="gcard"><div><div><h3>P7 · Convertir un proceso (SOP) de tu negocio en un skill</h3><p>El prompt de emprendimiento: toma algo que tú o tu equipo repiten cada semana y lo vuelve una habilidad reutilizable.</p></div><span class="gbtn">Copiar</span></div><div><pre>Usa el Skill Creator para convertir un proceso repetible de mi negocio en un skill reutilizable.
+
+Mi negocio: [describe tu negocio en una frase]
+El proceso que repito una y otra vez: [ej. &quot;responder cotizaciones&quot;, &quot;armar el reporte semanal&quot;, &quot;calificar leads que llegan por WhatsApp&quot;]
+
+Así lo hago hoy, paso a paso (mi SOP, aunque viva solo en mi cabeza):
+1. [paso]
+2. [paso]
+3. [paso]
+4. [paso]
+
+Reglas y criterios que aplico sin darme cuenta:
+- [ej. &quot;nunca prometo entrega en menos de 5 días&quot;]
+- [ej. &quot;si el cliente es mayorista, aplico el precio B&quot;]
+- [ej. &quot;el tono siempre es cercano pero profesional&quot;]
+
+Conviértelo en un skill siguiendo el proceso del Skill Creator. En particular:
+- Saca a references/ todos mis criterios, precios, plantillas y políticas, para que el skill respete las reglas de MI negocio y no invente.
+- Si hay un cálculo o formato que siempre debe salir igual, propón un script para que sea determinista.
+- Escribe una description que dispare cuando yo o mi equipo digamos las frases reales de este proceso.
+
+El objetivo: que mañana yo o cualquiera de mi equipo abra Claude, diga la frase del proceso, y el skill lo ejecute igual que lo haría yo, sin tener que explicarle el contexto cada vez. Pregúntame lo que falte para lograrlo.</pre></div></div><div class="gcard"><div><div><h3>P8 · Auditar y mejorar un skill que ya tienes</h3><p>Revisión completa de un skill existente: por qué no dispara, por qué la salida falla y dónde está inflando el contexto.</p></div><span class="gbtn">Copiar</span></div><div><pre>Usa el Skill Creator para auditar y mejorar un skill que ya tengo.
+
+Te paso el skill (pega aquí el contenido del SKILL.md y di qué archivos hay en scripts/, references/ y assets/):
+[pega el SKILL.md completo]
+
+Audítalo a fondo y entrégame el reporte en este orden:
+
+1. DISPARADOR. ¿La description dice claramente qué hace y cuándo usarse, en tercera persona y con frases realistas? Si es vaga o muy amplia, reescríbela. Esta es la causa #1 de que un skill no se active.
+
+2. CUERPO ESBELTO. ¿El SKILL.md está inflado? Marca qué bloques deberían moverse a references/ y reescribe el cuerpo para que solo tenga el flujo esencial. Señala cualquier información duplicada entre el cuerpo y las references.
+
+3. RECURSOS. ¿Falta algún script para algo que debería ser determinista? ¿Sobra algún archivo de ejemplo que quedó del template? ¿Hay assets que el skill nunca usa?
+
+4. CLARIDAD. ¿El cuerpo está en modo imperativo (instrucciones para otra instancia de Claude) o se le escapó la segunda persona? Corrígelo.
+
+5. PRUEBA. Dame 3 frases de prueba para verificar que dispara y un caso donde NO debería dispararse.
+
+Entrégame el SKILL.md reescrito, el contenido nuevo de cada reference que propongas, y un resumen de los cambios con su porqué.</pre></div></div></div></div></div><div id="g-plantilla"><p>plantilla · ejemplo real</p><h2>Plantilla de SKILL.md y un ejemplo de negocio</h2><div><p>El Skill Creator escribe esto por ti, pero ver la forma ayuda a entender qué estás pidiendo. Esta es la plantilla mínima de un SKILL.md y, debajo, una skill de negocio terminada como ejemplo.</p><div><p>Plantilla mínima de SKILL.md</p><div><pre>---
+name: nombre-de-tu-skill
+description: &gt;-
+  Esta habilidad debe usarse cuando [situación específica]. Hace [qué hace,
+  en concreto] para [resultado]. Disparadores típicos: &quot;[frase real 1]&quot;,
+  &quot;[frase real 2]&quot;, &quot;[frase real 3]&quot;.
+---
+
+# Nombre de tu skill
+
+[Un párrafo: qué hace esta habilidad y cuándo aplicarla.]
+
+## Cuándo usarla
+
+[Las situaciones que activan esta skill, en frases que de verdad usa el usuario.]
+
+## Flujo de trabajo
+
+1. [Primer paso, en imperativo: &quot;Hacer X&quot;.]
+2. [Segundo paso.]
+3. [Tercer paso.]
+
+Para los criterios detallados, ver references/criterios.md.
+
+## Qué NO hacer
+
+- [Límite claro 1.]
+- [Cuándo frenar y pedir confirmación.]</pre></div></div><p>Y así se vería una skill real de negocio ya terminada: un auditor de copys que revisa tus textos publicitarios antes de que los publiques. Nota cómo la description menciona frases reales (para que dispare) y cómo el detalle se manda a references/.</p><div><p>Ejemplo terminado: <span>auditor-de-copys</span></p><div><pre>---
+name: auditor-de-copys
+description: &gt;-
+  Esta habilidad debe usarse cuando el usuario quiere revisar o mejorar un
+  texto publicitario antes de publicarlo (anuncios, asuntos de correo,
+  bios, captions, descripciones de producto). Audita el copy contra los
+  criterios de la marca y devuelve una versión corregida. Disparadores:
+  &quot;revisa este anuncio&quot;, &quot;mejora este copy&quot;, &quot;¿este texto vende?&quot;,
+  &quot;audita esta descripción de producto&quot;.
+---
+
+# Auditor de copys
+
+Revisa textos publicitarios antes de publicarlos y devuelve una versión
+mejorada que respeta la voz de la marca y maximiza la claridad y la acción.
+
+## Cuándo usarla
+
+Activarla cuando el usuario pega un texto de marketing y pide revisarlo,
+mejorarlo, o saber si “vende”: anuncios, asuntos de email, captions de
+redes, bios y descripciones de producto.
+
+## Flujo de trabajo
+
+1. Identificar el canal y el objetivo del texto (vender, captar clic,
+   informar). Si no está claro, preguntarlo.
+2. Auditar el copy contra la checklist de criterios. Ver
+   references/criterios-copy.md.
+3. Verificar el tono contra la voz de marca. Ver references/voz-de-marca.md.
+4. Devolver: (a) los problemas encontrados, (b) una versión corregida lista
+   para publicar, (c) una alternativa más corta.
+
+## Qué NO hacer
+
+- No inventar datos, precios ni promesas que el usuario no haya dado.
+- No cambiar el idioma del texto original.
+- Si el texto roza una afirmación legalmente sensible, marcarlo y frenar.</pre></div></div><div class="gcard"><p>Por qué quedó esbelto</p><p>El archivo references/criterios-copy.md guardaría la checklist larga (gancho en la primera línea, beneficio antes que característica, una sola llamada a la acción, sin jerga, etc.) y references/voz-de-marca.md las reglas de tono. Así el SKILL.md queda esbelto y esos archivos solo se abren cuando se audita un copy.</p></div></div></div><div id="g-practicas"><p>calidad · prácticas y errores</p><h2>Buenas prácticas y errores comunes</h2><div><p>Casi todo lo que puede salir mal con una skill se resume en dos cosas: una description vaga (no dispara) o un SKILL.md inflado (pesa y diluye). Estas prácticas y este troubleshooting te ahorran las dos.</p><div class="ggrid"><div class="gcard"><p>Description específica = disparo confiable</p><p>La description es el disparador. Escríbela en tercera persona, di qué hace y cuándo usarse, y mete frases reales que tú o tu equipo dirían. Una description vaga es la causa #1 de que una skill no se active.</p></div><div class="gcard"><p>SKILL.md esbelto</p><p>Deja en el cuerpo solo el flujo esencial. Empuja criterios, listas largas, esquemas y ejemplos a references/. Un SKILL.md gigante pesa en cada disparo y diluye las instrucciones importantes.</p></div><div class="gcard"><p>scripts/ para lo determinista</p><p>Si algo debe salir exactamente igual siempre (un cálculo, un formato fijo), ponlo en un script. Es más confiable que pedírselo en prosa y, además, se ejecuta sin gastar contexto.</p></div><div class="gcard"><p>Prueba que dispare de verdad</p><p>No asumas: usa la skill con frases reales y confirma que se activa sola, sin que tengas que nombrarla a la fuerza. Y prueba un caso donde NO debería dispararse.</p></div><div class="gcard"><p>Una sola fuente de verdad</p><p>La información vive en SKILL.md o en references, nunca duplicada en ambos. Si la duplicas, tarde o temprano una versión se queda vieja y se contradicen.</p></div><div class="gcard"><p>Escribe en imperativo</p><p>El SKILL.md lo lee otra instancia de Claude. Usa verbo primero (“Auditar el texto”, “Verificar el tono”), no segunda persona. Es más claro y consistente para la IA.</p></div></div><p>Troubleshooting</p><div><div class="gcard"><p>La skill no se dispara sola</p><p><span>Causa: </span>La description es vaga o no menciona las frases que de verdad usas.</p><p><span>Arreglo: </span>Reescribe la description: más específica, en tercera persona, con disparadores reales. Sin volverla tan amplia que se active cuando no debe.</p></div><div class="gcard"><p>El SKILL.md quedó gigante y lento</p><p><span>Causa: </span>Metiste todo el detalle en el cuerpo en vez de en references/.</p><p><span>Arreglo: </span>Mueve criterios, listas y ejemplos a references/ y deja en el cuerpo solo el flujo. Referencia los archivos con una línea.</p></div><div class="gcard"><p>La salida no respeta las reglas de mi negocio</p><p><span>Causa: </span>Tus criterios y políticas no están escritos en ningún references/.</p><p><span>Arreglo: </span>Crea references/ con tus precios, políticas y criterios reales, y haz que el flujo del SKILL.md los consulte.</p></div><div class="gcard"><p>Dos skills se pisan y se confunden</p><p><span>Causa: </span>Sus descriptions se solapan y disparan en las mismas frases.</p><p><span>Arreglo: </span>Afina cada description para que el disparador no se traslape. Deja claro qué situación pertenece a cuál.</p></div></div></div></div><div id="g-ideas"><p>emprendimiento · por dónde empezar</p><h2>Ideas de skills para tu negocio</h2><div><p>Cualquier proceso que repites es candidato a skill. Aquí tienes ideas por área para arrancar; toma una, pásala por el prompt P7 y conviértela en tu primera habilidad de negocio.</p><div class="ggrid"><div class="gcard"><div><span>Ventas</span></div><p>calificador-de-leads</p><p>Toma un lead que llega por WhatsApp o formulario y lo clasifica (frío / tibio / caliente) según tus criterios, con el siguiente paso sugerido.</p></div><div class="gcard"><div><span>Soporte</span></div><p>respuestas-de-soporte</p><p>Convierte la pregunta de un cliente en una respuesta con el tono de tu marca y la política correcta, lista para enviar.</p></div><div class="gcard"><div><span>Contenido</span></div><p>auditor-de-copys</p><p>Revisa anuncios, captions y asuntos de correo contra tu checklist y voz de marca antes de publicar.</p></div><div class="gcard"><div><span>Finanzas</span></div><p>armador-de-cotizaciones</p><p>Recibe los datos de un proyecto y arma la cotización con tus precios, márgenes y condiciones, siempre con el mismo formato.</p></div><div class="gcard"><div><span>Onboarding</span></div><p>bienvenida-de-clientes</p><p>Genera el mensaje, los accesos y la checklist de arranque para cada cliente nuevo, según tu proceso estándar.</p></div><div class="gcard"><div><span>Reportes</span></div><p>reporte-semanal</p><p>Toma tus números de la semana y arma el reporte con las secciones fijas, el tono y los gráficos que siempre usas.</p></div></div></div></div><div id="g-faq"><p>dudas · resueltas</p><h2>Preguntas frecuentes</h2><div><div><div class="gcard"><p>¿Skill global o de proyecto? ¿Cuál elijo?</p><p>De proyecto (.claude/skills/) si la habilidad solo tiene sentido en ese repositorio o cliente. Global (~/.claude/skills/) si es un proceso transversal de tu negocio que quieres tener a mano en todos lados. Si dudas, empieza global; mover una carpeta después es trivial.</p></div><div class="gcard"><p>¿En qué se diferencia usarlo en Claude.ai y en Claude Code?</p><p>En Claude.ai gestionas las skills desde Settings → Features → Skills (ahí subes y activas el .zip), con la ejecución de código activada en Settings → Capabilities. En Claude Code las skills viven en carpetas (.claude/skills/ del proyecto o ~/.claude/skills/ global) y se detectan solas. El Skill Creator funciona igual en ambos: le dices “quiero crear un skill que haga X” y arranca.</p></div><div class="gcard"><p>¿Puedo compartir una skill con mi equipo?</p><p>Sí. Una skill es solo una carpeta, así que el .zip que produce el paso de empaquetado se puede compartir como cualquier archivo. Tu equipo lo instala en su carpeta de skills (o lo suben en Claude.ai) y todos disparan el mismo proceso con la misma frase.</p></div><div class="gcard"><p>¿Las skills sirven con la API o el Agent SDK?</p><p>Sí. Las skills son carpetas con instrucciones, no algo atado a una sola app. El Skill Creator te deja la carpeta lista; puedes usar esas skills en las apps de Claude, en Claude Code y en flujos construidos sobre la API o el Agent SDK.</p></div><div class="gcard"><p>¿Cuál es la diferencia entre una skill y un MCP?</p><p>Una skill le enseña a Claude un proceso y conocimiento (el “cómo” y el “cuándo”), empaquetado en una carpeta de Markdown y archivos. Un MCP es un conector que le da a Claude acceso a una herramienta o fuente externa (una base de datos, una API, tu calendario). Se complementan: una skill puede usar las herramientas que un MCP expone.</p></div><div class="gcard"><p>¿Tengo que saber programar para crear una skill?</p><p>No. El Skill Creator hace el trabajo: te entrevista, arma la carpeta y escribe el SKILL.md. Tú aportas el conocimiento de tu negocio. Solo si tu skill necesita un script determinista habrá algo de código, y también lo escribe Claude por ti.</p></div></div></div></div><div id="g-checklist"><p>antes de instalar · revísalo</p><h2>Checklist final de tu skill</h2><div><p>Antes de dar por lista una skill, pásala por estos diez puntos. Si todos están en verde, está lista para que tú o tu equipo la disparen en producción.</p><ul><li><span class="gpill">1</span><span>Tengo claros 3 ejemplos reales de entrada y salida del skill.</span></li><li><span class="gpill">2</span><span>La description está en tercera persona, dice qué hace y cuándo, y menciona frases reales que disparan.</span></li><li><span class="gpill">3</span><span>El SKILL.md está esbelto: el detalle largo vive en references/, no en el cuerpo.</span></li><li><span class="gpill">4</span><span>Lo que debe salir igual siempre está en un script, no pedido en prosa.</span></li><li><span class="gpill">5</span><span>Mis criterios, precios y políticas de negocio están en references/ y el flujo los consulta.</span></li><li><span class="gpill">6</span><span>No hay información duplicada entre SKILL.md y references/.</span></li><li><span class="gpill">7</span><span>El cuerpo está escrito en imperativo, no en segunda persona.</span></li><li><span class="gpill">8</span><span>Validé y empaqueté la skill sin errores.</span></li><li><span class="gpill">9</span><span>Probé que se dispara sola con frases reales, y que NO se dispara cuando no debe.</span></li><li><span class="gpill">10</span><span>La instalé en la carpeta correcta (.claude/skills/ o ~/.claude/skills/) o la subí en Claude.ai.</span></li></ul></div></div></div><div><div><p>Cierre de la guía</p><p>El Skill Creator es la única habilidad que necesitas aprender a fondo: con ella construyes todas las demás. Toma un proceso que repites cada semana, pásalo por el prompt P7 y deja que Claude lo convierta en una carpeta reutilizable. Empaca tu know-how una vez y tu negocio deja de depender de quién esté de turno. Esta guía vive en la bóveda de <a href="#/boveda">tododeia</a>.</p></div><div><p>Repositorios y descarga</p><div class="ggrid"><a class="gcard" href="https://github.com/anthropics/skills" target="_blank" rel="noopener"><p>anthropics/skills</p><p>El repositorio oficial de Anthropic con skills de ejemplo y el código del propio Skill Creator. El mejor lugar para ver skills bien hechas.</p></a><a class="gcard" href="https://github.com/ComposioHQ/awesome-claude-skills" target="_blank" rel="noopener"><p>awesome-claude-skills</p><p>Una lista curada por la comunidad con decenas de skills listas para inspirarte o instalar directamente.</p></a></div><a class="gcard" href="https://www.tododeia.com/docs/skill-creator-SKILL.md" target="_blank" rel="noopener">Descargar el SKILL.md original (fallback para setups viejos)</a></div><div class="ggrid"><a class="gcard" href="#/g/aprende-skill"><div><p>Aprende qué es una Skill</p><p>El concepto desde cero, antes de crear la tuya.</p></div></a><a class="gcard" href="#/g/guia-skills-claude"><div><p>Guía de Skills de Claude</p><p>Cómo encajan las skills en tu flujo diario con Claude.</p></div></a></div><p>Skill Creator es una habilidad oficial de Anthropic incluida en Claude. Los repositorios anthropics/skills y awesome-claude-skills son externos; sus contenidos y rutas pueden cambiar. Ante la duda, revisa cada uno en su sitio.</p></div></div>
+</article>

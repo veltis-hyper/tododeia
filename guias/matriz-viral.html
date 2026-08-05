@@ -1,0 +1,157 @@
+<article class="chapter guia" data-slug="matriz-viral">
+<div><div><div class="gpill">La página del reel · 2 pasos, 6 prompts · Apify MCP + Claude Code local · sin programar</div><h1>Convierte a Claude en tu creador de contenido viral y tu community manager</h1><p>Deja de adivinar qué publicar. Con el MCP de Apify, Claude baja los videos más virales de tus redes — o de los creadores que admiras —, los transcribe todos y encuentra el patrón. <strong>No copias contenido: descubres con datos por qué funciona, y escribes lo tuyo encima de ese patrón.</strong> Esta es la guía completa del reel: la conexión, la estructura de carpetas, los seis prompts, los costos reales y la rutina semanal — todo local, todo copiando y pegando.</p></div><div><p>El flujo completo · de un vistazo</p><div class="ggrid"><a class="gcard" href="#g-conecta-apify"><div><span>01 · Conecta</span></div><div><p>Apify entra a Claude</p><p>Una cuenta gratis, un comando en la terminal y una autorización en el navegador. Claude ya puede leer redes.</p></div></a><a class="gcard" href="#g-el-plan-maestro"><div><span>02 · El plan</span></div><div><p>Todo antes de existir</p><p>En modo Plan, Claude te enseña las carpetas y el CLAUDE.md que va a crear — y no toca nada hasta tu OK.</p></div></a><a class="gcard" href="#g-la-matriz"><div><span>03 · La matriz</span></div><div><p>Encuentra el patrón</p><p>Baja lo más viral, lo transcribe todo y arma la Matriz de Contenido Viral: qué funciona, qué no y por qué.</p></div></a><a class="gcard" href="#g-simula"><div><span>04 · Simula y publica</span></div><div><p>Guiones con estimación</p><p>Guiones nuevos sobre el patrón, simulados antes de publicar — y la rutina semanal de community manager.</p></div></a></div></div><div class="gcard"><div><p>Guía comunidad · actualizada a julio 2026</p><p>La guía completa del reel, de cero a sistema: conectas Apify a Claude Code una sola vez, bajas lo más viral de tu cuenta o de tus referentes, y Claude te construye una Matriz de Contenido Viral que convierte la intuición en patrón — y el patrón en tus próximos guiones.</p><p>El flujo entero cabe en cuatro paradas. Primero conectas: cuenta gratis en Apify — cinco dólares de crédito al mes, sin tarjeta — y un comando en la terminal. Después viene la parte que casi nadie enseña: el prompt maestro corre en modo Plan, así que Claude te muestra el sistema completo — las carpetas, el CLAUDE.md con su rol, el orden de trabajo — antes de crear un solo archivo. Con tu OK, recolecta: los videos más virales de cada red, con métricas y transcripciones, ordenados en una carpeta local. Y de ahí salen la matriz, los guiones simulados y la rutina de community manager. Todo copiando y pegando — aquí no se programa nada.</p></div><div><span>Guía comunidad · julio 2026</span><span>La página del reel · prompts completos</span><span>Sin código · copiar y pegar</span><span>Claude Code local · modo Plan</span><span>Apify · $5 gratis al mes, sin tarjeta</span><span>Español · de tú</span></div></div><div><div id="g-la-idea"><p>01 · LA IDEA</p><h2>Tu contenido ya te está diciendo qué funciona — nadie lo está leyendo</h2><div><p>Cada video que publicaste — y cada video de los creadores que sigues — trae sus datos colgando: vistas, likes, compartidos y, sobre todo, lo que se dice en él. Toda esa información junta cuenta la historia completa de qué funciona y qué no; lo que casi nadie hace es sentarse a leerla. El sistema del reel son dos pasos: primero Claude baja y transcribe lo más viral, y después convierte todo eso en una Matriz de Contenido Viral — una tabla que revela el patrón — para escribir tus próximos guiones encima de él.</p><p>Todo pasa en Claude Code, en una carpeta de tu computadora, gracias al MCP de Apify. Un MCP es un conector que le da a Claude herramientas que no trae de fábrica — aquí, los scrapers de Apify que leen redes sociales. Si quieres entenderlos a fondo, tenemos <a href="#/g/apis-mcps-a2a">una guía completa de APIs, MCPs y A2A</a>. Para esta página basta con saber esto: conectas el MCP una vez y Claude puede bajar el contenido por ti.</p><div class="gcard"><p>¿Apenas empiezas y tu cuenta todavía no tiene suficiente contenido? El sistema funciona igual con 2 o 3 creadores de referencia de tu nicho: estudias sus cuentas, sacas el patrón de lo que les funciona y escribes lo tuyo encima. El prompt maestro te lo pregunta desde el inicio.</p></div></div></div><div id="g-conecta-apify"><p>02 · CONECTA</p><h2>Cuenta gratis, un comando y una autorización</h2><div><p>Primero, la cuenta. Apify te da 5 dólares de uso gratis cada mes, sin pedirte tarjeta — y el análisis completo de esta guía cabe ahí con espacio de sobra. Crea la cuenta en su página y vuelve aquí.</p><div class="gcard"><div><p>apify.com</p></div><p>La tienda de scrapers (ellos les dicen actors). Crea la cuenta gratis: $5 de crédito cada mes, sin tarjeta — más que suficiente para esta guía.</p><a href="https://apify.com" target="_blank" rel="noopener">Crear cuenta gratis en Apify</a></div><p>Con la cuenta lista, abre la terminal. Son cuatro pasos, en este orden: creas la carpeta donde va a vivir el sistema, conectas el MCP de Apify, abres Claude Code adentro y autorizas la conexión — el último comando te abre el navegador para entrar con tu cuenta.</p><div class="gcard"><p>Crea la carpeta del sistema y entra en ella</p><div><code>mkdir matriz-viral &amp;&amp; cd matriz-viral</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>Conecta el MCP de Apify</p><div><code>claude mcp add --transport http apify https://mcp.apify.com</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>Abre Claude Code dentro de la carpeta</p><div><code>claude</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>Autoriza la conexión — este va dentro de Claude Code</p><div><code>/mcp</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>Variante con token: si prefieres no autorizar por el navegador, agrega tu token de Apify al comando de conexión: claude mcp add --transport http apify https://mcp.apify.com --header &quot;Authorization: Bearer &lt;APIFY_TOKEN&gt;&quot;.</p><p>Variante con actores precargados: si quieres que Claude arranque con los scrapers de esta guía ya montados, conecta usando la URL https://mcp.apify.com?tools=apify/instagram-scraper,apify/instagram-reel-scraper,clockworks/tiktok-scraper,streamers/youtube-scraper — es opcional: Claude también sabe buscarlos solo.</p></div><div class="gcard"><div><div><h3>Verifica la conexión</h3><p>El primer mensaje después del /mcp. Consulta gratis la ficha de un actor — si Claude te la trae, el MCP quedó conectado.</p></div><span class="gbtn">Copiar</span></div><div><pre>Ya conecté el MCP de Apify. Verifica que funciona: busca el actor
+apify/instagram-reel-scraper, y dime en lenguaje normal qué hace, qué
+parámetros clave acepta y cuánto cuesta por cada 1,000 resultados.
+
+No corras ninguna extracción todavía — solo consulta la ficha del actor,
+que es gratis. Si no encuentras el MCP de Apify, dímelo claro para
+revisar la conexión antes de seguir.</pre></div></div></div></div><div id="g-el-plan-maestro"><p>03 · EL PLAN</p><h2>El prompt maestro en modo Plan: ve el sistema antes de que exista</h2><div><p>Claude Code tiene un modo hecho justo para este momento: el modo Plan. Presionas Shift+Tab hasta que abajo diga plan mode, y Claude pasa de constructor a arquitecto: primero te entrevista, después te presenta el diseño completo — la estructura de carpetas, las reglas, el orden de trabajo — y no crea ni un archivo hasta que tú lo apruebas.</p><p>El prompt maestro de abajo hace exactamente eso. Le dice a Claude que va a ser tu creador de contenido y tu community manager, le pide entrevistarte — qué cuenta estudiamos, en qué redes, tu tema, tu tono, cuántas piezas por semana — y con tus respuestas diseña el sistema y te lo explica en lenguaje normal antes de construirlo.</p><ol><li><span>01</span><span>Abre Claude Code dentro de tu carpeta matriz-viral — el tercer comando de la sección anterior.</span></li><li><span>02</span><span>Presiona Shift+Tab hasta que abajo diga plan mode.</span></li><li><span>03</span><span>Pega el prompt maestro completo y envíalo.</span></li><li><span>04</span><span>Contesta la entrevista: cinco preguntas, una a la vez.</span></li><li><span>05</span><span>Lee el plan completo que te presenta: las carpetas y el CLAUDE.md, explicados.</span></li><li><span>06</span><span>Apruébalo — y Claude construye el sistema frente a ti.</span></li></ol><div class="gcard"><div><div><h3>El prompt maestro — en modo Plan</h3><p>El corazón del sistema. Presiona Shift+Tab hasta ver plan mode y pégalo: Claude te entrevista, diseña las carpetas y el CLAUDE.md, y te enseña TODO antes de crear un solo archivo.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero montar en esta carpeta mi sistema de Matriz de Contenido Viral.
+Tú vas a ser mi creador de contenido y mi community manager. No sé
+programar: explícame todo en lenguaje normal.
+
+ANTES de proponer nada, entrevístame — una pregunta a la vez:
+
+1. ¿Vamos a estudiar MI cuenta (ya publico contenido) o a 2-3 creadores
+   de referencia (apenas empiezo)? Pídeme los @usuarios o links exactos.
+2. ¿En qué redes? (Instagram, TikTok, YouTube, X — las que apliquen)
+3. ¿De qué hablo o de qué quiero hablar? (mi tema, mi nicho)
+4. ¿Cuál es mi tono? (serio, relajado, técnico, cercano...)
+5. ¿Cuántas piezas quiero publicar por semana? (para el calendario)
+
+Con mis respuestas, diséñame el sistema completo y EXPLÍCAMELO ANTES de
+crear nada:
+
+- La estructura de carpetas:
+  fuentes/         → los datos crudos que bajemos de Apify, un archivo por red
+  transcripciones/ → el texto de cada video, un archivo por pieza
+  matriz/          → la Matriz de Contenido Viral y el documento de patrones
+  guiones/         → los guiones nuevos, cada uno con su simulación
+- Un archivo CLAUDE.md con tu rol permanente: quién soy, qué cuentas y
+  redes estudiamos, mi tono, y las reglas fijas del sistema:
+  · Nunca inventar métricas ni transcripciones — lo que no venga del
+    scraper se marca &quot;s/d&quot;.
+  · Solo cuentas y videos públicos.
+  · Toda corrida de Apify lleva topes: maxItems y maxTotalChargeUsd,
+    y me enseñas el costo estimado antes de correr.
+  · Los archivos de fuentes/ no se editan nunca — solo se leen.
+- El orden de trabajo: recolectar → matriz → simular → rutina semanal,
+  y qué archivo alimenta a cuál.
+
+Preséntame todo como tu plan: la estructura dibujada y el CLAUDE.md
+completo, para leerlo antes de aprobar. No crees nada sin mi OK.</pre></div></div><div class="gcard"><p>Esto se hace UNA vez. El CLAUDE.md que Claude crea queda como la memoria permanente del sistema: quién eres, qué cuentas estudian juntos, tu tono y las reglas fijas. Cada sesión nueva lo lee antes de empezar. Si quieres dominar el modo Plan a fondo, tenemos <a href="#/g/plan-claude">una guía dedicada al modo Plan</a>.</p></div></div></div><div id="g-recolecta"><p>04 · RECOLECTA</p><h2>Baja lo más viral de cada red — con topes de costo</h2><div><p>Aquí empieza el trabajo de campo. Según lo que acordaste en la entrevista — tu cuenta o tus 2-3 referentes —, Claude corre el actor correcto de Apify para cada red, baja entre 30 y 50 piezas por cuenta y guarda los datos crudos en fuentes/ y cada transcripción en transcripciones/, con sus métricas arriba.</p><p>Un actor es un scraper listo para usar del catálogo de Apify: tú no configuras nada, Claude lo encuentra y lo corre por ti. Estos son los cinco de esta guía, con lo que trae cada uno y desde cuánto cuesta — y si el mundo de la extracción de datos te llama, hay <a href="#/g/kit-extraccion-claude">un kit completo de extracción con Claude</a> en la bóveda.</p><div class="gcard"><div class="ggrid"><div><p>Instagram Reels</p><p>desde ~$1.00 USD por 1,000</p></div><div><p>apify/instagram-reel-scraper</p><p>Métricas, compartidos y la transcripción de cada reel incluida.</p></div></div><div class="ggrid"><div><p>Instagram Posts</p><p>desde ~$2.70 USD por 1,000</p></div><div><p>apify/instagram-scraper</p><p>Métricas y captions de los posts — sin transcripción.</p></div></div><div class="ggrid"><div><p>TikTok</p><p>desde ~$1.70 USD por 1,000</p></div><div><p>clockworks/tiktok-scraper</p><p>Métricas y transcripción nativa — se activa la opción de transcribir todos.</p></div></div><div class="ggrid"><div><p>YouTube</p><p>desde ~$2.40 USD por 1,000</p></div><div><p>streamers/youtube-scraper</p><p>Métricas y los subtítulos de cada video.</p></div></div><div class="ggrid"><div><p>X (Twitter)</p><p>desde ~$0.40 USD por 1,000</p></div><div><p>apidojo/tweet-scraper</p><p>Solo texto y métricas — aquí no hay video que transcribir.</p></div></div></div><ul><li><span>maxItems entre 30 y 50 por cuenta: suficiente para ver el patrón sin quemar crédito.</span></li><li><span>maxTotalChargeUsd de 1 dólar por corrida: el actor se detiene solo si llega al tope.</span></li><li><span>Corridas de más de 45 segundos: Claude guarda el ID, sigue con la otra red y recupera el dataset cuando termina.</span></li></ul><div class="gcard"><div><div><h3>Recolecta lo más viral</h3><p>Ya con el sistema creado (y fuera de modo Plan): baja videos, métricas y transcripciones de cada red, con topes de costo en cada corrida.</p></div><span class="gbtn">Copiar</span></div><div><pre>Vamos a recolectar el contenido. Lee CLAUDE.md para recordar qué cuentas
+y redes estamos estudiando.
+
+Usando el MCP de Apify, para cada red acordada:
+
+1. Corre el actor correcto:
+   - Instagram reels → apify/instagram-reel-scraper (trae transcripción)
+   - Instagram posts → apify/instagram-scraper (métricas y captions)
+   - TikTok → clockworks/tiktok-scraper (activa la opción de transcribir
+     todos los videos)
+   - YouTube → streamers/youtube-scraper (trae los subtítulos)
+   - X → apidojo/tweet-scraper (solo texto y métricas)
+2. Topes obligatorios en CADA corrida: maxItems entre 30 y 50 por
+   cuenta, y maxTotalChargeUsd de 1 dólar. Antes de correr cada actor,
+   muéstrame los parámetros y el costo estimado, y espera mi OK.
+3. Si una corrida tarda más de 45 segundos, no te quedes esperando:
+   guarda el ID de la corrida, sigue con la siguiente red y recupera el
+   dataset cuando termine.
+4. Guarda todo:
+   - Los datos crudos en fuentes/, un archivo por red.
+   - Cada transcripción en transcripciones/, nombrada red-fecha-título
+     corto, con sus métricas arriba: vistas, likes, comentarios,
+     compartidos y fecha de publicación.
+5. Ordena cada red de más viral a menos viral con las vistas reales del
+   scraper. Si un dato no viene, escribe &quot;s/d&quot; — nunca lo inventes ni lo
+   estimes.
+6. Al final: cuántas piezas bajamos por red, las 5 más virales de todas,
+   y cuánto crédito de Apify gastamos.
+
+Solo cuentas y videos públicos. Si una cuenta es privada o el actor no
+puede leerla, dime cuál y seguimos sin ella.</pre></div></div><div class="gcard"><p>Los actores solo pueden leer cuentas y videos públicos. Si una cuenta es privada — la tuya o la de un referente —, el scraper no la puede abrir: el prompt le pide a Claude avisarte cuál falló y seguir con las demás.</p></div></div></div><div id="g-la-matriz"><p>05 · LA MATRIZ</p><h2>La Matriz de Contenido Viral: de 130 videos a un patrón</h2><div><p>Con todo recolectado, Claude lee cada transcripción y cada métrica y lo condensa en una sola tabla: una fila por pieza, diez columnas por fila. La columna clave es RENDIMIENTO: las vistas de cada pieza divididas entre la mediana de vistas de ESA cuenta. Un 3.0x significa el triple de lo normal de esa cuenta — así una cuenta de 10 mil seguidores y una de un millón se comparan en la misma tabla, y el patrón sale de las dos.</p><div class="ggrid"><div class="gcard"><p>PIEZA</p><p>Red + fecha + título corto: el nombre del archivo de la transcripción.</p></div><div class="gcard"><p>HOOK</p><p>Las primeras 1-2 frases literales del video, tal como se dicen.</p></div><div class="gcard"><p>TIPO DE HOOK</p><p>La técnica: pregunta directa, dato que sorprende, contraste, confesión, promesa...</p></div><div class="gcard"><p>TEMA</p><p>De qué habla la pieza, en 3-5 palabras.</p></div><div class="gcard"><p>FORMATO</p><p>Hablar a cámara, tutorial, historia, lista, reacción...</p></div><div class="gcard"><p>DURACIÓN</p><p>En segundos, solo si el dato viene del scraper.</p></div><div class="gcard"><p>EMOCIÓN</p><p>La dominante: curiosidad, sorpresa, identificación, urgencia...</p></div><div class="gcard"><p>CTA</p><p>Qué pide el video al final — o “ninguno”.</p></div><div class="gcard"><p>RENDIMIENTO</p><p>Vistas divididas entre la mediana de esa cuenta: 3.0x = el triple de lo normal ahí.</p></div><div class="gcard"><p>PATRÓN</p><p>En una línea: por qué la pieza rindió como rindió.</p></div></div><p>Junto a la tabla, Claude escribe patrones-de-viralidad.md: qué funciona (los patrones que se repiten arriba de 1.5x, con ejemplos citados), qué no funciona (los que se repiten debajo de 0.7x), el patrón de viralidad resumido en un párrafo — y una sección que le exigimos a propósito: LO QUE NO SABEMOS. La hora de publicación, la portada, la edición y el humor del algoritmo no están en estos datos, y un análisis que no lo admite vale menos que uno que sí.</p><div class="gcard"><div><div><h3>Genera la Matriz de Contenido Viral</h3><p>El análisis completo: cada video se vuelve una fila con su fórmula, y de ahí sale el documento de patrones — qué funciona, qué no y por qué.</p></div><span class="gbtn">Copiar</span></div><div><pre>Ya tenemos todo en fuentes/ y transcripciones/. Construye la Matriz de
+Contenido Viral: lee TODAS las transcripciones y los datos crudos, y
+crea dos archivos en matriz/.
+
+1. matriz/matriz-contenido-viral.md — una tabla con una fila por pieza
+   y estas columnas exactas:
+   - PIEZA: red + fecha + título corto (el nombre del archivo)
+   - HOOK: las primeras 1-2 frases literales del video
+   - TIPO DE HOOK: la técnica (pregunta directa, dato que sorprende,
+     contraste, confesión, promesa...)
+   - TEMA: de qué habla, en 3-5 palabras
+   - FORMATO: hablar a cámara, tutorial, historia, lista, reacción...
+   - DURACIÓN: en segundos, si el dato viene del scraper
+   - EMOCIÓN: la dominante (curiosidad, sorpresa, identificación,
+     urgencia...)
+   - CTA: qué pide al final, o &quot;ninguno&quot;
+   - RENDIMIENTO: las vistas divididas entre la mediana de vistas de ESA
+     cuenta (3.0x = el triple de lo normal de esa cuenta; así podemos
+     comparar cuentas de distinto tamaño)
+   - PATRÓN: en una línea, por qué crees que rindió como rindió
+
+2. matriz/patrones-de-viralidad.md — el análisis en lenguaje normal:
+   - QUÉ FUNCIONA: los 5-7 patrones que se repiten en las piezas con
+     RENDIMIENTO arriba de 1.5x, con ejemplos citados.
+   - QUÉ NO FUNCIONA: los patrones que se repiten debajo de 0.7x.
+   - EL PATRÓN DE VIRALIDAD: un párrafo que junte el tipo de hook, tema,
+     formato, duración y emoción con mejor rendimiento en estas cuentas.
+   - LO QUE NO SABEMOS: qué parte del rendimiento NO se explica con
+     estos datos (hora de publicación, portada, edición, el humor del
+     algoritmo). Sé honesto aquí.
+
+Reglas: usa solo métricas reales de fuentes/. Celda sin dato = &quot;s/d&quot;.
+No rellenes huecos con suposiciones. Al terminar, dime los 3 hallazgos
+que más te sorprendieron.</pre></div></div></div></div><div id="g-simula"><p>06 · SIMULA</p><h2>Guiones nuevos, estimados antes de publicar</h2><div><p>Aquí el sistema deja de mirar hacia atrás. Con la matriz y el documento de patrones listos, el siguiente prompt le pide a Claude cinco guiones nuevos — sobre tu tema, en tu tono, palabra por palabra y con notas de entrega — construidos encima del patrón de viralidad que salió de tus propios datos. Y cada guion llega con su simulación: qué patrones cumple, qué señales tiene a favor y en contra comparado con piezas reales de la matriz, y una estimación de alta, media o baja probabilidad de rendir arriba de lo normal.</p><p>Seamos claros con lo que es esto: una estimación sobre patrones pasados, no una bola de cristal. Por eso cada simulación incluye su nivel de confianza — si la matriz tiene diez piezas parecidas al guion, la estimación pisa firme; si tiene una, Claude te lo dice. Y el consejo del reel se queda tal cual: publica todo, también los guiones con estimación baja. A veces son justo los que pegan.</p><div class="gcard"><div><div><h3>Escribe y simula los guiones</h3><p>Cinco guiones nuevos sobre el patrón, cada uno con su simulación honesta: estimación alta, media o baja — y qué tanta evidencia la respalda.</p></div><span class="gbtn">Copiar</span></div><div><pre>Ahora vamos a crear y simular. Lee matriz/matriz-contenido-viral.md y
+matriz/patrones-de-viralidad.md.
+
+1. Escribe 5 guiones nuevos para mi cuenta siguiendo el patrón de
+   viralidad. Cada guion:
+   - Sobre mi tema y en mi tono (están en CLAUDE.md).
+   - Palabra por palabra: hook, desarrollo y cierre con su CTA.
+   - Con notas de entrega: dónde pausar, qué enfatizar, duración
+     objetivo.
+   - SIN copiar frases literales de las transcripciones — la matriz nos
+     da estructura y técnica, no palabras.
+2. Simula cada guion contra la matriz. Para cada uno:
+   - QUÉ PATRONES CUMPLE: tipo de hook, tema, formato, duración,
+     emoción.
+   - SEÑALES A FAVOR y SEÑALES EN CONTRA, comparado con piezas reales
+     de la matriz.
+   - ESTIMACIÓN: alta / media / baja probabilidad de rendir arriba de
+     lo normal, con la razón en 2-3 líneas.
+   - CONFIANZA: qué tan confiable es tu estimación y por qué (cuánta
+     evidencia parecida hay en la matriz).
+3. Guarda cada guion en guiones/ con su simulación al final del archivo,
+   y dame el ranking de los 5.
+
+Importante: la simulación es una estimación sobre patrones pasados, no
+una predicción — dilo así en cada guion. Y recuérdame al final que el
+algoritmo es impredecible: los guiones con estimación baja también se
+publican. A veces son justo los que pegan.</pre></div></div></div></div><div id="g-community-manager"><p>07 · EL CM</p><h2>La rutina semanal: Claude se queda de community manager</h2><div><p>El último prompt convierte el sistema en rutina. Se pega una sola vez y queda grabado en el CLAUDE.md: desde entonces, escribirle “rutina semanal” dispara los cinco pasos completos — re-recolectar solo lo nuevo con topes chicos, actualizar la matriz y avisarte si algún patrón cambió, comparar tus números reales contra tu mediana, armar el calendario de la semana y cerrar con un resumen de cinco líneas.</p><p>El paso que más vale es el tercero. Cada semana, Claude compara cómo rindió cada guion publicado contra lo que la simulación estimó, y anota el acierto o el fallo al final del archivo de ese guion. Así la simulación mejora con evidencia real — no opinando sobre sí misma — y en un mes ya sabes qué tan confiables son sus estimaciones para tu cuenta en particular.</p><div class="gcard"><div><div><h3>La rutina semanal del community manager</h3><p>Se pega una vez y queda grabada en el CLAUDE.md. Desde entonces, “rutina semanal” significa: re-recolectar, actualizar la matriz, medir aciertos y armar el calendario.</p></div><span class="gbtn">Copiar</span></div><div><pre>A partir de hoy también eres mi community manager. Esta es la rutina que
+corremos una vez por semana cuando yo te diga &quot;rutina semanal&quot;:
+
+1. RE-RECOLECTA: corre de nuevo los actores de Apify de CLAUDE.md, pero
+   solo lo nuevo: maxItems 15 por cuenta y maxTotalChargeUsd de 0.50
+   dólares por corrida. Enséñame el costo estimado antes de correr.
+   Guarda lo nuevo en fuentes/ y transcripciones/ sin borrar lo
+   anterior.
+2. ACTUALIZA LA MATRIZ: agrega las piezas nuevas a la matriz y revisa si
+   algún patrón de patrones-de-viralidad.md cambió. Si algo que
+   funcionaba dejó de funcionar — o al revés — dímelo primero: eso es lo
+   más valioso de la semana.
+3. MIS NÚMEROS: si estudiamos mi cuenta, compara mis últimas
+   publicaciones contra mi mediana. ¿Qué guion rindió mejor? ¿Coincidió
+   con lo que la simulación estimó? Anota el acierto o el fallo al final
+   del archivo de ese guion en guiones/ — la simulación mejora con
+   evidencia real, no opinando sobre sí misma.
+4. CALENDARIO: proponme el calendario de la semana con las piezas que
+   acordamos en CLAUDE.md. Para cada una: el guion (nuevo o uno
+   pendiente de guiones/), la red, y por qué en ese orden. Día y hora
+   solo si los datos de la matriz muestran un patrón real; si no hay
+   evidencia, dímelo y los elijo yo.
+5. RESUMEN: cierra con 5 líneas — qué aprendimos, qué toca publicar y
+   cuánto crédito de Apify llevamos gastado en el mes.
+
+Guarda esta rutina en CLAUDE.md para que &quot;rutina semanal&quot; siempre
+signifique estos 5 pasos.</pre></div></div></div></div><div id="g-costos"><p>08 · COSTOS Y LÍMITES</p><h2>Cuánto cuesta de verdad (spoiler: centavos)</h2><div><p>Hagamos las cuentas con un análisis inicial realista: 130 videos entre Instagram, TikTok y YouTube, todos con su transcripción. Esto es lo que cuesta en el plan gratis de Apify:</p><div class="gcard"><div><div class="ggrid"><div>Qué bajas</div><div>Actor</div><div>Precio</div><div>Costo</div></div><div class="ggrid"><div>50 reels de Instagram, con transcripción</div><div>apify/instagram-reel-scraper</div><div>desde ~$1.00 por 1,000</div><div>~$0.05</div></div><div class="ggrid"><div>50 TikToks, transcritos todos</div><div>clockworks/tiktok-scraper</div><div>desde ~$1.70 por 1,000</div><div>~$0.09</div></div><div class="ggrid"><div>30 videos de YouTube, con subtítulos</div><div>streamers/youtube-scraper</div><div>desde ~$2.40 por 1,000</div><div>~$0.07</div></div><div class="ggrid"><div>Análisis inicial completo: 130 videos</div><div>—</div><div>—</div><div>desde ~$0.21</div></div><div class="ggrid"><div>Rutina semanal: solo lo nuevo (15 piezas por cuenta)</div><div>los mismos actores</div><div>los mismos precios</div><div>~$0.10 por semana</div></div><div class="ggrid"><div>Un mes completo: análisis inicial + 4 rutinas</div><div>—</div><div>—</div><div>menos de $1</div></div><div class="ggrid"><div>Tu crédito gratis de Apify, cada mes</div><div>plan Free, sin tarjeta</div><div>—</div><div>$5.00</div></div></div></div><p>El único límite técnico con el que te puedes topar: cuando una respuesta del MCP pasa de 10,000 tokens — sucede con corridas grandes de datos —, Claude la corta. Se arregla cerrando la sesión y abriéndola con este comando en lugar del claude de siempre:</p><div class="gcard"><p>Abre Claude Code con más espacio para las respuestas del MCP</p><div><code>MAX_MCP_OUTPUT_TOKENS=50000 claude</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>Los precios son “desde”, del plan gratis de Apify a julio de 2026 — cada actor pone su tarifa y puede cambiarla, y algunos cobran un mínimo por corrida, así que una corrida chica puede salir algo más cara que la multiplicación simple. Por eso todos los prompts de esta guía llevan maxTotalChargeUsd: el tope duro que Apify no rebasa, cambie lo que cambie. Aun así, el orden de magnitud se sostiene: los $5 gratis de cada mes sobran para este sistema.</p></div></div></div><div id="g-regla-de-oro"><p>09 · LA REGLA DE ORO</p><h2>La matriz te da el patrón, no las palabras</h2><div><p>Tres reglas sostienen todo el sistema. Ya viven dentro de los prompts — Claude las carga en el CLAUDE.md — pero conviene que tú también las tengas presentes, porque son las que separan estudiar el patrón de copiar contenido:</p><div class="ggrid"><div class="gcard"><p>Nunca copies frases literales</p><p>La matriz te presta estructura y técnica: el tipo de hook, el formato, la duración, la emoción. Las palabras las pones tú. Si una frase ajena es demasiado buena, pídele a Claude que te explique por qué funciona — no que te la repita.</p></div><div class="gcard"><p>Nunca dejes que Claude invente métricas</p><p>Todo número de la matriz viene del scraper o no existe: la celda sin dato se marca “s/d” y se queda así. Una matriz con huecos honestos vale más que una llena de suposiciones.</p></div><div class="gcard"><p>Publica también lo que puntúe bajo</p><p>La estimación ordena tu esfuerzo — a qué guion le pones más producción, cuál sale primero —, no censura tus ideas. El algoritmo es impredecible, y a veces el guion con estimación baja es justo el que pega.</p></div></div></div></div></div><div><div><p>Guía de la comunidad</p><p>Esta es la página del reel de la Matriz Viral: los seis prompts completos, la conexión de Apify y la rutina semanal, tal como se cuenta en el video. Vive en la bóveda de la comunidad de <a href="#/boveda">tododeia</a>.</p></div><div class="gcard"><p>Cierre · el primer análisis que vas a correr</p><p>“¿A quién le harías el primer análisis: a tu propia cuenta, o a ese creador que llevas meses estudiando a ojo?”</p></div><div><p>Guías hermanas · antes o después de esta</p><div class="ggrid"><a class="gcard" href="#/g/apify-clientes-ilimitados"><div><p>Apify — Saca clientes ilimitados de cualquier red</p><p>El mismo MCP, otro trabajo: si lo que quieres del scraping no es contenido sino clientes — teléfonos, correos y listas de prospectos listas para vender.</p></div></a><a class="gcard" href="#/g/agente-storytelling"><div><p>Agente de Storytelling — la versión sin instalar nada</p><p>El primo manual de esta guía: un viral a la vez, desde el navegador, con cobalt y AI Studio. Perfecto si todavía no quieres tocar la terminal.</p></div></a><a class="gcard" href="#/g/cinco-skills-creators"><div><p>5 Skills Claude para Creators — el kit completo</p><p>Esta guía lee lo que los virales DICEN y lo mide; allá está Claude Video Vision, que se los VE frame por frame — hook, tomas y transiciones. Juntas cierran el círculo.</p></div></a><a class="gcard" href="#/g/plan-claude"><div><p>Plan Claude — el modo arquitecto a fondo</p><p>Si el momento Shift+Tab te voló la cabeza: la guía corta de cómo funciona el modo Plan y cuándo usarlo en cualquier proyecto.</p></div></a></div></div><div class="gcard"><p>Lo honesto antes de cerrar</p><p>Tres cosas antes de cerrar. La simulación es una estimación sobre patrones pasados — no garantiza ni un solo viral; la diferencia la siguen poniendo tus ideas y tu constancia. Los actores de Apify son de terceros: los precios de esta guía son de julio 2026 y pueden cambiar — por eso todos dicen “desde”. Y esto solo funciona con cuentas y videos públicos: la matriz se construye con lo que cualquiera puede ver, hecho sistema.</p></div></div></div>
+</article>

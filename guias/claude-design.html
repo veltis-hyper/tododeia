@@ -1,0 +1,325 @@
+<article class="chapter guia" data-slug="claude-design">
+<div><div><div class="gpill">Anthropic Labs · Opus 4.7 · claude.ai/design · biblioteca de prompts + editar en vivo + Higgsfield por MCP</div><h1>Claude Design, el manual definitivo: ya lo pagas en tu plan y casi nadie lo usa</h1><p>Si tienes plan Pro, Max o Team, ya traes puesta una herramienta de diseño que corre con el modelo de visión más capaz de Anthropic — Opus 4.7 — y la mayoría ni sabe que existe. <strong>Le describes lo que quieres, te arma la versión 1, y la refinas hablándole como a un diseñador: presentaciones, landing pages, one-pagers, carruseles y prototipos.</strong> Este es el manual para exprimirlo: la biblioteca de prompts por tipo de diseño, cómo editarlo en vivo sin volver al chat, y cómo conectarle Higgsfield por MCP para traer imagen y video. Todo copiando y pegando.</p></div><div><p>El manual completo · de un vistazo</p><div class="ggrid"><a class="gcard" href="#g-la-idea"><div><span>01 · La idea</span></div><div><p>Ya viene en tu plan</p><p>Anthropic Labs, sobre Opus 4.7, en claude.ai/design y en la app de escritorio. Le hablas y te diseña.</p></div></a><a class="gcard" href="#g-prompts"><div><span>02 · La biblioteca</span></div><div><p>Un prompt por diseño</p><p>Pitch deck, landing, one-pager, carrusel, prototipo — prompts largos que Claude entiende a la primera.</p></div></a><a class="gcard" href="#g-editar-en-vivo"><div><span>03 · Editar en vivo</span></div><div><p>Sin volver al chat</p><p>Comentario inline, texto directo y perillas de ajuste. Arrastras, alineas y luego pides “aplícalo a todo”.</p></div></a><a class="gcard" href="#g-higgsfield"><div><span>04 · Conecta imagen y video</span></div><div><p>Higgsfield por MCP</p><p>Un connector custom y tus créditos de Higgsfield: imagen hasta 4K y clips cortos, generados desde Claude.</p></div></a></div></div><div class="gcard"><div><p>Guía comunidad · actualizada a julio 2026</p><p>Claude Design es la superficie de diseño de Anthropic Labs: entras en claude.ai/design o desde la barra lateral de la app de escritorio, le hablas en español, y arma diseños que después editas en el mismo lienzo — con comentarios, texto directo y perillas de ajuste — sin pasar cada cambio por el chat.</p><p>El manual entero cabe en cuatro paradas. Primero, qué es y dónde entrar: Anthropic Labs, Opus 4.7, en la web y en el escritorio — no hay móvil, y no está en el plan Free. Después, el corazón: una biblioteca de prompts largos y específicos, uno por tipo de diseño — pitch deck, landing, one-pager para PDF, carrusel, prototipo — todos escritos para que Claude te pregunte el objetivo, la audiencia y la marca antes de dibujar nada. Luego, editar en vivo: comentario inline sobre un elemento, editar el texto directo como en un documento, y perillas para espaciado, color y tamaño de fuente en el momento. Y al final, conectar Higgsfield por MCP para generar imagen y video, más cómo llevarte todo: PDF, PPTX, Canva, HTML o handoff a Claude Code. Aquí no se programa nada: se copia, se pega y se conversa.</p></div><div><span>Guía comunidad · julio 2026</span><span>Claude Design · el manual completo</span><span>~12 prompts largos · copiar y pegar</span><span>Editar en vivo · comentarios y perillas</span><span>Higgsfield por MCP · sin API key</span><span>Sin código · español de tú</span></div></div><div><div id="g-la-idea"><p>01 · LA IDEA</p><h2>Claude Design: el diseñador que ya vive dentro de tu Claude</h2><div><p>Claude Design es la superficie de diseño de Anthropic Labs. Se lanzó el 17 de abril de 2026 y corre con Opus 4.7, el modelo de visión más capaz de Anthropic — el mismo que puede mirar una captura y entender qué está mal en un layout. No es un chat que te devuelve texto: es un lienzo donde le describes lo que quieres y te lo dibuja, y donde después mueves, ajustas y refinas hasta que queda.</p><p>Entras por dos puertas: en la web, en <a href="https://claude.ai/design" target="_blank" rel="noopener">claude.ai/design</a>, o desde la barra lateral de la app de escritorio de Claude. Solo esas dos — no hay app de móvil, así que el trabajo de diseño se hace sentado frente a una pantalla grande, que de todos modos es donde tiene sentido.</p><p>Lo que crea cubre casi todo lo visual de un negocio pequeño. Si quieres el detalle oficial, Anthropic lo cuenta en su <a href="https://www.anthropic.com/news/claude-design-anthropic-labs" target="_blank" rel="noopener">anuncio de Claude Design</a>. En corto, esto es lo que sale del lienzo:</p><div class="ggrid"><div class="gcard"><p>Presentaciones y slides</p><p>pitch decks, decks de venta, one-pagers para exportar a PDF.</p></div><div class="gcard"><p>Web y landings</p><p>landing pages, páginas de producto, secciones sueltas de un sitio.</p></div><div class="gcard"><p>Assets para redes</p><p>carruseles, portadas, visuales de campaña con una línea consistente.</p></div><div class="gcard"><p>Prototipos interactivos</p><p>flujos clickeables, prototipos con código — incluso voz, shaders o 3D.</p></div></div><div><span class="gpill"><span>Pro</span><span>· incluido</span></span><span class="gpill"><span>Max</span><span>· incluido</span></span><span class="gpill"><span>Team</span><span>· incluido</span></span><span class="gpill"><span>Enterprise</span><span>· en beta · apagado por defecto</span></span><span class="gpill"><span>Free</span><span>· no disponible</span></span></div><div class="gcard"><p>La nota honesta de planes: Claude Design viene en Pro, Max y Team, y en Enterprise está en beta pero apagado por defecto — un administrador lo tiene que activar antes de que aparezca. En el plan Free no está. Así que si abres claude.ai/design y no ves nada, revisa primero qué plan tienes.</p></div></div></div><div id="g-donde-y-uso"><p>02 · DÓNDE Y CUÁNTO</p><h2>Dónde se abre y cuánto lo puedes usar</h2><div><p>Ya lo dijimos, pero vale repetirlo porque marca cómo trabajas: Claude Design solo corre en la web (claude.ai/design) y en la barra lateral de la app de escritorio. No hay versión de móvil. Diseñas en pantalla grande, arrastras con el mouse o el trackpad, y eso es parte de por qué la edición en vivo se siente bien.</p><p>Sobre el uso, aclaremos algo que cambió y que confunde a mucha gente. Antes Claude Design tenía su propio medidor aparte, con su cuota separada. Ya no. Hoy consume del mismo pool de uso compartido de tu plan — el mismo del que comen el chat, Claude Code y Cowork. No es que tengas “muchísimo más”: es que ya no hay una cuota separada de Design; todo sale de la bolsa de tu plan.</p><p>En la práctica esto tiene dos caras. La buena: no manejas dos contadores, solo uno. La que conviene saber: un diseño grande o muy iterado puede consumir uso rápido, y si vacías la bolsa, Design deja de estar disponible hasta que se reinicie tu ciclo — igual que el chat. Si te quedas corto seguido, se puede ampliar con uso extra de pago (“extra usage”). El paso a paso oficial está en el <a href="https://support.claude.com/en/articles/14604416-get-started-with-claude-design" target="_blank" rel="noopener">artículo de soporte de Claude Design</a>.</p><div class="gcard"><p>Un truco simple para no quemar uso: arma la versión 1 con un prompt bien puesto, y de ahí refina en el lienzo con comentarios y perillas (sección 05). Editar a mano no cuesta lo mismo que re-promptear un diseño entero cada vez que quieres mover un título.</p></div></div></div><div id="g-tres-razones"><p>03 · TRES RAZONES</p><h2>Tres razones para dejar de ignorarlo</h2><div><p>Si nunca lo has abierto, estas son las tres cosas que lo vuelven distinto a pedirle un diseño al chat normal. Cada una es una parada de este manual — así que léelas como el mapa de lo que sigue.</p><div class="ggrid"><div class="gcard"><span>01</span><p>El uso ya es parte de tu plan</p><p>No pagas una suscripción de diseño aparte ni manejas un contador extra. Sale de la misma bolsa de uso de tu plan de Claude — el que ya tienes. Por eso el gancho: casi nadie lo usa, y ya lo estás pagando.</p></div><div class="gcard"><span>02</span><p>Lo editas en vivo, no re-prompteando</p><p>Comentas sobre un elemento, editas el texto directo como en un documento y giras perillas de espaciado, color y tamaño de fuente en el momento. El chat lo dejas para los cambios grandes. Esto lo desarmamos en la sección 05.</p></div><div class="gcard"><span>03</span><p>Le conectas tus herramientas por MCP</p><p>Con Connectors le enchufas herramientas externas. Aquí conectamos Higgsfield para generar imagen y video de verdad, con tus créditos y sin API key. El setup completo está en la sección 06.</p></div></div></div></div><div id="g-prompts"><p>04 · LA BIBLIOTECA</p><h2>La biblioteca de prompts, por tipo de diseño</h2><div><p>Este es el corazón del manual. Abajo tienes un prompt largo por cada tipo de diseño que vas a necesitar — y todos están escritos con el mismo principio: antes de dibujar un solo pixel, Claude te pregunta el objetivo, la audiencia y la marca, y te explica en lenguaje normal qué va a hacer. Un prompt vago te da un diseño genérico; uno que arranca con las preguntas correctas te da algo que ya se parece a lo tuyo.</p><p>Cómo se usan: copias el prompt, lo pegas en claude.ai/design (o en la barra lateral de escritorio), y contestas lo que te pregunte. Claude arma la versión 1, y de ahí pasas a editar en vivo. Elige el grupo que te toca hoy — no necesitas los doce el primer día.</p><div><div id="g-grupo-presentaciones"><div><p>Grupo A · Presentaciones</p><p>Pitch decks y decks de venta: desde cero con una idea, o a partir de las notas que ya tienes.</p></div><div class="gcard"><div><div><h3>Pitch deck desde cero</h3><p>Para cuando solo tienes la idea en la cabeza. Claude te entrevista, arma la narrativa y te dibuja el deck completo.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero un pitch deck. Todavía no tengo las slides hechas, solo la idea en
+la cabeza — tú vas a estructurarlo y diseñarlo. Explícame todo en lenguaje
+normal; no soy diseñador.
+
+ANTES de dibujar nada, entrevístame — una pregunta a la vez:
+
+1. ¿Qué es lo que presento? (producto, proyecto, negocio — en una frase)
+2. ¿Para quién es el deck y qué quiero que pase al terminar? (inversionistas
+   que pongan dinero, un cliente que firme, un jefe que apruebe...)
+3. ¿Cuánto sabe la audiencia del tema? (nada / algo / son expertos)
+4. ¿Tengo marca? Pásame colores, tipografía o un logo si los hay; si no,
+   propón una paleta sobria y dímelo.
+5. ¿Cuántas slides quiero, más o menos? (si no sé, propón tú entre 10 y 12)
+
+Con mis respuestas, primero DIME la narrativa en texto: el orden de las
+slides y qué va en cada una (problema, solución, cómo funciona, mercado,
+por qué yo, qué pido). Espera mi OK a la narrativa.
+
+Después diséñame el deck completo:
+- Una idea por slide, con un titular claro y poco texto de apoyo.
+- Jerarquía visual: lo importante grande, lo secundario chico.
+- Consistencia de colores y tipografía en todas las slides.
+- Donde una slide pida un gráfico o una imagen, déjame un espacio marcado
+  y dime qué debería ir ahí — no inventes datos ni cifras.
+
+Cuando esté la versión 1, dime en 3 líneas qué decisiones de diseño
+tomaste y qué me conviene revisar primero.</pre></div></div><div class="gcard"><div><div><h3>Presentación a partir de tus notas</h3><p>Ya tienes el contenido en un documento o en notas sueltas. Claude lo ordena en una presentación limpia sin inventar nada.</p></div><span class="gbtn">Copiar</span></div><div><pre>Voy a pegarte mis notas / mi documento y quiero que las conviertas en una
+presentación. El contenido ya existe: tu trabajo es ordenarlo y diseñarlo,
+NO inventarle datos.
+
+Antes de diseñar, pregúntame lo que te falte para hacerlo bien:
+
+1. ¿Para quién es la presentación y qué quiero lograr con ella?
+2. ¿Hay marca? (colores, tipografía, logo). Si no, propón una y dímelo.
+3. ¿Prefieres pocas slides densas o más slides ligeras?
+
+Luego procesa mis notas así:
+1. Léelas completas y dime en texto cómo las agruparías en slides (el
+   esquema), antes de dibujar. Espera mi OK.
+2. Respeta mi contenido: usa mis datos y mis cifras tal como están. Si algo
+   está incompleto o contradictorio, señálamelo — no lo rellenes tú.
+3. Convierte párrafos largos en titulares + bullets cortos. La slide es
+   para la vista, no para leer un ensayo.
+4. Diseña con jerarquía y consistencia: misma paleta, misma tipografía,
+   un ritmo visual parejo entre slides.
+5. Donde un dato se entienda mejor como gráfico, propónmelo y arma el
+   gráfico solo con los números que te di.
+
+Aquí van mis notas:
+
+[PEGA AQUÍ TUS NOTAS O TU DOCUMENTO]</pre></div></div></div><div id="g-grupo-web"><div><p>Grupo B · Web y one-pager</p><p>Una landing que convierte y un one-pager de una hoja, listo para exportar a PDF y mandar.</p></div><div class="gcard"><div><div><h3>Landing page que convierte</h3><p>Una página de aterrizaje con secciones ordenadas para que el visitante haga una sola acción. Claude te pregunta la oferta antes de empezar.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero una landing page. Diséñala tú de principio a fin; yo te doy la
+información. Explícame las decisiones en lenguaje normal.
+
+Antes de dibujar, entrevístame — una pregunta a la vez:
+
+1. ¿Qué ofrezco y cuál es la ÚNICA acción que quiero que haga el visitante?
+   (comprar, agendar, dejar su correo, descargar...)
+2. ¿Quién es esa persona y qué problema tiene ahora mismo?
+3. ¿Qué me hace distinto de las otras opciones? (dame 2-3 puntos)
+4. ¿Tengo marca, testimonios, precios o logos de clientes para usar? Pásame
+   lo que tengas; lo que no exista, no lo inventes.
+5. ¿Marca visual? (colores, tipografía, logo). Si no, propón una y dímelo.
+
+Con eso, primero dime en texto la ESTRUCTURA de secciones que propones
+(hero con la promesa, prueba, cómo funciona, objeciones, cierre con la
+acción). Espera mi OK.
+
+Luego diseña la página:
+- Un hero que en 3 segundos diga qué es, para quién y qué gana.
+- Un solo llamado a la acción, repetido donde tenga sentido — no cinco
+  botones distintos compitiendo.
+- Secciones cortas, con jerarquía clara y espacio para respirar.
+- Donde falte una imagen o un testimonio real, deja el hueco marcado y
+  dime qué poner ahí.
+- Pensada para verse bien en teléfono y en computadora.
+
+Al terminar la versión 1, dime qué sección crees que más ayuda a la
+conversión y cuál debería probar cambiando.</pre></div></div><div class="gcard"><div><div><h3>One-pager para exportar a PDF</h3><p>Una sola hoja que vende: resumen ejecutivo, servicio o producto, listo para mandar como PDF. Denso pero legible.</p></div><span class="gbtn">Copiar</span></div><div><pre>Necesito un one-pager: una sola página que resuma lo que ofrezco y que
+pueda exportar a PDF para mandarlo. Diséñalo tú; yo te doy el contenido.
+
+Antes de empezar, pregúntame:
+
+1. ¿Qué resume este one-pager? (un servicio, un producto, mi propuesta,
+   mi negocio)
+2. ¿A quién se lo voy a mandar y qué quiero que haga después de leerlo?
+3. ¿Qué información SÍ o SÍ tiene que estar? (precio, contacto, resultados,
+   proceso)
+4. ¿Marca? (colores, tipografía, logo). Si no, propón una sobria.
+
+Reglas de diseño para una sola hoja:
+1. Cabe TODO en una página, sin que se sienta apretado. Si el contenido no
+   cabe, dime qué recortar antes de encoger la letra hasta lo ilegible.
+2. Jerarquía de lectura: un titular fuerte arriba, luego lo que más importa,
+   y el contacto o el llamado a la acción abajo, visible.
+3. Bloques claros — problema, propuesta, qué incluye, prueba, siguiente
+   paso — separados con aire, no una mancha de texto.
+4. Usa solo la información que te doy. Los datos que falten, márcalos como
+   hueco; no los inventes.
+5. Diséñalo pensando en la exportación a PDF: márgenes seguros, buen
+   contraste, nada que se corte al imprimir.
+
+Cuando esté la versión 1, recuérdame que para sacarlo use Exportar → PDF,
+y dime si algo se ve arriesgado para la impresión.</pre></div></div></div><div id="g-grupo-redes"><div><p>Grupo C · Redes y prototipos</p><p>Un carrusel con línea consistente para Instagram, y un prototipo interactivo para probar una idea antes de construirla.</p></div><div class="gcard"><div><div><h3>Carrusel para Instagram</h3><p>Un carrusel de varias slides con una línea visual consistente y un mensaje que avanza de la primera a la última.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero un carrusel para Instagram. Diséñalo tú; yo te doy el tema y la
+marca. Explícame las decisiones en lenguaje normal.
+
+Antes de dibujar, pregúntame — una a la vez:
+
+1. ¿De qué trata el carrusel y qué quiero que la persona piense o haga al
+   llegar a la última slide?
+2. ¿A quién le hablo? (mi audiencia, en una frase)
+3. ¿Cuántas slides? Si no sé, propón entre 5 y 7.
+4. ¿Marca? Colores, tipografía, logo, mi @usuario. Si no hay, propón una
+   línea visual y dímela.
+5. ¿Formato vertical 4:5 o cuadrado 1:1? Si no sé, usa 4:5.
+
+Con eso, primero dime en texto el guion del carrusel: qué dice cada slide y
+por qué en ese orden. La primera slide tiene que frenar el scroll; la última
+lleva a la acción. Espera mi OK al guion.
+
+Luego diseña todas las slides:
+- Misma línea visual en todas: colores, tipografía y márgenes consistentes,
+  para que se vean como una serie, no como piezas sueltas.
+- Poco texto por slide, grande y legible en un teléfono.
+- Numeración o una pista visual de que hay que deslizar.
+- Donde una slide pida una imagen, deja el hueco marcado y dime qué poner
+  (o lo generamos con Higgsfield más adelante).
+
+Al final, dame el texto del pie de foto (caption) sugerido, aparte del
+diseño, para que lo pueda copiar.</pre></div></div><div class="gcard"><div><div><h3>Prototipo interactivo clickeable</h3><p>Un flujo con pantallas conectadas para probar una idea de app o de producto antes de construirla de verdad.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero un prototipo interactivo — pantallas clickeables para probar una
+idea antes de construirla. No es la app final, es la maqueta navegable.
+Explícame todo en lenguaje normal.
+
+Antes de diseñar, entrevístame:
+
+1. ¿Qué hace el producto y cuál es la tarea principal que quiero probar?
+   (por ejemplo: &quot;reservar una cita&quot;, &quot;comprar en 3 pasos&quot;)
+2. ¿Quién lo usa y en qué dispositivo sobre todo? (teléfono, computadora)
+3. ¿Cuáles son las pantallas mínimas de ese flujo, de principio a fin?
+   Si no lo tengo claro, ayúdame a listarlas primero.
+4. ¿Marca o estilo? Si no hay, propón uno limpio y neutro.
+
+Con eso:
+1. Dime en texto el mapa del flujo: las pantallas y cómo se conectan (de
+   esta se pasa a esta al tocar tal cosa). Espera mi OK.
+2. Diseña cada pantalla con los estados que importan: vacío, con datos, y
+   el de éxito o error donde aplique.
+3. Hazlo navegable: los botones y enlaces llevan a la pantalla siguiente,
+   para que yo pueda recorrer el flujo completo haciendo clic.
+4. Mantén consistencia entre pantallas: mismos componentes, mismos colores,
+   mismas distancias.
+5. Marca claramente qué es real y qué es de mentira (datos de ejemplo), para
+   no confundirlo con algo terminado.
+
+Al terminar, dime qué parte del flujo probaría yo primero con un usuario y
+por qué. Recuérdame que esto es una maqueta: no tiene base de datos ni
+lógica de verdad, y para volverlo app real hacemos handoff a Claude Code.</pre></div></div></div><div id="g-grupo-iterar"><div><p>Grupo D · Rediseñar y exportar</p><p>Tomar algo que ya tienes y subirle el nivel, y convertir un diseño terminado al formato que necesitas.</p></div><div class="gcard"><div><div><h3>Rediseñar algo que ya tienes</h3><p>Le pasas una captura o un diseño actual y Claude lo diagnostica antes de proponerte una versión mejor — sin romper lo que sí funciona.</p></div><span class="gbtn">Copiar</span></div><div><pre>Tengo un diseño que ya existe y quiero mejorarlo. Te voy a pasar una
+captura (o lo pego aquí). Antes de rediseñar, quiero que lo DIAGNOSTIQUES —
+no que lo tires y empieces de cero sin razón.
+
+Primero pregúntame:
+
+1. ¿Qué es y para qué sirve? (una landing, una slide, un post...)
+2. ¿Qué es lo que no me gusta o no me está funcionando de lo actual?
+3. ¿Hay algo que SÍ quiero conservar tal cual? (el logo, un color de marca,
+   cierta sección)
+4. ¿Cuál es el objetivo real de la pieza y a quién le habla?
+
+Luego:
+1. Diagnostícalo en lenguaje normal: qué está bien, qué le resta (jerarquía
+   confusa, demasiado texto, contraste bajo, inconsistencia...). Sé concreto
+   y señala elementos puntuales.
+2. Propón la estrategia del rediseño en 3-4 líneas antes de dibujar: qué vas
+   a cambiar y por qué. Espera mi OK.
+3. Diseña la versión mejorada respetando lo que te pedí conservar.
+4. Cuando esté, ponme el antes y el después uno al lado del otro y explícame
+   los 3 cambios que más suben la pieza, para que yo aprenda el criterio y
+   no solo el resultado.
+
+Si algo de lo que quiero conservar en realidad es lo que arruina la pieza,
+dímelo con franqueza en vez de solo obedecer.</pre></div></div><div class="gcard"><div><div><h3>Exportar o convertir a otro formato</h3><p>Ya tienes el diseño listo y necesitas sacarlo en el formato correcto: PPTX, PDF, HTML o Canva, sin que se rompa la maqueta.</p></div><span class="gbtn">Copiar</span></div><div><pre>Ya tengo un diseño terminado en el lienzo y quiero sacarlo para usarlo
+afuera. Ayúdame a exportarlo bien, sin que se descuadre.
+
+1. Primero pregúntame para qué lo necesito, y recomiéndame el formato:
+   - Si alguien lo va a seguir editando en PowerPoint → PPTX.
+   - Si es para mandar, imprimir o firmar → PDF.
+   - Si es una página para subir a internet → HTML autónomo.
+   - Si sigo el trabajo en Canva → export a Canva.
+   - Si me llevo todos los archivos a otra parte → .zip.
+   - Si lo voy a volver una app o web de verdad → handoff a Claude Code.
+
+2. Antes de exportar, revisa la pieza para ese formato y avísame de lo que
+   se puede romper: texto que se corta, imágenes de baja resolución,
+   márgenes de impresión, fuentes que no viajan. Dime qué arreglar primero.
+
+3. Explícame en pasos simples dónde hago clic para exportar en el formato
+   que acordamos, y qué reviso en el archivo ya exportado para confirmar que
+   quedó bien.
+
+4. Si lo que quiero es el handoff a Claude Code, dime qué me llevo (la
+   estructura, los estilos) y qué NO me llevo (la lógica, los datos, el
+   deploy), para que sepa qué falta construir del otro lado.
+
+No cambies el diseño al exportar salvo que un ajuste sea necesario para que
+el formato no lo rompa; si lo tocas, dime exactamente qué moviste.</pre></div></div></div><div id="g-grupo-higgsfield"><div><p>Grupo E · Con Higgsfield (imagen y video)</p><p>Ya con Higgsfield conectado (sección 06): generar una imagen, un video corto o una foto de producto estilo UGC para meterla a tu diseño.</p></div><div class="gcard"><div><div><h3>Higgsfield: genera una imagen para el diseño</h3><p>Con el connector activo, le pides a Claude una imagen concreta para un hueco del diseño — con estilo, formato y calidad definidos.</p></div><span class="gbtn">Copiar</span></div><div><pre>Tengo Higgsfield conectado en esta conversación (botón &quot;+&quot; → Connectors →
+Higgsfield). Quiero generar una imagen para un hueco específico de mi
+diseño y colocarla ahí.
+
+Antes de generar, confírmame el encargo — pregúntame lo que falte:
+
+1. ¿Para qué parte del diseño es la imagen? (el hero, una slide, el fondo
+   de un carrusel...)
+2. ¿Qué debe mostrar exactamente? (sujeto, escena, ambiente, estilo:
+   fotográfico, ilustración, 3D...)
+3. ¿Qué formato y proporción necesito para ese hueco? (16:9, 9:16, 1:1,
+   4:5) y qué tan grande — hasta 4K si hace falta calidad.
+4. ¿Debe respetar mi paleta o mi estilo de marca? Dímelo y páselo al prompt
+   de la imagen.
+
+Con eso:
+1. Escríbeme el prompt de imagen que le vas a mandar a Higgsfield, para que
+   lo revise antes de gastar créditos, y dime qué modelo de Higgsfield
+   conviene para este tipo de imagen (por ejemplo Soul para fotográfico).
+2. Con mi OK, genera la imagen por el connector.
+3. Colócala en el hueco del diseño si la integración lo permite; si no,
+   dame la imagen para descargarla y dime en qué elemento la pego yo.
+4. Si no me convence, propón UN ajuste concreto al prompt (luz, encuadre,
+   estilo) antes de volver a generar — no repitas a ciegas.
+
+Recuérdame que esto usa mis créditos de Higgsfield, no una API key.</pre></div></div><div class="gcard"><div><div><h3>Higgsfield: genera un video corto</h3><p>Un clip breve (alrededor de 15 segundos) para embeber en un prototipo o un hero — con guion de plano y proporción definidos.</p></div><span class="gbtn">Copiar</span></div><div><pre>Con Higgsfield conectado en esta conversación, quiero un video corto para
+mi diseño — un clip breve, no una película. Sé que Higgsfield hace clips de
+alrededor de 15 segundos; trabajemos con eso.
+
+Antes de generar, pregúntame:
+
+1. ¿Dónde va el video? (fondo del hero, una slide, dentro de un prototipo)
+2. ¿Qué tiene que pasar en el clip? Descríbeme la escena y el movimiento en
+   una o dos frases — mientras más simple, mejor sale en pocos segundos.
+3. ¿Proporción? 16:9 para computadora, 9:16 para reels o stories.
+4. ¿Con o sin texto encima? (si lleva texto, mejor lo pongo yo en el diseño,
+   no quemado en el video)
+
+Con eso:
+1. Escríbeme el prompt de video y dime qué modelo de Higgsfield conviene
+   (Veo, Sora, Kling, Cinema Studio) para este tipo de toma, y por qué.
+   Muéstramelo antes de gastar créditos.
+2. Con mi OK, genera el clip por el connector.
+3. Colócalo o embébelo en el diseño si se puede; si no, dame el archivo y
+   dime dónde lo inserto. Ten en cuenta que Claude Design puede embeber
+   video en un prototipo, pero no es un editor de video: el clip sale de
+   Higgsfield ya listo.
+4. Si el movimiento sale raro, propón un solo ajuste (más lento, plano más
+   cerrado, menos elementos) antes de re-generar.
+
+Aviso: los clips consumen más créditos que las imágenes — dime el costo
+estimado si lo tienes antes de correr.</pre></div></div><div class="gcard"><div><div><h3>Higgsfield: foto de producto estilo UGC</h3><p>Una imagen de tu producto con look natural de usuario real, para anuncios o para el carrusel — a partir de una foto tuya o de una descripción.</p></div><span class="gbtn">Copiar</span></div><div><pre>Con Higgsfield conectado, quiero una imagen de mi producto con estilo UGC
+— ese look natural, de usuario real, no de foto de catálogo perfecta — para
+usarla en un anuncio o en mi carrusel.
+
+Antes de generar, pregúntame:
+
+1. ¿Qué producto es y cómo se ve? Si tengo una foto de referencia, te la
+   paso; si no, descríbemelo y trabajamos por descripción.
+2. ¿Quién lo usaría y en qué escena natural quiero mostrarlo? (en una cocina
+   real, en la calle, en un escritorio con desorden creíble...)
+3. ¿Qué sensación busco? (cercano, aspiracional, divertido, premium)
+4. ¿Formato? 4:5 o 9:16 para redes; dime dónde va.
+
+Con eso:
+1. Escríbeme el prompt de imagen buscando el look UGC: luz natural, encuadre
+   de teléfono, imperfección creíble — no estudio impecable. Dime qué modelo
+   de Higgsfield conviene para foto de producto realista.
+2. Importante: mantén el producto fiel a la referencia. Si voy a usarlo en un
+   anuncio, no le inventes características ni cambies la etiqueta o el color
+   real del producto.
+3. Con mi OK, genera la imagen por el connector, y colócala en el diseño si
+   se puede; si no, dámela para descargar y dime dónde la pongo.
+4. Si queda con cara de &quot;imagen de IA&quot;, ajusta hacia lo natural (luz menos
+   perfecta, pose más casual) antes de repetir.
+
+Recuérdame que es una imagen generada: para publicidad, revisa que lo que
+muestra sea honesto sobre el producto real.</pre></div></div></div></div></div></div><div id="g-editar-en-vivo"><p>05 · EDITAR EN VIVO</p><h2>Refínalo en el lienzo, no en el chat</h2><div><p>Aquí está la diferencia grande contra pedirle un diseño al chat normal. En Claude Design no vuelves a escribir “ahora hazlo más grande, ahora cambia el azul, ahora sube el título” una y otra vez. El patrón es otro: partes de un brief tosco, Claude te arma la versión 1, y a partir de ahí refinas directo sobre el diseño. Son cuatro maneras de moldearlo con la mano — más dos extras que casi nadie descubre.</p><div class="ggrid"><div class="gcard"><p>Comentario inline</p><p>Marcas un elemento específico y dejas un comentario justo encima — como en Figma o en un doc compartido. “Este botón que resalte más”, “esta foto muy grande”. Claude lee el comentario en su contexto y lo aplica solo ahí.</p></div><div class="gcard"><p>Editar el texto directo</p><p>Haces clic en un título o un párrafo y lo escribes tú mismo, como en un documento. No pasas por el chat para corregir una palabra o cambiar una cifra: lo editas y ya.</p></div><div class="gcard"><p>Perillas de ajuste</p><p>Para espaciado, color, tamaño de fuente y layout tienes perillas (adjustment knobs) que mueves en vivo y ves el cambio al instante. Un detalle que casi nadie sabe: Claude no las pone por default — pídeselas explícitamente (“agrégame perillas para el radius, la sombra y el tono de acento”), y cuando las mueves, el cambio se aplica a todo el diseño, no a un solo elemento.</p></div><div class="gcard"><p>Arrastrar, redimensionar, alinear</p><p>Mueves cajas por el lienzo, las estiras y las alineas con el mouse. La composición la acomodas a mano; Claude la mantiene cuando le pides el siguiente cambio.</p></div></div><p>Y dos capacidades que casi nadie descubre, pero que cambian el juego cuando trabajas en serio o en equipo:</p><div class="ggrid"><div class="gcard"><p>Design system automático desde tu codebase</p><p>Si en el primer prompt le das acceso a tu codebase o a tus archivos de diseño, Claude lee tu paleta, tu tipografía y tus componentes (shadcn/Tailwind) y los aplica solo en todo lo que arme de ahí en adelante. Un equipo puede mantener varios design systems en paralelo — uno por cliente o por proyecto — sin repetir la marca en cada prompt.</p></div><div class="gcard"><p>Web Capture Tool</p><p>Dentro del chat puedes invocar el Web Capture: le pasas una URL viva y agarra elementos concretos — un header, una card, una sección de precios — para reutilizarlos como referencia visual. Es más fino que subir una captura completa, porque Claude entiende qué parte le pediste y respeta el resto de tu diseño.</p></div></div><p>La regla mental es simple: lo pequeño y local, con la mano; lo grande y global, al chat. Si quieres mover un título, cambiar una foto o afinar un color, hazlo en el lienzo — es más rápido y no gasta uso como re-generar. Pero cuando el cambio toca todo el diseño — “usa esta paleta en todas las slides”, “cámbiale el tono a toda la landing” — vuelves al chat y se lo pides en una frase. Los dos prompts de abajo son justo para eso: cambios que se aplican a TODO el diseño de un jalón.</p><div class="gcard"><div><div><h3>Aplica este cambio de estilo a TODO el diseño</h3><p>El cambio grande que no quieres hacer perilla por perilla: una paleta, una tipografía o un tono nuevos, propagados a todas las pantallas o slides.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero un cambio que toca TODO el diseño, no una sola parte — por eso te lo
+pido en el chat y no con las perillas. Aplícalo de forma consistente a
+todas las slides / secciones / pantallas de este diseño.
+
+El cambio es:
+
+[DESCRIBE AQUÍ EL CAMBIO GLOBAL — por ejemplo: &quot;cambia la paleta a estos
+colores: [colores]&quot;, &quot;usa esta tipografía en todos los títulos&quot;, &quot;hazlo
+más sobrio y corporativo&quot;, &quot;sube el contraste en todo&quot;]
+
+Reglas al aplicarlo:
+1. Propágalo a TODOS los elementos equivalentes, no solo al primero que
+   encuentres: si es un color de acento, cámbialo en cada botón, título y
+   detalle que lo use.
+2. Mantén la jerarquía y la legibilidad. Si el cambio deja algún texto con
+   poco contraste o algo ilegible, ajústalo y avísame dónde tuviste que
+   desviarte de lo que pedí.
+3. No toques el contenido (los textos, los datos): solo el estilo.
+4. Antes de aplicar, dime en una línea a cuántos elementos va a afectar,
+   para confirmar que entendiste el alcance.
+
+Cuando termines, muéstrame el resultado y dime si algo quedó forzado o si
+hay un lugar donde el cambio global no encaja bien.</pre></div></div><div class="gcard"><div><div><h3>Pasa una revisión de consistencia a todo</h3><p>Cuando el diseño creció a pedazos y ya no se siente uno solo: Claude alinea espaciados, tamaños y estilos en toda la pieza de un jalón.</p></div><span class="gbtn">Copiar</span></div><div><pre>Este diseño lo fui armando por partes y ya no se siente coherente. Quiero
+que hagas una revisión de consistencia de TODO el diseño y lo emparejes.
+
+Revisa la pieza completa y unifica:
+1. Tipografía: mismos tamaños para los mismos niveles (todos los títulos
+   iguales entre sí, todos los cuerpos iguales entre sí).
+2. Espaciado: márgenes y separaciones parejos entre secciones o slides, sin
+   saltos raros.
+3. Color: que la paleta se use igual en todos lados; un acento es un acento,
+   no tres tonos casi iguales.
+4. Componentes: que los botones se parezcan entre sí, que las tarjetas
+   compartan estilo, que los íconos vayan al mismo tamaño.
+5. Alineación: todo cuadrado a una misma retícula, nada corrido por medio
+   pixel.
+
+Antes de tocar, dame la lista de inconsistencias que encontraste, ordenada
+de la que más molesta a la que menos. Espera mi OK y luego arréglalas todas
+de una vez, sin cambiarme el contenido.
+
+Al final, dime qué regla de estilo debería fijar para no volver a romper la
+consistencia la próxima vez.</pre></div></div></div></div><div id="g-higgsfield"><p>06 · HIGGSFIELD</p><h2>Conéctale Higgsfield por MCP: imagen y video de verdad</h2><div><p>Claude Design dibuja layouts, tipografía y composición muy bien, pero no genera fotos ni video realistas por su cuenta. Ahí entra Higgsfield. El sistema oficial para enchufarle herramientas externas a Claude se llama Connectors, y va sobre el Model Context Protocol (MCP) — el mismo estándar del que hablamos en las guías de MCP de la bóveda. Higgsfield publicó su connector a finales de abril de 2026: lo conectas una vez y Claude puede generar imagen y video con tus créditos de Higgsfield, sin API key.</p><div class="gcard"><div><p>higgsfield.ai/mcp</p></div><p>El connector de Higgsfield para Claude (salió a finales de abril de 2026). Trae 30+ modelos de imagen y video — Soul, Cinema Studio, Veo, Sora, Kling — imagen hasta 4K y clips cortos de ~15 segundos. Se conecta como connector custom y usa tus créditos de Higgsfield: no necesitas API key.</p><a href="https://higgsfield.ai/mcp" target="_blank" rel="noopener">Ver la página del MCP de Higgsfield</a></div><p>Se agrega como connector custom. Es un formulario, no código — estos son los pasos, en orden:</p><ol><li><span>01</span><span>Abre Ajustes → Connectors (en Pro y Max puede aparecer como Personalizar → Connectors).</span></li><li><span>02</span><span>Toca el botón “+” y elige “Add custom connector”.</span></li><li><span>03</span><span>Pega la URL del servidor MCP de Higgsfield (el comando de abajo).</span></li><li><span>04</span><span>Dale “Connect” y autentica con tu cuenta de Higgsfield cuando te lo pida.</span></li><li><span>05</span><span>Para usarlo en un diseño, actívalo por conversación: botón “+” → Connectors → Higgsfield.</span></li></ol><div class="gcard"><p>La URL del servidor MCP de Higgsfield (pégala en “Add custom connector”)</p><div><code>https://mcp.higgsfield.ai/mcp</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>Un detalle técnico que conviene entender: Claude se conecta al MCP desde la nube de Anthropic, no desde tu computadora. Por eso el servidor tiene que ser accesible por internet público — el de Higgsfield ya lo es, así que no tienes que configurar nada de tu lado.</p></div><div class="gcard"><p>Antes de la demo, lo honesto</p><p>Aquí va la parte honesta, y es importante. Lo que verás abajo — pedirle a Claude que genere una imagen o un video con Higgsfield y que lo meta directo en tu diseño — es una demo que te muestro juntando dos herramientas dentro de Claude, no una función documentada. Las fuentes oficiales no confirman que los connectors corran dentro del lienzo de Claude Design ni que Higgsfield inserte solo su imagen o video en el diseño. Al lanzamiento (abril de 2026), Anthropic dijo que las integraciones más profundas llegaban “en las próximas semanas”. Piénsalo así: Claude Design y Higgsfield trabajando juntos en Claude, y el paso de bajar el asset y colocarlo lo terminas tú cuando la integración no lo haga sola.</p></div></div></div><div id="g-exportar"><p>07 · EXPORTAR</p><h2>Exportar y llevártelo a donde trabajas</h2><div><p>Un diseño que se queda atrapado en la herramienta no sirve. Claude Design exporta a los formatos que ya usas, y hace handoff a las herramientas donde vas a seguir el trabajo. Estos son los formatos de salida directos:</p><div class="gcard"><div class="ggrid"><p>PDF</p><p>one-pagers, decks y todo lo que se manda o se imprime.</p></div><div class="ggrid"><p>PPTX (PowerPoint)</p><p>presentaciones que alguien va a seguir editando en Office.</p></div><div class="ggrid"><p>Canva</p><p>llevar el diseño a tu flujo de Canva y seguir ahí.</p></div><div class="ggrid"><p>HTML autónomo</p><p>una página lista para subir, sin dependencias externas.</p></div><div class="ggrid"><p>.zip</p><p>el paquete completo de archivos para pasárselo a quien sigue.</p></div></div><p>Y para seguir construyendo, hace handoff a Adobe, Gamma, Lovable, Miro, Replit, Vercel, Wix y Claude Code. El puente más útil para nosotros es el último: exportas a Claude Code y ahí lo vuelves una app real — con lógica, datos y deploy. El diseño lo hiciste conversando; la ingeniería la sigues en la terminal.</p><div><span class="gpill">Adobe</span><span class="gpill">Gamma</span><span class="gpill">Lovable</span><span class="gpill">Miro</span><span class="gpill">Replit</span><span class="gpill">Vercel</span><span class="gpill">Wix</span><span class="gpill">Claude Code</span></div><p>Un detalle clave si el handoff es a Claude Code: el bundle sale optimizado para los frameworks que Claude Code conoce mejor. Alinéate con uno de estos y el código que genera después del handoff sale limpio a la primera:</p><div class="gcard"><div class="ggrid"><p>Next.js 16</p><p>el default de React, el que Claude Code arma más limpio.</p></div><div class="ggrid"><p>Tailwind CSS v4</p><p>default; soporte completo de los tokens del bundle.</p></div><div class="ggrid"><p>shadcn/ui</p><p>default; los componentes que Claude Code conoce mejor.</p></div><div class="ggrid"><p>Vue 3</p><p>class bindings y composition API.</p></div><div class="ggrid"><p>Svelte 5</p><p>class directives y runes.</p></div><div class="ggrid"><p>Nuxt 3</p><p>el meta-framework del lado de Vue.</p></div><div class="ggrid"><p>Astro</p><p>multi-framework, ideal para sitios de contenido.</p></div></div><div class="gcard"><p>El truco que ahorra la mitad de los turnos: dile tu stack destino en el PRIMER prompt — por ejemplo “mi stack destino es Next.js 16 + Tailwind v4 + shadcn/ui + TypeScript strict”. Si no lo haces, Claude empaqueta HTML/CSS genérico que Claude Code después tiene que traducir, y el handoff toma el doble de tiempo.</p></div><div class="gcard"><p>Ojo con esto para no esperar de más: Claude Design diseña y prototipa, pero no te da hosting, base de datos, autenticación ni cobros. Todo eso vive del lado de Claude Code, Vercel o donde hagas el handoff. El lienzo es el diseño; lo demás es el siguiente paso.</p></div></div></div><div id="g-receta"><p>08 · LA RECETA</p><h2>La receta completa, de la idea al archivo final</h2><div><p>Junta todo lo del manual en un solo flujo y así se ve un proyecto real, de principio a fin. No tienes que hacerlo perfecto en el primer prompt: la gracia es que cada paso arregla al anterior.</p><div><div class="gcard"><span>01</span><div><p>Brief tosco</p><p>Abres claude.ai/design y pegas el prompt del tipo de diseño que necesitas (sección 04). Contestas las preguntas de objetivo, audiencia y marca. No lo pienses de más: para eso están los siguientes pasos.</p></div></div><div class="gcard"><span>02</span><div><p>Versión 1</p><p>Claude arma la primera versión completa y te explica qué hizo y por qué. La miras entera antes de tocar nada — a veces ya está más cerca de lo que creías.</p></div></div><div class="gcard"><span>03</span><div><p>Refinar en vivo</p><p>Comentarios inline para lo puntual, texto directo para las palabras, perillas para color y espaciado. Los cambios grandes que tocan todo, al chat con un prompt “aplica a todo el diseño”.</p></div></div><div class="gcard"><span>04</span><div><p>Media con Higgsfield</p><p>Donde el diseño pide una foto o un video de verdad, se lo pides a Higgsfield por el connector, y colocas el asset en su lugar. Imagen hasta 4K, clips cortos, con tus créditos.</p></div></div><div class="gcard"><span>05</span><div><p>Export</p><p>Sacas el formato que toca — PDF para mandar, PPTX para editar, HTML para subir — o handoff a Claude Code para volverlo una app. Fin del flujo.</p></div></div></div><p>Esa es la receta entera: brief → versión 1 → refinar en vivo → media con Higgsfield → export. La primera vez te tomará un rato porque estás aprendiendo dónde está cada cosa; a la tercera lo haces sin pensar. Y lo mejor es que ya lo estás pagando en tu plan — solo faltaba que alguien te dijera cómo exprimirlo.</p></div></div></div><div><div><p>Guía de la comunidad</p><p>Este es el manual definitivo de Claude Design: la biblioteca de prompts por tipo de diseño, cómo editarlo en vivo y cómo conectarle Higgsfield por MCP, tal como se cuenta en el video. Vive en la bóveda de la comunidad de <a href="#/boveda">tododeia</a>.</p></div><div class="gcard"><p>Cierre · el primer diseño que vas a armar</p><p>“¿Cuál vas a armar primero: el pitch deck que llevas semanas posponiendo, o la landing que todavía vive en tu cabeza?”</p></div><div><p>Guías hermanas · antes o después de esta</p><div class="ggrid"><a class="gcard" href="#/g/cerebro-claude"><div><p>El cerebro de Claude — datos por MCP, no diseño</p><p>La otra cara de conectar herramientas por MCP: aquí conectas Higgsfield para traer imagen y video; allá le armas a Claude una base de datos Postgres para que consulte todos tus datos en un solo lugar.</p></div></a><a class="gcard" href="#/g/hyperframes-claude-design"><div><p>Hyperframes — videos con Claude Design</p><p>Si lo que quieres es video animado de verdad: Claude Design diseña la escena en HTML/CSS y el CLI open-source de HeyGen la renderiza a MP4 con GSAP y FFmpeg — sin Premiere.</p></div></a><a class="gcard" href="#/g/claude-design-5-versiones"><div><p>Claude Design — 5 versiones en minutos</p><p>La guía hermana enfocada en un truco puntual: pedirle a Claude Design varias versiones de tu landing o carrusel lado a lado, y exportar la ganadora a Claude Code.</p></div></a><a class="gcard" href="#/g/prompting-101-anthropic"><div><p>Prompting 101 — los pilares de Anthropic</p><p>Este manual vive de prompts largos y específicos. Si quieres entender POR QUÉ funcionan — estructura, instrucciones literales, cuándo usar XML —, esta es la base que los sostiene.</p></div></a></div></div><div class="gcard"><p>Lo honesto antes de cerrar</p><p>Lo honesto, en corto. Claude Design solo corre en la web y en la app de escritorio: no hay móvil. No está en el plan Free, y en Enterprise viene apagado por defecto — un admin lo tiene que activar. Comparte el mismo pool de uso de tu plan con el chat, Claude Code y Cowork, así que un diseño grande puede consumir uso rápido; si llegas al límite, Design deja de estar disponible hasta que se reinicie tu ciclo. La persistencia de los comentarios inline a veces falla, los diseños grandes pueden ir lentos, y cuando el chat se traba se arregla abriendo uno nuevo. La edición entre varias personas todavía es básica. Y lo de Higgsfield metiendo su imagen o video directo dentro del lienzo es una demo que te muestro, no una función documentada: al lanzamiento, Anthropic dijo que las integraciones más profundas llegaban “en las próximas semanas”.</p></div></div></div>
+</article>

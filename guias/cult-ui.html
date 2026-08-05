@@ -1,0 +1,264 @@
+<article class="chapter guia" data-slug="cult-ui">
+<div><div><h1>Cult UI · 75 componentes para que Claude deje de sacarte diseños genéricos</h1><p>Cult UI es la carpeta de 75 componentes premium open-source que le pasas a Claude Code para que deje de sacarte landings, dashboards y tiendas con look genérico de shadcn flat. Trae textos animados, botones con efectos brillantes, dynamic island estilo iPhone, hero con texto líquido metálico — y dos skills oficiales para Claude que, una vez descargadas a tu proyecto, hacen que Claude siga el spec de diseño sin que se lo recuerdes nunca. <strong>Si Claude te sigue sacando landings flat y grises, no es Claude</strong>: le falta la carpeta de piezas premium y el archivo de reglas. Esta guía es exactamente eso.</p></div><div class="gcard"><div><p>Open-source · 75 componentes · MIT · nolly-studio</p><p>Setup en un prompt → carpeta de reglas para Claude Code → componentes premium sin pelearte con el diseño</p><p>Todos los que armamos páginas con Claude Code o Cursor sufrimos lo mismo: pides una landing, sale shadcn flat. Pides un dashboard, sale shadcn flat. Cult UI es la librería open-source que arregla eso — <strong>75 componentes premium tipo Silicon Valley con animaciones reales</strong> (text-animate, cosmic-button, dynamic-island estilo iPhone, hero-liquid-metal) que viven como registry de shadcn. Cada uno tiene su comando: lo pegas a Claude, lo aplica, listo.</p><p>Lo que casi nadie sabe y donde está el secreto: <strong>Cult UI trae dos skills oficiales para Claude Code</strong> — components-build con 16 reglas (co-autoradas por Hayden Bleasel y shadcn) más fixing-motion-performance. Las descargas a <code>.claude/skills/</code> de tu proyecto y Claude empieza a seguir el spec sin que se lo recuerdes nunca. La página tiene 10 secciones que arrancan en el problema, pasan por el setup en 3 pasos, el flujo de prompts, 3 casos de uso aterrizados, los errores comunes con su fix y un checklist final en 3 columnas. Vienen 8 prompts copy-paste — pegas y corres.</p></div><div><a href="#g-por-que-generico">El problema</a><a href="#g-que-es-cult-ui">Qué es</a><a href="#g-componentes-destacados">Componentes</a><a href="#g-instalacion">Setup</a><a href="#g-skills-oficiales">Skills oficiales</a><a href="#g-flujo-prompts">Flujo de prompts</a><a href="#g-casos-de-uso">Casos de uso</a><a href="#g-stack">Stack</a><a href="#g-errores">Errores</a><a href="#g-checklist">Checklist</a></div><div><span>75 componentes verificados</span><span>Registry de shadcn</span><span>Tailwind v4 + motion</span><span>Skills oficiales para Claude</span><span>Co-autores: Hayden Bleasel + shadcn</span><span>MIT · gratis · ~4.2K stars</span><span>Sin pelearte con el diseño</span><span>Animaciones reales, no flat</span></div></div><div><div id="g-por-que-generico"><p>01 · El problema</p><h2>Por qué tu próxima página se va a ver genérica si no haces nada</h2><div><p>Todos los que armamos páginas con Claude Code o Cursor pasamos por la misma curva: pides una landing, sale un H1 grande con un párrafo gris debajo y dos botones flat. Pides un dashboard, sale shadcn base con bordes radius medio y shadow-md. Pides una tienda, sale el template aburrido de siempre. No es Claude — es que sin <strong>una librería de piezas premium y un archivo de reglas</strong> que lo obligue a usarlas, defaultea a shadcn flat. Y shadcn flat es bonito, pero todo el mundo ya lo tiene.</p><div class="ggrid"><div class="gcard"><p>❌ Lo que sale por default</p><div><div><p>Claude saca botones planos con un hover de cambio de color y nada más.</p></div><div><p>Hero con un H1 grande y un párrafo gris — todo el mundo lo ha visto mil veces.</p></div><div><p>Notificaciones tipo toast cuadrado con border-radius medio, sin personalidad.</p></div></div></div><div class="gcard"><p>✅ Lo que Cult UI te da</p><div><div><p>cosmic-button: botones con orillas brillantes y transición tipo Silicon Valley.</p></div><div><p>hero-liquid-metal: texto con efecto de metal derritiéndose como en una keynote de Apple.</p></div><div><p>dynamic-island: la del iPhone, ahora viviendo en tu web o dashboard.</p></div></div></div></div><p>La diferencia entre una página que se ve como plantilla y una que se ve como producto real es cinco o seis componentes con personalidad — un hero con efecto de metal líquido, botones con orillas que brillan, una dynamic island como sistema de toast, fondos animados sutiles. Cult UI ya tiene los 75 armados, gratis, MIT. Solo hay que saber que existen y conectarlos a Claude.</p></div></div><div id="g-que-es-cult-ui"><p>02 · Lo básico</p><h2>Cult UI es la carpeta de 75 piezas premium que Claude puede jalar al toque</h2><div><p>Cult UI vive en <a href="https://github.com/nolly-studio/cult-ui" target="_blank" rel="noopener">github.com/nolly-studio/cult-ui</a>. Es <strong>open-source bajo licencia MIT</strong> (~4.2K stars en GitHub, último commit el 21 de abril de 2026). Lo importante de entender: no es un paquete npm ni un CLI separado. <strong>Es un registry de shadcn</strong> — los componentes se distribuyen como código fuente que se copia directo a tu proyecto, no como una dependencia que importas. La ventaja: el código vive en tu repo, lo puedes modificar, no dependes de una librería que cambia bajo tus pies.</p><p>La librería trae 75 componentes verificados en 12 categorías temáticas. Antes de meternos en los 12 grupos, vamos a los cuatro que el reel destaca como los que más cambian la cara de una página en menos de un minuto.</p></div></div><div id="g-componentes-destacados"><p>03 · El catálogo</p><h2>Los 4 que más impacto tienen + las 12 categorías completas</h2><div><p>Si solo vas a probar cuatro componentes, que sean estos. Son los que la gente nota en los primeros segundos de tu landing — un cambio en cualquiera de los cuatro mueve la percepción entera de la página.</p><div><div class="gcard"><div><p>text-animate</p><code>cult-ui.com/r/text-animate.json</code></div><p>Letras que se arman solas como en una película. Lo metes en tu H1 y la home cambia entera.</p></div><div class="gcard"><div><p>cosmic-button</p><code>cult-ui.com/r/cosmic-button.json</code></div><p>Botones con orillas que brillan. El CTA principal pasa de plano a premium en un segundo.</p></div><div class="gcard"><div><p>dynamic-island</p><code>cult-ui.com/r/dynamic-island.json</code></div><p>El de los iPhone, ahora para tu página. Sirve como toast, header de notificaciones o widget destacado.</p></div><div class="gcard"><div><p>hero-liquid-metal</p><code>cult-ui.com/r/hero-liquid-metal.json</code></div><p>Texto que parece metal derritiéndose. Es el componente que más cambia el feel del hero.</p></div></div><p>Las 12 categorías que vienen en el registry</p><p>Más allá de los cuatro destacados, Cult UI agrupa los 75 componentes en 12 grupos temáticos. La idea cuando construyes algo es entrar al grupo que aplica a tu sección, escoger uno o dos componentes y mezclarlos. El catálogo entero con preview en vivo está en <a href="https://cult-ui.com" target="_blank" rel="noopener">cult-ui.com</a>.</p><div class="ggrid"><div class="gcard"><p>Textos animados</p><p>Variantes de text-animate, text-gif y otros componentes para títulos y reveals que se arman frame por frame.</p></div><div class="gcard"><p>Tipografía pixel</p><p>Fuentes y efectos pixel-style para hooks de hero, badges de versión o secciones retro intencionales.</p></div><div class="gcard"><p>Botones</p><p>Familia de buttons con efectos: cosmic-button, gradient borders, magnetic, glow, shimmer. Cada uno con su install command.</p></div><div class="gcard"><p>Cards</p><p>Cards 3D, cards con tilt, glassmorphism, animated borders. La carpeta entera para reemplazar tus card defaults.</p></div><div class="gcard"><p>iPhone-style · dynamic</p><p>dynamic-island, family-drawer, modales tipo iOS y stacked sheets. Ideal para apps que quieren feel mobile-first.</p></div><div class="gcard"><p>Fondos animados</p><p>Aurora, mesh gradients, dot grids interactivos, partículas. Se ponen como decoración de sección sin pelear con el contenido.</p></div><div class="gcard"><p>Shaders y efectos metálicos</p><p>hero-liquid-metal, shader-lens-blur y otros componentes que corren shaders WebGL para textos y backgrounds reales.</p></div><div class="gcard"><p>Heroes</p><p>Variantes de hero ya armados: hero metálico, hero con grid animado, hero con typography-reveal. Bloque listo para pegar.</p></div><div class="gcard"><p>Carousels y 3D</p><p>Carousels con perspectiva, marquee con efectos, scrolling stacks, vistas 3D para feature sections o testimonials.</p></div><div class="gcard"><p>Layout y navegación</p><p>Sidebars animados, navbars con scroll-blur, command-menu tipo Linear/Raycast, breadcrumbs con micro-animaciones.</p></div><div class="gcard"><p>AI y prompts</p><p>Componentes pensados para apps AI: textareas con auto-resize, prompt boxes con suggestions, chat bubbles con streaming.</p></div><div class="gcard"><p>Onboarding y forms</p><p>Steppers animados, forms con validación visual, drawers de onboarding tipo Notion/Linear. Buenos para signup y setup flows.</p></div></div></div></div><div id="g-instalacion"><p>04 · Setup</p><h2>Instalación en 3 pasos · todo lo corre Claude Code por ti</h2><div><p>La parte que asusta a quien no programa: pegar comandos. Buenas noticias — todos los comandos los corre Claude Code por ti. Tú solo le pegas el prompt de setup, él lee tu proyecto, instala lo que falta y agrega el primer componente como smoke test. Estos son los tres pasos que el prompt automatiza.</p><ol><li><span class="gpill">01</span><div><p>Inicializa shadcn en tu proyecto si todavía no lo tienes</p><p>Cult UI no es un paquete npm que instalas con un solo comando — es un registry de shadcn. Si tu Next.js ya usa shadcn/ui, salta este paso. Si no, corre el init desde la raíz del proyecto. Claude Code lo puede hacer por ti con el prompt de abajo.</p><a href="https://ui.shadcn.com/docs/installation" target="_blank" rel="noopener">Guía oficial de shadcn init →</a></div></li><li><span class="gpill">02</span><div><p>Instala las dependencias que Cult UI necesita</p><p>Tailwind CSS v4 con su plugin de PostCSS, el paquete motion (es el nombre nuevo de Framer Motion — instala motion, no framer-motion), más clsx y tailwind-merge para el helper cn(). Si ya tenías shadcn corriendo, lo más seguro es que solo te falte motion.</p></div></li><li><span class="gpill">03</span><div><p>Agrega cualquier componente con un comando</p><p>Una vez listo el setup, cada componente del catálogo tiene su comando directo. El formato es exactamente este: npx shadcn@latest add https://cult-ui.com/r/[nombre-del-componente].json. Pegas el comando, Claude lo corre, el componente queda copiado en tu proyecto listo para importar.</p></div></li></ol><p>El comando exacto del script · este es el que pega Claude por cada componente</p><div class="gcard"><p>Install directo por URL · siempre funciona</p><div><code>npx shadcn@latest add https://cult-ui.com/r/cosmic-button.json</code></div><span class="gbtn">Copiar comando</span></div><p>Si vas a agregar muchos componentes seguidos, conviene configurar el registry en <code>components.json</code> una sola vez y después usar la sintaxis corta <code>@cult-ui/&lt;name&gt;</code>. Importante: esa sintaxis requiere <code>shadcn@beta</code> por ahora.</p><div class="gcard"><p>Bloque para components.json · agrega el registry @cult-ui</p><div><code>{
+  &quot;registries&quot;: {
+    &quot;@cult-ui&quot;: &quot;https://cult-ui.com/r/{name}.json&quot;
+  }
+}</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>Una vez configurado · agrega varios componentes en un comando</p><div><code>npx shadcn@beta add @cult-ui/cosmic-button @cult-ui/dynamic-island</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><div><div><h3>Setup completo de Cult UI en mi proyecto</h3><p>Pega este prompt en Claude Code desde la raíz del proyecto. Verifica Tailwind v4, inicializa shadcn si falta, instala motion, configura el registry @cult-ui y agrega el primer componente como smoke test.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero usar Cult UI (https://cult-ui.com · github.com/nolly-studio/cult-ui) en este proyecto. Es un registry de shadcn, no un paquete npm. Tu tarea es dejarlo listo en cinco pasos. Hazlos en orden y confirma cada uno antes de avanzar.
+
+1. Verifica el stack
+   - Lee package.json y dime: versión de Tailwind, versión de Next.js (o el framework), si hay shadcn (components.json en raíz), y si está instalado motion o framer-motion.
+   - Si Tailwind está en v3, propón el upgrade a v4 (no lo corras todavía, solo dímelo y espera mi visto bueno).
+   - Si tengo framer-motion instalado, márcalo: Cult UI usa motion, no framer-motion.
+
+2. Inicializa shadcn si falta
+   - Si no hay components.json, corre npx shadcn@latest init con defaults razonables para mi stack (paleta neutral, CSS variables, base color neutral).
+   - Si ya hay components.json, no lo toques.
+
+3. Instala dependencias faltantes
+   - motion (no framer-motion). Si tengo framer-motion, desinstálalo primero.
+   - clsx y tailwind-merge si no están.
+
+4. Configura el registry @cult-ui
+   - Edita components.json y agrega el bloque:
+       &quot;registries&quot;: {
+         &quot;@cult-ui&quot;: &quot;https://cult-ui.com/r/{name}.json&quot;
+       }
+   - Si components.json ya tenía un bloque registries, fusiona sin sobrescribir lo existente.
+
+5. Smoke test
+   - Agrega el cosmic-button como primer componente:
+       npx shadcn@latest add https://cult-ui.com/r/cosmic-button.json
+   - Confirma que el archivo quedó en components/ui/ (o donde shadcn lo configuró).
+   - Importa el componente en una página de prueba para verificar que compila sin errores.
+
+Si algún paso falla:
+- Si el add falla con &quot;registry not found&quot;, usa la URL directa en lugar de la sintaxis @cult-ui/.
+- Si motion da error de imports tipo &quot;Cannot find module &#x27;motion/react&#x27;&quot;, verifica que NO esté instalado framer-motion en paralelo.
+- Si Tailwind no aplica clases del componente, confirma que estás en v4 con el plugin @tailwindcss/postcss configurado.
+
+Al final, dime: qué quedó instalado, qué archivos cambiaste, y un comando listo para que yo agregue el siguiente componente.</pre></div></div></div></div><div id="g-skills-oficiales"><p>05 · El archivo de reglas</p><h2>Las 2 skills oficiales que Claude Code lee solo y respeta sin recordatorio</h2><div><p>Esta es la parte que casi nadie sabe y que vuelve a Cult UI inevitable cuando trabajas con Claude Code. Aparte de los componentes, el repo trae <strong>dos skills oficiales en formato Anthropic Agent Skill</strong> — las mismas skills que documentamos en <a href="#/g/guia-skills-claude">La guía de Skills de 0 a 100 de Anthropic</a>. Las descargas a la carpeta <code>.claude/skills/</code> de tu proyecto y a partir de ese momento Claude las lee solas al arranque. Cuando le pidas armar o refactorizar componentes, va a seguir el spec sin que se lo recuerdes.</p><blockquote><p>“This document is mainly for agents and LLMs to follow when maintaining, generating, or refactoring UI component libraries.”</p><p>AGENTS.md de Cult UI · Hayden Bleasel + shadcn</p></blockquote><div><div class="gcard"><p>components-build · el spec de cómo se construye un componente</p><p>vive en <code>.claude/skills/components-build/</code></p><p><strong>Qué hace:</strong> Le da a Claude Code 16 reglas que tiene que seguir cuando construye, refactoriza o migra cualquier componente UI — desde accessibility y design tokens hasta polymorphism, typing y registry conventions. Es literalmente el spec que usan internamente nolly-studio y shadcn para mantener la consistencia de la librería.</p><p><strong>Cuándo se activa:</strong> Cuando le pides a Claude Code que arme un componente nuevo, lo refactorice o lo migre a Cult UI. Como vive en .claude/skills/, Claude la lee solo al arrancar el proyecto y empieza a respetar el spec sin que se lo recuerdes en cada conversación.</p><p><strong>Autores:</strong> Hayden Bleasel + shadcn (verbatim del AGENTS.md upstream)</p><div><p>Las 16 reglas que carga</p><div><span>accessibility</span><span>as-child</span><span>composition</span><span>data-attributes</span><span>definitions</span><span>design-tokens</span><span>documentation</span><span>marketplaces</span><span>npm</span><span>overview</span><span>polymorphism</span><span>principles</span><span>registry</span><span>state</span><span>styling</span><span>types</span></div></div><a href="https://github.com/nolly-studio/cult-ui/tree/main/.claude/skills/components-build" target="_blank" rel="noopener">Ver la skill en el repo upstream →</a></div><div class="gcard"><p>fixing-motion-performance · arregla animaciones que se traban</p><p>vive en <code>.claude/skills/fixing-motion-performance/</code></p><p><strong>Qué hace:</strong> Nueve categorías de reglas para que Claude detecte y arregle bugs de performance en animaciones. La regla crítica que la skill repite: no intercales layout reads y writes en el mismo frame, mide una vez, anima solo via transform o opacity. Trae también el slash command /fixing-motion-performance para auditar un archivo puntual.</p><p><strong>Cuándo se activa:</strong> Cuando una animación se siente trabada, una sección se renderiza lento, o el FPS se cae al hacer scroll. También accesible como slash command para correr la auditoría sobre un archivo específico.</p><p><strong>Autores:</strong> nolly-studio</p><a href="https://github.com/nolly-studio/cult-ui/tree/main/.claude/skills/fixing-motion-performance" target="_blank" rel="noopener">Ver la skill en el repo upstream →</a></div></div><p>La descarga es un comando: clonar shallow el repo, copiar las dos carpetas a tu proyecto, listo. Después reabres Claude Code y la calidad de los componentes que arma da un salto sin que cambies nada más.</p><div class="gcard"><div><div><h3>Descarga las 2 skills oficiales de Cult UI a mi proyecto</h3><p>Clona components-build (16 reglas) y fixing-motion-performance del repo nolly-studio/cult-ui a .claude/skills/ del proyecto del usuario. Desde ese momento Claude Code las lee solo y respeta el spec sin recordatorios.</p></div><span class="gbtn">Copiar</span></div><div><pre>Cult UI viene con dos skills oficiales para Claude Code que hacen que sigas su spec de diseño automáticamente. Una se llama components-build (16 reglas: accessibility, design-tokens, polymorphism, registry, styling, types, etc., co-autoradas por Hayden Bleasel y shadcn) y la otra es fixing-motion-performance (auditor de animaciones). Quiero que las tengas en este proyecto.
+
+Pasos:
+
+1. Crea la carpeta .claude/skills/ en la raíz del proyecto si no existe.
+
+2. Descarga las dos skills desde el repo upstream nolly-studio/cult-ui:
+   - .claude/skills/components-build/
+   - .claude/skills/fixing-motion-performance/
+
+   La forma más limpia: clona shallow el repo a una carpeta temporal, copia solo esas dos carpetas, borra el resto.
+       git clone --depth 1 https://github.com/nolly-studio/cult-ui.git /tmp/cult-ui-skills
+       mkdir -p .claude/skills
+       cp -r /tmp/cult-ui-skills/.claude/skills/components-build .claude/skills/
+       cp -r /tmp/cult-ui-skills/.claude/skills/fixing-motion-performance .claude/skills/
+       rm -rf /tmp/cult-ui-skills
+
+   Si en el repo upstream components-build vive en .agents/skills/ (no en .claude/skills/), copia desde ahí — el contenido es el mismo.
+
+3. Verifica que cada carpeta tenga su SKILL.md adentro:
+       ls .claude/skills/components-build/SKILL.md
+       ls .claude/skills/fixing-motion-performance/SKILL.md
+
+4. Agrega .claude/skills/ a .gitignore solo si yo te lo pido (por default déjalo trackeado, las skills son parte del setup del proyecto).
+
+5. Confírmame:
+   - Cuántos archivos copiaste a cada skill.
+   - Si components-build trae sus 16 reglas en la carpeta rules/ o como secciones del SKILL.md.
+   - Que el SKILL.md de cada una se lee correcto (cita el nombre y description del frontmatter).
+
+Una vez listo, cierra mi sesión de Claude Code y reábrela. Las skills se leen al arranque y desde ese momento, cuando te pida construir o refactorizar componentes, vas a seguir el spec de components-build sin que te lo recuerde. Para auditar performance de animaciones uso el slash command /fixing-motion-performance.
+
+Si el clone falla porque no tengo git: usa gh repo clone nolly-studio/cult-ui --depth 1, o bájate los archivos vía curl al raw.githubusercontent.com de cada archivo.</pre></div></div></div></div><div id="g-flujo-prompts"><p>06 · El flujo</p><h2>El loop diario · pegas un prompt, Claude lo avienta a tu página</h2><div><p>Una vez Cult UI instalado y las skills descargadas, el día a día se ve así: estás trabajando en una sección, identificas un elemento que se ve genérico (un botón plano, un toast cuadrado, un hero soso), abres Claude Code, le pegas un prompt con el nombre del componente y la sección, y Claude lo aplica respetando tu branding. En menos de un minuto la sección cambia de plantilla a producto.</p><div class="gcard"><div><div><h3>Avienta un componente puntual respetando mi branding</h3><p>Cambia [COMPONENTE] por el nombre del componente de Cult UI (cosmic-button, dynamic-island, hero-liquid-metal, text-animate, etc.) y [DÓNDE] por la sección/archivo donde lo quieres insertar.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero meter el componente [COMPONENTE] de Cult UI en [DÓNDE] de mi proyecto. Hazlo en cuatro pasos.
+
+1. Agrega el componente al proyecto:
+       npx shadcn@latest add https://cult-ui.com/r/[COMPONENTE].json
+   Si tengo el registry @cult-ui configurado en components.json, usa la sintaxis corta:
+       npx shadcn@beta add @cult-ui/[COMPONENTE]
+
+2. Lee mi globals.css y mi tailwind.config (si existe) para extraer los design tokens reales del proyecto: paleta, font-family, radius base, spacing scale. Vas a respetar esos tokens en el siguiente paso.
+
+3. Importa el componente en [DÓNDE]:
+   - Reemplaza el elemento equivalente que estoy usando hoy (mi button actual, mi hero, mi toast, lo que sea) por la versión de Cult UI.
+   - Mantén intacto el contenido textual y el copy. Solo cambia el contenedor visual.
+   - Ajusta los props del componente para que respete mi paleta y mi font — no me dejes el estilo demo del repo. Si el componente acepta className, fusiónalo con mi cn() helper.
+   - Si el componente necesita un wrapper para animar (Suspense, dynamic import client-only, etc.), agrégalo correctamente para evitar errores de hidratación.
+
+4. Verifica que funcione:
+   - Corre el build o el dev y dime si hay warnings.
+   - Mira el resultado en tu cabeza: ¿el componente queda integrado con el branding o se ve como un sticker pegado? Si se ve pegado, ajusta de nuevo.
+
+Si Cult UI o tú tienes una skill components-build cargada (en .claude/skills/components-build/), síguela al pie de la letra: accessibility, polymorphism con as-child cuando aplique, design-tokens del proyecto en lugar de hardcoded values.
+
+Al final, dame:
+- Lista de archivos tocados.
+- Antes/después en una frase (cómo era ese elemento antes y cómo quedó).
+- Si el componente trae animación, dime cuánto FPS estás estimando — si es menos de 60, sugiere correr /fixing-motion-performance.</pre></div></div><p>El otro flujo es el inverso: en lugar de pedir componente por componente, le pasas una página entera (un <code>app/page.tsx</code> o un sub-componente largo) y Claude la audita. Te marca qué se ve genérico, qué de Cult UI lo reemplaza y en qué orden conviene aplicar los cambios. Esto es lo que más vale cuando estás modernizando una landing que ya existe.</p><div class="gcard"><div><div><h3>Audita esta página y propón qué reemplazar con Cult UI</h3><p>Apunta a una página o feature específica del proyecto (ej. mi landing en app/page.tsx). Claude la lee, identifica los elementos genéricos y propone qué componentes de Cult UI los pueden reemplazar.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero que audites [RUTA DEL ARCHIVO O PÁGINA, ej. app/page.tsx] y me digas dónde Cult UI le sumaría a la experiencia visual.
+
+Tu tarea es un audit, no una refactorización. Léete el archivo entero y produce este reporte:
+
+1. Inventario rápido
+   - Lista los elementos visuales clave de la página (hero, CTAs, cards, navegación, footer, fondos, etc.).
+   - Para cada elemento, di qué componente shadcn/raw HTML estoy usando hoy.
+
+2. Diagnóstico
+   - Marca cuáles se sienten genéricos o de plantilla — patrones que cualquiera ha visto (botón flat, hero con H1 + párrafo gris, card con shadow-md y border-radius medio, toast cuadrado).
+   - Marca cuáles ya están bien y NO conviene tocar (lo que ya tiene personalidad).
+
+3. Propuesta con Cult UI
+   - Para cada elemento genérico, propón un componente de Cult UI específico que lo reemplaza. Usa solo componentes que sepas que existen en el registry (cosmic-button, dynamic-island, hero-liquid-metal, text-animate, family-drawer, shader-lens-blur, etc.); si no estás seguro de un nombre, dilo abierto y consulta cult-ui.com/docs antes de proponerlo.
+   - Para cada propuesta, da el comando exacto de install (npx shadcn@latest add https://cult-ui.com/r/[NOMBRE].json).
+   - Estima el impacto visual: ¿este cambio se nota mucho (high impact) o es polish secundario (low impact)?
+
+4. Plan de aplicación priorizado
+   - Ordena las propuestas de mayor a menor impacto.
+   - Recomienda empezar por las 2-3 de high impact que tocan elementos en above-the-fold.
+   - Para cada una, especifica los archivos que tendría que tocar.
+
+5. Riesgos
+   - ¿Algún componente propuesto va a chocar con mi paleta o mi tipografía? Si sí, dime cómo lo ajusto antes de instalarlo.
+   - ¿Algún componente requiere setup extra (motion, shader support, etc.) que todavía no tengo?
+
+No agregues ni instales nada todavía. Solo el reporte. Cuando lo apruebe, te paso el siguiente prompt para que apliques los cambios uno por uno.</pre></div></div></div></div><div id="g-casos-de-uso"><p>07 · Aplícalo</p><h2>Tres mezclas que funcionan · landing, dashboard, sección iPhone</h2><div><p>Tres flavors aterrizados que vale la pena tener de referencia. Cada uno lista los componentes de Cult UI que recomiendo combinar y el prompt copy-paste para que Claude Code lo arme. Mezcla y empareja — no tienes que usar la combinación literal, son punto de partida.</p><div><div class="gcard"><p>Landing de producto</p><p>La mezcla que recomiendo</p><ul><li>hero-liquid-metal en el hero</li><li>text-animate en los títulos de sección</li><li>cosmic-button en los CTAs</li><li>Fondos animados de fondo en la sección de features</li></ul></div><div class="gcard"><p>Dashboard SaaS</p><p>La mezcla que recomiendo</p><ul><li>Bento grid de Cult UI para las cards de métricas</li><li>shader-lens-blur como fondo decorativo del sidebar</li><li>dynamic-island como toast de notificaciones</li><li>Command-menu animado tipo Linear para el quick search</li></ul></div><div class="gcard"><p>Sección iPhone-style</p><p>La mezcla que recomiendo</p><ul><li>dynamic-island como widget hero</li><li>family-drawer para modales con efecto stack</li><li>Transparencias tipo iOS en las cards</li><li>Botones magnéticos en lugar de buttons planos</li></ul></div></div><div class="gcard"><div><div><h3>Arma una landing completa con Cult UI</h3><p>Para cuando estás empezando un proyecto nuevo o redibujando una landing desde cero. Reemplaza [MI PRODUCTO] y [VALUE PROP EN UNA FRASE] por los tuyos.</p></div><span class="gbtn">Copiar</span></div><div><pre>Voy a armar una landing nueva para [MI PRODUCTO]. La propuesta de valor en una frase: [VALUE PROP EN UNA FRASE].
+
+Quiero la landing usando Cult UI como librería principal de componentes. Asume que ya tengo shadcn + Tailwind v4 + motion instalados y el registry @cult-ui configurado. Si no es así, corre primero el prompt cult-ui-setup.
+
+Estructura mínima de la landing (en este orden):
+
+1. Navbar
+   - Logo a la izquierda, links centrados, un cosmic-button como CTA principal a la derecha.
+   - Sticky con scroll-blur si Cult UI tiene un componente para eso; si no, usa un Tailwind backdrop-blur estándar.
+
+2. Hero
+   - hero-liquid-metal con el headline principal (3-5 palabras de impacto).
+   - Subheadline en text-animate revelándose después del hero.
+   - Dos botones: el primario en cosmic-button (CTA principal), el secundario en variant ghost.
+   - Si Cult UI tiene un componente de fondo animado tipo aurora o mesh-gradient, ponlo detrás del hero a opacidad baja.
+
+3. Social proof
+   - Una fila con logos de clientes/empresas en escala de grises a hover color.
+   - Si me pides logos y no tengo, deja placeholders y pon un comentario TODO.
+
+4. Features
+   - Grid de 3 columnas con cards de Cult UI (animated borders o tilt 3D).
+   - Cada card: ícono + título + 1 párrafo de 2 líneas.
+
+5. Pricing
+   - Tres cards lado a lado. La del medio destacada (border-glow o badge &quot;Más popular&quot;).
+   - Botón CTA por card.
+
+6. FAQ
+   - Accordion simple con 4-6 preguntas.
+
+7. CTA final + footer
+   - Sección con texto centrado + cosmic-button.
+   - Footer minimal con links de docs, repo, twitter.
+
+Reglas durante la construcción:
+
+- Usa solo componentes que sepas que existen en el registry de Cult UI. Si no estás seguro de un nombre, busca el comando exacto en https://cult-ui.com/docs antes de meterlo.
+- Respeta mi paleta (léela de globals.css). No metas colores hardcoded.
+- Pon todo en app/page.tsx pero extrae a sub-componentes en components/landing/ a partir de la 3ra sección para que cada archivo se mantenga bajo 200 líneas.
+- Si tengo cargada la skill components-build, síguela (as-child, polymorphism, design-tokens).
+
+Al terminar dime: qué componentes de Cult UI instalaste (lista con comandos), qué archivos creaste, y un screenshot mental de cómo quedó arriba del fold.</pre></div></div><div class="gcard"><div><div><h3>Arma un dashboard SaaS con Cult UI</h3><p>Para dashboards de producto post-login. Reemplaza [TIPO DE DASHBOARD] (ej. analytics de marketing, billing, monitoring) y [3-5 MÉTRICAS CLAVE] por las tuyas.</p></div><span class="gbtn">Copiar</span></div><div><pre>Voy a armar un dashboard SaaS para [TIPO DE DASHBOARD]. Las métricas clave que tiene que mostrar son: [3-5 MÉTRICAS CLAVE].
+
+Quiero que uses Cult UI para los elementos visuales y mantengas shadcn/Recharts para las primitivas estándar (tablas, charts básicos). Asume setup listo; si no, corre cult-ui-setup primero.
+
+Estructura del dashboard:
+
+1. Layout
+   - Sidebar fijo a la izquierda (250px) con logo arriba, navegación principal en el medio, perfil del usuario abajo.
+   - Si Cult UI tiene un sidebar animado o un command-menu tipo Linear/Raycast, úsalo para el quick-search en lugar de un input plano.
+   - Topbar fina arriba con breadcrumb, búsqueda, notificaciones (dynamic-island como dropdown de notifs) y avatar.
+
+2. Hero del dashboard
+   - Saludo personalizado + filtro de fecha.
+   - shader-lens-blur (si está disponible en el registry) como background sutil del wrapper de la sección para darle profundidad.
+
+3. Métricas hero
+   - Bento grid: la métrica principal grande (60% del ancho) + 3 secundarias en cards más pequeñas.
+   - Cada card con animated border o tilt 3D de Cult UI.
+   - Número grande, label arriba, sparkline o delta vs período anterior abajo.
+
+4. Charts
+   - Una fila con 2 charts grandes (un line chart y un bar chart usando Recharts o tu librería de charts estándar).
+   - Los wrappers de los charts sí van con cards de Cult UI.
+
+5. Tabla de actividad reciente
+   - Tabla estándar de shadcn con sorting y filtros.
+   - Row hover en color sutil; última columna con un botón ghost para &quot;Ver detalle&quot;.
+
+6. Toasts y notificaciones
+   - dynamic-island de Cult UI como sistema de toast (en lugar del sonner default).
+   - Conéctalo a un toast() helper para que todo el dashboard lo use.
+
+Reglas:
+
+- Usa solo componentes que sepas que existen. Si dudas, busca primero en cult-ui.com/docs.
+- Respeta mi paleta de globals.css. El dashboard debe leerse en dark mode si lo tengo configurado.
+- Mantén la performance: nada de animaciones pesadas en loops del listado. Si una animación se siente lenta, corre /fixing-motion-performance.
+- Cada sub-componente del dashboard en su propio archivo bajo components/dashboard/.
+
+Al terminar: lista de componentes Cult UI instalados (con comandos), archivos creados, y una recomendación de qué fué high impact vs polish.</pre></div></div><div class="gcard"><div><div><h3>Arma una sección iPhone-style con Cult UI</h3><p>Para landings de app móvil o features de producto donde quieres feel premium iOS. Usa dynamic-island, family-drawer y transparencias.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero una sección estilo iPhone/iOS premium en [RUTA, ej. app/features/page.tsx]. La idea es que el visitante sienta que estás mostrando una app real de iPhone, no una página web genérica.
+
+Componentes a usar (todos de Cult UI):
+
+1. dynamic-island como hero
+   - Posicionado en el top centro de la sección, como el de un iPhone real.
+   - Que se expanda con hover/click revelando un mensaje (ej. &quot;Tu pedido va en camino · 3 min&quot;).
+   - Si Cult UI tiene variants del componente con diferentes estados, muestra dos o tres en secuencia.
+
+2. family-drawer para modales
+   - Reemplaza cualquier modal/dialog de la sección con family-drawer. Es el modal stacked tipo iOS donde las cards se apilan con escala decreciente.
+   - Úsalo para detalles de feature: tocar un feature card abre el family-drawer con el detalle.
+
+3. Transparencias tipo iOS
+   - Las cards de la sección con backdrop-blur fuerte (10-20px) + border semi-transparente.
+   - Fondo de la sección con una imagen o mesh gradient sutil para que las transparencias se aprecien.
+
+4. Botones magnéticos
+   - Si Cult UI tiene magnetic-button o un button con efecto de atracción al hover, úsalo en los CTAs en lugar de los botones planos.
+
+5. Microinteracciones
+   - Cualquier scroll o tap dentro de la sección debe tener spring easing (no linear). Cult UI usa motion, configura los transitions con type: &quot;spring&quot;, stiffness y damping razonables.
+
+Reglas:
+
+- Solo usa componentes que confirmes que existen. Si no estás seguro del nombre exacto en el registry, busca en cult-ui.com/docs antes de proponerlo.
+- Los textos de los ejemplos (mensaje del dynamic-island, contenido del drawer, etc.) tienen que ser realistas para mi producto — léete app/page.tsx o el README para extraer el dominio antes de inventar.
+- Respeta mi paleta de globals.css.
+- Si tengo cargada components-build, sigue las reglas de design-tokens y polymorphism.
+
+Al terminar: lista de archivos, comandos de install, y un check de FPS estimado de las animaciones. Si bajan de 60 FPS estimados, corre /fixing-motion-performance sobre esta sección.</pre></div></div></div></div><div id="g-stack"><p>08 · Stack</p><h2>Lo que tu proyecto necesita antes de empezar</h2><div><p>Antes de pegar el prompt de setup, vale la pena saber qué stack asume Cult UI. No es complicado, pero hay dos detalles que rompen la instalación si no se cumplen: Tailwind tiene que ser v4 (no v3) y el paquete de animación se llama <code>motion</code>, no <code>framer-motion</code> (Framer Motion fue renombrado).</p><div class="gcard"><div class="table-wrap"><table><thead><tr><th>Dependencia</th><th>Versión</th><th>Nota</th></tr></thead><tbody><tr><td>Tailwind CSS</td><td>v4 (no v3)</td><td>Cult UI usa el plugin de PostCSS de v4. Si tienes v3, los componentes salen sin estilos o con clases que no resuelven.</td></tr><tr><td>motion</td><td>última (no framer-motion)</td><td>Framer Motion fue renombrado a motion. Si instalas framer-motion, los imports de motion/react de Cult UI se rompen.</td></tr><tr><td>shadcn CLI</td><td>@latest o @beta</td><td>El install directo con URL funciona con @latest. Para usar la sintaxis @cult-ui/&lt;name&gt; tras configurar el registry, necesitas @beta.</td></tr><tr><td>Next.js</td><td>14+ recomendado</td><td>Funciona también en Vite o Astro. Los ejemplos del repo asumen Next.js App Router, pero los componentes son agnósticos.</td></tr><tr><td>clsx + tailwind-merge</td><td>última</td><td>Para el helper cn() que combina clases con conflict resolution. El init de shadcn ya los deja instalados.</td></tr></tbody></table></div></div><p>Si no estás seguro de qué versión tienes, no pasa nada — el prompt de setup empieza con un diagnóstico que te dice exactamente qué te falta antes de tocar archivos.</p></div></div><div id="g-errores"><p>09 · Cuando algo no jala</p><h2>Cinco errores típicos con su causa y su fix exacto</h2><div><p>La mayoría de problemas en el primer setup caen en una de estas cinco categorías. Las marco con síntoma, causa real y fix concreto. Si te aparece otro síntoma que no está aquí, lo más probable es que sea del proyecto base — no de Cult UI.</p><ol><li><span class="gpill">01</span><div><p>El comando npx shadcn add ... falla con &#x27;project not initialized&#x27;.</p><p><strong>Causa:</strong> Tu proyecto no tiene components.json en la raíz — shadcn no está inicializado.</p><p><strong>Fix:</strong> Corre primero npx shadcn@latest init (o pnpm dlx shadcn@latest init). Cuando termina, components.json queda creado y el add vuelve a funcionar.</p></div></li><li><span class="gpill">02</span><div><p>El componente se copia bien pero no anima — sale plano sin movimiento.</p><p><strong>Causa:</strong> Te falta el paquete motion. Cult UI usa motion (el rename de Framer Motion), no framer-motion.</p><p><strong>Fix:</strong> Instala motion con pnpm add motion. Si por error tenías framer-motion, desinstálalo. Los imports de motion/react vienen del paquete motion nuevo.</p></div></li><li><span class="gpill">03</span><div><p>Las clases de Tailwind no aplican o salen estilos raros.</p><p><strong>Causa:</strong> Tu proyecto está en Tailwind v3. Cult UI requiere Tailwind v4 con su plugin de PostCSS.</p><p><strong>Fix:</strong> Migra a Tailwind v4. La guía oficial trae un upgrade tool que automatiza casi todo el cambio. Claude Code te lo puede correr con un prompt.</p></div></li><li><span class="gpill">04</span><div><p>El comando con sintaxis @cult-ui/&lt;name&gt; no resuelve.</p><p><strong>Causa:</strong> Estás usando shadcn@latest, pero esa sintaxis depende del registry resolver que solo está disponible en la versión beta del CLI.</p><p><strong>Fix:</strong> Cambia el comando a npx shadcn@beta add @cult-ui/cosmic-button, o usa el formato directo con URL: npx shadcn@latest add https://cult-ui.com/r/cosmic-button.json (este siempre funciona).</p></div></li><li><span class="gpill">05</span><div><p>Claude Code sigue armando UI con look genérico, ignora Cult UI.</p><p><strong>Causa:</strong> No descargaste las skills oficiales (.claude/skills/components-build/ + .claude/skills/fixing-motion-performance/) al proyecto. Sin ellas, Claude no tiene el spec y vuelve a sus defaults.</p><p><strong>Fix:</strong> Corre el prompt cult-ui-skills-download de la sección 05. Clona las dos carpetas del repo a tu proyecto. Desde ese momento Claude las lee solo cada vez que arrancas Claude Code.</p></div></li></ol><p><strong>Pro tip:</strong> cuando una animación de Cult UI se ve trabada en mobile, no asumas que el componente está mal — corre la skill fixing-motion-performance sobre ese archivo y déjala diagnosticar. Casi siempre es algo del wrapper o del padre, no del componente.</p><div class="gcard"><div><div><h3>Audit de performance con la skill fixing-motion-performance</h3><p>Cuando una sección con animaciones de Cult UI se siente lenta o se ve choppy en mobile. Corre la skill oficial fixing-motion-performance sobre el archivo o carpeta sospechosa.</p></div><span class="gbtn">Copiar</span></div><div><pre>Una o varias animaciones de [RUTA DEL ARCHIVO O CARPETA SOSPECHOSA, ej. components/landing/hero.tsx o components/dashboard/] se sienten lentas, chocan en mobile o me caen el FPS al hacer scroll.
+
+Tu tarea: corre la skill oficial fixing-motion-performance que tengo cargada en .claude/skills/fixing-motion-performance/ (de Cult UI). Si todavía no la tengo, descárgala primero usando el prompt cult-ui-skills-download.
+
+Si la skill está disponible como slash command, úsalo: /fixing-motion-performance [RUTA]
+
+Si no, ejecuta el audit manual siguiendo el SKILL.md de la skill. Las nueve categorías de reglas que cubre son:
+
+1. No intercales layout reads y writes en el mismo frame (forced reflow).
+2. Mide una vez al inicio del frame, escribe después.
+3. Anima solo via transform o opacity — nunca width, height, top, left.
+4. Usa will-change con criterio (sí en hover continuos, no en componentes que cambian todo el tiempo).
+5. Las imágenes pesadas no se animan: layout, sí; transform, ok.
+6. Los gradients/shaders de Cult UI deben ir en sus propios layers (transform: translateZ(0) o isolation: isolate).
+7. Sustituye setInterval con requestAnimationFrame.
+8. Throttle/debounce los handlers de scroll y resize.
+9. En motion, prefiere layout=false y type: &quot;tween&quot; para listas largas; spring solo para elementos hero.
+
+Producto entregable:
+
+1. Reporte por archivo
+   - Por cada animación encontrada, lista en una tabla: archivo, línea, problema detectado, regla violada (de las 9), severidad (high/med/low).
+
+2. Fixes propuestos
+   - Para cada problema high y med, propón el diff exacto que lo arregla.
+   - Para cada fix, explica el por qué en una frase.
+
+3. Validación
+   - Después de aplicar los fixes (con mi confirmación), corre el build y dime si compila limpio.
+   - Si tengo Lighthouse o Web Vitals configurados, ejecuta un check y comparte la diferencia antes/después.
+
+Solo aplica los fixes high y med automáticamente. Los low listalos pero deja que yo decida.</pre></div></div></div></div><div id="g-checklist"><p>10 · Checklist final</p><h2>Doce ítems para cerrar el setup limpio</h2><div><p>Antes de cantar victoria, repasa esta lista. Tres columnas: lo que confirmas antes de empezar, lo que toca durante el setup, y lo que verificas después del primer commit. Si los doce están marcados, tu proyecto va a empezar a sacar UI premium sin que tengas que pelearte con Claude.</p><div class="ggrid"><div class="gcard"><p>Stack</p><p>Antes de empezar</p><ul><li><span>☐</span><span>Proyecto Next.js (o Vite/Astro) con Tailwind v4 confirmado.</span></li><li><span>☐</span><span>shadcn/ui inicializado · components.json en la raíz.</span></li><li><span>☐</span><span>Paquete motion instalado (no framer-motion).</span></li><li><span>☐</span><span>Branding definido (colores, fuente, radius) en globals.css.</span></li></ul></div><div class="gcard"><p>Construcción</p><p>Durante el setup</p><ul><li><span>☐</span><span>Primer componente agregado con el comando de cult-ui.com/r/.</span></li><li><span>☐</span><span>Registry @cult-ui configurado en components.json si vas a agregar varios.</span></li><li><span>☐</span><span>Skills oficiales clonadas a .claude/skills/components-build/ y .claude/skills/fixing-motion-performance/.</span></li><li><span>☐</span><span>Claude Code reabierto después de copiar las skills (las lee al arranque).</span></li><li><span>☐</span><span>Prompts copy-paste corriendo para agregar / auditar / reemplazar genéricos.</span></li></ul></div><div class="gcard"><p>Validación</p><p>Después del primer commit</p><ul><li><span>☐</span><span>Audit de performance con /fixing-motion-performance en las páginas con más animación.</span></li><li><span>☐</span><span>Verificaste que Claude esté siguiendo el spec components-build en componentes nuevos.</span></li><li><span>☐</span><span>Compartiste en el comentario del reel qué componente usaste para ayudar a la comunidad.</span></li></ul></div></div><div class="gcard"><p>Para cerrar</p><p>Cult UI no es un atajo para no aprender diseño — es la diferencia entre pelearte con Claude por una landing que se ve como plantilla y dejarlo trabajar sobre una base que ya tiene personalidad. Una vez que instalas las skills oficiales en <code>.claude/skills/</code>, el costo de seguir el spec es cero: Claude lo hace solo. Comparte en el comentario del reel qué componente usaste y en qué página — eso ayuda a la comunidad a ver casos reales más allá del demo del repo.</p><div><a class="gcard" href="https://github.com/nolly-studio/cult-ui" target="_blank" rel="noopener">Ver el repo</a><a class="gcard" href="https://cult-ui.com" target="_blank" rel="noopener">Catálogo con preview · cult-ui.com</a></div></div></div></div></div><div><div><p>Guía de la comunidad</p><p>Cult UI es la forma más rápida de pasar de un proyecto que se ve como plantilla a uno que se siente premium. La librería es de <a href="https://github.com/nolly-studio" target="_blank" rel="noopener">nolly-studio</a> y el spec de components-build lo co-firmaron <a href="https://github.com/haydenbleasel" target="_blank" rel="noopener">Hayden Bleasel</a> y <a href="https://ui.shadcn.com" target="_blank" rel="noopener">shadcn</a> — por eso las skills oficiales se sienten tan afinadas. La comunidad <a href="#/boveda">tododeia</a> tradujo y simplificó esta guía para que cualquiera que use Claude Code o Cursor pueda dejar de pelearse con el diseño y empezar a publicar páginas que se ven como las de Silicon Valley.</p></div><div class="ggrid"><a class="gcard" href="https://github.com/nolly-studio/cult-ui" target="_blank" rel="noopener"><div><p>Ver el repo · nolly-studio/cult-ui</p><p>MIT · ~4.2K stars · 75 componentes + 2 skills oficiales</p></div></a><a class="gcard" href="https://cult-ui.com" target="_blank" rel="noopener"><div><p>Demo en vivo · cult-ui.com</p><p>Catálogo con preview de cada componente y su install command</p></div></a></div><div class="ggrid"><a class="gcard" href="#/g/guia-skills-claude"><div><p>La guía de Skills</p><p>Entiende qué son las skills que Cult UI trae preinstaladas</p></div></a><a class="gcard" href="#/g/40-skills-claude"><div><p>40 Claude Skills</p><p>Más skills en español listas para copiar a .claude/skills/</p></div></a><a class="gcard" href="#/g/ecosistema-de-agentes"><div><p>Ecosistema de Agentes</p><p>Cuando una skill ya no alcanza y necesitas orquestar agentes</p></div></a></div><p>Cult UI es un proyecto open-source bajo licencia MIT de nolly-studio. Esta página es una traducción al español y reescritura para uso comunitario; los nombres de componentes, comandos de install y contenido de las skills oficiales son propiedad de los autores originales. Este sitio no está afiliado a nolly-studio, Vercel, shadcn ni Anthropic.</p></div></div>
+</article>

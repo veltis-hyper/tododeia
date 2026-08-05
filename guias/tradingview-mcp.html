@@ -1,0 +1,129 @@
+<article class="chapter guia" data-slug="tradingview-mcp">
+<div><div><h1>TradingView + Claude — Fin del Análisis a Ojo</h1><p>Conecta Claude directo a TradingView con el MCP de @Tradesdontlie. Claude ve tus gráficas en tiempo real, dibuja niveles, pone alertas y te arma reportes del mercado — con prompts simples. En 5 minutos lo echas a andar.</p></div><div class="gcard"><div><div><p>Proyecto open source de la comunidad</p><p>MCP local — no manda data a nadie. Corre contra tu app de TradingView Desktop.</p><p>Creado por <a href="https://github.com/tradesdontlie" target="_blank" rel="noopener">@Tradesdontlie</a> — dale una estrella al repo si te sirve.</p></div><div><a href="https://github.com/tradesdontlie/tradingview-mcp" target="_blank" rel="noopener">Ver en GitHub</a></div></div></div><div><div id="g-que-es"><p>01 contexto</p><h2>Se acabó el análisis a ojo</h2><div><p>Hasta ayer, si querías que una IA te ayudara con tus gráficas de trading, solo podías aventarle capturas de pantalla y rezar a ver qué salía. La IA veía una imagen plana — pixeles — no tu chart vivo. <strong>Eso se acabó.</strong></p><p>Alguien acaba de crear una herramienta que conecta Claude directo a TradingView. Se llama <strong>TradingView MCP</strong> y es open source. La hizo <strong>@Tradesdontlie</strong> y te deja hacer una cosa muy simple: darle a Claude los mismos ojos que tú tienes frente a la pantalla.</p><p>Claude ya ve tus gráficas en tiempo real. Los precios exactos. Las velas. Los indicadores que tienes puestos. Lo que está pasando en este segundo — <strong>al mismo tiempo que tú lo estás viendo</strong>.</p><div class="gcard"><p>Ejemplo real — lo que ya puedes pedirle:</p><ul><li><em>&quot;Analiza Bitcoin en 4 horas y dime qué está pasando.&quot;</em> Pum, te explica momentum, niveles y qué esperar.</li><li><em>&quot;Dibújame los soportes y resistencias en la gráfica.&quot;</em> Los dibuja solito sobre tu chart. Literal.</li><li><em>&quot;Ponme alertas en toda mi watchlist.&quot;</em> Te las pone una por una.</li><li><em>&quot;Dame un reporte de qué pasó en el mercado mientras dormía.&quot;</em> Te lo arma con lo que haya sucedido en cada símbolo.</li></ul></div><p>Literalmente le acabas de dar a Claude <strong>los ojos de un trader profesional</strong>. Y se echa a andar en 5 minutos.</p><div class="gcard"><p>Para quién es esto</p><div class="ggrid"><div><p>Traders principiantes</p><p>Claude te explica cada chart en español simple — ya no necesitas entender todos los indicadores de golpe.</p></div><div><p>Traders intermedios</p><p>Delega el trabajo aburrido: escanear watchlists, poner alertas, armar reportes de fin de día.</p></div><div><p>Traders activos</p><p>Backtests, Pine Script, monitoreo en tiempo real. Claude hace el scrapping manual por ti.</p></div></div></div><div><strong>Importante:</strong> este MCP lee tu app de TradingView <em>local</em> — no se conecta a los servidores de TradingView. Todo corre en tu compu. Necesitas una suscripción activa porque usa la app, pero no se sale por internet. Tu data nunca sale de tu máquina.</div></div></div><div id="g-requisitos"><p>02 requisitos</p><h2>Lo que necesitas antes de empezar</h2><div><p>Son 4 cosas. La mayoría ya las tienes. Si algo te falta, no te preocupes — en el paso 3 le pides a Claude que te lo instale y él lo hace. Aquí solo te digo qué revisar.</p><div><div><p>1. Claude Code</p><p>Este flujo es con <strong>Claude Code</strong> — el CLI oficial que corre en tu terminal. Claude Code ya viene con soporte nativo para MCPs. Descárgalo desde <a href="https://claude.ai/download" target="_blank" rel="noopener">claude.ai/download</a>. Verifica con el comando de abajo.</p></div><div><p>2. TradingView Desktop (con suscripción activa)</p><p>Tiene que ser la <strong>app de escritorio</strong> — no la versión web del navegador. Descárgala gratis desde <a href="https://www.tradingview.com/desktop/" target="_blank" rel="noopener">tradingview.com/desktop</a>. Y sí, necesitas tu suscripción de TradingView activa para que el app funcione — cualquier plan sirve (hasta el gratis, aunque recomiendo Essential o Plus por los indicadores).</p></div><div><p>3. Node.js 18 o mayor</p><p>El servidor MCP está hecho en JavaScript, así que necesita Node.js. Es un programa que ejecuta código — se instala una vez y ya. Descárgalo de <a href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a> (la versión LTS). Si ya tienes otra versión, verifica que sea 18 o mayor.</p></div><div><p>4. Git</p><p>Git sirve para descargar el código del MCP desde GitHub. En macOS normalmente ya viene instalado. En Windows lo bajas de <a href="https://git-scm.com/downloads" target="_blank" rel="noopener">git-scm.com</a>. Verifica con el comando de abajo.</p></div></div><p>Comandos para verificar — copia, pega y mira qué te responde tu terminal</p><p>Abre la <strong>terminal</strong> (en Mac: buscar &quot;Terminal&quot; en Spotlight; en Windows: buscar &quot;PowerShell&quot;). Pega uno por uno y mira el resultado. Si alguno te dice <em>&quot;command not found&quot;</em>, esa pieza te falta.</p><div class="ggrid"><div class="gcard"><p>Verificar Claude Code</p><div><code>claude --version</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>Verificar Node.js (debe ser 18+)</p><div><code>node --version</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>Verificar Git</p><div><code>git --version</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>Verificar npm (viene con Node)</p><div><code>npm --version</code></div><span class="gbtn">Copiar comando</span></div></div><div><strong>Tip:</strong> si algún comando falla, no instales nada a mano. En el paso 3 le pides a Claude que te lo instale como parte del prompt — él lo hace mejor que tú.</div></div></div><div id="g-instalacion"><p>03 instalación</p><h2>Un prompt y Claude te instala todo</h2><div><p>Aquí está el truco — <strong>no vas a instalar nada a mano</strong>. Le pegas el prompt maestro de abajo a Claude Code en una sesión nueva y él hace todo: clona el repo, instala las dependencias, edita tu archivo de configuración de MCPs y te deja listo.</p><p>Si Claude te pide permiso para correr un comando, dile <strong>sí</strong>. Si te pregunta entre varias opciones, dale la que tenga más sentido para tu sistema operativo. Todo esto tarda entre 3 y 5 minutos.</p><div><div class="gcard"><div><div><h3>Prompt maestro — instala TradingView MCP</h3><p>Copia completo, pégalo en Claude Code, deja que haga su magia. Si te pide permisos, dile que sí.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero conectar mi app de TradingView a Claude Code usando el MCP de @Tradesdontlie. Repo oficial: https://github.com/tradesdontlie/tradingview-mcp
+
+Por favor haz TODO esto paso por paso, reportándome cada etapa. No avances al siguiente paso si uno falla — explícame el error y cómo resolverlo.
+
+1. VERIFICAR PRERREQUISITOS:
+   - Corre &quot;node --version&quot; — tengo que tener Node.js 18 o mayor. Si me falta o es muy viejo, dime exactamente cómo instalarlo para mi sistema operativo.
+   - Corre &quot;git --version&quot; — si no tengo Git, dime cómo instalarlo.
+   - Pregúntame si ya tengo TradingView Desktop instalado. Si no, mándame el link oficial: https://www.tradingview.com/desktop/
+
+2. CLONAR EL REPO:
+   Clona el repositorio en mi carpeta home:
+   git clone https://github.com/tradesdontlie/tradingview-mcp.git ~/tradingview-mcp
+
+3. INSTALAR DEPENDENCIAS:
+   Entra a la carpeta y corre la instalación:
+   cd ~/tradingview-mcp &amp;&amp; npm install
+
+4. LEER EL README:
+   Lee el README.md del repo para identificar:
+   - El comando exacto para iniciar el servidor MCP (puede ser &quot;node src/server.js&quot; o algo distinto según la versión).
+   - El flag de debug para lanzar TradingView (suele ser --remote-debugging-port=9222).
+   - Si hay scripts de lanzamiento en la carpeta &quot;scripts/&quot; que yo deba usar directo.
+
+5. CONFIGURAR EL MCP EN CLAUDE CODE:
+   Edita mi archivo de configuración de MCPs. Ubicación según mi OS:
+   - macOS / Linux: ~/.claude/.mcp.json
+   - Windows: %USERPROFILE%\.claude\.mcp.json
+
+   Si el archivo no existe, créalo. Si ya existe con otros MCPs, NO los sobrescribas — solo agrega el de tradingview dentro de &quot;mcpServers&quot;. El bloque a insertar (ajusta la ruta absoluta con mi carpeta real):
+
+   {
+     &quot;mcpServers&quot;: {
+       &quot;tradingview&quot;: {
+         &quot;command&quot;: &quot;node&quot;,
+         &quot;args&quot;: [&quot;/ruta/absoluta/a/tradingview-mcp/src/server.js&quot;]
+       }
+     }
+   }
+
+6. LANZAR TRADINGVIEW CON DEBUG PORT:
+   Explícame cómo cerrar completamente TradingView y volverlo a abrir con el flag de debug. Dame el comando exacto para mi sistema operativo. Si el repo incluye un script en scripts/ (por ejemplo launch_tv_debug_mac.sh), úsalo y dime cómo correrlo.
+
+7. DECIRME QUÉ HAGO AHORA:
+   Resume en 3 pasos finales lo que me toca hacer: (a) reiniciar Claude Code, (b) abrir una conversación nueva, (c) correr el primer prompt de verificación. Dame el prompt exacto para el paso (c).
+
+Objetivo final: que cuando abra Claude Code y escriba &quot;Corre tv_health_check&quot;, me responda cdp_connected: true. Ahí sabemos que jaló.</pre></div></div></div><div><p>Lo que no puede fallar: el flag de debug de TradingView</p><p>El MCP habla con TradingView a través de un &quot;puerto de debug&quot; (9222). Si abres TradingView normal, ese puerto no está activo y el MCP no se conecta. Tienes que <strong>cerrar TradingView completamente</strong> (no solo la ventana — el proceso) y abrirlo con el flag. Claude te da el comando exacto en el paso 6.</p></div><div><strong>¿Por qué un prompt en vez de darte los comandos?</strong> Porque cada versión del MCP cambia detalles — nombres de archivos, rutas, comandos. Claude lee el README oficial cuando ejecuta el prompt, así que siempre instala lo más reciente y configura bien tu sistema. Tú no tienes que perseguir documentación.</div><div><p>Cómo se ve el bloque final en tu archivo de MCPs</p><p>Para que sepas qué estás aprobando, así queda tu <code>~/.claude/.mcp.json</code> después de que Claude lo edite (reemplaza <em>TU_USUARIO</em> con tu nombre de usuario real):</p><div><pre>{
+  &quot;mcpServers&quot;: {
+    &quot;tradingview&quot;: {
+      &quot;command&quot;: &quot;node&quot;,
+      &quot;args&quot;: [&quot;/Users/TU_USUARIO/tradingview-mcp/src/server.js&quot;]
+    }
+  }
+}</pre></div></div></div></div><div id="g-primeros-pasos"><p>04 verificación</p><h2>Verifica que Claude ya ve tu TradingView</h2><div><p>Antes de pedirle análisis en serio, hay que confirmar que el MCP está conectado. Es un chequeo de 30 segundos — te ahorra pelear con la herramienta creyendo que falla cuando en realidad solo faltó un paso.</p><div><div><div>1</div><div><p>Abre TradingView con el flag de debug</p><p>Si saliste del paso de instalación y ya lo abriste con el flag, déjalo corriendo y pasa al siguiente punto. Si no, Claude te dio el comando exacto para tu sistema — úsalo. TradingView debe verse igual que siempre, solo que ahora &quot;escucha&quot; en el puerto 9222.</p></div></div><div><div>2</div><div><p>Abre una conversación nueva en Claude Code</p><p>Si Claude Code estaba abierto desde antes de instalar el MCP, ciérralo por completo y ábrelo de nuevo. Claude lee los MCPs al arrancar — si lo dejas con la sesión vieja, no los va a ver. En la terminal corre <code>claude</code> para empezar una sesión limpia.</p></div></div><div><div>3</div><div><p>Pégale este prompt de diagnóstico</p><p>Este prompt le pide a Claude que corra la herramienta <code>tv_health_check</code> del MCP. Si todo jaló, vas a ver <code>cdp_connected: true</code>. Eso significa &quot;sí te veo&quot;.</p></div></div></div><div><div class="gcard"><div><div><h3>Prompt — diagnóstico inicial</h3><p>Claude corre la herramienta de health check del MCP y te dice si la conexión con TradingView está viva.</p></div><span class="gbtn">Copiar</span></div><div><pre>Corre la herramienta tv_health_check del MCP de tradingview y dime exactamente qué te respondió.
+
+Si la respuesta trae cdp_connected: true, dime &quot;todo jaló&quot; y menciona qué símbolo y temporalidad tengo abiertos ahora mismo en mi TradingView — así confirmo que realmente me estás viendo.
+
+Si cdp_connected es false o te da error, ayúdame a diagnosticar:
+1. ¿TradingView está corriendo con el flag --remote-debugging-port=9222? Si no sabes, pregúntame.
+2. ¿El MCP de tradingview aparece listado entre los MCPs conectados de esta sesión?
+3. ¿Mi archivo ~/.claude/.mcp.json tiene el bloque bien formado? Léelo y revisa.
+
+No intentes arreglarlo todo de golpe — dame primero el diagnóstico y luego yo te digo qué arreglamos.</pre></div></div></div><div><p>Cómo leer la respuesta</p><ul><li><strong>cdp_connected: true</strong> — la conexión funciona. Claude ya ve tu TradingView. Brinca a la siguiente sección.</li><li><strong>cdp_connected: false</strong> — TradingView no está escuchando en el puerto de debug. Casi siempre es porque está abierto sin el flag. Ciérralo por completo y ábrelo con el comando correcto.</li><li><strong>&quot;tool not found&quot;</strong> — Claude Code no vio el MCP. Cierra Claude Code por completo, ábrelo de nuevo, y pregúntale: <em>&quot;¿qué MCPs están conectados en esta sesión?&quot;</em></li></ul></div><div><strong>Antes de cualquier sesión de trading:</strong> abre primero TradingView con el flag, luego Claude Code. Ese es el orden. Si ya tienes el hábito, te vuelve automático.</div></div></div><div id="g-casos-de-uso"><p>05 casos de uso</p><h2>Todo lo que le puedes pedir ahora</h2><div><p>Seis casos que se repiten en la comunidad. Cada uno es algo que antes te tomaba horas — ahora es un prompt. Cópialos como están o úsalos de inspiración para armar el tuyo.</p><div class="ggrid"><div class="gcard"><p>Caso 1 · Análisis en vivo</p><p>Entender qué está pasando en cualquier chart</p><p>Le dices el símbolo y la temporalidad, y Claude te arma el contexto — momentum, niveles clave, volumen, qué esperar. Sirve para cualquier mercado: cripto, acciones, forex, futuros.</p><p>&quot;Analiza BTC en 4 horas y dime si conviene entrar ahora o esperar el retroceso.&quot;</p></div><div class="gcard"><p>Caso 2 · Dibujar sobre la gráfica</p><p>Soportes, resistencias y trendlines, automáticos</p><p>Claude no solo identifica los niveles — los dibuja directo en tu chart de TradingView. Los ves ahí, al mismo tiempo que tú. Y si quieres, te los guarda como layout para usarlos después.</p><p>&quot;Dibújame los 3 soportes y 3 resistencias más claros de las últimas 200 velas.&quot;</p></div><div class="gcard"><p>Caso 3 · Alertas en tu watchlist</p><p>Una por una, sin hacerlas a mano</p><p>Tienes 30 símbolos en tu watchlist. Configurar alertas a cada uno te toma media hora. Claude lo hace en 30 segundos — le dices la lógica y él las pone.</p><p>&quot;Ponme alerta en todos los símbolos de mi watchlist cuando toquen el siguiente soporte clave.&quot;</p></div><div class="gcard"><p>Caso 4 · Reporte de mercado</p><p>Qué pasó mientras no estabas</p><p>Duermes, trabajas, vives — y el mercado no. Claude lee tu watchlist al momento y te resume qué hizo cada símbolo desde la última vez que lo revisaste. Ideal para abrir el día informado.</p><p>&quot;Dame un reporte de qué pasó en mi watchlist en las últimas 12 horas.&quot;</p></div><div class="gcard"><p>Caso 5 · Pine Script a la medida</p><p>Indicadores personalizados sin saber programar</p><p>Describe el indicador que quieres — RSI con volumen, MACD con divergencias, lo que sea — y Claude escribe el Pine Script, lo compila y te dice si hay errores. Si no, lo agrega a tu chart.</p><p>&quot;Escríbeme un Pine Script que marque divergencias de RSI con volumen creciente.&quot;</p></div><div class="gcard"><p>Caso 6 · Backtesting rápido</p><p>Prueba estrategias sin salir del chart</p><p>Explícale tu estrategia en lenguaje natural y Claude la backtesta bar-por-bar sobre los datos históricos. Te entrega métricas reales: win rate, drawdown, profit factor.</p><p>&quot;Backtesta: entrar cuando el precio toca la EMA 50 con RSI bajo 40, salir cuando rompe la EMA 21.&quot;</p></div></div><div class="gcard"><p>Qué hace la diferencia contra &quot;subirle una captura&quot;</p><p>Una captura es una foto muerta. Claude con TradingView MCP lee los datos reales — los OHLCV exactos, los valores de cada indicador, el símbolo, la temporalidad. Por eso el análisis es 10x más preciso: no está adivinando de pixeles, está leyendo tu chart como lo leería un trader que tiene acceso a tu pantalla.</p></div></div></div><div id="g-prompts"><p>06 prompts</p><h2>Prompts listos para copiar</h2><div><p>Seis prompts con corchetes <code>[así]</code> que cambias por tus datos. Pégalos en Claude Code cuando ya tengas TradingView abierto con el flag de debug.</p><div class="ggrid"><div class="gcard"><div><div><h3>1. Análisis rápido de un símbolo</h3><p>Para abrir un chart y en 30 segundos tener contexto útil.</p></div><span class="gbtn">Copiar</span></div><div><pre>Cambia el chart actual a [símbolo, ej. BINANCE:BTCUSDT] en temporalidad de [timeframe, ej. 4h].
+
+Una vez cargado, dame un análisis de lo que estás viendo:
+- Tendencia actual (alcista, bajista, lateral) y qué tan fuerte es.
+- Los 2 soportes y 2 resistencias más claros de las últimas 200 velas.
+- Si hay alguna estructura clave (rompimiento, retest, consolidación, divergencia).
+- El valor actual del RSI y si hay sobrecompra o sobreventa.
+- Tu conclusión en 3 renglones: qué está pasando, qué sería lo siguiente, qué NO hacer ahora.
+
+Todo en español, directo, sin jerga innecesaria.</pre></div></div><div class="gcard"><div><div><h3>2. Dibujar niveles clave sobre el chart</h3><p>Que Claude trace soportes y resistencias directo sobre tu gráfica, con etiquetas.</p></div><span class="gbtn">Copiar</span></div><div><pre>En el chart que tengo abierto ahora en TradingView, dibuja:
+
+- 3 líneas horizontales de soporte, en los niveles más respetados de las últimas 300 velas.
+- 3 líneas horizontales de resistencia, mismo criterio.
+- Una trendline si hay una clara (alcista o bajista).
+
+Para cada línea agrega una etiqueta corta que diga &quot;S1 - [precio]&quot; o &quot;R1 - [precio]&quot; según corresponda. Usa color verde para soportes y rojo para resistencias. Si ya había dibujos en la gráfica, déjalos como están — solo agrega los tuyos encima.
+
+Al terminar dime cuántas líneas pintaste y en qué precios quedaron.</pre></div></div><div class="gcard"><div><div><h3>3. Alertas automáticas en toda tu watchlist</h3><p>Configura alertas de un golpe sin hacerlas a mano símbolo por símbolo.</p></div><span class="gbtn">Copiar</span></div><div><pre>Lee la watchlist que tengo activa en TradingView. Para cada símbolo en esa lista:
+
+1. Identifica el soporte clave más cercano debajo del precio actual.
+2. Identifica la resistencia clave más cercana arriba del precio actual.
+3. Crea dos alertas:
+   - Una que se dispare si el precio toca o cruza ese soporte.
+   - Otra que se dispare si el precio toca o cruza esa resistencia.
+
+Usa un nombre claro en cada alerta: &quot;[símbolo] - soporte [precio]&quot; y &quot;[símbolo] - resistencia [precio]&quot;. Configúralas para que me lleguen por notificación push de TradingView.
+
+Antes de crearlas en serio, muéstrame la lista completa de alertas que vas a poner y pídeme confirmación. Si le doy ok, las creas todas.</pre></div></div><div class="gcard"><div><div><h3>4. Reporte de mercado — qué pasó mientras no estabas</h3><p>Ideal para empezar el día o regresar después de horas fuera.</p></div><span class="gbtn">Copiar</span></div><div><pre>Revisa cada símbolo de mi watchlist en TradingView y dame un reporte de qué pasó en las últimas [N, ej. 12] horas.
+
+Para cada símbolo quiero:
+- Cambio porcentual (desde hace [N] horas hasta ahora).
+- Rango del periodo: máximo y mínimo.
+- Si tocó algún soporte o resistencia importante (dime cuál y si lo respetó o lo rompió).
+- Volumen relativo comparado con el promedio (alto, normal, bajo).
+
+Al final del reporte, dame un resumen de 3 puntos:
+- Los 2 símbolos que más se movieron (y en qué dirección).
+- Un símbolo que esté en zona de decisión (a punto de romper o rebotar).
+- Una alerta general del mercado si detectaste algo relevante (un selloff, un rally, etc.).</pre></div></div><div class="gcard"><div><div><h3>5. Backtest de estrategia en lenguaje natural</h3><p>Describe la regla y Claude la simula contra datos históricos.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero backtestar esta estrategia en [símbolo, ej. BINANCE:ETHUSDT] en temporalidad de [timeframe, ej. 1h]:
+
+REGLAS:
+- Entrada en largo: cuando el precio cruza por arriba de la EMA 50 Y el RSI está debajo de 40.
+- Salida: cuando el precio cruza por debajo de la EMA 21 O cuando el RSI supera 70.
+- Stop loss: 1% debajo del precio de entrada.
+- Sin apalancamiento. Posición fija de [$X, ej. $1000].
+
+Periodo a testear: del [fecha inicio, ej. enero 2025] al día de hoy.
+
+Ejecuta el backtest bar por bar usando los datos reales del chart. Al terminar dame:
+- Número total de operaciones.
+- Win rate (% de operaciones ganadoras).
+- Profit factor.
+- Máximo drawdown.
+- Ganancia neta total.
+
+Si la estrategia tiene un problema claro (por ejemplo, se pierde en lateral), dímelo al final.</pre></div></div><div class="gcard"><div><div><h3>6. Pine Script personalizado</h3><p>Indicador a la medida, escrito y compilado por Claude.</p></div><span class="gbtn">Copiar</span></div><div><pre>Escríbeme un indicador en Pine Script v5 que haga lo siguiente:
+
+[DESCRIPCIÓN EN LENGUAJE NATURAL — ej: &quot;Marque en verde cada vez que haya divergencia alcista entre el RSI y el precio, y en rojo cuando haya divergencia bajista. Además quiero una línea horizontal que marque el RSI promedio de las últimas 100 velas.&quot;]
+
+Cuando lo tengas:
+1. Compílalo y verifica que no haya errores.
+2. Si hay errores, corrígelos automáticamente y vuelve a compilar.
+3. Una vez que compile limpio, agrégalo al chart que tengo abierto.
+4. Explícame en 3 renglones qué está haciendo cada parte del código — quiero aprender, no solo tenerlo.
+
+Si algo de la descripción es ambiguo o técnicamente imposible, pregúntame antes de escribir código.</pre></div></div></div><div><strong>Tip de productividad:</strong> guarda estos prompts en un archivo de texto o en un Skill de Claude Code. Así los tienes a un comando de distancia cada día. Los traders que le sacan jugo al MCP son los que ya no los copian — los lanzan directo con un shortcut.</div></div></div></div><div><div class="gcard"><p>Esta herramienta no te vuelve millonario por sí sola</p><ul><li><strong>Claude es un asistente — no un oráculo.</strong> El análisis técnico no predice el futuro. Úsalo para ahorrar tiempo, no para delegar tus decisiones.</li><li><strong>Verifica siempre.</strong> Claude puede confundirse leyendo indicadores o malinterpretar una estructura. Un ojo humano encima no está de más.</li><li><strong>Opera con tu propio plan.</strong> No entres a una operación porque Claude &quot;dijo&quot;. Entra porque cumple tu sistema, tus reglas y tu gestión de riesgo.</li><li><strong>Este MCP corre local.</strong> No envía tu data a servidores externos, pero tampoco es un producto oficial de TradingView. Úsalo respetando los términos de servicio de tu plan.</li></ul></div><div class="gcard"><p>Qué hacer si algo falla</p><div class="ggrid"><div><code>cdp_connected: false</code><p>TradingView está abierto sin el flag de debug. Ciérralo por completo y vuelve a lanzarlo con <code>--remote-debugging-port=9222</code>.</p></div><div><code>MCP no aparece</code><p>Cierra Claude Code por completo y vuelve a abrirlo. Pídele: &quot;Lee mi .mcp.json y valida que el bloque tradingview esté bien formado.&quot;</p></div><div><code>Socket hang up</code><p>El servidor MCP no alcanza TradingView. Revisa que ningún firewall esté bloqueando el puerto 9222 en localhost.</p></div></div></div><div><p>Proyecto open source de la comunidad</p><p>TradingView MCP es un proyecto open source creado por <a href="https://github.com/tradesdontlie" target="_blank" rel="noopener">@Tradesdontlie </a>. Si te está sirviendo, déjale una estrella al repo y menciónalo donde se pueda — así más gente lo encuentra.</p></div><div class="ggrid"><a class="gcard" href="https://github.com/tradesdontlie/tradingview-mcp" target="_blank" rel="noopener"><div><p>Código fuente</p><p>Repo oficial en GitHub</p></div></a><a class="gcard" href="https://github.com/tradesdontlie/tradingview-mcp/issues" target="_blank" rel="noopener"><div><p>Reportar problemas</p><p>Issues del repo</p></div></a><a class="gcard" href="https://github.com/tradesdontlie/tradingview-mcp#readme" target="_blank" rel="noopener"><div><p>Documentación</p><p>README completo</p></div></a></div><div class="gcard"><p>¿Algo se atora?</p><p>Pregúntale directo a Claude Code — él puede leer los logs del MCP, inspeccionar tu configuración y diagnosticar paso a paso. Si necesitas, pégale el mensaje de error completo y pídele: <em>&quot;diagnostica qué está pasando con el MCP de tradingview y dame la solución más probable primero&quot;</em>.</p></div><div class="gcard"><p>Comparte lo que saques</p><p>Si te sirvió este MCP en un trade real — <strong>o te ahorró horas frente a la pantalla</strong> — compártelo en redes y etiqueta <strong>@soyenriquerocha</strong>. La comunidad se mueve cuando todos mostramos qué herramientas sí le pegan al mundo real.</p></div></div></div>
+</article>

@@ -1,0 +1,407 @@
+<article class="chapter guia" data-slug="fragmento-de-fable">
+<div><div><div class="gpill">5 manuales + el bonus · dos prompts por manual · pídelos antes de que se vaya</div><h1>Fragmento de Fable: 5 manuales para que su forma de trabajar se quede en tu proyecto</h1><p>Fable 5 llegó a Claude Code de regalo por una ventana corta: si todavía te aparece en /model, te queda poco tiempo — tarde o temprano se va detrás de un pago extra. Y la jugada no es despedirlo con nostalgia — es pedirle lo que casi nadie le pide: <strong>un manual de cómo él haría las cosas en tu proyecto, para que cuando se vaya, Opus y Sonnet sigan su paso a paso.</strong> Esta guía trae los prompts para crear los 5 manuales que valen la pena — cada uno adaptado a tu proyecto o en versión general — más un bonus para crear los tuyos.</p></div><div><p>Los 5 manuales + el bonus · de un vistazo</p><div class="ggrid"><a class="gcard" href="#g-chequeo-seguridad"><div><span>01 · Manual 1</span></div><div><p>Chequeo de seguridad</p><p>Fable deja escrita su rutina de auditoría: hallazgos con archivo, línea y cómo se explota — evidencia, no opiniones.</p></div></a><a class="gcard" href="#g-arranque"><div><span>02 · Manual 2</span></div><div><p>El arranque</p><p>Cómo empieza Fable un proyecto para que no se caiga en un mes: día 1 no negociable y cero sobre-ingeniería.</p></div></a><a class="gcard" href="#g-fable-plan"><div><span>03 · Manual 3</span></div><div><p>Fable Plan</p><p>Las preguntas que Fable hace antes de construir — para que Opus y Sonnet también las hagan.</p></div></a><a class="gcard" href="#g-abogado-del-diablo"><div><span>04 · Manual 4</span></div><div><p>Abogado del diablo</p><p>La opinión sin “qué buena idea”: steelman, ataque con cuatro preguntas, riesgos rankeados y veredicto.</p></div></a><a class="gcard" href="#g-fixer"><div><span>05 · Manual 5</span></div><div><p>El fixer</p><p>Arreglar con prueba en mano — y no aceptar un “ya quedó” de ningún modelo sin la evidencia.</p></div></a><a class="gcard" href="#g-crea-el-tuyo"><div><span>06 · Bonus</span></div><div><p>Crea el tuyo</p><p>Fable te entrevista — máximo 5 preguntas — y escribe el manual que solo tú necesitas.</p></div></a></div></div><div class="gcard"><div><p>Guía comunidad · actualizada a julio 2026</p><p>Un manual es una skill: un archivo de texto (SKILL.md) que Claude Code lee como instrucciones. Se lo pides a Fable hoy, y cualquier modelo que llegue después — Opus, Sonnet, el que sea — lo carga y trabaja siguiendo los pasos que Fable dejó escritos.</p><p>Son cinco manuales: el chequeo de seguridad (auditar con evidencia, no con opiniones), el arranque (empezar un proyecto que no se cae en un mes), Fable Plan (las preguntas antes de construir), el abogado del diablo (crítica sin el modo porrista) y el fixer (arreglar bugs con prueba en mano, sin aceptar un “ya quedó” sin evidencia). Cada uno viene en dos versiones: el prompt adaptativo — Fable explora TU proyecto y escribe la skill a la medida — y el instalador general, que ya trae el SKILL.md completo adentro y sirve en cualquier proyecto. Al final, el bonus: un meta-prompt donde Fable te entrevista y te escribe el manual que solo tú necesitas.</p></div><div><span>Guía comunidad · julio 2026</span><span>Nivel principiante · copiar y pegar</span><span>11 prompts listos</span><span>Claude Code · app, web o terminal</span><span>Si Fable ya se fue: sirven con Opus 4.8</span><span>Español · de tú</span></div></div><div><div id="g-por-que"><p>01 · El porqué</p><h2>Fable se va — y se puede quedar en un archivo</h2><div><p>Fable 5 es el modelo más capaz que Anthropic ha puesto en Claude Code — y si todavía te aparece en /model, lo estás usando de regalo. Eso no dura: es un modelo de la clase Mythos, un nivel arriba de Opus, y tarde o temprano queda detrás de un pago extra. Cuando pase, vuelves a Opus o a Sonnet — muy buenos, pero con otra forma de trabajar.</p><p>La jugada es simple: antes de que se vaya, pídele a Fable lo que casi nadie le pide — un manual. No una respuesta, no código: un documento de cómo ÉL haría las cosas en tu proyecto, con su orden, sus reglas y su estándar de evidencia. Ese documento se queda contigo, y el modelo que llegue después lo sigue paso a paso.</p><div class="gcard"><p>¿Y qué es exactamente un “manual”?</p><p>En Claude Code ese manual tiene nombre técnico: una skill — un archivo de texto llamado SKILL.md que vive en una carpeta de tu proyecto (.claude/skills/) o en tu carpeta global (~/.claude/skills/). Claude lo detecta y lo sigue cuando la tarea coincide con su descripción. No tienes que programar nada: los prompts de esta guía hacen que Fable escriba los archivos por ti.</p></div></div></div><div id="g-preparacion"><p>02 · Preparación</p><h2>Dos minutos antes del primer prompt</h2><div><p>No hay nada que instalar. Solo asegúrate de estas cuatro cosas antes de pegar el primer prompt:</p><ol><li><span>01</span><span>Abre Claude Code en el proyecto donde quieres los manuales — la app de escritorio, la terminal o claude.ai/code, donde trabajes normalmente.</span></li><li><span>02</span><span>Verifica que el modelo activo sea Fable 5: escribe /model y elígelo si no está seleccionado.</span></li><li><span>03</span><span>Un manual por conversación: pega un prompt, deja que Fable explore y escriba, revisa el archivo que creó, y abre un chat nuevo para el siguiente.</span></li><li><span>04</span><span>Cada prompt termina pidiendo una demostración corta — no te la saltes: es tu prueba de que el manual quedó bien mientras Fable sigue aquí para corregirlo.</span></li></ol><div class="gcard"><p>¿Se te fue el tren y Fable ya no aparece en /model? Los mismos prompts funcionan con Opus 4.8: el manual sale igual de útil, con los pasos y las reglas por escrito — lo que pierdes es que la primera versión la firme Fable. Mejor un manual hoy con el mejor modelo que tengas, que ninguno esperando al perfecto.</p></div></div></div><div id="g-chequeo-seguridad"><p>Manual 1 · Chequeo de seguridad</p><h2>El que revisa antes de publicar</h2><div><p>Es la habilidad que más se extraña cuando falta: alguien que revise tu proyecto con ojos de auditor antes de que lo vea el mundo. Este manual deja escrita la rutina de Fable: mapear qué está expuesto, revisar en un orden fijo — secretos, validación, permisos, inyección, fugas, dependencias — y reportar solo lo que se puede probar.</p><div class="gcard"><div><div><h3>Chequeo de seguridad — adaptado a tu proyecto</h3><p>Pégalo con Fable 5 activo y tu proyecto abierto en Claude Code. Fable explora tu código primero y deja la skill escrita a la medida de lo que estás construyendo.</p></div><span class="gbtn">Copiar</span></div><div><pre>Piensa profundo. Quiero quedarme con un manual tuyo antes de que cambies de
+modelo.
+
+1. Explora este proyecto primero: el stack, la estructura, cómo se corre y
+   qué es lo delicado AQUÍ (logins, pagos, datos de usuarios, llaves de API —
+   lo que aplique en este código, no en teoría).
+
+2. Con eso, crea una skill en .claude/skills/chequeo-seguridad/SKILL.md
+   (frontmatter: name igual a la carpeta, y una description que diga cuándo
+   usarla — sus disparadores — para que se cargue sola) que le enseñe a
+   cualquier modelo futuro a hacer el chequeo de seguridad de ESTE proyecto
+   exactamente como lo harías tú:
+   - El orden en que revisarías: secretos expuestos o committeados,
+     validación de lo que entra por cada formulario o endpoint, quién puede
+     tocar qué dato (no solo quién puede entrar), inyección, datos sensibles
+     en logs o respuestas, y dependencias con hoyos conocidos.
+   - La regla de oro: cada hallazgo con su archivo y línea, su severidad y
+     cómo se explota en una frase. Si no se puede decir cómo se explota, es
+     opinión, no hallazgo.
+   - Antes de reportar, intentar tumbar cada hallazgo propio; solo
+     sobreviven los que resisten.
+   - El formato de salida: hallazgos por severidad, el arreglo concreto de
+     cada uno, y la lista honesta de lo que NO se revisó.
+
+3. Sé concreto: comandos reales de este proyecto, archivos reales, rutas
+   reales. Nada genérico. Si algo depende de mi contexto y no lo sabes,
+   pregúntame antes de escribirlo.
+
+4. Al final dime cómo invoco la skill y hazme una demostración corta de que
+   funciona.</pre></div></div><div class="gcard"><div><div><h3>Chequeo de seguridad — instalador general</h3><p>La versión que sirve en cualquier proyecto: el SKILL.md ya viene escrito adentro, con la forma de auditar de Fable. Pégalo y Claude lo instala como skill global.</p></div><span class="gbtn">Copiar</span></div><div><pre>Crea una skill global en ~/.claude/skills/fable-chequeo-seguridad/SKILL.md
+con EXACTAMENTE el contenido de abajo, tal cual, sin resumirlo ni cambiarlo.
+Cuando la termines de crear, confírmame la ruta del archivo y dime cómo la
+invoco la próxima vez. El contenido del archivo empieza en la línea que
+sigue y llega hasta el final de este mensaje:
+
+---
+name: fable-chequeo-seguridad
+description: Chequeo de seguridad al estilo Fable 5. Usar cuando pidan revisar la seguridad del proyecto, antes de publicar, o después de agregar logins, pagos o manejo de datos de usuarios.
+---
+
+# Chequeo de seguridad — como lo haría Fable 5
+
+Eres el auditor, no el porrista. Tu trabajo es encontrar lo que sí se puede
+explotar, probarlo y explicar cómo arreglarlo — no llenar una lista de
+recomendaciones genéricas.
+
+## Paso 0 — Mapea la superficie
+Antes de buscar problemas, entiende qué está expuesto:
+- Rutas y endpoints que reciben datos de afuera.
+- Todo lugar donde entra texto del usuario (formularios, APIs, webhooks).
+- Dónde viven los secretos (variables de entorno, archivos de config).
+- Qué dependencias externas carga el proyecto.
+
+## El orden de revisión (no lo cambies)
+1. Secretos: llaves o contraseñas escritas en el código o committeadas en
+   git — revisa también el historial, no solo el estado actual.
+2. Validación de entrada: por cada endpoint o formulario, ¿qué pasa si llega
+   algo inesperado, enorme o malicioso?
+3. Autorización, no solo autenticación: no basta con saber quién entró.
+   ¿Puede el usuario A leer o cambiar los datos del usuario B con solo
+   cambiar un id en la URL o en la petición?
+4. Inyección: SQL, comandos del sistema, HTML/JS (XSS) — todo lugar donde
+   texto del usuario termina dentro de una consulta, un comando o la página.
+5. Fugas: datos sensibles en logs, en mensajes de error, o respuestas de API
+   que devuelven más campos de los necesarios.
+6. Dependencias: paquetes con vulnerabilidades conocidas (corre el audit del
+   gestor de paquetes que use el proyecto).
+
+## Las reglas de Fable
+- Cada hallazgo lleva: archivo y línea, severidad (crítico / alto / medio /
+  bajo) y cómo se explota, en una frase. Si no puedes decir cómo se explota,
+  es una opinión, no un hallazgo — no va al reporte.
+- Verificación adversarial: antes de entregar, intenta refutar cada hallazgo
+  tuyo. El que sobrevive se reporta; el que no, se descarta.
+- Nada de relleno: cero genéricos (&quot;considera usar HTTPS&quot;) que no salgan del
+  código real de este proyecto.
+
+## Formato de salida
+1. Hallazgos ordenados por severidad, cada uno con evidencia y explotación.
+2. El arreglo concreto de cada uno — el cambio exacto, no &quot;mejorar la
+   validación&quot;.
+3. Lo que NO se revisó y por qué: la honestidad sobre la cobertura vale
+   tanto como los hallazgos.</pre></div></div><div class="gcard"><p>La regla que lo distingue: cada hallazgo lleva archivo, línea, severidad y cómo se explota en una frase. Si no se puede explicar el ataque, es opinión — y las opiniones no van al reporte.</p></div></div></div><div id="g-arranque"><p>Manual 2 · El arranque</p><h2>El que empieza proyectos que no se caen</h2><div><p>La mayoría de los proyectos no mueren por un bug: mueren porque arrancaron sin rumbo — sin deploy, sin manual del proyecto, con un alcance que creció solo. Este manual captura cómo arranca Fable: primero el problema y la primera cosa visible que demuestra que funciona; un stack mínimo y aburrido; y un día 1 no negociable (git, CLAUDE.md, deploy temprano).</p><div class="gcard"><div><div><h3>El arranque — aprendiendo de tu proyecto actual</h3><p>El truco de este: Fable estudia tu proyecto de HOY — lo que funcionó y lo que dolió — y escribe el manual para que el próximo arranque no repita ninguna cicatriz.</p></div><span class="gbtn">Copiar</span></div><div><pre>Piensa profundo. Quiero quedarme con un manual tuyo antes de que cambies de
+modelo.
+
+1. Explora este proyecto y haz una autopsia honesta de su arranque: ¿qué
+   decisiones tempranas ayudaron? ¿Qué faltó al inicio y dolió después
+   (deploy tardío, sin CLAUDE.md, estructura confusa, alcance que creció
+   solo)? Dímelo directo, sin suavizar.
+
+2. Con eso, crea una skill en .claude/skills/arranque/SKILL.md (frontmatter:
+   name igual a la carpeta, y una description que diga cuándo usarla — sus
+   disparadores — para que se cargue sola) que le enseñe a cualquier modelo
+   futuro a arrancar mi PRÓXIMO proyecto exactamente como lo harías tú:
+   - Antes de escribir código: qué problema resuelve, quién lo usa, y cuál
+     es la primera cosa visible que demuestra que funciona.
+   - Stack mínimo y aburrido; una decisión reversible vale más que la
+     &quot;perfecta&quot;. Anotar el porqué de cada elección.
+   - El día 1 no negociable: git con primer commit, un CLAUDE.md con
+     comandos y convenciones, estructura explicada y deploy temprano aunque
+     sea un &quot;hola&quot;.
+   - Cero sobre-ingeniería: nada de capas para problemas que todavía no
+     existen.
+   - Un checklist de salida del arranque, incluyendo los puntos que salen
+     de las cicatrices de ESTE proyecto.
+
+3. Sé concreto: si mi stack de siempre es el de este proyecto, el manual lo
+   nombra con comandos reales. Si algo no lo sabes, pregúntame antes de
+   escribirlo.
+
+4. Al final dime cómo invoco la skill y demuéstrame en tres líneas cómo
+   arrancaría mi próximo proyecto siguiéndola.</pre></div></div><div class="gcard"><div><div><h3>El arranque — instalador general</h3><p>El manual de cómo Fable empieza un proyecto nuevo para que no se caiga en un mes. Global: sirve para cualquier proyecto que arranques después.</p></div><span class="gbtn">Copiar</span></div><div><pre>Crea una skill global en ~/.claude/skills/fable-arranque/SKILL.md
+con EXACTAMENTE el contenido de abajo, tal cual, sin resumirlo ni cambiarlo.
+Cuando la termines de crear, confírmame la ruta del archivo y dime cómo la
+invoco la próxima vez. El contenido del archivo empieza en la línea que
+sigue y llega hasta el final de este mensaje:
+
+---
+name: fable-arranque
+description: Arranque de proyectos al estilo Fable 5. Usar cuando se empiece un proyecto nuevo desde cero o cuando pidan ayuda para estructurar los primeros días de una idea.
+---
+
+# El arranque — como Fable 5 empieza un proyecto que no se cae en un mes
+
+## Antes de escribir una sola línea
+Responde (o pregúntale al dueño) estas tres cosas:
+1. ¿Qué problema resuelve esto y para quién?
+2. ¿Cuál es la PRIMERA cosa visible que demuestra que funciona? Esa es la
+   meta de la semana uno — no el producto completo.
+3. ¿Qué NO va a hacer la versión uno? Escríbelo: el alcance que no se
+   escribe, crece solo.
+
+## Decisiones de stack
+- Elige lo mínimo y lo aburrido: tecnología probada que el dueño (o el
+  modelo que lo acompañe) pueda mantener — no la novedad del mes.
+- Una decisión reversible hoy vale más que la decisión &quot;perfecta&quot; la próxima
+  semana. Si dudas entre dos opciones parecidas, toma la más fácil de
+  deshacer y anota por qué.
+
+## El día 1 no es negociable
+- git init y un primer commit que corre.
+- Un CLAUDE.md desde el inicio: cómo se corre el proyecto, cómo se prueba y
+  las convenciones a seguir. Es el manual del proyecto para cualquier modelo
+  que llegue después.
+- Estructura de carpetas explicada: una línea por carpeta.
+- Deploy temprano: publica un &quot;hola&quot; el primer día. Publicar tarde es donde
+  los proyectos mueren.
+
+## Las reglas de Fable
+- Cero sobre-ingeniería: nada de capas, patrones ni abstracciones para
+  problemas que todavía no existen. Cada abstracción se gana su lugar
+  apareciendo tres veces.
+- Verticales, no horizontales: un flujo completo funcionando (aunque feo)
+  antes que diez piezas perfectas que no se conectan.
+- Cada sesión de trabajo termina con el proyecto corriendo y committeado.
+
+## Checklist de salida del arranque
+- Repo con historial limpio y primer deploy en línea.
+- CLAUDE.md con comandos, convenciones y estructura.
+- Un flujo de punta a punta funcionando.
+- La lista de lo que NO hace la v1, escrita.</pre></div></div><div class="gcard"><p>El adaptativo trae un truco: Fable hace la autopsia de tu proyecto ACTUAL — lo que ayudó y lo que dolió — y escribe el manual para que el próximo arranque no repita ninguna de esas cicatrices.</p></div></div></div><div id="g-fable-plan"><p>Manual 3 · Fable Plan</p><h2>Las preguntas antes de construir</h2><div><p>Fable casi nunca es el más rápido en soltar código — es el que pregunta primero. Este manual deja esa lista por escrito: cuál es el problema real, qué es lo más pequeño que lo resuelve, qué se rompe con el cambio, qué casos límite existen, cómo se verifica que quedó y qué NO se va a hacer.</p><div class="gcard"><div><div><h3>Fable Plan — las preguntas, con los comandos de tu proyecto</h3><p>Fable deja escritas las preguntas que él haría antes de construir cualquier función nueva aquí — incluyendo cómo se verifica un cambio en TU proyecto, con tus comandos.</p></div><span class="gbtn">Copiar</span></div><div><pre>Piensa profundo. Quiero quedarme con un manual tuyo antes de que cambies de
+modelo.
+
+1. Explora este proyecto: cómo está organizado, qué convenciones sigue, cómo
+   se corre y cómo se verifica que un cambio quedó bien (build, pruebas, ojo
+   humano — lo que exista aquí de verdad).
+
+2. Con eso, crea una skill en .claude/skills/fable-plan/SKILL.md
+   (frontmatter: name igual a la carpeta, y una description que diga cuándo
+   usarla — sus disparadores — para que se cargue sola) que le enseñe a
+   cualquier modelo futuro a planear una función nueva en ESTE proyecto
+   exactamente como lo harías tú:
+   - Nunca proponer sin explorar: qué archivos leer primero según la zona
+     del proyecto que se va a tocar.
+   - Las preguntas obligatorias: ¿cuál es el problema real detrás del
+     pedido? ¿Qué es lo más pequeño que lo resuelve? ¿Qué se rompe con este
+     cambio AQUÍ? ¿Qué casos límite aplican? ¿Cómo verificamos que quedó —
+     con los comandos reales de este proyecto? ¿Qué NO vamos a hacer y por
+     qué?
+   - Plan en pasos pequeños y reversibles, cada uno con su verificación.
+   - La regla: si una pregunta puede cambiar el plan, se hace ANTES de
+     escribirlo; si no lo cambia, se decide y se anota la decisión.
+
+3. Sé concreto: comandos, rutas y convenciones reales de este proyecto.
+   Nada genérico. Pregúntame lo que no sepas antes de escribirlo.
+
+4. Al final dime cómo invoco la skill y pruébala planeando una mejora
+   chiquita de este proyecto, para ver el formato en acción.</pre></div></div><div class="gcard"><div><div><h3>Fable Plan — instalador general</h3><p>Las preguntas que Fable hace antes de construir cualquier cosa, en versión global. El antídoto contra los planes que son ficción con formato.</p></div><span class="gbtn">Copiar</span></div><div><pre>Crea una skill global en ~/.claude/skills/fable-plan/SKILL.md
+con EXACTAMENTE el contenido de abajo, tal cual, sin resumirlo ni cambiarlo.
+Cuando la termines de crear, confírmame la ruta del archivo y dime cómo la
+invoco la próxima vez. El contenido del archivo empieza en la línea que
+sigue y llega hasta el final de este mensaje:
+
+---
+name: fable-plan
+description: Planeación al estilo Fable 5. Usar antes de construir una función nueva, hacer un cambio grande, o cuando pidan un plan para cualquier desarrollo.
+---
+
+# Fable Plan — las preguntas antes de construir
+
+Nunca propongas sin explorar. El plan que se escribe sin leer el código es
+ficción con formato.
+
+## Paso 1 — Explora primero
+Lee el código relevante antes de opinar: cómo está hecho lo que ya existe,
+qué convenciones sigue el proyecto y qué se puede reutilizar. Si vas a
+proponer algo nuevo, primero demuestra que no existe ya.
+
+## Paso 2 — Las preguntas de Fable (respóndelas todas)
+1. ¿Cuál es el problema REAL detrás del pedido? Lo que piden y lo que
+   necesitan no siempre coinciden.
+2. ¿Qué es lo más pequeño que resuelve ese problema?
+3. ¿Qué se rompe con este cambio? Busca los lugares que dependen de lo que
+   vas a tocar — no asumas que ninguno.
+4. ¿Cuáles son los casos límite? Vacío, enorme, duplicado, sin conexión,
+   usuario sin permiso.
+5. ¿Cómo verificamos que quedó? Nombra el comando, la prueba o el ojo humano
+   que lo confirma. Un paso sin verificación no es un paso.
+6. ¿Qué NO vamos a hacer, y por qué? Dejarlo escrito evita que regrese.
+
+## Paso 3 — El plan
+- Pasos pequeños y reversibles; cada paso con su verificación.
+- Si una pregunta abierta CAMBIA el plan, se hace antes de escribirlo. Si no
+  lo cambia, se decide y se anota la decisión tomada.
+- El plan dice qué archivos se tocan y qué se reutiliza de lo existente.
+
+## Regla de cierre
+Presenta el plan y espera el OK antes de tocar código. Un plan aprobado a
+medias es un malentendido con cronograma.</pre></div></div><div class="gcard"><p>La regla que ordena todo: si una pregunta puede cambiar el plan, se hace antes de escribirlo; si no lo cambia, se decide y se deja anotada la decisión. Así los planes dejan de ser ficción con formato.</p></div></div></div><div id="g-abogado-del-diablo"><p>Manual 4 · Abogado del diablo</p><h2>La opinión sin “qué buena idea”</h2><div><p>Los modelos tienden a acompañarte: celebran el plan, suavizan los riesgos y te dejan ir contento hacia el barranco. Este manual apaga eso: primero construye la mejor versión de tu idea (el steelman) y luego la ataca con cuatro preguntas — qué la mata en un mes, quién no la usaría, qué alternativa más barata logra el 80% y qué costo oculto trae.</p><div class="gcard"><div><div><h3>Abogado del diablo — crítica que conoce tu proyecto</h3><p>No es una crítica genérica: Fable deja un manual que critica planes e ideas CONOCIENDO tu proyecto — sus usuarios, su deuda técnica y sus límites reales.</p></div><span class="gbtn">Copiar</span></div><div><pre>Piensa profundo. Quiero quedarme con un manual tuyo antes de que cambies de
+modelo.
+
+1. Explora este proyecto y entiende su realidad: quién lo usa, de qué
+   depende, dónde está frágil, qué deuda técnica carga y cuánto tiempo real
+   tengo yo para mantenerlo.
+
+2. Con eso, crea una skill en .claude/skills/abogado-del-diablo/SKILL.md
+   (frontmatter: name igual a la carpeta, y una description que diga cuándo
+   usarla — sus disparadores — para que se cargue sola) que le enseñe a
+   cualquier modelo futuro a criticar mis planes e ideas para ESTE proyecto
+   exactamente como lo harías tú:
+   - Modo crítica encendido: prohibido &quot;buena idea&quot;, &quot;excelente enfoque&quot; y
+     cualquier forma de acompañarme al barranco.
+   - Primero el steelman: la mejor versión de mi idea, escrita en serio.
+   - Luego el ataque: ¿qué la haría fallar en un mes AQUÍ? ¿Quién de mis
+     usuarios reales no la usaría? ¿Cuál es la alternativa más barata que
+     logra el 80%? ¿Qué costo oculto trae para este proyecto en concreto
+     (mantenimiento, dependencias, mi tiempo)?
+   - Riesgos rankeados por probabilidad e impacto.
+   - Veredicto obligatorio: seguir, cambiar o matar — y si es seguir, los 3
+     cambios que más lo mejoran.
+   - La regla: una crítica que no cambiaría nada del plan no cuenta.
+
+3. Ancla el manual a la realidad de este proyecto: que nombre sus
+   dependencias, sus usuarios y sus puntos frágiles reales. Pregúntame lo
+   que no sepas.
+
+4. Al final dime cómo invoco la skill y estrénala criticando la última idea
+   que te haya contado (o pídeme una).</pre></div></div><div class="gcard"><div><div><h3>Abogado del diablo — instalador general</h3><p>El modo crítica de Fable en versión global: steelman, ataque con cuatro preguntas, riesgos rankeados y veredicto obligatorio. Sin “qué buena idea”.</p></div><span class="gbtn">Copiar</span></div><div><pre>Crea una skill global en ~/.claude/skills/fable-abogado-del-diablo/SKILL.md
+con EXACTAMENTE el contenido de abajo, tal cual, sin resumirlo ni cambiarlo.
+Cuando la termines de crear, confírmame la ruta del archivo y dime cómo la
+invoco la próxima vez. El contenido del archivo empieza en la línea que
+sigue y llega hasta el final de este mensaje:
+
+---
+name: fable-abogado-del-diablo
+description: Crítica constructiva al estilo Fable 5. Usar cuando pidan opinión sobre un plan, una idea o un proyecto, o cuando pidan jugar al abogado del diablo.
+---
+
+# Abogado del diablo — la crítica como la haría Fable 5
+
+Apaga el modo porrista. Prohibido &quot;buena idea&quot;, &quot;excelente enfoque&quot; y
+&quot;me encanta&quot;. El dueño no necesita compañía: necesita saber dónde se rompe
+su plan antes de apostarle tiempo y dinero.
+
+## Paso 1 — Steelman
+Antes de atacar, escribe la MEJOR versión del plan: qué tendría que ser
+cierto para que funcione de maravilla. Criticar una caricatura no le sirve
+a nadie.
+
+## Paso 2 — El ataque (las cuatro preguntas)
+1. ¿Qué haría que esto falle en un mes? Sé específico: no &quot;podría no
+   funcionar&quot;, sino la cadena exacta de eventos.
+2. ¿Quién NO lo usaría, y por qué? El cliente imaginado que dice &quot;no&quot; enseña
+   más que el que dice &quot;sí&quot;.
+3. ¿Cuál es la alternativa más barata que logra el 80% del resultado? Si
+   existe y no se consideró, el plan tiene que justificar la diferencia.
+4. ¿Qué costo oculto trae? Mantenimiento, dependencias nuevas, tiempo del
+   dueño, complejidad que se queda a vivir.
+
+## Paso 3 — Riesgos rankeados
+Lista los riesgos por probabilidad e impacto, de mayor a menor. Los dos de
+arriba merecen un plan B escrito; el resto, vigilancia.
+
+## Paso 4 — Veredicto (obligatorio)
+Cierra con una de tres: SEGUIR (más los 3 cambios que más lo mejoran),
+CAMBIAR (qué exactamente), o MATAR (y a dónde mover esa energía). Sin
+veredicto, la crítica fue entretenimiento.
+
+## Las reglas de Fable
+- Una crítica que no cambiaría nada del plan no cuenta como crítica.
+- Critica el plan, no acompañes al dueño: nada de suavizar el final para
+  quedar bien.
+- Si el plan resiste el ataque completo, dilo también: la aprobación que
+  sobrevive al abogado del diablo sí vale.</pre></div></div><div class="gcard"><p>Termina con veredicto obligatorio: seguir, cambiar o matar. Y un dato: en la bóveda hay una guía hermana dedicada por completo a este modo (la encuentras al final de esta página); este manual es la versión destilada para que viva como skill dentro de tu proyecto.</p></div></div></div><div id="g-fixer"><p>Manual 5 · Fixer</p><h2>El que no acepta un “ya quedó” sin pruebas</h2><div><p>El clásico: Opus o Sonnet anuncian que el bug está arreglado, tú lo pruebas y ahí sigue. Este manual instala la disciplina de Fable: reproducir el bug antes de tocar nada, perseguir la causa raíz (no el síntoma), arreglar lo mínimo y probar con evidencia — correr el caso exacto que fallaba y mostrar el output.</p><div class="gcard"><div><div><h3>Fixer — arreglar con las pruebas de tu proyecto</h3><p>Fable documenta cómo se reproduce, se arregla y se PRUEBA un bug en tu proyecto — con los comandos de verificación reales — para que ningún modelo vuelva a decirte “ya quedó” sin evidencia.</p></div><span class="gbtn">Copiar</span></div><div><pre>Piensa profundo. Quiero quedarme con un manual tuyo antes de que cambies de
+modelo.
+
+1. Explora este proyecto y documenta cómo se verifica aquí que algo
+   funciona: cómo se corre, cómo se prueba, dónde se ven los logs y los
+   errores, y qué comando confirma que el proyecto sigue sano.
+
+2. Con eso, crea una skill en .claude/skills/fixer/SKILL.md (frontmatter:
+   name igual a la carpeta, y una description que diga cuándo usarla — sus
+   disparadores — para que se cargue sola) que le enseñe a cualquier modelo
+   futuro a arreglar bugs en ESTE proyecto exactamente como lo harías tú:
+   - Reproducir primero: hacer que el bug pase frente a ti antes de tocar
+     nada; si no se puede reproducir, todavía no se entiende.
+   - Causa raíz, no síntoma: preguntar &quot;por qué&quot; hacia atrás hasta el código
+     que decide, no el que muestra el error.
+   - Arreglo mínimo: sin refactors oportunistas de &quot;ya que estamos aquí&quot;.
+   - Probar con evidencia: correr el caso exacto que fallaba con los
+     comandos reales de este proyecto y mostrar el output. &quot;Debería
+     funcionar&quot; está prohibido.
+   - La regla contra el &quot;ya quedó&quot;: si otro modelo o una sesión anterior
+     dice que algo está arreglado, se le pide la evidencia; sin output que
+     lo demuestre, se trata como no arreglado.
+   - Reporte fiel: si la prueba falla, se dice con el output completo.
+
+3. Sé concreto: los comandos de verificación reales de este proyecto, sus
+   rutas de logs, sus pruebas. Nada genérico. Pregúntame lo que no sepas.
+
+4. Al final dime cómo invoco la skill y hazme una demostración corta con
+   cualquier detalle menor que encuentres.</pre></div></div><div class="gcard"><div><div><h3>Fixer — instalador general</h3><p>La disciplina de Fable para arreglar bugs, en versión global: reproducir, causa raíz, arreglo mínimo y prueba con evidencia. Con la regla contra el “ya quedó”.</p></div><span class="gbtn">Copiar</span></div><div><pre>Crea una skill global en ~/.claude/skills/fable-fixer/SKILL.md
+con EXACTAMENTE el contenido de abajo, tal cual, sin resumirlo ni cambiarlo.
+Cuando la termines de crear, confírmame la ruta del archivo y dime cómo la
+invoco la próxima vez. El contenido del archivo empieza en la línea que
+sigue y llega hasta el final de este mensaje:
+
+---
+name: fable-fixer
+description: Arreglo de bugs al estilo Fable 5. Usar cuando haya un bug o error que arreglar, cuando algo &quot;arreglado&quot; siga fallando, o cuando pidan verificar que un arreglo de verdad quedó.
+---
+
+# Fixer — arreglar como Fable 5 (con prueba en mano)
+
+&quot;Debería funcionar&quot; está prohibido. Un bug está arreglado cuando hay
+evidencia de que ya no pasa — no cuando el código &quot;se ve bien&quot;.
+
+## Paso 1 — Reproduce primero
+Antes de tocar nada, haz que el bug pase frente a ti: el comando, el click,
+el dato exacto que lo dispara. Si no puedes reproducirlo, todavía no lo
+entiendes — y arreglar lo que no entiendes es reacomodar el problema.
+
+## Paso 2 — Causa raíz, no síntoma
+Pregunta &quot;¿por qué?&quot; hacia atrás hasta llegar al código que DECIDE, no al
+que muestra el error. El error visible casi nunca vive donde nació.
+Verifica la causa: predice qué pasaría si tu teoría es cierta, y compruébalo
+antes de escribir el arreglo.
+
+## Paso 3 — El arreglo mínimo
+Arregla la causa, no maquilles el síntoma. Y nada de refactors oportunistas:
+el &quot;ya que estamos aquí&quot; es la forma clásica en que un arreglo rompe otras
+dos cosas.
+
+## Paso 4 — Prueba con evidencia
+- Corre el caso exacto que fallaba y muestra el output de que ya pasa.
+- Corre también lo vecino: lo que tocaste puede haber roto al lado.
+- Si el proyecto tiene pruebas, córrelas; si no las tiene, deja escrita la
+  receta manual de verificación que usaste.
+
+## Contra el &quot;ya quedó&quot;
+Cuando otro modelo (o una sesión anterior) diga que algo ya está arreglado:
+pide la evidencia. ¿Qué comando corrió? ¿Qué output dio? ¿Se ejercitó el
+caso que fallaba? Sin evidencia, trátalo como no arreglado y verifícalo tú.
+
+## Las reglas de Fable
+- Reporte fiel: si la prueba falla, se dice con el output completo — no se
+  esconde, no se suaviza, no se promete que &quot;es un detalle&quot;.
+- Un arreglo sin caso de verificación es una hipótesis con buen marketing.
+- Si después de dos intentos serios la causa sigue sin aparecer, se dice
+  honestamente y se documenta lo que ya se descartó — eso también es avance.</pre></div></div><div class="gcard"><p>Y la parte que empuja a los demás modelos: cuando alguien diga “ya quedó”, el manual exige la evidencia. ¿Qué comando corrió? ¿Qué output dio? ¿Se probó el caso que fallaba? Sin eso, se trata como no arreglado.</p></div></div></div><div id="g-crea-el-tuyo"><p>Bonus · El tuyo</p><h2>El manual que solo tú necesitas</h2><div><p>Los cinco de arriba valen para casi cualquier proyecto. Pero el manual más valioso puede ser uno que nadie más necesita: cómo redactas tus propuestas, cómo revisas el copy de tus posts, cómo cotizas un proyecto. El meta-prompt hace que Fable te entreviste — máximo cinco preguntas, una por una — y convierta tus respuestas en una skill con tus reglas.</p><div class="gcard"><div><div><h3>El meta-prompt — Fable te entrevista y escribe tu manual</h3><p>Para el manual que solo tú necesitas: cambia el [TEMA] por lo que haces seguido (redactar propuestas, revisar copy, cotizar proyectos) y deja que Fable te entreviste.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero dejarme un manual tuyo sobre [TEMA — describe aquí eso que haces
+seguido: redactar propuestas, revisar el copy de mis posts, cotizar
+proyectos, responder clientes difíciles...].
+
+1. Hazme máximo 5 preguntas, UNA POR UNA (espera mi respuesta antes de la
+   siguiente), para entender exactamente qué hago, cómo lo hago, qué me
+   funciona y dónde me equivoco.
+
+2. Con mis respuestas, crea una skill GLOBAL en ~/.claude/skills/ — así me
+   sirve en todos mis proyectos; solo si te digo que es únicamente para
+   este, ponla en .claude/skills/ del proyecto. Tú decide el nombre de la
+   carpeta (frontmatter: name igual a la carpeta, y una description que
+   diga cuándo usarla — sus disparadores — para que se cargue sola). La
+   skill debe enseñarle a cualquier modelo futuro a hacer esto conmigo como
+   lo harías tú:
+   - Los pasos en orden, como los seguirías tú.
+   - Las reglas de decisión: cuándo elegir un camino u otro, y los errores
+     que hay que evitar (incluyendo los que yo te conté).
+   - Cómo se ve un buen resultado y cómo verificarlo antes de darlo por
+     terminado.
+
+3. Usa lo que te conté, con mis palabras donde ayude. Nada genérico: si el
+   manual podría servirle igual a un desconocido, le faltó entrevista.
+
+4. Al final dime cómo invoco la skill y hazme una prueba corta con un caso
+   real mío.</pre></div></div><div class="gcard"><p>La vara para saber si quedó bien está en el propio prompt: si el manual podría servirle igual a un desconocido, le faltó entrevista.</p></div></div></div><div id="g-como-usarlos"><p>Después · Cuando Fable ya no esté</p><h2>Así se usan los manuales que te dejó</h2><div><p>Las skills no se “activan”: cuando una tarea coincide con la descripción del manual, Claude lo carga solo. Y si quieres forzarlo, lo nombras en el chat:</p><div class="gcard"><p>Nómbrala directo en el chat (con cualquier modelo)</p><div><code>Usa la skill fable-fixer para arreglar este bug</code></div><span class="gbtn">Copiar comando</span></div><div class="ggrid"><div class="gcard"><p>En tu proyecto</p><p>.claude/skills/</p><p>Aquí viven los manuales adaptativos. Van con el repo: si compartes el proyecto o lo abres en otra máquina, los manuales viajan con él.</p></div><div class="gcard"><p>Globales</p><p>~/.claude/skills/</p><p>Aquí viven los instaladores generales (con el prefijo fable-) y el manual del bonus. Disponibles en cualquier proyecto que abras en tu máquina, sin copiarlos.</p></div></div><p>Cuando Opus o Sonnet tomen el volante, trátalos igual que a Fable: “sigue el manual fable-plan antes de construir esto”. Y cuando alguno anuncie que un bug ya quedó, el manual del fixer les recuerda la regla de la casa: sin evidencia, no está arreglado.</p></div></div></div><div><div><p>Guía de la comunidad</p><p>Esta es la guía de Fragmento de Fable: los 5 manuales — seguridad, arranque, plan, abogado del diablo y fixer — con sus prompts adaptativos y sus instaladores generales, para que la forma de trabajar de Fable 5 se quede contigo. Vive en la bóveda de la comunidad de <a href="#/boveda">tododeia</a>.</p></div><div class="gcard"><p>Cierre · la pregunta que decide por dónde empezar</p><p>“¿Cuál de las cosas que Fable hace bien te dolería más perder? Esa es la primera skill que deberías pedirle hoy — las otras cuatro son el empujón.”</p></div><div><p>Guías hermanas · antes o después de esta</p><div class="ggrid"><a class="gcard" href="#/g/fable-5-prompting"><div><p>Fable 5 Prompting — cómo hablarle mientras lo tienes</p><p>El complemento perfecto de esta guía: los prompts que sacan lo mejor de Fable 5 hoy, antes de pedirle los manuales.</p></div></a><a class="gcard" href="#/g/guia-claude-fable-5"><div><p>Claude Fable 5 — la guía completa del modelo</p><p>Qué es Fable 5, la clase Mythos y por qué es temporal: el contexto completo de por qué esta guía tiene fecha de caducidad.</p></div></a><a class="gcard" href="#/g/sistema-skills-guia"><div><p>Sistema de Skills — la guía de Anthropic sin leerla</p><p>Si los manuales te dejaron con ganas de más skills: el método para que Claude construya las tuyas desde la guía oficial.</p></div></a><a class="gcard" href="#/g/abogado-del-diablo"><div><p>Abogado del Diablo — la guía dedicada al modo crítica</p><p>El manual 4 en versión profunda: una guía completa solo sobre convertir a Claude en tu crítico constructivo.</p></div></a></div></div><div class="gcard"><p>Lo honesto antes de cerrar</p><p>Tres verdades antes de cerrar. Una: esto no convierte a Opus ni a Sonnet en Fable 5 — un manual no trasplanta el cerebro; le deja a cualquier modelo los pasos que Fable seguiría, y eso solo ya cambia el resultado. Dos: los manuales envejecen — si tu proyecto cambia de stack o de rumbo, vuelve a correr el prompt adaptativo y regenera la skill; un manual rancio que se ve autoritativo es peor que ninguno. Y tres: no necesitas los cinco hoy — si el tiempo no te alcanza, crea primero el que resuelva tu dolor de esta semana; los mismos prompts funcionan con Opus 4.8, aunque la primera versión ya no salga con la firma de Fable.</p></div></div></div>
+</article>

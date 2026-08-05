@@ -1,0 +1,231 @@
+<article class="chapter guia" data-slug="aprende-skill">
+<div><div><h1>Aprende · la habilidad que le da memoria a Claude Code</h1><p>Todos los que usamos Claude tenemos el mismo problema: se le olvida todo entre sesiones. Le corriges hoy, mañana lo vuelve a hacer. <strong>Construimos aprende para que eso termine</strong>. Una sola línea — <code>/aprende</code> — al final de la sesión y tu agente recuerda lo que aprendiste con él.</p></div><div class="gcard"><div><p>Open-source · MIT · Claude Code 2.0+ · Compatible con Codex</p><p>/aprende al final de la sesión → 4 categorías de memoria → tu agente deja de repetir errores</p><p>Aprende es un plugin para Claude Code que escribimos junto a <a href="https://github.com/Hainrixz" target="_blank" rel="noopener">@Hainrixz</a> bajo la marca <a href="https://www.tododeia.com" target="_blank" rel="noopener">tododeia</a>. Al final de una sesión escribes <code>/aprende</code> y la habilidad escanea la conversación en cinco pases (A escanea → B genera → C deduplica → D te pide confirmación → E escribe), saca a la luz lo que valió la pena aprender, te lo muestra como lista numerada con etiquetas de confidence (alta / media / baja), y solo entonces escribe a disco lo que tú aprobaste.</p><p>Cuatro categorías cubren todo lo que normalmente se pierde entre sesiones: <strong>memoria</strong> (preferencias que no cambian), <strong>lección</strong> estilo Reflexion (qué pasó, por qué, cómo evitar, señal de detección), <strong>skill stub</strong> auto-armada cuando un patrón se repite, y <strong>project-doc</strong> con escritura dual a <code>CLAUDE.md</code> + <code>AGENTS.md</code> para que también jale en Codex.</p><p>Aprende es intencionalmente más simple que claude-mem o claude-reflect: sin SQLite, sin embeddings, sin servidor MCP. Solo Markdown plano y workflow bilingüe. Se enchufa a la convención de memoria que ya tienes en <code>~/.claude/projects/</code> en vez de levantar un sistema paralelo. La idea de fondo viene del paper de Reflexion (Shinn et al., 2023): capturar el por qué de cada error vale más que loguear solo el qué.</p></div><div><a href="#g-vistazo">Vistazo</a><a href="#g-paso-cero">Paso cero</a><a href="#g-instalar">Instalar</a><a href="#g-primera-corrida">Primera corrida</a><a href="#g-comandos">Comandos</a><a href="#g-hooks">Hooks</a><a href="#g-categorias">Categorías</a><a href="#g-codex">Codex</a><a href="#g-principios">Principios</a><a href="#g-prompts">Prompts</a><a href="#g-checklist">Checklist</a></div><div><span>Open-source · MIT</span><span>Claude Code 2.0+</span><span>Compatible con Codex</span><span>5 pases A → E</span><span>4 categorías de memoria</span><span>7 comandos · 2 hooks opcionales</span><span>Hecho por tododeia</span></div></div><div><div id="g-vistazo"><p>01 · Vistazo</p><h2>Cómo funciona /aprende · los 5 pases A → E</h2><div><p>Cuando escribes <code>/aprende</code>, la habilidad corre cinco pases siempre en el mismo orden. Tú nada más confirmas en el paso D — los otros cuatro son silenciosos.</p><ol><li><div><span>A</span><div><p>Escanea</p><p>Pass A · Scan</p></div></div><p>Lee la conversación entera en silencio y marca cinco señales: correcciones explícitas tuyas, secuencias error → fix, reintentos repetidos del mismo Edit, explicaciones tuyas de por qué algo es así, y workflows que describiste paso a paso.</p><p>Sale: <span>Lista interna de señales (no la ves todavía).</span></p></li><li><div><span>B</span><div><p>Genera</p><p>Pass B · Generate</p></div></div><p>Convierte cada señal en un candidato con categoría (memory, lesson, skill o project-doc), título corto, una frase de rationale, una etiqueta de confidence (alta / media / baja) y un excerpt opcional.</p><p>Sale: <span>Hasta 15 candidatos máximo por corrida — para forzar foco.</span></p></li><li><div><span>C</span><div><p>Deduplica</p><p>Pass C · Dedup</p></div></div><p>Antes de mostrarte la lista, revisa MEMORY.md, ~/.claude/skills/ y CLAUDE.md/AGENTS.md para ver si ya existe algo parecido. Si lo encuentra, anota el overlap — nunca dropea en silencio.</p><p>Sale: <span>Lista con marcadores [overlaps with: nombre-existente] cuando aplica.</span></p></li><li><div><span>D</span><div><p>Confirma</p><p>Pass D · Confirm</p></div></div><p>Te muestra la lista numerada y espera. Puedes responder con números (1,3,5), rangos (1-4), &#x27;all&#x27;, &#x27;none&#x27;, &#x27;edit N: &lt;texto&gt;&#x27;, &#x27;drop low&#x27; o &#x27;skip N&#x27;. Nada se escribe a disco hasta que tú confirmes.</p><p>Sale: <span>El control siempre regresa a ti.</span></p></li><li><div><span>E</span><div><p>Ejecuta</p><p>Pass E · Execute</p></div></div><p>Para cada candidato aprobado escribe en el lugar correcto: memorias en ~/.claude/projects/&lt;slug&gt;/memory/, lecciones con el prefijo lesson_ y las 4 secciones Reflexion, skills stub en ~/.claude/skills/&lt;slug&gt;/SKILL.md, y project-docs con escritura dual a CLAUDE.md + AGENTS.md.</p><p>Sale: <span>Una línea de confirmación por escritura y un resumen al final.</span></p></li></ol><div class="gcard"><p>La regla más importante: <strong>nada se escribe a disco antes del paso D</strong>. Tú siempre tienes el control de qué guardar.</p></div></div></div><div id="g-paso-cero"><p>02 · Paso cero</p><h2>Instala Claude Code · dos caminos, ninguno requiere saber programar</h2><div><p>Si todavía no tienes Claude Code instalado, escoge uno de estos dos caminos. Los dos llegan al mismo lado — pruebas con <code>claude</code> en una terminal y debe abrirse la primera sesión. Si ya lo tienes corriendo, salta a la sección siguiente.</p><div class="ggrid"><div class="gcard"><p>Camino 1 · Terminal</p><p>Instálalo por la terminal con un comando</p><div><code>npm install -g @anthropic-ai/claude-code</code></div><p>Si ya tienes Node.js instalado, este comando lo deja listo en menos de un minuto. Abre Terminal (Mac) o PowerShell (Windows), pega el comando y dale enter. Cuando termine, escribe claude en la misma terminal para arrancar la primera sesión.</p><p>Para quien ya usó la terminal antes o no le tiene miedo a una línea de comando.</p></div><div class="gcard"><p>Camino 2 · Aplicación</p><p>Descarga la app de escritorio desde claude.com</p><div><code>Visita claude.com/claude-code</code></div><p>Si prefieres una aplicación con su icono en el Dock o en el menú de Inicio, entra al sitio oficial, descarga el instalador para tu sistema (macOS, Windows o Linux), ábrelo y sigue los 3 pasos del wizard. Al final aparece la ventana de Claude Code lista para usar.</p><a href="https://claude.com/claude-code" target="_blank" rel="noopener">claude.com/claude-code</a><p>Para quien nunca abrió una terminal y prefiere doble-click + siguiente, siguiente, listo.</p></div></div></div></div><div id="g-instalar-facil"><p>Lo más fácil</p><h2>Instálala con un prompt · sin tocar comandos</h2><div><p>Si los slash commands te ponen nervioso, no los toques. Pega este prompt en Claude Code y deja que él te guíe paso a paso y verifique que quedó instalada. Los comandos exactos siguen aquí abajo en la sección 03, por si los prefieres.</p><div class="gcard"><div><div><h3>Instálame Aprende y verifica que quedó (te guío sin que toques comandos a ciegas)</h3><p>Pega esto en Claude Code. Confirma dónde estás, te dice exactamente qué pegar (una línea a la vez), verifica que /aprende quedó disponible y, si algo falla, te ofrece el plan B sin perderte.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero instalar la habilidad Aprende en Claude Code y que me guíes sin que yo tenga que entender los comandos. El repo es https://github.com/Hainrixz/aprende-skill (open source, MIT). Hazlo por pasos y verifica cada uno antes de seguir.
+
+1. ¿Dónde estoy?
+   - Pregúntame si estoy en Claude Code (terminal o app de escritorio) o en el chat web de claude.ai.
+   - Si estoy en el chat web: Aprende como plugin no se instala ahí. Dime que puedo subir la skill en Customize → Skills (claude.ai/customize/skills), pero que sin Claude Code no hay hooks. Detente y espera mi decisión.
+   - Si no tengo Claude Code, dime cómo instalarlo en un minuto y detente.
+
+2. La forma completa (recomendada)
+   - Dime que pegue, una por una, en Claude Code:
+       /plugin marketplace add Hainrixz/aprende-skill
+       /plugin install aprende@aprende-skill
+   - Explícame en una frase qué hace cada una y recuérdame que esos comandos los escribo yo, no tú.
+   - Aclárame que esta forma deja todo: la skill, los comandos y los hooks que capturan solos.
+
+3. Verifica
+   - Dime cómo confirmar que /aprende ya aparece. Si no, pídeme reiniciar Claude Code.
+
+4. Plan B (si los comandos fallan)
+   - Ofréceme clonar el repo y copiar la carpeta skills/aprende a ~/.claude/skills/ por mí, y reiniciar.
+   - Dime con honestidad que así funciona /aprende pero los hooks se activan aparte con /aprende-enable-hooks, y que conviene copiar la carpeta completa (no solo el SKILL.md), porque usa archivos de references/.
+
+Háblame simple y al final dime cómo correr /aprende la próxima vez que cerremos una sesión.</pre></div></div><div><p>¿Sin marketplace? Agrégala a mano con el documento SKILL.md</p><div class="gcard"><p>A mano en Claude Code</p><p>Clona el repo y copia la carpeta <code>skills/aprende</code> dentro de <code>~/.claude/skills/</code>. Reinicia Claude Code y ya tendrás <code>/aprende</code> disponible.</p><div><div class="gcard"><p>Clona el repo</p><div><code>git clone https://github.com/Hainrixz/aprende-skill.git</code></div><span class="gbtn">Copiar comando</span></div></div><div class="gcard"><p><strong>Honesto:</strong> el modo a mano te da la skill y el comando <code>/aprende</code>, pero los <strong>hooks</strong> (la captura automática) no quedan solos — los activas con <code>/aprende-enable-hooks</code>. Y copia la carpeta completa, no solo el <code>SKILL.md</code> suelto: usa archivos de <code>references/</code>.</p></div></div><div class="gcard"><p>En claude.ai (web) o Cowork</p><p>Ahí no existe <code>/plugin</code>. Subes la skill en Customize → Skills y la usas como habilidad. Funciona, pero <strong>sin hooks</strong> (esos son solo de Claude Code).</p><div><a href="https://claude.ai/customize/skills" target="_blank" rel="noopener">Abrir Customize → Skills</a><a href="https://github.com/Hainrixz/aprende-skill/blob/main/skills/aprende/SKILL.md" target="_blank" rel="noopener">Ver el documento SKILL.md</a></div></div></div></div></div><div id="g-instalar"><p>03 · Instalación</p><h2>Instala aprende en 30 segundos · dos slash commands</h2><div><p>Adentro de una sesión de Claude Code (no en la terminal — en la ventana del chat), pega estos dos slash commands en orden. Toma 30 segundos en total.</p><div><div class="gcard"><div><span>01</span><p>Agrega el marketplace de aprende</p></div><div class="gcard"><p>Pega este slash command en la sesión</p><div><code>/plugin marketplace add Hainrixz/aprende-skill</code></div><span class="gbtn">Copiar comando</span></div><p>Adentro de una sesión de Claude Code (no en la terminal — en la ventana del chat), pega este slash command y dale enter. Claude Code se conecta al repo de Hainrixz y lo registra como una fuente de plugins disponible. No instala nada todavía, solo dice &#x27;sé dónde está&#x27;.</p></div><div class="gcard"><div><span>02</span><p>Instala el plugin aprende</p></div><div class="gcard"><p>Pega este slash command en la sesión</p><div><code>/plugin install aprende@aprende-skill</code></div><span class="gbtn">Copiar comando</span></div><p>Inmediatamente después, pega el segundo slash command. Claude Code descarga la habilidad, los 7 comandos y los 2 hooks opcionales. Cuando termina, ya tienes /aprende disponible en cualquier sesión — los hooks quedan activos por defecto y nunca escriben aprendizajes solos (eso solo lo hace /aprende cuando tú confirmas).</p></div></div><div class="gcard"><p>Listo. La habilidad y los 2 hooks quedan conectados automáticamente. Los hooks vienen activos por defecto pero <strong>nunca escriben aprendizajes</strong> — solo acumulan señales para que <code>/aprende</code> las lea después.</p></div></div></div><div id="g-primera-corrida"><p>04 · Primera corrida</p><h2>Tu primera /aprende · qué vas a ver en pantalla</h2><div><p>Cuando corras <code>/aprende</code> por primera vez, así se va a ver la pantalla. Léelo con calma — abajo te explico cada parte.</p><div class="gcard"><pre>Tú:  /aprende
+
+aprende:
+  Encontré 3 aprendizajes candidatos en esta conversación.
+
+  Responde con: números (ej. 1,3,5), rangos (1-4), &quot;all&quot;, &quot;none&quot;, o
+  &quot;edit N: &lt;texto&gt;&quot; / &quot;drop low&quot; / &quot;skip N&quot;.
+
+   1. [project-doc] Usa pnpm, no npm — el usuario dijo &quot;este repo usa pnpm&quot;  (alta)
+   2. [lesson]      localStorage falla en el WebView de compra — usa IndexedDB  (alta)
+   3. [memory]      El usuario prefiere mensajes de error explícitos en tests  (media)
+
+  &gt;
+
+Tú:  1,2
+
+aprende:
+  ✓ project  → ./CLAUDE.md + ./AGENTS.md  (## Commands)
+  ✓ lesson   → ~/.claude/projects/.../lesson_webview-localstorage.md  (+MEMORY.md)
+
+  Capturados 2 aprendizajes. Corre /aprende --review el mes que viene para podar.</pre></div><div class="ggrid"><div class="gcard"><div><p>Qué significa cada categoría</p></div><p>[memory] = preferencia o hecho durable; [lesson] = anti-patrón estilo Reflexion; [skill] = workflow reusable; [project-doc] = convención del repo (va a CLAUDE.md y AGENTS.md).</p></div><div class="gcard"><div><p>Qué significa (alta / media / baja)</p></div><p>alta = corrección explícita tuya o patrón repetido; media = inferido de un comentario único; baja = hipótesis. La regla de oro: prefiere falsos negativos. Si dudas, no lo guardes.</p></div><div class="gcard"><div><p>Qué pasa si respondes &#x27;none&#x27; o &#x27;drop low&#x27;</p></div><p>none = descarta todos los candidatos sin escribir nada; drop low = guarda solo los de confidence alta y media. También puedes editar antes de guardar con &#x27;edit N: &lt;nuevo texto&gt;&#x27;.</p></div></div></div></div><div id="g-comandos"><p>05 · Comandos</p><h2>Los 7 comandos del plugin · /aprende y sus seis acompañantes</h2><div><p>Estos son los siete comandos que vas a usar en el día a día. <code>/aprende</code> es el principal — los otros son flags y comandos auxiliares.</p><div><div class="gcard"><code>/aprende</code><p>Corrida estándar. Revisa la conversación, te muestra la lista numerada, escribe solo después de tu confirmación.</p><p>Cuándo: <span>Al final de cada sesión donde corregiste algo o resolvieron un error juntos.</span></p></div><div class="gcard"><code>/learn</code><p>Alias en inglés de /aprende. Hace exactamente lo mismo.</p><p>Cuándo: <span>Si trabajas con un equipo bilingüe o se te traba el dedo en la ñ.</span></p></div><div class="gcard"><code>/aprende --review</code><p>Revisa las lessons existentes. Marca cuáles siguen vigentes y cuáles deberías retirar (status: retired, nunca rm).</p><p>Cuándo: <span>Una vez al mes — para podar lessons que ya no aplican y no inflar la carpeta.</span></p></div><div class="gcard"><code>/aprende --portable</code><p>Corrida estándar + espeja las lessons a ./.aprende/ en la raíz del proyecto, con un index.md que Codex puede leer.</p><p>Cuándo: <span>Cuando vayas a usar el mismo proyecto en Codex y quieras que conserve la memoria.</span></p></div><div class="gcard"><code>/aprende-enable-hooks</code><p>Mete los 2 hooks (PostToolUse + Stop) en ~/.claude/settings.json. Si instalaste por plugin, ya están activos — este comando es para instalación manual.</p><p>Cuándo: <span>Si hiciste el install manual (git clone + cp) y quieres que los hooks empiecen a acumular señales.</span></p></div><div class="gcard"><code>/aprende-disable-hooks</code><p>Quita los 2 hooks de settings.json y deja un backup. Las lessons ya guardadas no se tocan.</p><p>Cuándo: <span>Si quieres correr /aprende solo manualmente, sin los recordatorios automáticos.</span></p></div><div class="gcard"><code>Responder a /aprende</code><p>En la lista de candidatos puedes escribir: números (1,3,5), rangos (1-4), &#x27;all&#x27; (todos), &#x27;none&#x27; (ninguno), &#x27;edit N: &lt;texto&gt;&#x27; (modifica antes de guardar), &#x27;drop low&#x27; (quita los de confidence baja) o &#x27;skip N&#x27; (sáltate uno).</p><p>Cuándo: <span>Cada vez que /aprende te muestre la lista numerada y espere tu respuesta.</span></p></div></div></div></div><div id="g-hooks"><p>06 · Hooks</p><h2>Hooks · activos por defecto, jamás escriben aprendizajes</h2><div><p>Si instalaste por plugin, estos dos hooks quedaron activos automáticamente. La garantía clave: solo acumulan señales en <code>~/.claude/projects/&lt;slug&gt;/.aprende-signals.md</code> — nunca escriben aprendizajes por su cuenta.</p><div><div class="gcard"><div><code>PostToolUse</code><p>Cuándo corre: Después de cada llamada Bash, Edit o Write que hace Claude Code.</p></div><p>Un script de bash (capture-signal.sh) inspecciona el resultado. Si ve un exit code no-cero, un mensaje de error, o el mismo archivo editado 3+ veces, appendea una línea a ~/.claude/projects/&lt;slug&gt;/.aprende-signals.md.</p><p>Garantía: <span>Nunca escribe un aprendizaje. Solo acumula señales para que /aprende las lea después.</span></p></div><div class="gcard"><div><code>Stop</code><p>Cuándo corre: Al cerrar la sesión de Claude Code.</p></div><p>Otro script (stop-suggest.sh) revisa si hay señales sin atender y no corriste /aprende. Si es así, te emite un recordatorio de una línea sugiriendo correrlo antes de cerrar.</p><p>Garantía: <span>Tampoco escribe aprendizajes. Solo te recuerda — el control sigue siendo tuyo.</span></p></div></div><p>Si prefieres correr <code>/aprende</code> solo a mano sin recordatorios, desactívalos. La habilidad deja un backup de tu <code>~/.claude/settings.json</code> antes de modificarlo, por si te arrepientes.</p><div class="gcard"><p>Desactivar los 2 hooks (deja backup automático)</p><div><code>/aprende-disable-hooks</code></div><span class="gbtn">Copiar comando</span></div></div></div><div id="g-categorias"><p>07 · Almacenamiento</p><h2>Las 4 categorías de memoria y dónde vive cada una</h2><div><p>Aprende guarda lo que tú apruebes en cuatro categorías. Cada una vive en una ruta específica y cumple un rol distinto.</p><div class="ggrid"><div class="gcard"><code>memory</code><p>Hechos durables, preferencias del usuario, contexto del proyecto que no cambia entre sesiones.</p><div><p>Vive en</p><code>~/.claude/projects/&lt;slug&gt;/memory/&lt;name&gt;.md</code></div><div><p>Filename ejemplo</p><code>feedback_pnpm-sobre-npm.md</code></div></div><div class="gcard"><code>lesson</code><p>Pasó un error y lo resolvieron juntos. Captura las 4 secciones Reflexion: qué pasó, por qué pasó, cómo evitar, señal de detección.</p><div><p>Vive en</p><code>Misma carpeta que memory/, con prefijo lesson_ y type: lesson en el frontmatter.</code></div><div><p>Filename ejemplo</p><code>lesson_webview-storage.md</code></div></div><div class="gcard"><code>skill</code><p>Apareció un workflow multi-paso reusable que el agente debería saber armar solo. Deja un SKILL.md stub para que tú lo completes después.</p><div><p>Vive en</p><code>~/.claude/skills/&lt;slug&gt;/SKILL.md (o ./.claude/skills/...)</code></div><div><p>Filename ejemplo</p><code>SKILL.md</code></div></div><div class="gcard"><code>project-doc</code><p>Comandos de build, convenciones del repo, gotchas para todo agente futuro — incluso si abren el repo con Codex.</p><div><p>Vive en</p><code>./CLAUDE.md + ./AGENTS.md (escritura dual)</code></div><div><p>Filename ejemplo</p><code>CLAUDE.md (marcador &lt;!-- /aprende YYYY-MM-DD --&gt;)</code></div></div></div><div><p>Mapa de almacenamiento completo</p><div class="gcard"><pre>~/.claude/
+├── projects/
+│   └── -Users-tu-ruta-al-proyecto/
+│       └── memory/
+│           ├── MEMORY.md                    # índice
+│           ├── feedback_pnpm-sobre-npm.md   # type: feedback
+│           ├── project_supabase-rls.md      # type: project
+│           ├── lesson_webview-storage.md    # type: lesson (Reflexion)
+│           └── ...
+├── skills/
+│   ├── aprende/        # la habilidad (workflow A → E)
+│   ├── learn/          # alias inglés
+│   └── ...             # cualquier skill que /aprende deje como stub
+└── settings.json       # config de hooks (después de /aprende-enable-hooks)
+
+&lt;tu-proyecto&gt;/
+├── CLAUDE.md           # para Claude Code
+├── AGENTS.md           # para Codex (escritura dual, mismo contenido)
+└── .aprende/           # solo si corriste --portable
+    ├── index.md
+    └── lessons/
+        └── ...</pre></div></div></div></div><div id="g-codex"><p>08 · Cross-tool</p><h2>Cross-tool · funciona también con Codex sin migrar nada</h2><div><p>Aprende está diseñado para vivir en dos ecosistemas a la vez: Claude Code y Codex. La idea es que abras el mismo proyecto en cualquiera de los dos y el agente arranque ya enterado.</p><div><div class="gcard"><p>Escritura dual a CLAUDE.md + AGENTS.md</p><p>Cada vez que /aprende guarda un project-doc, escribe el mismo contenido en CLAUDE.md y en AGENTS.md (la convención que Codex lee). No tienes que mantener dos archivos a mano — la habilidad los sincroniza por ti.</p></div><div class="gcard"><p>Flag --portable para lessons y memories</p><p>Si corres /aprende --portable, además del lugar habitual en ~/.claude/projects/ también espeja las lessons a ./.aprende/lessons/ dentro del proyecto, con un index.md plano. Codex puede leerlo y arrancar enterado.</p></div><div class="gcard"><p>Convención agentskills.io</p><p>La habilidad misma es Markdown + YAML, sin SDK propietario. Cualquier agente que entienda la convención agentskills.io puede cargarla y correr los 5 pases A → E.</p></div></div><div class="gcard"><p>Activar el mirror para Codex (corre cuando termines una sesión)</p><div><code>/aprende --portable</code></div><span class="gbtn">Copiar comando</span></div></div></div><div id="g-principios"><p>09 · Principios</p><h2>7 principios de diseño · por qué aprende dice no a la captura automática</h2><div><p>Los siete principios explican por qué la habilidad se siente intencional en vez de mágica. Si en algún momento /aprende parece rebelde, revisa estos siete — siempre hay un principio detrás de la decisión.</p><ol><li><div><span>1.</span><p>Confirmación primero</p></div><p>Nada se escribe a disco hasta que tú digas qué guardar. La habilidad repite esta regla tres veces internamente porque es la más importante.</p></li><li><div><span>2.</span><p>Prefiere falsos negativos</p></div><p>Una regla equivocada cristalizada en memoria es peor que repetir la misma corrección tres veces. Las etiquetas de confidence (alta / media / baja) son obligatorias para que tú filtres.</p></li><li><div><span>3.</span><p>Anota overlaps, no dropees</p></div><p>Cuando un candidato parece duplicado de algo ya guardado, lo marca [overlaps with: nombre-existente] y te deja decidir. Nunca dropea en silencio.</p></li><li><div><span>4.</span><p>Retira, no borres</p></div><p>Las lecciones obsoletas reciben status: retired en su frontmatter, no se borran con rm. El rastro de auditoría importa para entender por qué cambió tu workflow.</p></li><li><div><span>5.</span><p>Reflexion sobre logging</p></div><p>Las lecciones capturan por qué pasó un error (no solo qué). El paper de Reflexion (Shinn et al., 2023) midió +20% de lift por incluir ese why — por eso las 4 secciones son obligatorias.</p></li><li><div><span>6.</span><p>Los hooks son consejeros, no autoridades</p></div><p>PostToolUse y Stop solo acumulan señales y te recuerdan. Nunca escriben aprendizajes por su cuenta. La captura automática es el modo de falla que cristaliza falsos positivos.</p></li><li><div><span>7.</span><p>Tope de 15 candidatos por corrida</p></div><p>Si /aprende encuentra más de 15 señales en una sesión, recorta a los 15 con mayor confidence. Fuerza foco — mejor 5 lessons buenas que 50 mediocres.</p></li></ol></div></div><div id="g-prompts"><p>10 · Para Claude Code</p><h2>7 prompts copy-paste · pégalos y deja que Claude haga el trabajo</h2><div><p>Cada prompt está pensado para un momento específico: antes de instalar, después de tu primera corrida, una vez al mes para podar, cuando vayas a migrar a Codex, cuando la carpeta de memoria se sienta llena, cuando una lesson resulte falsa, y cuando ya sepas qué lesson quieres guardar sin esperar al escaneo. Pégalos en orden o salta directo al que aplica hoy.</p><div><div class="gcard"><div><div><h3>Antes de instalar: verifica que tienes todo listo</h3><p>Pega este prompt en Claude Code antes de correr /plugin marketplace add. Claude revisa tu versión, permisos y archivos del proyecto y te dice si puedes seguir o si hay algo que arreglar primero.</p></div><span class="gbtn">Copiar</span></div><div><pre>Voy a instalar la habilidad aprende (https://github.com/Hainrixz/aprende-skill). Antes de hacerlo, quiero un diagnóstico rápido en seis puntos.
+
+1. Revisa la versión de Claude Code instalada. Tiene que ser 2.0 o superior. Si no llegamos a esa versión, dime cómo actualizar (npm install -g @anthropic-ai/claude-code@latest si me instalé por npm; reinstalar la app si me instalé por desktop).
+
+2. Verifica permisos de escritura en ~/.claude/. Lista los archivos que ya viven ahí (projects/, skills/, settings.json si existe). Si la carpeta no existe todavía, dímelo — eso es normal en una instalación nueva.
+
+3. Revisa si este repo donde estamos ya tiene CLAUDE.md o AGENTS.md. Si los tiene, abre los primeros 20 renglones de cada uno y dime qué encontraste (esto importa porque aprende va a hacer escritura dual a los dos archivos).
+
+4. Comprueba si por error tengo alguna otra habilidad de memoria activa (claude-mem, mempalace, claude-reflect). Lee ~/.claude/settings.json si existe y dime qué hooks tiene registrados.
+
+5. Resumen en cuatro bullets:
+   - Versión de Claude Code: &lt;X.Y&gt;
+   - Permisos en ~/.claude/: &lt;ok / faltan&gt;
+   - CLAUDE.md / AGENTS.md en el repo: &lt;existen / no existen&gt;
+   - Otras habilidades de memoria activas: &lt;ninguna / cuáles&gt;
+
+6. Recomendación final: ¿puedo seguir con /plugin marketplace add Hainrixz/aprende-skill o necesito arreglar algo primero?
+
+No instales ni borres nada. Solo el reporte. Cuando lo apruebe, te paso el siguiente prompt.</pre></div></div><div class="gcard"><div><div><h3>Corre tu primera /aprende con explicación paso a paso</h3><p>Para después de una sesión real donde corregiste algo o resolvieron un error juntos. Claude corre /aprende, te explica cada candidato antes de pedir tu confirmación, y al final te dice exactamente dónde quedó cada cosa.</p></div><span class="gbtn">Copiar</span></div><div><pre>Acabamos de terminar una sesión donde trabajamos en este proyecto. Antes de cerrar, quiero correr /aprende por primera vez y entender cada paso.
+
+1. Antes de correrlo, hazme un resumen de la sesión en tres bullets: qué corregí, qué errores resolvimos juntos, qué decisión tomé que el agente debería recordar la próxima vez. Esto me ayuda a saber qué esperar de la lista.
+
+2. Ahora corre /aprende. Cuando aparezca la lista numerada de candidatos, NO me pidas la confirmación todavía. En vez de eso, para cada candidato dime:
+   - Qué señal lo originó (corrección explícita, error → fix, patrón repetido, explicación de por qué, workflow descrito).
+   - Por qué cayó en esa categoría (memory, lesson, skill, o project-doc) y no en otra.
+   - Qué confidence label tiene (alta, media, baja) y por qué.
+   - Si tiene un marcador [overlaps with: ...], dime con qué se solapa.
+
+3. Después de tu explicación, te digo qué números aprobar. Espero usar números o rangos (1,3-5 por ejemplo). Si no quiero guardar ninguno, digo &#x27;none&#x27;. Si quiero guardar todos los de alta confidence y descartar los de baja, digo &#x27;drop low&#x27;.
+
+4. Cuando ejecutes las escrituras, dime archivo por archivo cuál escribiste y a qué ruta exacta (no me digas solo &#x27;guardé el memory&#x27;, dime ~/.claude/projects/&lt;slug&gt;/memory/&lt;filename&gt;.md).
+
+5. Al final, abre MEMORY.md y muéstrame las líneas que se agregaron. Quiero verificar que el índice quedó al día.
+
+Si algo falla:
+- /aprende no aparece como comando → corrí /plugin install aprende@aprende-skill antes de esto?
+- La lista está vacía → quizás la sesión fue corta o no hubo correcciones; corre /aprende otra vez después de una sesión más cargada.
+- Permisos negados al escribir → revisa que ~/.claude/projects/&lt;slug&gt;/memory/ exista y tenga permisos de escritura.</pre></div></div><div class="gcard"><div><div><h3>Audita las lessons del mes con semáforo verde/amarillo/rojo</h3><p>Corre /aprende --review pero con un wrapper que clasifica cada lesson por estado actual. Útil una vez al mes para podar sin perder rastro.</p></div><span class="gbtn">Copiar</span></div><div><pre>Es momento de revisar las lessons que aprende ha guardado durante el último mes. Antes de correr /aprende --review, quiero un mapa completo.
+
+1. Lista todas las lessons del proyecto actual. Lee ~/.claude/projects/&lt;slug&gt;/memory/ y filtra solo los archivos que empiezan con lesson_. Para cada uno extrae: filename, fecha de creación (frontmatter), título corto, y status si existe (active, retired, draft).
+
+2. Para cada lesson, clasifícala con un semáforo:
+   - 🟢 Verde: La lesson sigue siendo relevante. Las 4 secciones Reflexion (qué pasó / por qué / cómo evitar / señal de detección) tienen sentido contra el estado actual del repo.
+   - 🟡 Amarillo: Borderline. La lesson capturó algo que pasó pero el código ya cambió. Necesita refresh o nota.
+   - 🔴 Rojo: Retirada. La lesson ya no aplica porque el archivo se borró, la stack cambió, o resultó ser un falso positivo.
+
+3. Ahora corre /aprende --review y deja que la habilidad haga su pasada. Cuando termine, compárame su clasificación con la mía. Si discrepamos, dime en cuál y por qué.
+
+4. Para las lessons clasificadas en rojo, NO uses rm. Edita el frontmatter y agrega status: retired más una línea retired_at: YYYY-MM-DD. La auditoría importa.
+
+5. Al final, dame un resumen:
+   - Total de lessons al inicio: N
+   - Verdes (vigentes): N
+   - Amarillas (necesitan refresh): N
+   - Rojas (retiradas en este review): N
+
+Si algo falla:
+- /aprende --review no encuentra lessons → quizás todavía no has guardado ninguna. Corre /aprende primero después de una sesión donde resolvieron un error.
+- El frontmatter no tiene type: lesson → quizás es una memoria normal, no una lesson. Verifica con grep &quot;^type:&quot; en los archivos.</pre></div></div><div class="gcard"><div><div><h3>Habilita el repo para usar el mismo proyecto en Codex</h3><p>Antes de abrir el proyecto en Codex, corre /aprende --portable para que las lessons y memories queden espejadas en ./.aprende/ y AGENTS.md tenga la referencia para que Codex las cargue.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero abrir este proyecto también en Codex y necesito que conserve la memoria que aprende ya guardó en Claude Code. Hazlo en este orden.
+
+1. Verifica que aprende ya tiene contenido para migrar. Cuenta cuántos archivos hay en ~/.claude/projects/&lt;slug&gt;/memory/ (memorias y lessons). Si hay cero, dímelo y detente acá — no hay nada que migrar todavía.
+
+2. Corre /aprende --portable. Esto hace dos cosas: la corrida estándar (escanea, presenta candidatos, espera confirmación) y al ejecutar también espeja las lessons aprobadas a ./.aprende/lessons/ en la raíz del proyecto.
+
+3. Verifica que ./.aprende/ quedó creado. Listame su contenido:
+   - ./.aprende/index.md (debe existir)
+   - ./.aprende/lessons/&lt;filename&gt;.md por cada lesson que se mirrors
+
+4. Abre el AGENTS.md del proyecto. Tiene que tener una línea agregada automáticamente apuntando a ./.aprende/index.md. Si no la tiene, agrega tú esta línea al final de la sección de project-docs:
+
+   ## Aprende mirror
+   Las lessons espejadas viven en ./.aprende/lessons/. El índice está en ./.aprende/index.md.
+
+5. Smoke test desde Codex (manual): cuando abras el proyecto en Codex, pídele &quot;lee AGENTS.md y dime qué lessons hay en ./.aprende/lessons/&quot;. Si responde con la lista, la migración funcionó.
+
+Si algo falla:
+- ./.aprende/ no se creó → confirma que corriste --portable, no /aprende solo. El flag es lo que activa el mirror.
+- AGENTS.md no recibió la línea → revisa permisos de escritura en la raíz del proyecto.
+- Codex no encuentra el index → quizás abrió el proyecto antes de que terminara la corrida. Cierra Codex, vuelve a abrir.</pre></div></div><div class="gcard"><div><div><h3>Audita la carpeta memory/, marca overlaps y sugiere retiros</h3><p>Cuando ~/.claude/projects/&lt;slug&gt;/memory/ empieza a sentirse llena, este prompt hace un inventario, marca duplicados y propone hasta 3 archivos para retirar — sin tocar nada todavía.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero hacer una limpieza guiada de mi carpeta de memoria. No borres ni edites nada — solo me das un reporte y yo apruebo después.
+
+1. Listame todo lo que vive en ~/.claude/projects/&lt;slug&gt;/memory/ (donde &lt;slug&gt; es el slug del proyecto actual). Agrupa por tipo:
+   - feedback_*.md (preferencias del usuario)
+   - project_*.md (contexto del proyecto)
+   - lesson_*.md (lessons estilo Reflexion)
+   - otros (cualquier cosa que no entre en los tres anteriores)
+
+2. Por cada archivo extrae: filename, una línea de resumen del cuerpo, fecha del frontmatter, status si existe.
+
+3. Detecta overlaps. Para cada par de archivos que cubre el mismo tema (mismo error, misma preferencia, misma convención), marca el par con [overlap potencial: &lt;razon de 1 línea&gt;]. NO los unas todavía — solo márcalos.
+
+4. Sugiere hasta 3 archivos para retirar (no borrar). Para cada uno explícame:
+   - Por qué deberías retirarlo (obsoleto, cubierto por otro, capturado por error).
+   - Qué archivo lo reemplaza si aplica.
+   - El comando de edición que ejecutaría: &#x27;edit ~/.claude/projects/&lt;slug&gt;/memory/&lt;filename&gt;.md y agregar status: retired al frontmatter&#x27;.
+
+5. Pregunta confirmación archivo por archivo. Si apruebo, edita solo el frontmatter (agregar status: retired y retired_at: YYYY-MM-DD). Si no apruebo, déjalo intacto y pasa al siguiente.
+
+6. Al final, actualiza MEMORY.md para que el índice refleje los nuevos status. Muéstrame las líneas modificadas.
+
+Si algo falla:
+- Carpeta vacía → /aprende aún no ha capturado nada en este proyecto. Corre una sesión y luego /aprende.
+- Permisos negados → revisa que tu usuario sea dueño de ~/.claude/projects/.</pre></div></div><div class="gcard"><div><div><h3>Marca una lesson como retirada (no borrar)</h3><p>Cuando una lesson capturada resulta ser incorrecta. Este prompt la marca status: retired, agrega el motivo, y deja constancia para futuros reviews — sin borrarla.</p></div><span class="gbtn">Copiar</span></div><div><pre>Una lesson que aprende guardó resultó ser un falso positivo. No la borres — márquemela como retirada con el rastro de auditoría.
+
+1. Te paso el filename exacto (o yo te lo digo después de que listes los disponibles). Ejemplo:
+   ~/.claude/projects/&lt;slug&gt;/memory/lesson_&lt;algo&gt;.md
+
+2. Antes de editar, ábrelo y muéstrame:
+   - El frontmatter actual (todo el bloque YAML).
+   - Las 4 secciones Reflexion (qué pasó / por qué / cómo evitar / señal de detección).
+
+3. Hazme una pregunta corta: ¿por qué crees que es falso positivo? Espera mi respuesta — la voy a copiar tal cual al frontmatter como motivo.
+
+4. Cuando responda, edita el frontmatter agregando estos campos (sin tocar el resto del archivo):
+   - status: retired
+   - retired_at: &lt;fecha de hoy YYYY-MM-DD&gt;
+   - retired_reason: &lt;mi respuesta literal&gt;
+
+5. Actualiza MEMORY.md: cambia la línea que apunta a esta lesson para que diga (retirada YYYY-MM-DD: &lt;motivo abreviado&gt;).
+
+6. Confirma el cambio:
+   - Vuelve a abrir la lesson y muéstrame el frontmatter nuevo.
+   - Vuelve a abrir MEMORY.md y muéstrame la línea actualizada.
+
+7. No borres el archivo. Importa el rastro: en un /aprende --review futuro vamos a poder revisar las lessons retiradas y ver patrones de falsos positivos.
+
+Si algo falla:
+- No encuentras el archivo → quizás está en otra carpeta de proyecto. Lista todas las carpetas en ~/.claude/projects/ que tienen lessons.
+- El archivo ya tiene status: retired → confirma fecha y motivo viejo, y pregunta si quiero sobrescribir.</pre></div></div><div class="gcard"><div><div><h3>Escribe una lesson sin correr /aprende</h3><p>Para cuando sabes exactamente qué lección quieres guardar y no quieres esperar a que aprende escanee la conversación. Claude la formatea con las 4 secciones Reflexion y la deja en la carpeta correcta.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero guardar una lesson manualmente sin correr /aprende. Tengo el contenido en la cabeza y necesito que me lo formatees con las 4 secciones Reflexion y lo guardes en el lugar correcto.
+
+1. Pregúntame las 4 secciones, una por una, esperando mi respuesta antes de pasar a la siguiente:
+   - **Qué pasó:** el evento concreto (error, mistake, mala decisión).
+   - **Por qué pasó:** la causa raíz, no el síntoma.
+   - **Cómo evitar:** la regla práctica que el agente debe seguir la próxima vez.
+   - **Señal de detección:** qué patrón en el código o en el log indica que el mismo error está a punto de repetirse.
+
+2. Cuando tenga las 4 respuestas, propónme un filename corto en kebab-case con prefijo lesson_ (ejemplo: lesson_webview-localstorage.md). Espera mi visto bueno antes de escribir.
+
+3. Arma el archivo final con este formato exacto:
+
+   ---
+   type: lesson
+   created_at: &lt;fecha hoy YYYY-MM-DD&gt;
+   status: active
+   confidence: &lt;pregúntame: alta / media / baja&gt;
+   ---
+
+   # &lt;título corto en una línea&gt;
+
+   **Qué pasó:** &lt;respuesta 1&gt;
+
+   **Por qué pasó:** &lt;respuesta 2&gt;
+
+   **Cómo evitar:** &lt;respuesta 3&gt;
+
+   **Señal de detección:** &lt;respuesta 4&gt;
+
+4. Guarda el archivo en ~/.claude/projects/&lt;slug&gt;/memory/&lt;filename&gt;.md (donde &lt;slug&gt; es el slug del proyecto actual).
+
+5. Actualiza MEMORY.md agregando una línea al final con el filename + el título.
+
+6. Confírmame qué quedó:
+   - Ruta del archivo nuevo.
+   - Línea agregada a MEMORY.md.
+
+Si algo falla:
+- Carpeta memory/ no existe → créala primero con mkdir -p antes de escribir.
+- Filename ya existe → propón una variación (lesson_&lt;base&gt;-v2.md) y pregunta cuál usar.</pre></div></div></div></div></div><div id="g-faq"><p>11 · FAQ</p><h2>Las 4 preguntas que la comunidad hace siempre</h2><div><div><span>›</span>¿Mi carpeta de memoria se va a llenar de basura?<p>Tres defensas: las etiquetas de confidence te hacen filtrar antes de guardar; el dedup marca overlaps antes de mostrarte la lista; y /aprende --review te deja podar mensualmente con un comando.</p><span>›</span>¿Funciona con Codex?<p>Sí. Las escrituras de project-doc van siempre a CLAUDE.md y AGENTS.md a la vez. Para lessons, corre /aprende --portable para espejarlas a ./.aprende/ dentro del proyecto — Codex puede leer ese folder.</p><span>›</span>¿El agente puede aprender solo sin que yo corra /aprende?<p>No, por diseño. La captura automática es el modo de falla que cristaliza falsos positivos. Los hooks te recuerdan correr /aprende pero nunca escriben por su cuenta. El control sigue siendo tuyo siempre.</p><span>›</span>¿En qué se diferencia de claude-mem o claude-reflect?<p>aprende es intencionalmente más simple: sin SQLite, sin embeddings, sin servidor MCP. Markdown plano + workflow bilingüe + formato Reflexion para las lessons. Se enchufa a la convención de memoria existente del usuario en vez de levantar un sistema paralelo. Si necesitas búsqueda vectorial, mira claude-mem o MemPalace.</p></div></div></div><div id="g-checklist"><p>12 · Antes de cerrar</p><h2>Checklist final · siete pasos para declarar que se acabó la amnesia</h2><div><p>Antes de declarar que aprende quedó bien instalado, pasa los siete ítems. Cada uno trae cómo verificarlo en una línea.</p><ul><li><span>☐</span><div><p>Claude Code 2.0+ está instalado y la primera sesión funciona.</p><p><span>Cómo verificar:</span> Abre Claude Code, escribe /help. Si responde con la lista de comandos, está listo.</p></div></li><li><span>☐</span><div><p>El plugin aprende quedó instalado (corriste los 2 slash commands).</p><p><span>Cómo verificar:</span> Escribe / en una sesión nueva. Tiene que aparecer /aprende en la lista de comandos disponibles.</p></div></li><li><span>☐</span><div><p>Corriste tu primera /aprende y guardaste al menos un candidato.</p><p><span>Cómo verificar:</span> Lee ~/.claude/projects/&lt;slug&gt;/memory/MEMORY.md — debe tener una entrada con el filename del aprendizaje que aprobaste.</p></div></li><li><span>☐</span><div><p>Los hooks PostToolUse + Stop están activos (por default si instalaste por plugin).</p><p><span>Cómo verificar:</span> Cierra la sesión sin correr /aprende. Si ves un recordatorio de una línea sugiriendo correrlo, los hooks están activos.</p></div></li><li><span>☐</span><div><p>Si guardaste un project-doc, CLAUDE.md tiene el marcador HTML &lt;!-- /aprende YYYY-MM-DD --&gt;.</p><p><span>Cómo verificar:</span> Abre CLAUDE.md y busca el comentario HTML. Cada bloque que aprende escribió queda firmado con la fecha.</p></div></li><li><span>☐</span><div><p>Si tienes Codex también, AGENTS.md tiene el mismo contenido que CLAUDE.md.</p><p><span>Cómo verificar:</span> Abre AGENTS.md y compara con CLAUDE.md. Si son idénticos en la sección que /aprende tocó, la escritura dual funcionó.</p></div></li><li><span>☐</span><div><p>Tienes un recordatorio mensual para correr /aprende --review.</p><p><span>Cómo verificar:</span> Agéndalo en tu calendario o en el archivo de tareas que uses — sin podar, el folder se infla con lessons que ya no aplican.</p></div></li></ul><div class="gcard"><p>Si los siete pasan, la siguiente sesión de Claude Code va a arrancar ya enterada de lo que aprendiste con él. Se acabó la amnesia.</p></div></div></div></div><div><div><p>Cierre de la guía</p><p>Aprende es Markdown plano hecho por personas reales. Si te salvó de repetir un error tres veces, dale una estrella al repo y compártelo con alguien cuyo agente sigue olvidando lo mismo cada semana. Construido por la comunidad <a href="#/boveda">tododeia</a> junto a <a href="https://github.com/Hainrixz" target="_blank" rel="noopener">@Hainrixz</a> como mantenedor del repo. Si quieres leer la guía completa en español (con todos los detalles del SKILL.md y los hooks), revisa el <a href="https://github.com/Hainrixz/aprende-skill/blob/main/README.es.md" target="_blank" rel="noopener">README.es.md</a> en GitHub.</p></div><div class="ggrid"><a class="gcard" href="https://github.com/Hainrixz/aprende-skill" target="_blank" rel="noopener"><div><p>Instalar aprende ahora</p><p>/plugin marketplace add Hainrixz/aprende-skill · 30 segundos · MIT</p></div></a><a class="gcard" href="https://github.com/Hainrixz/aprende-skill" target="_blank" rel="noopener"><div><p>Ver repo Hainrixz/aprende-skill</p><p>Código, SKILL.md, hooks-handlers y READMEs bilingües</p></div></a></div><div class="ggrid"><a class="gcard" href="#/g/guia-skills-claude"><div><p>La guía de Skills de 0 a 100</p><p>Cómo funcionan las skills en general, antes de instalar una.</p></div></a><a class="gcard" href="#/g/memoria-claude-code"><div><p>Memoria infinita para Claude Code</p><p>Si necesitas embeddings, MCP o búsqueda vectorial, mira Claude-Mem y MemPalace.</p></div></a><a class="gcard" href="#/g/ecosistema-de-agentes"><div><p>Ecosistema de agentes</p><p>Cuando una sola habilidad ya no alcanza y quieres orquestar varios agentes.</p></div></a></div><p>Aprende es open-source bajo MIT, construido por <a href="https://www.tododeia.com" target="_blank" rel="noopener">tododeia</a> y mantenido por <a href="https://github.com/Hainrixz" target="_blank" rel="noopener">@Hainrixz</a>. Construido sobre patrones de <a href="https://arxiv.org/abs/2303.11366" target="_blank" rel="noopener">Reflexion (Shinn et al., 2023)</a>, <a href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener">Hermes Agent (Nous Research)</a>, <a href="https://github.com/BayramAnnakov/claude-reflect" target="_blank" rel="noopener">claude-reflect</a> y <a href="https://github.com/thedotmack/claude-mem" target="_blank" rel="noopener">claude-mem</a>. Mascota y arte del hero generados con <a href="https://higgsfield.ai" target="_blank" rel="noopener">Higgsfield</a>. Esta página no está afiliada a Anthropic ni a los autores de los repos referenciados.</p></div></div>
+</article>

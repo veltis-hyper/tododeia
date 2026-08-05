@@ -1,0 +1,78 @@
+<article class="chapter guia" data-slug="protege-tu-app">
+<div><div><h1>Protege Tu App</h1><p>Programar con Claude es increíble, hasta que te hackean. Estas son las tres configuraciones de seguridad que le dices a Claude y él las implementa por ti — con analogías simples para que entiendas qué hace cada una y prompts listos para copiar y pegar.</p></div><div class="gcard"><p>Las 3 protecciones</p><div><span class="gbtn"><span>01</span>Row-Level Security (RLS)</span><span class="gbtn"><span>02</span>CORS</span><span class="gbtn"><span>03</span>Security Headers</span></div></div><div class="gcard"><strong>¿Cómo funciona esta guía?</strong> Cada sección tiene una analogía simple para que entiendas el concepto, una explicación de los riesgos, y un <strong>prompt detallado</strong> que puedes copiar y pegarle a Claude para que configure todo en tu proyecto. Tú no necesitas saber cómo funciona por dentro — solo necesitas saber cómo se llama cada cosa.</div><div><div id="g-rls"><p>01 row-level security</p><h2>Row-Level Security (RLS)</h2><div><div class="gcard"><div><h3>Imagínalo así</h3></div><p>Imagina una <strong>caja de juguetes gigante</strong> donde todos los niños del salón guardan sus juguetes. Sin candado, cualquier niño puede agarrar los juguetes de todos. Con Row-Level Security, le pones un <strong>candado mágico</strong> que sabe quién es cada niño — cuando uno abre la caja, solo ve sus propios juguetes. Los demás juguetes son invisibles para él.</p></div><div class="gcard"><div><h3>¿Qué pasa sin RLS?</h3></div><p>Ahorita, si alguien entra a tu app, puede ver la información de <strong>todos</strong> los usuarios: correos, datos privados, todo. Un usuario malicioso solo necesita cambiar un ID en la URL para ver los datos de otra persona. Es la vulnerabilidad más común en apps con Supabase y PostgreSQL.</p></div><p>Row-Level Security es una función de PostgreSQL (la base de datos que usa Supabase) que pone reglas directamente en la base de datos. En vez de confiar en que tu código filtre bien los datos, la base de datos <strong>automáticamente</strong> esconde las filas que no le pertenecen al usuario. Si tu código tiene un error, RLS sigue protegiendo.</p><div class="gcard"><div><div><h3>Prompt para activar RLS con Claude</h3><p>Copia este prompt, cámbialo con tus tablas y pégalo en Claude Code. Él genera todo el SQL.</p></div><span class="gbtn">Copiar</span></div><div><pre>Estoy usando Supabase con PostgreSQL. Tengo las siguientes tablas en mi base de datos:
+
+- users (id, email, name)
+- posts (id, user_id, title, content, created_at)
+- comments (id, post_id, user_id, content)
+
+(Cambia estas tablas por las tuyas)
+
+Necesito que configures Row-Level Security (RLS) para que:
+1. Cada usuario solo pueda VER sus propios posts
+2. Cada usuario solo pueda CREAR posts con su propio user_id
+3. Cada usuario solo pueda EDITAR sus propios posts
+4. Cada usuario solo pueda BORRAR sus propios posts
+5. Los comentarios se pueden ver todos, pero solo editar/borrar los propios
+
+Por favor:
+- Activa RLS en TODAS las tablas con ALTER TABLE ... ENABLE ROW LEVEL SECURITY
+- Crea políticas SEPARADAS para SELECT, INSERT, UPDATE y DELETE (no uses FOR ALL)
+- Usa auth.uid() para referenciar al usuario autenticado
+- NUNCA uses user_metadata en las políticas (los usuarios pueden modificarlo)
+- Agrega índices en las columnas user_id para rendimiento
+- Muéstrame cómo probar las políticas desde el SDK de JavaScript de Supabase
+- Dame el SQL completo que pueda copiar y pegar en el SQL Editor de Supabase</pre></div></div><div class="gcard"><div><strong>Tip de Supabase</strong></div>Supabase tiene un <strong>Security Advisor</strong> en tu dashboard (Authentication → Policies). Te dice exactamente qué tablas no tienen RLS y qué políticas te faltan. Copia lo que te dice y pégaselo a Claude para que lo arregle por ti.</div><div class="gcard"><strong>¿Cómo sé que ya funciona?</strong><ul><li>Crea dos usuarios de prueba en tu app</li><li>Inicia sesión como Usuario A y crea datos</li><li>Inicia sesión como Usuario B — no debes ver los datos de A</li><li>Prueba siempre desde el SDK de JavaScript, no desde el SQL Editor (el editor salta las reglas de RLS)</li></ul></div></div></div><div id="g-cors"><p>02 cors</p><h2>CORS (Cross-Origin Resource Sharing)</h2><div><div class="gcard"><div><h3>Imagínalo así</h3></div><p>Tu aplicación tiene <strong>puertas</strong> donde entra y sale información. CORS es el <strong>guardia de seguridad</strong> en la puerta. Tiene una lista de quién puede entrar. Si alguien llega y no está en la lista, el guardia dice &quot;no pasas&quot;. Sin guardia, cualquier desconocido puede entrar por la puerta y meter cosas raras en tu app.</p></div><div class="gcard"><div><h3>¿Qué pasa sin CORS?</h3></div><p>Sin CORS, alguien puede crear una <strong>página falsa</strong> que haga requests a tu API haciéndose pasar por tu app. Si tu usuario está logueado en una pestaña y visita la página del atacante en otra pestaña, el atacante puede robar su información, hacer cambios en su cuenta o acceder a datos privados — todo sin que el usuario se entere.</p></div><p>CORS es una regla del navegador que controla qué páginas web pueden hablar con tu API. Cuando tu frontend en <code>miapp.com</code> pide datos a <code>api.miapp.com</code>, el navegador revisa si la API permite ese origen. Si no lo permite, el navegador <strong>bloquea la respuesta</strong> automáticamente.</p><div class="gcard"><div><div><h3>Prompt para configurar CORS con Claude</h3><p>Cambia los dominios por los tuyos y tu stack. Claude configura todo.</p></div><span class="gbtn">Copiar</span></div><div><pre>Estoy construyendo una aplicación web. Mi frontend está en https://miapp.com y mi backend/API está en https://api.miapp.com (cambia estos dominios por los tuyos).
+
+Necesito que configures CORS correctamente para que:
+1. SOLO acepte requests que vengan de mi dominio exacto (https://miapp.com) — NUNCA uses Access-Control-Allow-Origin: *
+2. Permita los métodos GET, POST, PUT, DELETE
+3. Permita los headers estándar más Authorization y Content-Type
+4. Soporte cookies y tokens de autenticación (credentials)
+5. Maneje correctamente los preflight requests (OPTIONS)
+
+Reglas importantes:
+- NO uses wildcards (*) en ningún header de CORS
+- NO copies el header Origin del request al response (eso es inseguro)
+- SOLO permite HTTPS, nunca HTTP
+- Si usas credentials: true, el origin TIENE que ser exacto (no puede ser *)
+
+También necesito que:
+- Me expliques qué es un preflight request y por qué importa
+- Me muestres cómo verificar que CORS está bien configurado usando el Network tab de DevTools
+- Me des un ejemplo de qué pasa cuando alguien intenta acceder desde un dominio no autorizado
+
+Mi stack es: [Next.js / Express / otro — pon el tuyo aquí]</pre></div></div><div><h3>Errores que NUNCA debes cometer</h3><div class="ggrid"><div><p>Usar * como origin</p><p>Cualquier página del mundo puede hacer requests a tu API</p></div><div><p>Reflejar el Origin del request</p><p>Un atacante manda su dominio y tu servidor lo acepta automáticamente</p></div><div><p>Mezclar * con credentials</p><p>Los navegadores lo bloquean, pero algunos developers lo fuerzan y abren la puerta</p></div><div><p>Permitir HTTP además de HTTPS</p><p>Alguien puede interceptar tu tráfico y robar datos en el camino</p></div></div></div><div class="gcard"><strong>¿Cómo sé que ya funciona?</strong><ul><li>Abre tu app en el navegador y ve a DevTools → pestaña Network</li><li>Busca un request a tu API — debe tener el header <code>Access-Control-Allow-Origin</code> con tu dominio exacto</li><li>Busca que NO diga <code>*</code> — debe decir tu dominio</li><li>Si ves un request OPTIONS antes del request real, es el preflight — debe regresar 200</li></ul></div></div></div><div id="g-security-headers"><p>03 security headers</p><h2>Security Headers</h2><div><div class="gcard"><div><h3>Imagínalo así</h3></div><p>Los Security Headers son como <strong>letreros de seguridad</strong> en un parque de juegos. Uno dice &quot;no te subas al techo&quot; (X-Frame-Options). Otro dice &quot;solo usa los juegos oficiales&quot; (Content-Security-Policy). Otro dice &quot;revisa el piso antes de jugar&quot; (X-Content-Type-Options). Estos letreros le dicen al navegador las <strong>reglas de seguridad</strong> de tu página.</p></div><div class="gcard"><div><h3>¿Qué pasa sin Security Headers?</h3></div><p>Sin esta configuración, un atacante puede: meter tu página dentro de una <strong>página falsa</strong> para engañar a tus usuarios (clickjacking), inyectar <strong>código malicioso</strong> que robe datos (XSS), subir archivos <strong>disfrazados</strong> que el navegador ejecuta como código, o interceptar tu <strong>tráfico HTTP</strong> para robar información en el camino.</p></div><div><h3>Los 6 headers que necesitas</h3><div class="ggrid"><div><p>X-Frame-Options</p><p>Evita que metan tu página dentro de una página falsa</p><code>SAMEORIGIN</code></div><div><p>Content-Security-Policy</p><p>Controla de dónde puede cargar scripts, estilos e imágenes</p><code>default-src &#x27;self&#x27;...</code></div><div><p>X-Content-Type-Options</p><p>Evita que el navegador ejecute archivos disfrazados</p><code>nosniff</code></div><div><p>Strict-Transport-Security</p><p>Fuerza HTTPS siempre — nadie puede interceptar tu tráfico</p><code>max-age=31536000</code></div><div><p>Referrer-Policy</p><p>Controla qué info se envía cuando el usuario sale de tu página</p><code>strict-origin-when-cross-origin</code></div><div><p>Permissions-Policy</p><p>Desactiva cámara, micrófono y ubicación si no los necesitas</p><code>geolocation=(), camera=()</code></div></div></div><div class="gcard"><div><div><h3>Prompt para agregar Security Headers con Claude</h3><p>Cambia tu stack y dominio. Claude sabe exactamente dónde ponerlos.</p></div><span class="gbtn">Copiar</span></div><div><pre>Estoy construyendo una aplicación web con [Next.js / Express / otro — pon tu stack aquí]. Mi dominio es https://miapp.com.
+
+Necesito que agregues TODOS los Security Headers de producción:
+
+1. X-Frame-Options: SAMEORIGIN
+   → Para que nadie pueda meter mi página dentro de un iframe en otra página falsa (previene clickjacking)
+
+2. Content-Security-Policy (CSP):
+   → default-src &#x27;self&#x27; — solo cargar recursos de mi propio dominio
+   → script-src &#x27;self&#x27; — solo scripts de mi dominio (nada de inline ni eval)
+   → img-src &#x27;self&#x27; https: — imágenes de mi dominio o cualquier HTTPS
+   → style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27; — estilos de mi dominio (unsafe-inline necesario para algunos frameworks)
+   → connect-src &#x27;self&#x27; https://api.miapp.com — solo llamadas API a mi backend
+   → font-src &#x27;self&#x27; — solo fuentes de mi dominio
+   → object-src &#x27;none&#x27; — bloquear &lt;object&gt; y &lt;embed&gt;
+
+3. X-Content-Type-Options: nosniff
+   → Para que el navegador no &quot;adivine&quot; qué tipo de archivo es (previene ataques con archivos disfrazados)
+
+4. Strict-Transport-Security: max-age=31536000; includeSubDomains
+   → Forzar HTTPS siempre durante 1 año completo
+
+5. Referrer-Policy: strict-origin-when-cross-origin
+   → Controlar qué información se envía cuando el usuario navega a otro sitio
+
+6. Permissions-Policy: geolocation=(), microphone=(), camera=()
+   → Desactivar acceso a cámara, micrófono y ubicación (a menos que los necesites)
+
+Por favor:
+- Configura todo en el archivo correcto de mi framework
+- Si uso Next.js, ponlo en next.config.js en la sección headers
+- Muéstrame cómo verificar que los headers están funcionando
+- Explícame qué hace cada header en una oración simple
+- Si uso servicios externos (Google Analytics, Stripe, etc.) dime qué ajustar en el CSP</pre></div></div><div class="gcard"><strong>¿Cómo sé que ya funciona?</strong><ul><li>Ve a <a href="https://securityheaders.com" target="_blank" rel="noopener">securityheaders.com</a> y pon tu dominio — te da una calificación de A+ a F</li><li>Abre DevTools → Network → clic en cualquier request → busca Response Headers</li><li>Revisa la consola del navegador — si el CSP bloquea algo legítimo, te dice qué ajustar</li><li>Si usas Google Analytics, Stripe u otro servicio externo, agrega sus dominios al CSP</li></ul></div><div class="gcard"><div><strong>¡Listo!</strong></div>Con estas tres configuraciones — RLS, CORS y Security Headers — tu aplicación está <strong>significativamente más segura</strong> que la mayoría de las apps que andan por ahí. Y lo mejor: tú no necesitas saber cómo funciona cada cosa por dentro. Solo necesitas saber cómo se llaman, se lo dices a Claude, y él se encarga.</div></div></div><div><span class="gbtn">Continuar: CORS</span></div></div></div>
+</article>

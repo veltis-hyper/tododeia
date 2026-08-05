@@ -1,0 +1,234 @@
+<article class="chapter guia" data-slug="jarvis-obsidian">
+<div><div><h1>Tu JARVIS en Obsidian</h1><p>Tony Stark no construyó JARVIS en un día. Pero tampoco tenía Claude Code. <strong>En 20 minutos al día construyes un segundo cerebro que captura, conecta y escribe en tu voz</strong> — todo desde una carpeta local de Obsidian con Claude Code adentro. Esta es la guía completa: arquitectura del vault, los 4 plugins, el CLAUDE.md, las 4 skills y el ritual diario que hace que el sistema empiece a sorprenderte después del día 30.</p></div><div class="gcard"><div><p>Obsidian + Claude Code · Mayo 2026</p><p>Para principiantes y expertos · 4 skills · 1 vault · 20 min al día</p><p>La idea es simple: tu vault de Obsidian son archivos markdown locales en tu disco. Claude Code lee esa carpeta y se vuelve un asistente que conoce tu forma de pensar mejor que cualquier chatbot. Captura sin fricción, conexiones cruzadas, briefs listos y contenido en tu voz — todo sin nubes paralelas.</p><p><strong>Y corre con tu suscripción de Claude Pro o Max — sin API key, sin token billing extra</strong>. Si nunca has tocado terminal, la sección de Setup te lleva paso a paso. Si ya usas Claude Code, salta directo a la arquitectura del vault y al CLAUDE.md — son las dos decisiones que cambian todo el resto.</p></div><div><a href="#g-que-es">Qué es</a><a href="#g-prerequisitos">Setup</a><a href="#g-vault">Vault</a><a href="#g-claude-md">CLAUDE.md</a><a href="#g-skills">Skills</a><a href="#g-ritual">Ritual</a><a href="#g-extender">Extender</a><a href="#g-errores">Errores</a></div><div><span>Obsidian + Claude Code</span><span>Mayo 2026</span><span>Guía completa · comunidad tododeia</span><span>Para principiantes y expertos</span><span>Corre con tu suscripción · sin API key</span><span>100% local · tu vault no se sube a la nube</span></div></div><div><div id="g-que-es"><p>qué es · 60 segundos</p><h2>JARVIS no es un chatbot. Es un sistema.</h2><div><p>La mayoría imagina JARVIS como un asistente de voz que responde preguntas. Eso es la superficie. El JARVIS real es un sistema que conoce a su dueño tan bien que <strong>anticipa lo que necesita antes de que lo pida</strong>.</p><p>La versión que vas a construir hoy hace exactamente cuatro cosas. Captura todo lo que piensas y observas con cero fricción. Conecta ideas a través de tu vault automáticamente, encontrando relaciones que tú no encontrarías a mano. Genera briefs de contenido desde esas conexiones para que nunca arranques en blanco. Y escribe en tu voz exacta desde esos briefs para que el output suene a ti, no a IA.</p><div class="ggrid"><div class="gcard"><div><span class="gpill">01</span><div><p>Captura sin fricción <span>· Todo lo que piensas, observas o escuchas.</span></p><p>Una idea que no anotas la pierdes. JARVIS te da un solo lugar (00-INBOX) donde tirar todo crudo, sin pensar en categorías. La velocidad importa más que la estructura — la organización viene después.</p></div></div></div><div class="gcard"><div><span class="gpill">02</span><div><p>Conecta ideas que tú no verías <span>· Patrones cruzados entre días distintos.</span></p><p>Claude Code lee tu vault entero y encuentra relaciones que tú no detectas a mano: una observación de hoy que responde una pregunta de hace dos semanas, dos notas en dominios distintos que comparten el mismo principio. Ese cruce es donde nace el contenido original.</p></div></div></div><div class="gcard"><div><span class="gpill">03</span><div><p>Genera briefs listos <span>· De insight a estructura en un comando.</span></p><p>Cada conexión fuerte se convierte en un brief con hook, prueba y cierre antes de que escribas la primera palabra. Ya nunca arrancas con la página en blanco — arrancas con el cierre escrito.</p></div></div></div><div class="gcard"><div><span class="gpill">04</span><div><p>Escribe en tu propia voz <span>· El output suena a ti, no a IA.</span></p><p>Le enseñas a Claude tu voz una vez (en CLAUDE.md o pegando 5–10 de tus mejores posts) y todo lo que produzca después suena a tu canal — frases cortas, sin clichés, con tus muletillas. La diferencia entre contenido reciclado y contenido que la audiencia recuerda.</p></div></div></div></div><p>Corre en Obsidian. Está manejado por Claude Code. Y una vez prendido, se vuelve más inteligente cada día sin que hagas nada extra.</p></div></div><div id="g-prerequisitos"><p>paso 0 · setup</p><h2>Lo que necesitas antes de empezar</h2><div><div class="gcard"><p>Todo corre local. Y con tu suscripción de Claude alcanza.</p><p>Tu vault son archivos markdown en tu Mac, Windows o Linux. Claude Code los lee y escribe directo desde tu disco — sin nubes paralelas, sin servicios extras, sin sincronizar nada a un servidor ajeno. Lo único que sale de tu máquina es el contenido que le mandas a Claude para que piense, exactamente igual que cuando le escribes en Claude.ai. Y ahí está la parte que casi nadie cuenta: si ya pagas suscripción Claude Pro o Claude Max, no necesitas API key. Claude Code se loguea con la misma cuenta y corre todo con tu plan — sin token billing, sin pago extra. La API key solo si NO tienes suscripción y prefieres pay-per-token.</p></div><p>Cinco pasos. Si nunca has tocado terminal, sigue cada uno en orden — son unos 15 minutos de setup que se hacen <em>una sola vez en la vida</em>. Después solo abres la terminal, escribes <code>claude</code> y ya estás dentro.</p><ol><li><span class="gpill">01</span><div><p>Obsidian (gratis, en tu máquina)</p><p>Ve a obsidian.md y dale clic al botón &quot;Get Obsidian&quot; para tu sistema (Mac, Windows o Linux). Es gratis para uso personal. Tus notas son archivos markdown plain en tu disco — nada vive en la nube de Obsidian salvo que tú lo decidas. Cuando termine de instalar: abre la app, clic en &quot;Create new vault&quot;, llámalo JARVIS y elige una carpeta donde vivirá (ej. tu Documents/). Listo: ya tienes la primera pieza del sistema. Si quieres ver cómo se ve un vault vacío antes de seguir, navega un par de minutos por el sidebar — es solo una carpeta de archivos .md.</p></div></li><li><span class="gpill">02</span><div><p>Abre la terminal (la app que ejecuta comandos)</p><p>Si nunca la has tocado, no te asustes: en Mac, abre Spotlight con Cmd+Espacio, escribe &quot;Terminal&quot; y dale Enter. En Windows, busca &quot;PowerShell&quot; en el menú de inicio (o instala WSL si quieres entorno Linux completo). Es solo una ventana de texto donde escribes comandos y ves la respuesta. Aquí vive Claude Code. No necesitas saber nada más todavía — los pasos siguientes son copiar y pegar.</p></div></li><li><span class="gpill">03</span><div><p>Node.js (lo que necesita el instalador de Claude Code)</p><p>Ve a nodejs.org y descarga la versión LTS (la verde, recomendada para la mayoría). Doble clic al instalador, siguiente, siguiente, listo. Para verificar que quedó: en tu terminal escribe `node --version`. Si responde algo como `v22.11.0`, jaló. Node es solo el motor que corre el comando de instalación — después no lo vuelves a tocar nunca.</p></div></li><li><span class="gpill">04</span><div><p>Claude Code (la CLI oficial de Anthropic)</p><p>El camino fácil: ve a docs.claude.com/en/docs/claude-code/overview y sigue las instrucciones — Anthropic mantiene esa página al día con los pasos exactos para Mac, Windows y Linux. Si quieres ir directo, una sola línea en tu terminal: `npm install -g @anthropic-ai/claude-code`. Cuando termine, escribe `claude --version` para confirmar. Esa CLI es lo que conecta tu vault con Claude.</p></div></li><li><span class="gpill">05</span><div><p>Login con tu suscripción · sin API key</p><p>Aquí está la parte que ahorra dinero y casi nadie cuenta: si ya pagas Claude Pro o Claude Max ($20–100/mes), NO necesitas API key separada. En tu terminal escribe `claude` para arrancar la CLI por primera vez — la app te va a preguntar cómo te quieres autenticar. Elige la opción &quot;Log in with Claude&quot; (sign in con tu cuenta de claude.ai), se abre el browser, te logueas con la misma cuenta de siempre, regresas a la terminal y ya estás dentro. Corre con tu suscripción, sin token billing extra. Si prefieres pay-per-token o NO tienes suscripción: ahí sí entra console.anthropic.com para una API key. Para 99% de la gente, el subscription login es el camino correcto.</p></div></li></ol><p>Links directos: <a href="https://obsidian.md" target="_blank" rel="noopener">obsidian.md</a>, <a href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a>, <a href="https://docs.claude.com/en/docs/claude-code/overview" target="_blank" rel="noopener">docs.claude.com</a> (la página oficial con instrucciones de instalación para Mac/Windows/Linux). La <a href="https://console.anthropic.com" target="_blank" rel="noopener">API key de console.anthropic.com</a> <strong>solo si NO tienes suscripción Claude Pro/Max</strong> — es la opción avanzada, no la default.</p><div class="gcard"><p>Instalar Claude Code (camino rápido en terminal)</p><div><code># Camino guiado: ve a docs.claude.com/en/docs/claude-code/overview
+# Camino directo en terminal:
+npm install -g @anthropic-ai/claude-code
+
+# Verifica:
+claude --version    # debe responder un número de versión</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>Primer login con tu suscripción de Claude (sin API key)</p><div><code># 1) Entra a tu vault en la terminal:
+cd ~/Documents/JARVIS    # ajusta el path al de tu vault
+
+# 2) Arranca Claude Code por primera vez:
+claude
+
+# 3) Cuando te pregunte cómo loguearte, elige &quot;Log in with Claude&quot;
+#    (subscription login). Se abre el browser, te logueas con tu cuenta
+#    de claude.ai, regresas a la terminal y ya estás conectado.
+#    Corre con tu plan Pro/Max — sin API key, sin token billing.
+
+# Solo si NO tienes suscripción y prefieres pay-per-token:
+#   echo &#x27;export ANTHROPIC_API_KEY=tu_key&#x27; &gt;&gt; ~/.zshrc &amp;&amp; source ~/.zshrc</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>Lanzar Claude Code el día a día (después del login inicial)</p><div><code>cd ~/Documents/JARVIS    # path de tu vault
+claude
+# Claude Code lee tu CLAUDE.md y entra con contexto desde el primer mensaje.
+# El login del paso anterior queda guardado — no lo repites cada vez.</code></div><span class="gbtn">Copiar comando</span></div><p>Cuando Claude Code esté corriendo (ya con tu suscripción detrás), lo primero es probar que la conexión jala. Pega este prompt y mira la respuesta — si suena específica a ti, el setup quedó. Si suena genérica, tu CLAUDE.md (que vas a escribir en el paso 3) necesita más detalle.</p><div class="gcard"><div><div><h3>6. Test de conexión inicial</h3><p>El primer prompt que le pegas a Claude Code después de crear el CLAUDE.md y abrir el vault. Si la respuesta es específica y precisa, el setup quedó. Si es vaga, tu CLAUDE.md necesita más detalle.</p></div><span class="gbtn">Copiar</span></div><div><pre>Lee mi CLAUDE.md completo y dime en un párrafo:
+1. Qué entiendes de este vault y de mí (audiencia, pilares, voz).
+2. Cuál es tu rol exacto adentro del vault según el archivo.
+3. Qué estructura de carpetas vas a respetar y cuál es la regla más importante que NO vas a romper.
+
+Sé específico. No me digas &quot;este es un sistema para tomar notas&quot;. Dime quién soy, qué construyo y cuál es la regla que me importa más. Si algo no quedó claro en el archivo, márcalo en una bullet aparte para que yo lo arregle.</pre></div></div></div></div><div id="g-vault"><p>paso 1 · arquitectura</p><h2>El vault que organiza por tipo, no por tema</h2><div><p>Abre Obsidian con el vault que creaste en el paso 1. Si nunca has creado carpetas en Obsidian: en el sidebar izquierdo, clic derecho sobre el nombre del vault → &quot;New folder&quot;, escribe el nombre exacto (ej. <code>00-INBOX</code>) y dale Enter. Para crear subcarpetas, clic derecho sobre la carpeta padre (ej. <code>01-CAPTURES</code>) → &quot;New folder&quot; → escribe la subcarpeta. Cada folder tiene un trabajo específico y la decisión más importante del sistema vive aquí abajo.</p><div class="gcard"><p>La estructura exacta del vault (créala una sola vez)</p><div><code>JARVIS/
+├── 00-INBOX/
+├── 01-CAPTURES/
+│   ├── observations/
+│   ├── reactions/
+│   ├── patterns/
+│   ├── questions/
+│   └── numbers/
+├── 02-CONNECTIONS/
+├── 03-BRIEFS/
+├── 04-PUBLISHED/
+└── 05-CLAUDE/
+    ├── CLAUDE.md
+    ├── skills/
+    │   ├── process-inbox.md
+    │   ├── weekly-connections.md
+    │   ├── generate-brief.md
+    │   └── write-content.md
+    └── context/</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>La decisión que cambia todo: organizar por TIPO, no por TEMA</p><p>Si organizas por tema (&quot;AI&quot;, &quot;marketing&quot;, &quot;productividad&quot;), una nota de psicología cognitiva y una de estrategia de contenido nunca se cruzan. Si organizas por tipo (observación, pregunta, número, patrón), las dos caen en /patterns o /numbers — y Claude Code las encuentra juntas. Las mejores ideas viven en la intersección de dominios distintos. El folder structure las fuerza a coincidir.</p></div><p>Qué hace cada carpeta — léelo una vez para internalizar el porqué de cada decisión y no vuelves a tocar la estructura en seis meses.</p><div><div class="gcard"><div><code>00-INBOX/</code><p>Capturas crudas, sin clasificar</p></div><p>Aquí cae todo el primer minuto del día — voice memos transcritos, lo que viste en la calle, un número que te impactó. Cero estructura. La meta es velocidad: cualquier fricción mata el hábito.</p></div><div class="gcard"><div><code>01-CAPTURES/observations/</code><p>Cosas que notaste</p></div><p>Lo que viste, escuchaste o leíste. Crudo, sin opinión todavía.</p></div><div class="gcard"><div><code>01-CAPTURES/reactions/</code><p>Tu reacción gut</p></div><p>Tu respuesta honesta, sin filtro, a algo que te llegó. La veta más rica para contenido auténtico.</p></div><div class="gcard"><div><code>01-CAPTURES/patterns/</code><p>El mismo principio en dos lugares</p></div><p>Cuando notas que algo de psicología y algo de marketing comparten la misma mecánica. Aquí está el oro de las conexiones cruzadas.</p></div><div class="gcard"><div><code>01-CAPTURES/questions/</code><p>Cosas que no sabes</p></div><p>Lo que te genera curiosidad real. Las mejores piezas de contenido empiezan con una pregunta honesta.</p></div><div class="gcard"><div><code>01-CAPTURES/numbers/</code><p>Datos con números reales</p></div><p>Métricas, porcentajes, resultados específicos. Una nota con &quot;33% de aumento&quot; pesa 10x más que una con &quot;mejoró bastante&quot;.</p></div><div class="gcard"><div><code>02-CONNECTIONS/</code><p>Insights sintetizados</p></div><p>Aquí no van capturas crudas — van ideas nuevas que emergieron de la relación entre dos o más notas. El mejor contenido sale de aquí, no del INBOX.</p></div><div class="gcard"><div><code>03-BRIEFS/</code><p>Cola de producción</p></div><p>Cada archivo es una pieza lista para escribir: hook, prueba, cierre, notas fuente linkeadas. El acto de escribir es el último paso, no el primero.</p></div><div class="gcard"><div><code>04-PUBLISHED/</code><p>Archivo con métricas</p></div><p>Todo lo que ya publicaste con números pegados (impresiones, bookmarks, engagement). Aquí JARVIS aprende qué jala con tu audiencia.</p></div><div class="gcard"><div><code>05-CLAUDE/</code><p>El cerebro del sistema</p></div><p>Donde vive CLAUDE.md y la carpeta de skills. Es la capa de inteligencia: lo que Claude Code lee al abrir el vault para entender quién eres y qué hace en este lugar.</p></div></div></div></div><div id="g-plugins"><p>paso 2 · plugins</p><h2>Los 4 plugins de Obsidian que usas a diario</h2><div><p>Obsidian es markdown plain por default. Estos cuatro plugins de la comunidad son los que convierten el vault en un sistema de captura y consulta real. En Obsidian: Settings → Community plugins → desactiva Safe Mode → Browse → instala uno por uno.</p><div class="ggrid"><div class="gcard"><p>Templater <span>· Templates con lógica real.</span></p><p>Le das un atajo y se inserta una plantilla con fecha, hora, tags y placeholders ya listos. Lo usas para que cada captura del INBOX salga con el mismo formato sin pensarlo.</p><p><span>Cómo prender:</span> Settings → Community plugins → desactiva Safe Mode → Browse → busca &quot;Templater&quot; → Install + Enable.</p></div><div class="gcard"><p>Dataview <span>· Tu vault como base de datos.</span></p><p>Le pides &quot;todas las notas con tag #pattern de los últimos 7 días&quot; y te lo lista en una tabla. Es lo que hace que el vault crezca sin volverse un caos.</p><p><span>Cómo prender:</span> Igual que arriba: Browse → &quot;Dataview&quot; → Install + Enable. Puedes empezar a usarlo sin escribir queries: el copy-paste de queries de la comunidad sirve perfecto.</p></div><div class="gcard"><p>QuickAdd <span>· Capturar en un atajo de teclado.</span></p><p>El plugin que mata la fricción. Configuras Cmd+Shift+I y de inmediato te abre una nota nueva en 00-INBOX. Cero clicks, cero menús, cero excusas para no anotar.</p><p><span>Cómo prender:</span> Browse → &quot;QuickAdd&quot; → Install + Enable. Después: Settings → Hotkeys → busca &quot;QuickAdd: capture&quot; y asígnale Cmd+Shift+I.</p></div><div class="gcard"><p>Obsidian Git <span>· Backup automático cada hora.</span></p><p>Tu vault son archivos markdown locales — si la laptop se pierde, perdiste meses de capturas. Este plugin sincroniza todo con un repo privado de GitHub cada hora. Lo prendes y te olvidas.</p><p><span>Cómo prender:</span> Necesitas un repo privado en GitHub primero. Browse → &quot;Obsidian Git&quot; → conecta el repo en Settings → activa auto-commit cada 60 min.</p></div></div><div class="gcard"><p>Backup automático con Obsidian Git (cada 60 minutos)</p><div><code># Obsidian → Settings → Community plugins → Browse → &quot;Obsidian Git&quot; → Install + Enable
+# En el plugin:
+# - Auto Backup interval: 60 (minutos)
+# - Commit message: &quot;vault backup: {{date}}&quot;
+# Apunta el plugin a un repo privado de GitHub. Listo: backup automático cada hora.</code></div><span class="gbtn">Copiar comando</span></div></div></div><div id="g-claude-md"><p>paso 3 · cerebro</p><h2>El CLAUDE.md que define todo el sistema</h2><div><p>Este es el archivo más importante de todo el setup. CLAUDE.md le dice a Claude Code quién eres, qué contiene tu vault, cómo está organizado y qué quieres exactamente que haga adentro. Sin este archivo, Claude trata tu vault como cualquier carpeta random. Con un CLAUDE.md fuerte, lo trata como un sistema que conoce a profundidad y lleva meses manejando.</p><p>Crea el archivo en <code>05-CLAUDE/CLAUDE.md</code>. Si no sabes cómo: en Obsidian, clic derecho sobre la carpeta <code>05-CLAUDE</code> → &quot;New note&quot; → nómbrala <code>CLAUDE.md</code>. Es solo un archivo de texto que abres y editas dentro de Obsidian como cualquier nota. Pega este template, llena los corchetes con tu información real y guárdalo. Mientras más específico seas — sobre tu voz, tu audiencia, las palabras que odias — mejor calidad va a tener todo el output futuro.</p><div class="gcard"><div><div><h3>1. Tu CLAUDE.md base (el cerebro del vault)</h3><p>El archivo más importante del sistema. Pégalo en 05-CLAUDE/CLAUDE.md, llena los corchetes con tu información real, y guárdalo. Claude Code lo lee al abrir el vault y entra a cada sesión con contexto desde el primer mensaje.</p></div><span class="gbtn">Copiar</span></div><div><pre># JARVIS · CLAUDE.md
+
+## Identidad
+Mi nombre es [TU NOMBRE]. Hago [LO QUE HACES — ej. contenido sobre Claude Code para creadores LatAm].
+Mi audiencia es [QUIÉN TE SIGUE — ej. founders y devs en español que están aprendiendo IA aplicada].
+Mis pilares de contenido son [2-3 TEMAS — ej. workflows con Claude Code, copywriting con IA, automatización agentic].
+
+## Este vault
+Este es mi segundo cerebro y mi sistema de producción de contenido.
+Cada nota es materia prima — para contenido, para pensar o para tomar decisiones.
+Aquí no hay nada decorativo.
+
+## Estructura del vault
+- 00-INBOX: capturas sin procesar — siempre revisar primero
+- 01-CAPTURES/observations: cosas que noté, crudas
+- 01-CAPTURES/reactions: mi respuesta gut, sin filtro
+- 01-CAPTURES/patterns: el mismo principio en dos dominios distintos
+- 01-CAPTURES/questions: cosas que de verdad no sé responder
+- 01-CAPTURES/numbers: datos con números reales (no aproximaciones)
+- 02-CONNECTIONS: insights sintetizados de dos o más capturas
+- 03-BRIEFS: piezas listas para escribir, con hook y cierre
+- 04-PUBLISHED: archivo de lo publicado con métricas pegadas
+- 05-CLAUDE: tu directorio de trabajo (skills y este archivo)
+
+## Mi voz
+[DESCRIBE TU VOZ EN TÉRMINOS ESPECÍFICOS]
+Ejemplo: Frases cortas. Hard stops. Cada idea en su línea.
+Sin guiones largos. Sin lenguaje que suene a IA.
+Los números reales le ganan a los adjetivos siempre.
+Tono: [conversacional / directo / honesto / etc.].
+
+## Muestras de mi voz (opcional pero altamente recomendado)
+Pega aquí 5-10 fragmentos de tus mejores posts pasados.
+Claude Code los estudia y aprende patrones que tú no sabes describir.
+
+## Reglas duras
+- Nunca leer, acceder ni modificar archivos .env
+- Nunca modificar archivos en 04-PUBLISHED sin instrucción explícita
+- Nunca crear carpetas fuera de la estructura establecida
+- Nunca usar [PALABRAS QUE ODIAS — ej. &quot;desbloquea&quot;, &quot;aprovecha&quot;, &quot;potencia&quot;] en lo que escribes para mí
+
+## Tus trabajos principales
+1. Procesar INBOX — leer capturas crudas, afilarlas, archivarlas correctamente
+2. Sesiones de conexión — encontrar relaciones no obvias entre capturas recientes
+3. Generar briefs — convertir conexiones fuertes en estructura lista para escribir
+4. Escribir contenido — producir piezas terminadas en mi voz desde briefs aprobados
+5. Loggear performance — actualizar notas en 04-PUBLISHED con datos reales cuando los pase
+
+## Notas finales
+- Sé específico. Si una categoría tiene &lt;5 notas, dilo explícito.
+- Si un brief no se puede expresar en una sola frase, empújame antes de escribirlo.
+- Cada decisión que tomes, déjala visible — no la escondas en el output.</pre></div></div><p>La regla: trata el CLAUDE.md como el documento más importante que escribes hoy. Vuelve a editarlo cada vez que notes que un output sale genérico — casi siempre la causa raíz vive ahí.</p></div></div><div id="g-skills"><p>paso 4 · skills</p><h2>Las 4 skills que hacen el 90% del trabajo</h2><div><p>Una skill en Claude Code es un workflow reutilizable guardado como markdown. La llamas por nombre y Claude Code corre el proceso completo cada vez. Vas a crear cuatro archivos en <code>05-CLAUDE/skills/</code>. Para cada uno: clic derecho sobre la subcarpeta <code>skills</code> → &quot;New note&quot; → nómbrala como dice el título del prompt (ej. <code>process-inbox.md</code>) → pega el contenido del prompt → guarda. Estas cuatro cubren el 90% de lo que JARVIS hace todos los días.</p><div class="gcard"><div><div><h3>2. Skill — process-inbox.md</h3><p>Crea este archivo en 05-CLAUDE/skills/process-inbox.md. Es la skill que corres cada mañana: lee las capturas crudas, las afila a una frase punzante, les pone 3 tags exactos, y las archiva en la subcarpeta correcta de 01-CAPTURES.</p></div><span class="gbtn">Copiar</span></div><div><pre># Skill: Process Inbox
+
+## Trigger phrases
+&quot;procesa mi inbox&quot; / &quot;afila las capturas de hoy&quot; / &quot;limpia el INBOX&quot;
+
+## Proceso
+1. Lee cada nota en 00-INBOX/
+2. Para cada nota:
+   a. Decide a qué subcarpeta de CAPTURES pertenece (observations / reactions / patterns / questions / numbers)
+   b. Afila la nota cruda en una sola frase específica y punzante
+   c. Agrega exactamente 3 tags — ni más, ni menos
+   d. Mueve la nota afilada a la subcarpeta correcta
+3. Cuando termines, devuélveme un reporte con:
+   - Total de notas procesadas y a dónde fue cada una
+   - Cualquier patrón que hayas notado entre las capturas de hoy
+   - Una conexión que valga la pena explorar más
+
+## Quality bar
+Una nota afilada debe ser tan específica que un desconocido la entienda sin contexto adicional.
+Si todavía necesita explicación, no está afilada todavía. Reescríbela.
+
+## Lessons learned
+(Esta sección la llenas tú con lo que vayas aprendiendo de la sesión.)</pre></div></div><div class="gcard"><div><div><h3>3. Skill — weekly-connections.md</h3><p>La skill del domingo. Lee toda la semana de capturas a la vez y encuentra las conexiones cruzadas que el ritual diario no ve. Genera notas nuevas en 02-CONNECTIONS/.</p></div><span class="gbtn">Copiar</span></div><div><pre># Skill: Weekly Connections
+
+## Trigger phrases
+&quot;sesión de conexiones semanal&quot; / &quot;encuentra las conexiones de esta semana&quot; / &quot;weekly connections&quot;
+
+## Proceso
+1. Lee todas las notas agregadas a 01-CAPTURES/ en los últimos 7 días
+2. Busca conexiones a través de TODAS las subcarpetas al mismo tiempo
+3. Una conexión fuerte cumple uno de estos 4 tipos:
+   TIPO A: El mismo principio subyacente en dos dominios distintos
+   TIPO B: Contradicción entre dos notas que crea tensión interesante
+   TIPO C: Patrón que conecta tres o más notas en un insight sin nombre todavía
+   TIPO D: Una pregunta de una nota que otra nota responde por accidente
+4. Para cada conexión fuerte:
+   a. Nombra el tipo de conexión
+   b. Escribe un puente de una frase entre las ideas
+   c. Escribe un hook potencial usando la conexión
+   d. Crea una nota nueva en 02-CONNECTIONS/ que linkea las notas fuente
+
+## Quality bar
+Si la conexión es obvia, no califica.
+Solo subir conexiones que sorprenderían genuinamente a la persona que escribió las notas.
+Mínimo: 3 conexiones. Máximo: 5. Calidad sobre cantidad.</pre></div></div><div class="gcard"><div><div><h3>4. Skill — generate-brief.md</h3><p>Convierte una conexión fuerte en un brief con la estructura de 5 campos: ONE THING, PROOF, READER TRANSFORMATION, 3 HOOKS, 3 CLOSERS. El cierre se escribe antes que el medio — siempre.</p></div><span class="gbtn">Copiar</span></div><div><pre># Skill: Generate Brief
+
+## Trigger phrases
+&quot;genera un brief para [tema]&quot; / &quot;brief de esta conexión&quot; / &quot;haz un brief&quot;
+
+## Proceso
+Crea un brief de contenido con exactamente estos cinco campos:
+
+ONE THING
+El único insight sobre el que se construye toda la pieza.
+Tiene que caber en una sola frase. Si no cabe, la idea no está lista.
+Empújame si la &quot;one thing&quot; se siente vaga.
+
+PROOF
+El ejemplo, número o resultado más específico que prueba la one thing.
+La prueba vaga invalida el brief. Solo números reales.
+
+READER TRANSFORMATION
+¿Qué sabe o siente el lector al final que no sabía antes?
+Si no se puede decir claro, la pieza no tiene razón de existir.
+
+THREE HOOKS (rankeados)
+Distintos en approach y tono. Rankéalos por qué tan duro paran el scroll.
+Hook 1 = agresivo. Hook 2 = curioso. Hook 3 = personal.
+
+THREE CLOSERS (rankeados)
+Rankéalos por urgencia y memorabilidad.
+El cierre se escribe ANTES que el medio. Siempre.
+
+## Output
+Guarda como nota nueva en 03-BRIEFS/ con nombre [fecha]-[tema-en-kebab].md
+Tag: #ready-to-write</pre></div></div><div class="gcard"><div><div><h3>5. Skill — write-content.md</h3><p>El último paso del flujo. Toma un brief aprobado y produce la pieza completa en tu voz. Lee CLAUDE.md, las muestras de voz, las notas fuente, y entrega el draft listo para publicar.</p></div><span class="gbtn">Copiar</span></div><div><pre># Skill: Write Content
+
+## Trigger phrases
+&quot;escribe el brief de [tema]&quot; / &quot;escribe este brief&quot; / &quot;produce el contenido del brief&quot;
+
+## Proceso
+1. Lee el brief especificado en 03-BRIEFS/
+2. Lee todas las notas fuente linkeadas en el brief
+3. Re-lee la sección &quot;Mi voz&quot; y &quot;Muestras de mi voz&quot; en CLAUDE.md
+4. Escribe la pieza completa en mi voz exacta
+5. Estructura: hook → prueba → cuerpo → cierre
+6. Cada sección agrega valor específico. Cero relleno.
+7. Donde aplique, incluye al menos dos bloques copiables (prompts, comandos, ejemplos)
+8. Termina con un CTA de bookmark + instrucción de follow
+
+## Voice requirements
+Aplica cada instrucción de voz con precisión.
+Cuando dudes, hazlo más corto y más directo.
+El output debe ser indistinguible de algo que yo escribí.
+
+## Output
+Guarda el draft en 03-BRIEFS/ junto al brief original, con sufijo &quot;-draft.md&quot;
+Tag: #written</pre></div></div><p>Las cuatro están en español pero los trigger phrases están listos para que Claude Code las matchee tanto si escribes &quot;procesa mi inbox&quot; como si invocas <code>/process-inbox</code>. Una skill, un trigger único — ese es el patrón.</p></div></div><div id="g-ritual"><p>paso 5 · ritmo</p><h2>El ritual diario, semanal y mensual</h2><div><p>Las 4 skills no sirven solas. Lo que las convierte en un sistema es el ritmo al que las corres. JARVIS empieza a sorprenderte cuando hay capturas frescas todos los días, conexiones profundas todos los domingos, y datos reales alimentándolo todos los meses. Aquí está el calendario completo.</p><ol><li><span class="gpill">01</span><div><p>Diario · 20 min</p><p>Captura → procesa → conecta → brief</p><p>Cada mañana antes de abrir redes</p><p>5 min capturando crudo en 00-INBOX (voz, ideas, lo que viste). 5 min procesando con la skill /process-inbox que las afila y las clasifica. 5 min preguntando qué conexiones hay con las últimas dos semanas. 5 min generando un brief de la conexión que más te sorprendió. Antes de las 9am ya tienes un brief listo para escribir.</p><p>Usa el prompt 7 (&quot;Conexiones diarias&quot;) en el minuto 11.</p></div></li><li><span class="gpill">02</span><div><p>Semanal · 30 min · domingo</p><p>Sesión profunda de conexiones</p><p>Domingos en la tarde</p><p>La diferencia: Claude Code lee toda la semana de capturas a la vez. Las conexiones que surgen de 7 días de inputs son más fuertes que las del ritual diario. Genera 3-5 conexiones nuevas en 02-CONNECTIONS/ y de las más fuertes saca 2 briefs. Lunes arrancas con dos piezas listas para escribir.</p><p>Usa el prompt 8 (&quot;Sesión semanal del domingo&quot;).</p></div></li><li><span class="gpill">03</span><div><p>Mensual · 1 hora</p><p>Loop de feedback con datos reales</p><p>Primer fin de semana del mes</p><p>Antes del análisis: agrega impresiones, bookmarks y top comments a las notas que ya están en 04-PUBLISHED. Después le pides a Claude Code que lea el folder entero y te diga qué temas dieron más bookmarks por impresión, qué hooks superaron el promedio del tema y qué ángulos no has probado. Es el paso que convierte JARVIS de herramienta a sistema de inteligencia.</p><p>Usa el prompt 9 (&quot;Revisión mensual de performance&quot;).</p></div></li></ol><div class="gcard"><div><div><h3>7. Conexiones diarias (minuto 11–15 del ritual)</h3><p>El &quot;momento JARVIS&quot; del día. Lo corres después de procesar el INBOX. Le pides a Claude Code que cruce las capturas frescas con todo lo que pasó en las últimas 2 semanas. Aquí emerge el insight del día.</p></div><span class="gbtn">Copiar</span></div><div><pre>Acabo de correr /process-inbox y las capturas de hoy ya están archivadas en 01-CAPTURES/.
+
+¿Hay conexiones fuertes entre las capturas de HOY y cualquier nota agregada al vault en los últimos 14 días?
+
+Reglas:
+- Solo las que cumplan uno de los 4 tipos del weekly-connections (mismo principio en dos dominios, contradicción que tensa, patrón de 3+ notas, pregunta accidentalmente respondida).
+- Si la conexión es obvia, no me la cuentes.
+- Para cada una: nómbrala, dame el bridge en una frase, y escribe el hook potencial.
+- Máximo 3 conexiones. Quiero la mejor, no todas.
+
+Cierra recomendándome cuál de las 3 vale más la pena trabajar como brief hoy.</pre></div></div><div class="gcard"><div><div><h3>8. Sesión semanal del domingo</h3><p>El bloque de 30 minutos del domingo. Claude Code lee toda la semana de capturas a la vez. Saca las conexiones más fuertes y de ahí pides 2 briefs. Cuando llega el lunes, ya tienes dos piezas listas para escribir.</p></div><span class="gbtn">Copiar</span></div><div><pre>Corre la skill /weekly-connections sobre todas las capturas de los últimos 7 días.
+
+Después de generar las conexiones:
+1. Identifica las 2 más fuertes (las que más me sorprenderían).
+2. De cada una, corre /generate-brief para producir el brief completo en 03-BRIEFS/.
+3. Cuando termines, dame:
+   - Los nombres de los dos briefs generados (con su path completo)
+   - Cuál de los dos crees que tiene mayor probabilidad de pegar con mi audiencia y por qué
+   - Si encontraste un patrón macro entre las capturas de la semana — algo que esté empezando a repetirse y que valga la pena nombrarlo en CLAUDE.md como nuevo pilar de contenido.</pre></div></div><div class="gcard"><div><div><h3>9. Revisión mensual de performance</h3><p>El paso que casi nadie hace y es el que hace que JARVIS aprenda. Una vez al mes Claude Code lee 04-PUBLISHED/ con sus métricas y te dice qué temas y qué hooks están ganando. Cero advice genérico.</p></div><span class="gbtn">Copiar</span></div><div><pre>Lee todo en 04-PUBLISHED/. Cada nota debe tener métricas en el frontmatter (impresiones, bookmarks, engagement_rate, top_comment).
+
+Dime, basándote SOLO en este dataset:
+1. Qué temas dieron más bookmarks por impresión (no por totales — por ratio).
+2. Qué formatos de hook superaron el promedio de su tema (lista los hooks exactos, no me digas &quot;los agresivos&quot;).
+3. Tres ángulos de contenido que mis posts top sugieren que NO he probado todavía.
+4. Qué combinaciones de tema + formato debería duplicar este mes.
+
+No me des consejo genérico. Solo lo que se desprende exactamente de estos datos. Si una conclusión necesita más data para ser confiable, márcala explícito.</pre></div></div></div></div><div id="g-extender"><p>extras · MCPs y mobile</p><h2>Cómo extender JARVIS más allá del vault</h2><div><p>El JARVIS base ya jala con 4 skills y un vault local. Si quieres más superficie — captura por voz, sync entre dispositivos, MCPs adicionales o un perfil de voz que afile el output — esto es lo que conecta a continuación.</p><div><p>MCPs que vale la pena prender</p><p>Claude Code ya trae varios built-in. Estos cinco cubren el 90% de los casos de uso de un vault Obsidian.</p><div><div class="gcard"><p>filesystem (built-in)</p><p>Claude Code ya lo trae. Lee y escribe archivos del vault sin que prendas nada. Es la base sobre la que corren las 4 skills.</p></div><div class="gcard"><p>git (built-in)</p><p>Te deja preguntar &quot;¿qué cambió en el vault esta semana?&quot; y Claude Code responde con un diff real. Útil para auditorías de captura.</p></div><div class="gcard"><p>MCP de Obsidian (comunidad)</p><p>Si quieres usar Claude Desktop sin terminal, el server `mcp-obsidian` expone tu vault. Útil para usuarios no-técnicos que prefieren un chat directo en vez de la CLI.</p></div><div class="gcard"><p>WebFetch + WebSearch (built-in)</p><p>Claude Code puede leer URLs y buscar en la web — úsalo para enriquecer briefs con research live antes de escribir.</p></div><div class="gcard"><p>SuperWhisper / Wispr Flow</p><p>Apps de voz que transcriben en 5 segundos a clipboard. Las usas con QuickAdd: hablas, te transcribe, pega en el INBOX. Captura sin teclado.</p></div></div></div><div><p>Sync entre dispositivos (Mac + iPhone + Android)</p><p>Tu vault son archivos en tu disco. Para abrirlo en otro dispositivo necesitas sincronización. Cuatro opciones, ranqueadas por simplicidad.</p><div class="ggrid"><div class="gcard"><p>Obsidian Sync</p><p>$8/mes (oficial)</p><p>El más simple. Un toggle en Settings, encripta end-to-end, jala en mobile y desktop sin configurar nada más. Si valoras tiempo sobre todo lo demás, este.</p></div><div class="gcard"><p>iCloud (Mac/iOS)</p><p>Gratis si ya tienes iCloud</p><p>Pones el vault dentro de iCloud Drive y se sincroniza solo entre Mac y iPhone. Cero costo extra, pero solo funciona en el ecosistema Apple.</p></div><div class="gcard"><p>Syncthing</p><p>Gratis (P2P)</p><p>Open source, sin servidores en medio. Tu Mac y tu Android (o tu otra laptop) se hablan directo. Setup más técnico, control total de la data.</p></div><div class="gcard"><p>GitHub + Working Copy (iOS)</p><p>Gratis · Working Copy $20 una vez</p><p>Si ya usas Obsidian Git para backup, puedes usar el mismo repo desde iPhone con Working Copy. Pull → editas → commit → push. Más manual, perfecto si ya vives en GitHub.</p></div></div></div><div class="gcard"><p>El truco más subestimado: voice training</p><p>La diferencia entre un draft que suena a IA y uno que suena a ti es el voice training. Captura por voz con <a href="https://superwhisper.com" target="_blank" rel="noopener">SuperWhisper</a> o Wispr Flow para que la fricción sea cero. Después pega 5–10 de tus mejores posts en CLAUDE.md como muestras de voz — Claude Code los estudia y aprende patrones que tú no sabes describir. El prompt 10 (abajo) destila esos patrones en un &quot;voice fingerprint&quot; que pegas en tu archivo.</p></div><div class="gcard"><div><div><h3>10. Voice training (skill bonus, no está en el thread original)</h3><p>El truco que cambia la calidad del output más que cualquier otra skill. Pegas 5–10 de tus mejores posts y le pides a Claude Code que destile patrones — los tics, las construcciones, las muletillas que te hacen sonar a ti. Después se pegan en CLAUDE.md.</p></div><span class="gbtn">Copiar</span></div><div><pre>Voy a pegar 8 fragmentos de mis mejores posts (los que más bookmarks/replies generaron). Tu trabajo:
+
+1. Léelos uno por uno y anota patrones reales — frases tipo, longitud promedio de oración, signos que evito, palabras que repito, cómo abro un párrafo, cómo lo cierro.
+2. NO me devuelvas advice tipo &quot;tu tono es directo&quot;. Dame patrones específicos: &quot;abres con una afirmación contraintuitiva en 6-9 palabras, seguida de una afirmación que la contradice&quot;.
+3. Genera una sección &quot;Voice fingerprint&quot; lista para pegar en mi CLAUDE.md, con 8-12 patrones concretos.
+4. Lista 5 muletillas que uso (palabras o construcciones que aparecen en &gt;3 de los posts).
+5. Lista 5 cosas que NUNCA hago en mis posts (basado en lo que está ausente de los 8).
+
+Después de eso, escribe un párrafo de prueba sobre [TEMA CUALQUIERA — ej. &quot;por qué los tickets de soporte mejoran tu producto&quot;] aplicando los patrones. Si suena a mí, el destilado quedó. Si suena genérico, ajusta.
+
+[Pega aquí los 8 fragmentos.]</pre></div></div></div></div><div id="g-errores"><p>gotchas</p><h2>Los 5 errores que matan el sistema</h2><div><p>La mayoría de la gente abandona JARVIS no porque la herramienta falle, sino porque cae en uno de estos cinco errores. Si los evitas desde el día uno, el sistema sobrevive el primer mes — que es cuando empieza a componer.</p><div class="ggrid"><div class="gcard"><p>01 · CLAUDE.md vago = outputs vagos</p><p>Si tu CLAUDE.md dice &quot;escribe corto y directo&quot;, Claude Code te va a dar copy genérico. Si dice &quot;frases de 8 palabras o menos, hard stops, sin guiones, sin la palabra &#x27;desbloquea&#x27;&quot;, el output cambia radicalmente. La especificidad del archivo predice la calidad del sistema.</p></div><div class="gcard"><p>02 · Trigger phrases superpuestos</p><p>Si dos skills tienen frases trigger parecidas (&quot;procesa mi inbox&quot; y &quot;procesa mis notas&quot;), Claude Code no sabe cuál correr y se confunde. Cada skill necesita un trigger único. La regla: una skill, un comando obvio, sin ambigüedad.</p></div><div class="gcard"><p>03 · Capturar sin afilar</p><p>Si el INBOX se llena pero nunca corres /process-inbox, en dos semanas tienes 200 notas crudas y ninguna conexión. La captura sin procesamiento es un cementerio. La regla: si capturas, procesas el mismo día.</p></div><div class="gcard"><p>04 · Saltarse el ritual</p><p>Si solo capturas pero no abres Claude Code, las conexiones nunca emergen. JARVIS no es la app — es la práctica. 20 minutos en la mañana cinco veces a la semana es lo que hace que el sistema empiece a sorprenderte después del día 30.</p></div><div class="gcard"><p>05 · No cerrar el loop con datos</p><p>Sin agregar performance a 04-PUBLISHED, JARVIS no aprende qué tipo de contenido funciona con tu audiencia. La revisión mensual es el paso que casi nadie hace y es el que hace la diferencia entre seis meses y dos años de uso.</p></div></div></div></div><div id="g-mindset"><p>cierre · mindset</p><h2>Por qué esto compone con el tiempo</h2><div><p>El primer día solo necesitas tres cosas: una carpeta con la estructura, un CLAUDE.md específico a ti y la skill /process-inbox. Captura 5 notas en bruto, corre la skill, pídele a Claude Code una conexión. Eso es JARVIS funcionando — todo lo demás es refinamiento.</p><blockquote><p>JARVIS no es la app. Es la práctica que compone con el tiempo.</p><p>Después de 30 días dejas de quedarte en blanco. Después de 90 días tu contenido es más específico, más conectado y más original. Después de 6 meses tienes un sistema que conoce a tu audiencia mejor que cualquier dashboard de analytics, porque está leyendo el contenido y los datos juntos. La mayoría del tiempo lo que llamas &quot;creatividad&quot; es solo memoria con buen ranking. JARVIS arregla la memoria. Lo demás se vuelve obvio.</p></blockquote><p>Cuando quieras llevarlo más lejos, la guía de <a href="#/g/claude-mejores-practicas">CLAUDE.md best practices</a> te ayuda a afinar el archivo, las <a href="#/g/seis-mejores-skills-claude">6 mejores skills de la comunidad</a> extienden lo que JARVIS puede hacer, y <a href="#/g/master-codex">Master Codex</a> muestra que el mismo paradigma (carpeta + markdown + skills) jala con AGENTS.md en Codex también. La carpeta es portátil; el sistema sobrevive a la herramienta.</p></div></div></div><div><div><p>Guía de la comunidad</p><p>Esta es la guía completa de JARVIS en Obsidian de la comunidad <a href="#/boveda">tododeia</a>, armada para que tanto principiantes como expertos puedan tener su segundo cerebro en un fin de semana. Vive en la bóveda junto a las guías de CLAUDE.md, skills y los flujos de Claude Code que la comunidad usa todos los días. Bookmark esta página, copia el CLAUDE.md y las 4 skills, y vuelve cuando algo se rompa o quieras extender el sistema.</p></div><div class="ggrid"><a class="gcard" href="#/g/claude-mejores-practicas"><div><p>CLAUDE.md best practices</p><p>Para que tu archivo no salga genérico</p></div></a><a class="gcard" href="#/g/seis-mejores-skills-claude"><div><p>6 mejores skills Claude</p><p>Skills que extienden tu JARVIS</p></div></a><a class="gcard" href="#/g/master-codex"><div><p>Master Codex 1h</p><p>Mismo paradigma con AGENTS.md</p></div></a></div><div class="gcard"><p>¿Por dónde empezar?</p><p>Si nunca tocaste terminal, empieza por la sección <a href="#g-prerequisitos">Setup</a> y déjala funcionando antes de seguir. Si ya usas Claude Code, salta a <a href="#g-vault">la arquitectura del vault</a> y arma el folder tree primero — la decisión de organizar por TIPO en vez de por TEMA es la que cambia todo lo demás. El <a href="#g-claude-md">CLAUDE.md</a> y la skill 1 (process-inbox) son lo único que necesitas el primer día. Las otras tres skills, el ritual semanal y la revisión mensual los vas prendiendo conforme el sistema te empieza a hacer sentido.</p></div></div></div>
+</article>

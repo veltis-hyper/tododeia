@@ -1,0 +1,37 @@
+<article class="chapter guia" data-slug="vivecoding-101">
+<div><div><h1>VibeCoding 101</h1><p>guía de inicio para pasar de idea a app publicada sin hype y con proceso. si vienes del video, aquí tienes todos los pasos, links y prompts para arrancar hoy.</p></div><div><div class="gcard"><h2>Resumen del video</h2><div class="ggrid"><div><p>Hook</p><p>&quot;Llevo más de mil horas haciendo vibe coding para que tú no tengas que perderlas.&quot;</p></div><div><p>Dato</p><p>&quot;Todo lo que necesitas saber en menos de 60 segundos.&quot;</p></div><div><p>Promesa</p><p>de idea a app publicada, con resumen guardable y nombres clave para no volver a buscarlos.</p></div></div></div><div class="gcard"><h2>Paso 1: crea tu PRD (no te lo saltes)</h2><p>antes de tocar cualquier herramienta, define un PRD (documento de requerimientos de producto). ese documento separa una app funcional de una app que se ve hecha en 20 minutos.</p><ul><li>qué problema resuelves y para quién.</li><li>qué debe hacer sí o sí tu v1 (must-have).</li><li>qué queda fuera para no sobrecargar el primer build.</li><li>cómo vas a medir que el producto realmente funciona.</li></ul></div><div class="gcard"><div><div><h3>Prompt para crear el PRD en ChatGPT o Claude</h3><p>Copia, reemplaza los placeholders y pégalo en tu agente para generar un PRD accionable en markdown.</p></div><span class="gbtn">Copiar</span></div><div><pre>Actúa como Product Manager senior y ayúdame a crear un PRD completo para mi app.
+
+Quiero el resultado 100% en español.
+
+Contexto de mi app:
+- Nombre del proyecto: {{NOMBRE_PROYECTO}}
+- Problema que resuelve: {{PROBLEMA}}
+- Usuario ideal: {{USUARIO_OBJETIVO}}
+- Resultado esperado por el usuario: {{RESULTADO_ESPERADO}}
+- Plataformas objetivo: {{WEB_IOS_ANDROID}}
+- Funciones obligatorias (must-have): {{MUST_HAVE}}
+- Funciones opcionales (nice-to-have): {{NICE_TO_HAVE}}
+- Restricciones o reglas del negocio: {{RESTRICCIONES}}
+- Monetización (si aplica): {{MONETIZACION}}
+
+Necesito que el PRD incluya exactamente:
+1. Resumen ejecutivo (1 párrafo)
+2. Problema y oportunidad
+3. Perfil de usuario (ICP)
+4. Objetivos del producto
+5. Alcance de la v1 (in scope / out of scope)
+6. Requisitos funcionales (en bullets claros)
+7. Requisitos no funcionales (performance, seguridad, UX)
+8. Arquitectura sugerida (frontend, backend, base de datos, IA si aplica)
+9. User stories (formato: Como [tipo de usuario], quiero [acción], para [beneficio])
+10. Criterios de aceptación por cada feature crítica
+11. Métricas de éxito (KPIs)
+12. Riesgos y supuestos
+13. Plan de ejecución en fases (MVP -&gt; v1 -&gt; v2)
+
+Entrega final:
+- Usa markdown
+- Escribe concreto, sin relleno
+- Incluye checklist accionable al final
+- Si falta información, haz supuestos explícitos antes de redactar</pre></div></div><div class="gcard"><h2>Paso 2: elige herramientas según tu nivel</h2><div class="ggrid"><div><p>Si vienes desde cero código</p><ul><li><a href="https://lovable.dev" target="_blank" rel="noopener">Lovable</a></li><li><a href="https://bolt.new" target="_blank" rel="noopener">Bolt</a></li><li><a href="https://base44.com" target="_blank" rel="noopener">Base44</a></li><li><a href="https://replit.com" target="_blank" rel="noopener">Replit</a></li></ul></div><div><p>Si ya sabes algo de código y quieres control</p><ul><li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor</a></li><li><a href="https://windsurf.com" target="_blank" rel="noopener">Windsurf</a></li><li><a href="https://www.anthropic.com/claude-code" target="_blank" rel="noopener">Claude Code</a></li></ul></div></div></div><div class="gcard"><h2>Paso 3: define backend e infraestructura de IA</h2><div class="ggrid"><div><p>Backend (obligatorio)</p><ul><li><a href="https://supabase.com" target="_blank" rel="noopener">Supabase</a></li><li><a href="https://firebase.google.com" target="_blank" rel="noopener">Firebase</a></li></ul></div><div><p>Si tu app usa IA con memoria/vector search</p><ul><li><a href="https://www.pinecone.io" target="_blank" rel="noopener">Pinecone</a></li></ul></div></div></div><div class="gcard"><h2>Paso 4: publica tu app</h2><div class="ggrid"><div><p>Web app o sitio web</p><p>despliegue rápido en<a href="https://vercel.com" target="_blank" rel="noopener">Vercel</a>.</p></div><div><p>Apple App Store</p><p>necesitas cuenta de desarrollador (<strong>US$100/año</strong> como referencia del video).</p><a href="https://developer.apple.com/programs/" target="_blank" rel="noopener">Apple Developer Program </a></div><div><p>Google Play Store</p><p>cuenta de desarrollador (<strong>US$25 pago único</strong> como referencia del video).</p><a href="https://play.google.com/console/about/" target="_blank" rel="noopener">Google Play Console </a></div></div></div><div class="gcard"><h2>Checklist: de idea a app publicada</h2><ol><li>escribe tu idea y público objetivo en una sola frase clara.</li><li>genera PRD con el prompt de esta guía y revísalo.</li><li>elige herramienta según nivel (no-code o más control).</li><li>conecta backend (Supabase/Firebase) y define autenticación/datos.</li><li>si usas IA con memoria semántica, agrega Pinecone.</li><li>cierra MVP funcional y valida flujo principal extremo a extremo.</li><li>publica en web (Vercel) y luego evalúa App Store/Play Store.</li></ol></div><div class="gcard">tip: comparte este recurso en comentarios como resumen guardable. así quien vea el video tiene todos los nombres y links en un solo lugar.</div><div class="gcard"><h2>Resumen descargable</h2><p>también puedes abrir la guía en markdown para copiar/compartir directo en comentarios:</p><a href="https://www.tododeia.com/docs/vivecoding-101-guia.md" target="_blank" rel="noopener">abrir guía vibecoding 101 (markdown) </a></div></div></div>
+</article>

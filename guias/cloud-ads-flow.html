@@ -1,0 +1,131 @@
+<article class="chapter guia" data-slug="cloud-ads-flow">
+<div><div><h1>Pon un agente a correr tus Facebook Ads cada lunes</h1><p>Todos los que pagamos publicidad en Facebook estamos tirando dinero cada lunes. <strong>En una hora montas el agente que escanea, crea, sube y revisa solo</strong> — Cowork lee la Ads Library, Higgsfield genera 10 creativos del estilo ganador, Facebook MCP los sube a Ads Manager y cada lunes el loop entero se repite con variantes del ganador. Tú no le picas nada.</p></div><div class="gcard"><div><p>Cloud · Cowork · Mayo 2026</p><p>5 movimientos · Cowork + Higgsfield + Facebook MCP</p><p>Esta es la versión agentic del flujo de ads. No reemplaza al equipo creativo: reemplaza el lunes que pasas refrescando Ads Manager. Cowork entra a la biblioteca pública de anuncios de Facebook, te baja los ganadores del nicho, los pasa a Higgsfield para que genere variantes con tu marca, y prende el A/B en Ads Manager con el presupuesto que tú dictes. Después se programa cada lunes — revisa qué jaló, le pide más variantes al ganador a Higgsfield, sube nuevo ad set y pausa los perdedores. Cuando ya estás corriendo anuncios solos, audita la cuenta una vez al mes con el skill claude-ads del repo Hainrixz/claude-ads.</p></div><div><a href="#g-que-es">Qué es</a><a href="#g-cinco-movimientos">5 movimientos</a><a href="#g-setup">Setup</a><a href="#g-prompts">Prompts</a><a href="#g-schedule">Loop semanal</a><a href="#g-audita">Audita</a></div><div><span>Cowork · Anthropic</span><span>Higgsfield · MCP</span><span>Facebook · MCP</span><span>Loop semanal</span><span>Repo: Hainrixz/claude-ads</span></div></div><div><div id="g-que-es"><p>qué es · 30 segundos</p><h2>Un agente que corre tus Facebook Ads solo</h2><div><p><strong>Cloud Ads Flow</strong> es el workflow que pone tres conectores a trabajar juntos dentro de Claude: <strong>Cowork</strong> (built-in en Claude.ai, lee web pública), <strong>Higgsfield MCP</strong> (genera imágenes y videos cortos) y <strong>Facebook MCP</strong> (crea campañas y lee performance en Ads Manager). El loop completo escanea la Ads Library, copia el estilo de los ganadores del nicho con tu marca, sube el A/B a Ads Manager con tu presupuesto, y cada lunes revisa quién jaló para pedir más variantes.</p><p>Es agentic, no es manual. Lo que cambia versus contratar agencia: tú sigues siendo el dueño de la decisión (presupuesto, audiencia, qué pausar), pero el trabajo repetitivo — scraping de competidores, generación de creatives y rotación semanal — corre solo. Cuando ya estás corriendo anuncios cada semana, una vez al mes auditas la cuenta con el skill <a href="https://github.com/Hainrixz/claude-ads" target="_blank" rel="noopener">Hainrixz/claude-ads</a>. Eso queda en el último paso.</p><p>Para quién: negocios pequeños y medianos que ya pagan Facebook Ads y están perdiendo el lunes refrescando Ads Manager. No para cuentas enterprise con compliance pesado — para eso la guía hermana es <a href="#/g/claude-meta-ads">claude-meta-ads</a> (read-only, sin bulk operations).</p></div></div><div id="g-cinco-movimientos"><p>el flow · 5 movimientos</p><h2>De Ads Library a campaña corriendo en una hora</h2><div><p>Cada movimiento tiene un prompt copy-paste más abajo. Esta es la vista de águila — léela completa antes de pegar el primer prompt para que el flujo te haga sentido como sistema, no como pasos sueltos.</p><div class="ggrid"><a class="gcard" href="#g-prompts"><div><span class="gpill">01</span><div><p>Cowork escanea la Ads Library <span>· Los ganadores de tu nicho, ordenados por días activos.</span></p><p>Cowork entra a la biblioteca de anuncios de Facebook, filtra por tu nicho y ciudad, y te baja los anuncios que llevan más tiempo corriendo (los que llevan más días activos son los que están vendiendo). En un minuto ya tienes copy, formato, CTA y URL de cada uno.</p></div></div></a><a class="gcard" href="#g-prompts"><div><span class="gpill">02</span><div><p>Higgsfield genera 10 creativos del estilo ganador <span>· 5 imágenes y 5 videos, listos para subir.</span></p><p>Le pasas los 3 ganadores que jalaron y le pides 10 variantes en el mismo estilo visual y hook, pero con tu marca. La idea no es clonarlos: es producir A/B suficiente para que el algoritmo de Facebook elija al ganador real.</p></div></div></a><a class="gcard" href="#g-setup"><div><span class="gpill">03</span><div><p>Facebook MCP vincula tu cuenta de Ads <span>· Una vez. Cowork queda hablando directo con Ads Manager.</span></p><p>Activas el conector de Facebook en Claude (el MCP de la comunidad). La autorización corre solita por OAuth y queda. A partir de aquí, Cowork puede crear campañas, subir creatives y leer performance sin que abras Ads Manager.</p></div></div></a><a class="gcard" href="#g-prompts"><div><span class="gpill">04</span><div><p>Cowork sube las pruebas y arranca con tu presupuesto <span>· Tú dices cuánto. Él arma el A/B y enciende.</span></p><p>Le avisas el presupuesto total y el objetivo (tráfico, conversión, mensajes). Cowork crea el campaign, sube los 10 creativos como ad sets distintos, configura la audiencia que le diste y enciende las campañas. Tú no abres Ads Manager.</p></div></div></a><a class="gcard" href="#g-schedule"><div><span class="gpill">05</span><div><p>Cada lunes: revisa, pide variantes, pausa perdedores <span>· El loop semanal sobre el ganador del A/B.</span></p><p>Después de 7 días, Cowork revisa quién ganó por ROAS (no por CPM), se regresa a Higgsfield, le pide 5 variantes más del ganador y las sube como nuevo ad set. Pausa los 5 perdedores. Tú lees el resumen y sigues con tu día.</p></div></div></a></div></div></div><div id="g-setup"><p>setup · 3 conectores</p><h2>Prende Cowork, Higgsfield y Facebook MCP</h2><div><p>Los tres conectores ya viven en el ecosistema. Cowork lo abres con un click adentro de Claude.ai. Higgsfield y Facebook son MCPs de la comunidad: los prendes una vez desde el panel de conectores de Cowork y se quedan autorizados. La biblioteca de anuncios de Facebook que usa el primer movimiento es web pública — está acá: <a href="https://www.facebook.com/ads/library" target="_blank" rel="noopener">https://www.facebook.com/ads/library</a>.</p><div><div class="gcard"><div><p>Cowork</p><span class="gpill">Built-in</span><span>· Anthropic · ya viene con tu cuenta de Claude.ai</span></div><p>Es el lado de Claude que puede entrar a la web, leer páginas y ejecutar tareas largas. La biblioteca de anuncios de Facebook es web pública, así que Cowork la lee sin pedir permiso a nadie. Lo abres con el botón de Cowork dentro de claude.ai. No instalas nada.</p></div><div class="gcard"><div><p>Higgsfield MCP</p><span class="gpill">MCP</span><span>· Conector de la comunidad · 15 tools (imagen, video, marketing studio)</span></div><p>El MCP de Higgsfield ya está armado en la bóveda. Lo prendes una vez desde Cowork y queda. Tools que vas a usar para este flujo: generate_image (para los 5 estáticos), generate_video (para los 5 reels cortos) y show_marketing_studio (para revisar resultados antes de bajarlos).</p><a href="#/g/higgsfield-mcp">Guía del conector →</a></div><div class="gcard"><div><p>Facebook MCP</p><span class="gpill">MCP</span><span>· Conector de la comunidad · campañas, creatives y performance</span></div><p>El conector de Facebook tiene visibilidad operativa completa: crea campañas, sube creatives a Ads Manager, lee CTR, ROAS y CPM, y pausa o duplica ad sets. Lo prendes desde Cowork con el OAuth de tu cuenta de Business Manager y se queda autorizado.</p></div></div></div></div><div id="g-prompts"><p>prompts · copy-paste</p><h2>Los 6 prompts que disparan cada movimiento</h2><div><p>Cada prompt es independiente — pega uno, espera el resultado, valida que tenga sentido y sigues con el siguiente. Los placeholders en corchetes <code>[ASÍ]</code> los reemplazas con tu data antes de mandarlos. El prompt 6 es el puente al skill de auditoría: lo corres una vez al mes, no cada semana.</p><div><div class="gcard"><div><div><h3>1. Cowork escanea la Ads Library de tu nicho</h3><p>Le pides a Cowork que entre a la biblioteca de anuncios de Facebook (es pública) y te baje los anuncios que ya están corriendo en tu nicho, ordenados por días activos. Los que llevan más tiempo corriendo son los que están vendiendo.</p></div><span class="gbtn">Copiar</span></div><div><pre>Entra a la biblioteca de anuncios de Facebook (https://www.facebook.com/ads/library) y bájame los 10 anuncios que llevan más tiempo activos en mi nicho.
+
+Filtros de búsqueda:
+- País: [TU PAÍS]
+- Categoría / industria: [DESCRIBE TU NICHO en una línea — ej. &quot;tiendas de ropa para mujer en CDMX&quot;, &quot;agencias de bienes raíces en Monterrey&quot;]
+- Solo anuncios actualmente activos
+- Ordenados por días activos (descendente)
+
+De cada anuncio devuélveme una tabla con:
+1. Marca / advertiser
+2. Días activos
+3. Formato (imagen, carrusel, video, reel)
+4. Copy completo del anuncio (hook + cuerpo + CTA)
+5. URL del landing al que mandan
+6. Captura del creative principal (link a la imagen o thumbnail del video)
+
+Al final, marca cuáles 3 te parecen los ganadores del nicho (los que tienen más días activos y mejor copy hook). Esos son los que vamos a copiar de estilo en el siguiente paso.</pre></div></div><div class="gcard"><div><div><h3>2. Higgsfield genera 10 creativos del estilo ganador</h3><p>Tomando los 3 ganadores del scrape, le pides al MCP de Higgsfield 10 creativos en el mismo estilo visual y hook, pero con tu marca. 5 imágenes y 5 videos cortos para A/B test, no clones idénticos.</p></div><span class="gbtn">Copiar</span></div><div><pre>Usa el conector de Higgsfield. Tomando los 3 anuncios ganadores que me bajaste de Ads Library, genera 10 creativos nuevos para mi marca.
+
+Mi marca:
+- Nombre: [TU NOMBRE / MARCA]
+- Producto / servicio: [DESCRIBE EN UNA LÍNEA]
+- Paleta y logo: [PEGA HEX o sube el logo a tu workspace de Higgsfield primero]
+- Tono: [casual, premium, urgente, etc.]
+
+Lo que necesito:
+- 5 imágenes estáticas (formato 1:1 y 4:5, listas para feed y reels)
+- 5 videos cortos de 6-10 segundos (vertical 9:16, listos para Reels y Stories)
+
+Reglas:
+- Copia el estilo visual y la estructura de hook de los 3 ganadores, pero con MI producto y MI marca. No clones idénticos: variantes para A/B test.
+- Cada creative debe tener una variante distinta del hook (diferente ángulo: dolor, beneficio, prueba social, urgencia, comparación).
+- Texto sobre la imagen / video en español, máximo 6 palabras por scene.
+- Súbelos a mi workspace de Higgsfield y dame el link de cada uno.
+
+Al final, lista los 10 creatives en una tabla con: id, formato, ángulo del hook, copy del texto sobre el creative, y link a Higgsfield.</pre></div></div><div class="gcard"><div><div><h3>3. Facebook MCP arranca el A/B con tu presupuesto</h3><p>Le pides al conector de Facebook que cree el campaign, suba los 10 creatives como ad sets distintos y arranque las pruebas con el presupuesto y la audiencia que le des.</p></div><span class="gbtn">Copiar</span></div><div><pre>Usa el conector de Facebook (MCP). Crea un campaign nuevo de testing con los 10 creativos que generamos en Higgsfield.
+
+Setup del campaign:
+- Cuenta de Ads: [la que está vinculada en mi MCP]
+- Objetivo: [tráfico / conversiones / mensajes]
+- Presupuesto total: [$X] (CBO a nivel campaign)
+- Duración: 7 días
+- Audiencia:
+  - Geografía: [PAÍS / CIUDAD]
+  - Edad: [RANGO]
+  - Intereses / lookalike: [DESCRIBE — o &quot;audiencia de retargeting de mi pixel&quot; si ya tengo data]
+- Pixel: el de mi cuenta (verifica que esté activo antes de arrancar)
+
+Estructura:
+- 10 ad sets, uno por cada creative de Higgsfield
+- Cada ad set con el mismo presupuesto diario (split parejo del CBO)
+- Mismo copy primario en los 10 ad sets, solo cambia el creative
+- Optimization event: [el que corresponda al objetivo — purchase, lead, message, etc.]
+
+Cuando esté todo armado:
+1. Mándame el link directo del campaign en Ads Manager para revisarlo
+2. Espera mi confirmación antes de poner el campaign en active
+3. Cuando confirme, lo enciendes y me avisas cuando los 10 ad sets estén corriendo</pre></div></div><div class="gcard"><div><div><h3>4. Loop semanal: review ganador + variantes</h3><p>Cada 7 días, Cowork revisa por ROAS, identifica al ganador, le pide a Higgsfield 5 variantes más del estilo ganador y las sube como nuevo ad set. Pausa los perdedores.</p></div><span class="gbtn">Copiar</span></div><div><pre>Revisa el campaign que arrancamos hace 7 días en Facebook (usa el MCP).
+
+Análisis:
+1. Pull de performance de cada uno de los 10 ad sets en los últimos 7 días
+2. Métrica principal: ROAS (return on ad spend). Métricas secundarias: CTR, CPM, frequency.
+3. Identifica al ganador por ROAS. Si hay empate, desempata por CTR.
+4. Identifica los 5 perdedores (los 5 con peor ROAS).
+
+Acciones:
+1. Toma al ganador y mándame: id del ad set, creative original (link a Higgsfield), copy, ROAS, CTR, CPM, frequency.
+2. Llama al conector de Higgsfield y pídele 5 variantes nuevas del ganador, manteniendo estilo visual y estructura de hook pero con un ángulo distinto en cada una. Mismo formato que el ganador (si era video, 5 videos; si era imagen, 5 imágenes).
+3. Cuando estén las 5 variantes en Higgsfield, súbelas como ad sets nuevos al mismo campaign. Mismo presupuesto diario que los originales.
+4. Pausa los 5 ad sets perdedores (no los borres, solo pausa — los datos sirven después).
+
+Resumen final:
+- Tabla con los 10 ad sets de la semana pasada y su ROAS
+- Marca al ganador y los 5 que pausaste
+- Lista de los 5 ad sets nuevos (variantes del ganador) con link a cada creative
+- Una línea sobre qué hipótesis vas a probar esta nueva semana</pre></div></div><div class="gcard"><div><div><h3>5. Programa el flow para que corra solo cada lunes</h3><p>Configuración en Scheduled Tasks de Cowork para que el loop semanal corra cada lunes 9am sin que tú abras Claude. Te llega el resumen al cerrar.</p></div><span class="gbtn">Copiar</span></div><div><pre>Programa este flow como tarea recurrente en Scheduled Tasks de Cowork.
+
+Cron: cada lunes a las 9:00 (hora de [TU CIUDAD])
+
+Tarea (en este orden, parar si algo falla):
+1. Pull de performance de los últimos 7 días del campaign activo en Facebook MCP.
+2. Identifica al ganador por ROAS (desempate por CTR).
+3. Pide 5 variantes del ganador a Higgsfield (mismo formato, distinto ángulo de hook).
+4. Sube las 5 variantes como ad sets nuevos al campaign con el mismo presupuesto diario.
+5. Pausa los 5 ad sets perdedores de la semana pasada.
+6. Genera un resumen en markdown con: ROAS de cada ad set, ganador identificado, variantes nuevas, ad sets pausados.
+7. Mándame el resumen por correo a [TU EMAIL] o en mi inbox de Claude.
+
+Reglas de seguridad:
+- Si en algún momento un cambio supera el 30% del presupuesto total del campaign, no lo ejecutes y mándame notificación para que apruebe a mano.
+- Si algún ad set tiene frequency &gt; 3 esta semana, márcalo en el resumen aunque no sea perdedor (señal de fatiga creative).
+- Si Facebook reporta un creative como rechazado, no lo subas como ad set; márcalo en el resumen y avísame.
+
+Cuando esté creada la tarea, dame el link directo al panel de Scheduled Tasks para verla.</pre></div></div><div class="gcard"><div><div><h3>6. Audita la cuenta una vez al mes con el skill claude-ads</h3><p>Bridge al proyecto hermano. Una vez al mes corres el skill Hainrixz/claude-ads sobre la cuenta para health score, top issues y recomendaciones priorizadas. Si algo es crítico, pausa y avisa.</p></div><span class="gbtn">Copiar</span></div><div><pre>Una vez al mes corre el skill claude-ads (Hainrixz/claude-ads) sobre la cuenta de Facebook Ads que estamos manejando.
+
+Lo que necesito:
+1. Health score de la cuenta (0-100, escala A-F).
+2. Top 10 problemas detectados, ordenados por severidad: critical, warning, info.
+3. Recomendaciones priorizadas para cada problema critical y warning.
+4. Estado del pixel y de la Conversions API: integridad, eventos faltantes, deduplicación.
+5. Estado de los public tiers: Advantage+ campaigns, attribution settings, audience health.
+
+Reglas:
+- Si algún issue es critical, pausa el ad set involucrado inmediatamente y avísame qué pausaste y por qué.
+- Si algún issue es warning sobre el pixel o la API de conversions, no toques nada — solo reporta y agendamos una llamada para revisarlo a mano.
+- No corras bulk operations. No subas creatives nuevos por API. Solo audita.
+
+Output:
+- Reporte en markdown con health score, top 10 issues, qué pausaste (si aplica) y siguientes pasos sugeridos.
+- Mándalo por correo a [TU EMAIL] o déjalo en el inbox de Claude.
+
+Programa esto como Scheduled Task de Cowork: el primer lunes de cada mes a las 8am.</pre></div></div></div></div></div><div id="g-schedule"><p>loop semanal</p><h2>Programa el flow para que corra cada lunes</h2><div><p>El loop semanal es lo que convierte este workflow en sistema. La diferencia entre &quot;lo corro a mano cuando me acuerdo&quot; y &quot;corre cada lunes a las 9am sin que lo piense&quot; es lo que separa a quien gana con anuncios de quien sigue tirando dinero. Cowork tiene Scheduled Tasks nativas — úsalas.</p><div><div class="gcard"><p>Usa Scheduled Tasks de Cowork</p><p>Cowork tiene tareas programadas nativas (shipped en 2026). Configuras el flow una sola vez con cron de cada lunes 9am, y corre solo. No necesitas dejar nada abierto: Cowork lo levanta del lado de Anthropic.</p></div><div class="gcard"><p>Mide ROAS, no CPM</p><p>Para A/B testing de creatives lo único que importa es ROAS (return on ad spend). CPM puede engañar: un anuncio caro que vende mucho gana. Pídele a Cowork que ordene por ROAS al cerrar la semana, no por costo.</p></div><div class="gcard"><p>No corras el loop antes de los 7 días</p><p>Facebook necesita ~7 días para que su algoritmo optimice y los datos dejen de ser ruido. Si pides variantes el día 3, estás iterando sobre azar. Programa el cron al lunes siguiente del lunes que arrancaste, no al jueves.</p></div></div><p>El prompt 5 más arriba (&quot;Programa el flow para que corra solo cada lunes&quot;) es el que arma la tarea recurrente. Pégalo después de que el flow corra una vez bien a mano — no antes, porque si la tarea programada falla, prefieres que falle algo que ya viste funcionar.</p></div></div><div id="g-audita"><p>bridge · ya con anuncios solos</p><h2>Audita la cuenta con el skill claude-ads</h2><div><p>Cuando llevas un par de semanas corriendo el loop, la cuenta empieza a acumular: ad sets pausados, creatives en distintas etapas, eventos del pixel, configuraciones que se torcieron sin querer. Eso no se limpia con el flow agentic — para eso está el skill <a href="https://github.com/Hainrixz/claude-ads" target="_blank" rel="noopener">Hainrixz/claude-ads</a>.</p><p>El skill es Claude Code, no Cowork — vive del lado de tu terminal. Lo corres una vez al mes sobre la cuenta, te entrega el health score (0-100, escala A-F), los top 10 problemas detectados y las recomendaciones priorizadas. Si algo es critical, pausa el ad set involucrado y te avisa. Si algo es warning del pixel o la API de conversions, no toca nada — solo reporta para que lo revises a mano.</p><div class="gcard"><div><div><h3>6. Audita la cuenta una vez al mes con el skill claude-ads</h3><p>Bridge al proyecto hermano. Una vez al mes corres el skill Hainrixz/claude-ads sobre la cuenta para health score, top issues y recomendaciones priorizadas. Si algo es crítico, pausa y avisa.</p></div><span class="gbtn">Copiar</span></div><div><pre>Una vez al mes corre el skill claude-ads (Hainrixz/claude-ads) sobre la cuenta de Facebook Ads que estamos manejando.
+
+Lo que necesito:
+1. Health score de la cuenta (0-100, escala A-F).
+2. Top 10 problemas detectados, ordenados por severidad: critical, warning, info.
+3. Recomendaciones priorizadas para cada problema critical y warning.
+4. Estado del pixel y de la Conversions API: integridad, eventos faltantes, deduplicación.
+5. Estado de los public tiers: Advantage+ campaigns, attribution settings, audience health.
+
+Reglas:
+- Si algún issue es critical, pausa el ad set involucrado inmediatamente y avísame qué pausaste y por qué.
+- Si algún issue es warning sobre el pixel o la API de conversions, no toques nada — solo reporta y agendamos una llamada para revisarlo a mano.
+- No corras bulk operations. No subas creatives nuevos por API. Solo audita.
+
+Output:
+- Reporte en markdown con health score, top 10 issues, qué pausaste (si aplica) y siguientes pasos sugeridos.
+- Mándalo por correo a [TU EMAIL] o déjalo en el inbox de Claude.
+
+Programa esto como Scheduled Task de Cowork: el primer lunes de cada mes a las 8am.</pre></div></div><p>La página completa del skill está en <a href="#/g/claude-ads">/community/claude-ads</a> con instalación, los 12 comandos del skill y el detalle de los 190+ checks sobre Google, Meta, YouTube, TikTok, LinkedIn y Microsoft.</p></div></div></div><div><div><p>Guía de la comunidad</p><p>Esta guía nace del workflow real de correr Facebook Ads desde Claude: Cowork escaneando la biblioteca de anuncios, Higgsfield generando los creativos y el conector de Facebook empujando todo a Ads Manager. Vive en la bóveda de <a href="#/boveda">tododeia</a> y se complementa con el repo público <a href="https://github.com/Hainrixz/claude-ads" target="_blank" rel="noopener">Hainrixz/claude-ads</a>, el skill de Claude Code que audita 190+ checks sobre 6 plataformas. La idea: el flow agentic crea, el skill audita; los dos se cruzan una vez al mes.</p></div><div class="ggrid"><a class="gcard" href="#/g/claude-ads"><div><p>Claude Ads</p><p>Skill · 190+ checks · 6 plataformas</p></div></a><a class="gcard" href="#/g/claude-meta-ads"><div><p>Claude Meta Ads</p><p>Reglas para no quemar la cuenta</p></div></a><a class="gcard" href="#/g/higgsfield-mcp"><div><p>Higgsfield MCP</p><p>El conector que genera los creativos</p></div></a></div><div class="gcard"><p>¿Por dónde empezar?</p><p>No montes el flow completo el primer día. Arranca con el <strong>prompt 1</strong> — el de scrape de la Ads Library — y mira qué te baja Cowork en 5 minutos sobre tu nicho. Si los ganadores que identifica te hacen sentido, sigues con el prompt 2 de Higgsfield. Si no, ajusta el filtro de país y nicho antes de invertir tiempo en el setup completo. El objetivo de la primera sesión es ver evidencia de que el flujo te sirve, no programar el cron de una.</p></div></div></div>
+</article>

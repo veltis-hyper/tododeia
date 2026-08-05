@@ -1,0 +1,229 @@
+<article class="chapter guia" data-slug="cerebro-claude">
+<div><div><div class="gpill">El patrón de la capa de contexto · una Postgres barata · /build-my-brain · MCP en solo-lectura</div><h1>El cerebro de Claude: una base de datos en vez de 14 conexiones sueltas</h1><p>Cuando le cuelgas a Claude catorce conectores sueltos — Gmail, Slack, tu CRM, el calendario — y le pides algo que cruza varios, los va llamando de uno en uno: lento, se confunde y a veces se rinde a mitad de camino. <strong>El arreglo no es más conectores: es un cerebro — una sola base Postgres barata, sincronizada, que Claude consulta en un lugar.</strong> Esta es la guía completa: eliges tu Postgres, con /build-my-brain Claude te diseña el esquema y el plan de sync, sincronizas tus fuentes y lo conectas por MCP en modo solo-lectura.</p></div><div><p>El flujo completo · de un vistazo</p><div class="ggrid"><a class="gcard" href="#g-elige-postgres"><div><span>01 · Elige la base</span></div><div><p>Una Postgres barata</p><p>Neon, Supabase o Railway: desde ~$20/mes. Aquí vive el cerebro — una sola base, no catorce cables.</p></div></a><a class="gcard" href="#g-build-my-brain"><div><span>02 · El plan</span></div><div><p>/build-my-brain</p><p>En modo Plan, Claude hace inventario de tus fuentes y te diseña el esquema, el orden de carga y el plan de sync.</p></div></a><a class="gcard" href="#g-sincroniza"><div><span>03 · Sincroniza</span></div><div><p>Tus fuentes entran</p><p>Airbyte, dlt o n8n copian Gmail, Slack y el CRM hacia la base. Batch para casi todo; CDC solo cuando de verdad hace falta.</p></div></a><a class="gcard" href="#g-conecta-mcp"><div><span>04 · Conecta y pregunta</span></div><div><p>MCP en solo-lectura</p><p>Conectas la base a Claude por MCP en modo solo-lectura y le preguntas al cerebro — cruzando fuentes en una consulta.</p></div></a></div></div><div class="gcard"><div><p>Guía comunidad · actualizada a julio 2026</p><p>En vez de que Claude interrogue catorce herramientas por turnos, le das una capa de contexto: una base de datos donde tus fuentes ya viven juntas y limpias. Claude pregunta una vez, cruza correo, Slack y CRM en la misma consulta, y responde sin brincar entre conectores.</p><p>El patrón real tiene nombre: capa de contexto (context engineering). El propio equipo de ingeniería de Anthropic lo dice — cuando le cuelgas a un agente demasiadas herramientas con decisiones ambiguas (lo que llaman bloated tool sets), ni un humano sabría cuál usar, y el agente tampoco. La guía va en cuatro paradas: eliges una Postgres barata (Neon, Supabase o Railway, desde ~$20/mes, precios aprox.); con /build-my-brain Claude hace inventario de tus fuentes y te diseña el esquema, el orden de carga y el plan de sync; sincronizas Gmail, Slack y el CRM hacia la base con Airbyte, dlt o n8n; y la conectas a Claude por MCP en modo solo-lectura. El SQL lo genera Claude — tú copias, pegas y preguntas.</p></div><div><span>Guía comunidad · julio 2026</span><span>Nivel avanzado · pero sin programar</span><span>Postgres desde ~$20/mes · precios aprox.</span><span>El SQL lo genera Claude · tú copias y pegas</span><span>MCP en solo-lectura · por seguridad</span><span>Español · de tú</span></div></div><div><div id="g-el-problema"><p>01 · EL PROBLEMA</p><h2>Catorce conectores sueltos: Claude los llama uno por uno — y se rinde</h2><div><p>Le conectas a Claude todo: Gmail, Google Calendar, Slack, tu CRM, Drive, Notion, el de facturación, el de soporte… catorce cables. Le preguntas algo que de verdad importa — “de los clientes que escribieron esta semana, ¿cuáles tienen una factura vencida y ninguna respuesta en Slack?” — y lo ves ir de uno en uno: abre el correo, después el CRM, después Slack, cruza a mano, se pierde, reintenta. Lento, caro en tokens, y a veces se rinde a mitad de camino.</p><p>Esto no es que Claude sea torpe. El propio equipo de ingeniería de Anthropic lo explica en su artículo sobre <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" target="_blank" rel="noopener">ingeniería de contexto para agentes</a>: cuando le cuelgas demasiadas herramientas con puntos de decisión ambiguos — lo que llaman bloated tool sets —, ni una persona sabría cuál usar en cada paso, y el modelo tampoco. Cada conector extra no suma capacidad: nubla el criterio. El contexto del agente es un recurso finito, y catorce cables lo saturan.</p><div class="gcard"><p>Ojo con el matiz: el problema no son las conexiones en sí, es pedirle que orqueste catorce en vivo, por turnos, para una sola pregunta. Si solo tienes dos o tres conectores, todavía no tienes este problema — este patrón es para cuando el revoltijo ya existe.</p></div></div></div><div id="g-la-idea"><p>02 · LA IDEA</p><h2>Un cerebro, no catorce cables: una Postgres que Claude consulta en un lugar</h2><div><p>La idea es simple: en vez de que Claude interrogue catorce herramientas en vivo, armas una sola base de datos donde tus fuentes ya viven juntas. Gmail, Slack, el CRM y el calendario se copian a una Postgres — sincronizada cada tanto — y Claude consulta ahí. Una pregunta, un lugar, una respuesta que cruza todo. En vez de catorce viajes, uno. Como dice el video: no busca, ya sabe.</p><p>Esto tiene nombre en ingeniería: una capa de contexto (context layer). No reemplaza tus conectores para actuar — enviar el correo, crear el evento —, sino que le da a Claude un lugar limpio para leer y cruzar. El agente deja de ser un mensajero que corre entre catorce oficinas y pasa a ser alguien con un tablero enfrente.</p><p>¿Por qué Postgres y no algo más exótico? Porque es barata, la conoces (o Claude sí), habla SQL — el lenguaje que todo modelo entiende — y hay servidores MCP maduros que la conectan a Claude en minutos. Y menos objetos, más limpios, es justo lo que un modelo maneja mejor: la misma lógica de mantener las herramientas apretadas, pero aplicada a tus datos.</p><div class="gcard"><p>Un detalle honesto desde ya: este cerebro es para leer y cruzar — qué, quién, cuándo. Las acciones (mandar, crear, actualizar) se quedan en tus conectores vivos. El cerebro responde; los conectores ejecutan. Volvemos a esto al final.</p></div></div></div><div id="g-elige-postgres"><p>03 · ELIGE LA BASE</p><h2>Elige tu Postgres: el “$20” honesto (Neon, Supabase o Railway)</h2><div><p>Antes de los datos, la casa donde viven. Cualquier Postgres sirve; la pregunta es cuánto pagas y cuánto quieres montar tú. Cuatro opciones: tres que rondan los 20 dólares al mes y Render, más barato y de precio plano. Precios aproximados, a julio 2026, marcados con “desde” porque cambian.</p><div class="ggrid"><div class="gcard"><div><p>neon.com</p></div><p>Postgres serverless (ahora de Databricks), que se vende justo como “Postgres para equipos y agentes de IA”. Free de verdad ($0, ~0.5 GB) y un plan Launch de pago por uso, sin mínimo mensual. Un cerebro chico — medio CPU unas horas al día + ~10 GB — ronda los $20/mes (aprox.). Es el “$20” más honesto de la lista.</p><a href="https://neon.com" target="_blank" rel="noopener">Abrir Neon</a></div><div class="gcard"><div><p>supabase.com</p></div><p>Postgres con dashboard, autenticación y su propio servidor MCP. Free de $0 (~500 MB); el plan Pro cuesta $25/mes (8 GB de disco). Es el “todo incluido” si quieres tablero y panel sin montar nada aparte.</p><a href="https://supabase.com" target="_blank" rel="noopener">Abrir Supabase</a></div><div class="gcard"><div><p>railway.com</p></div><p>Corres Postgres (y lo que sea) por uso. Hobby desde $5/mes de piso; Pro desde $20/mes de base más consumo encima. Cómodo si además quieres correr ahí mismo tu Airbyte o tu n8n.</p><a href="https://railway.com" target="_blank" rel="noopener">Abrir Railway</a></div></div><p>Aquí la comparación sin humo:</p><div class="gcard"><div><div class="ggrid"><div>Opción</div><div>Plan</div><div>Precio aprox.</div><div>Por qué</div></div><div class="ggrid"><div>Neon</div><div>Launch (pago por uso)</div><div>~$20/mes</div><div>Postgres serverless, ahora de Databricks y vendido para agentes de IA. Free real ($0, ~0.5 GB). Sin mínimo: pagas lo que corres. El “$20” más honesto para un cerebro chico.</div></div><div class="ggrid"><div>Supabase</div><div>Pro</div><div>$25/mes</div><div>Free de $0 (~500 MB). El Pro trae 8 GB, dashboard, auth y su propio MCP: el “todo incluido”.</div></div><div class="ggrid"><div>Railway</div><div>Pro</div><div>desde $20/mes</div><div>Hobby desde $5. Cómodo si además corres ahí tu Airbyte o tu n8n, todo en un lugar.</div></div><div class="ggrid"><div>Render</div><div>Postgres</div><div>desde ~$7/mes</div><div>Precios planos y predecibles, sin sorpresas por uso. La opción tranquila.</div></div></div></div><div class="gcard"><p>En corto: si quieres el “$20” de verdad y no te asusta el pago por uso, Neon Launch o Railway Pro. Si prefieres tablero, panel y todo montado sin pensarlo, Supabase Pro ($25) es el “todo incluido”. Si odias las sorpresas en la factura, Render con su precio plano. Ninguna es la “correcta” — depende de si quieres montar poco (Supabase) o pagar exacto (Neon).</p></div></div></div><div id="g-build-my-brain"><p>04 · EL PLAN</p><h2>/build-my-brain: Claude diseña tu cerebro antes de construirlo</h2><div><p>/build-my-brain no es un comando que venga de fábrica — es una metodología que le das a Claude. La idea: en modo Plan, antes de tocar nada, Claude hace inventario de tus fuentes y te entrega el diseño completo del cerebro — el modelo de datos, el orden en que se cargan las cosas, el plan de sincronización, qué se queda como conector vivo y una tabla de costo y frescura por fuente. Lo lees, lo apruebas, y recién ahí se construye.</p><p>Abajo tienes dos versiones. La primera es el prompt exacto del video — corto a propósito: le das tus herramientas, tu negocio y tu mayor hueco, y Claude arma el resto. La segunda es la versión a fondo, para cuando quieras que Claude no deje ningún cabo suelto (inventario, tabla de costo y frescura, resolución de entidades). Cualquiera de las dos: córrela en modo Plan (Shift+Tab hasta que abajo diga plan mode) para que te enseñe el plan antes de crear un solo archivo.</p><div class="gcard"><div><div><h3>/build-my-brain — el prompt del reel (pégalo tal cual)</h3><p>El prompt exacto del video, adaptado al español (Claude entiende los dos). Corto a propósito: le das tus herramientas, tu negocio y tu mayor hueco, y Claude arma el resto. Córrelo en modo Plan.</p></div><span class="gbtn">Copiar</span></div><div><pre>// Mis herramientas:
+[lista tus conexiones / MCPs: Gmail, Slack, HubSpot, Calendar...]
+
+// Mi negocio:
+[describe qué haces]
+
+// Mi mayor hueco:
+[¿qué contexto pierde tu IA entre conversaciones?]
+
+────────────────────────────────
+Diseña mi cerebro de Postgres.
+
+1. Esquema (tablas + columnas)
+2. Orden de carga
+3. Un sync por cada fuente
+
+// Empieza por los clientes.
+// Pregúntame primero.</pre></div></div><div class="gcard"><div><div><h3>La versión a fondo — si quieres que Claude no deje cabos sueltos</h3><p>Misma idea, pero le pides a Claude el inventario completo, la tabla de costo y frescura por fuente, y el plan de resolución de entidades. Para cuando vas en serio.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero montar un &quot;cerebro&quot; para ti: una capa de contexto en Postgres donde
+mis fuentes vivan juntas, para que dejes de llamar catorce conectores por
+turnos y consultes todo en un lugar. No necesito que programes: tú diseñas y
+me explicas en lenguaje normal; el SQL lo generas tú.
+
+ANTES de proponer nada, entrevístame — una pregunta a la vez:
+
+1. ¿Qué fuentes quiero conectar? (Gmail, Slack, mi CRM, calendario, Notion,
+   facturación...) Pídeme la lista.
+2. Por cada fuente: ¿qué preguntas quiero poder responder con ella? (ej.
+   &quot;clientes con factura vencida&quot;, &quot;reuniones de la semana con su contexto&quot;)
+3. ¿Cuáles datos consulto todo el tiempo y cruzo entre fuentes, y cuáles
+   necesito fresquísimos al segundo? (esto define qué va al cerebro y qué se
+   queda como conector vivo)
+4. ¿Qué Postgres voy a usar? (Neon, Supabase, Railway, Render)
+5. ¿Presupuesto de sync al mes y cada cuánto tolero que se actualice cada
+   fuente? (15 min, 1 hora, 1 vez al día)
+
+Con mis respuestas, diséñame el plan completo y EXPLÍCAMELO ANTES de crear
+nada:
+
+- INVENTARIO: una tabla con cada fuente, qué trae, cuánto cambia (alta/media/
+  baja rotación) y si va al cerebro (lectura) o se queda como conector vivo
+  (acción). Sé honesto: lo que necesito al segundo NO va al cerebro.
+- MODELO CANÓNICO: un core chico centrado en el cliente — clients, meetings,
+  messages, ai_signals — con el DDL propuesto. Cada fila lleva source_app,
+  source_id, updated_at y synced_at.
+  Debajo, tablas crudas por fuente (bronze), el core conformado (silver) y un
+  puñado de vistas para que yo (el agente) consulte (gold).
+- ORDEN DE CARGA: en qué orden se llenan las tablas y por qué (primero
+  entidades, luego eventos que las referencian, etc.).
+- PLAN DE SYNC: por cada fuente, la herramienta (Airbyte, dlt, n8n o Estuary),
+  el modo (batch cada X min o CDC) y por qué ese modo. Batch para casi todo;
+  CDC solo donde de verdad haga falta.
+- TABLA DE COSTO Y FRESCURA: por fuente, costo estimado de sync al mes y qué
+  tan fresco quedará el dato. Marca los números como aproximados.
+- RESOLUCIÓN DE ENTIDADES: cómo vas a decidir que la misma persona en dos
+  fuentes es la misma (llave por correo + tabla de alias para lo que no calce).
+
+Preséntame todo como tu plan, en modo Plan: el inventario, el DDL y el plan de
+sync, para leerlo antes de aprobar. No crees ni un archivo sin mi OK.</pre></div></div><p>¿Quieres poder escribir /build-my-brain y que corra solo la próxima vez? Los slash commands personalizados de Claude Code son archivos Markdown que viven en la carpeta .claude/commands/ de tu proyecto. El nombre del archivo es el nombre del comando: build-my-brain.md se vuelve /build-my-brain. Arriba puede llevar un frontmatter YAML opcional para afinar cómo corre.</p><div class="gcard"><p>Así se ve el archivo .claude/commands/build-my-brain.md</p><div><pre>---
+description: Diseña mi cerebro de datos (capa de contexto en Postgres)
+argument-hint: [fuentes separadas por coma]
+allowed-tools: Read, Write, Bash
+model: opus
+---
+
+# Y debajo, el cuerpo del comando:
+# el prompt maestro de arriba, tal cual, pegado aquí.</pre></div></div><div class="gcard"><p>Crea la carpeta de comandos y el archivo</p><div><code>mkdir -p .claude/commands &amp;&amp; touch .claude/commands/build-my-brain.md</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>El cuerpo del archivo es, tal cual, el prompt maestro de arriba. Si no quieres crearlo a mano, pídele a Claude Code que lo haga por ti — “crea .claude/commands/build-my-brain.md con este contenido” y le pegas el prompt. Y si quieres ver cientos de comandos reales de la comunidad para inspirarte, están <a href="https://github.com/hesreallyhim/awesome-claude-code" target="_blank" rel="noopener">awesome-claude-code</a> y <a href="https://github.com/qdhenry/Claude-Command-Suite" target="_blank" rel="noopener">Claude-Command-Suite</a>.</p></div></div></div><div id="g-estructura"><p>05 · LA ESTRUCTURA</p><h2>El esquema: un core chico y unas vistas limpias que el modelo entiende</h2><div><p>En el video, el cerebro son cuatro tablas — no cuarenta. Esa es toda la gracia: un core chico que casi cualquier negocio de clientes reconoce. clients (quién es), meetings (de qué hablaron y qué quedó), messages (correos y chats por canal) y ai_signals (patrones que se detectan, con su fuente). Cuatro tablas, cada conversación, un cerebro.</p><div class="ggrid"><div class="gcard"><div><span>🏢</span><span>clients</span><span>quién es cada cliente</span></div><div><div><span>id</span><span>uuid</span></div><div><span>name</span><span>text</span></div><div><span>company</span><span>text</span></div><div><span>last_contact</span><span>date</span></div><div><span>deal_status</span><span>text</span></div></div></div><div class="gcard"><div><span>📅</span><span>meetings</span><span>de qué se habló y qué quedó</span></div><div><div><span>id</span><span>uuid</span></div><div><span><span>↳</span>client_id</span><span>uuid</span></div><div><span>date</span><span>timestamp</span></div><div><span>summary</span><span>text</span></div><div><span>action_items</span><span>text[]</span></div></div></div><div class="gcard"><div><span>💬</span><span>messages</span><span>correos y chats, por canal</span></div><div><div><span>id</span><span>uuid</span></div><div><span><span>↳</span>client_id</span><span>uuid</span></div><div><span>channel</span><span>text</span></div><div><span>content</span><span>text</span></div><div><span>sent_at</span><span>timestamp</span></div></div></div><div class="gcard"><div><span>🧠</span><span>ai_signals</span><span>patrones detectados, con su fuente</span></div><div><div><span>id</span><span>uuid</span></div><div><span><span>↳</span>client_id</span><span>uuid</span></div><div><span>pattern</span><span>text</span></div><div><span>sources</span><span>text[]</span></div><div><span>flagged_at</span><span>timestamp</span></div></div></div></div><p>Fíjate en el patrón: clients es el centro, y meetings, messages y ai_signals cuelgan de ahí con un client_id. Todo gira alrededor del cliente, así que cualquier pregunta (“¿qué pasa con Acme?”) es un join, no catorce viajes. Si tu negocio no es de clientes, la forma es la misma con otro centro: proyectos, pacientes, propiedades — lo que sea tu unidad.</p><div class="gcard"><p>La versión del video es limpia a propósito. Cuando lo montes de verdad, agrégale a cada tabla cuatro columnas de rastreo — source_app (de qué herramienta vino: gmail, slack, hubspot), source_id (su id original allá), updated_at (cuándo cambió en la fuente) y synced_at (cuándo lo copiaste), con un unique (source_app, source_id) — para que al re-sincronizar no dupliques filas y sepas siempre qué tan fresco es cada dato.</p></div><div class="ggrid"><div class="gcard"><p>Bronze · crudo</p><p>Una tabla cruda por fuente (gmail_raw, hubspot_raw…) con el payload tal como llega, sin tocar. Tu red de seguridad si un sync sale mal.</p></div><div class="gcard"><p>Silver · las 4 tablas</p><p>El core limpio del video — clients, meetings, messages, ai_signals — que une las fuentes bajo columnas iguales y resuelve duplicados.</p></div><div class="gcard"><p>Gold · para el agente</p><p>Vistas ya cruzadas — “la actividad de un cliente”, “clientes con factura vencida y sin respuesta” — que Claude consulta directo.</p></div></div><p>¿Por qué en capas? Porque el agente NO debería leer las tablas crudas ni armar joins raros. Consulta solo las vistas gold: pocas, limpias, con nombres que explican qué son. Menos objetos y más claros es lo que un modelo maneja mejor — la misma lógica de Anthropic sobre mantener herramientas y contexto apretados, aplicada a tu esquema.</p><div class="gcard"><div><div><h3>Genera el esquema canónico</h3><p>Ya con el plan aprobado, que Claude escriba el SQL: el core, las columnas de rastreo y las capas bronze → silver → gold. Tú lo revisas y lo apruebas.</p></div><span class="gbtn">Copiar</span></div><div><pre>Ya aprobamos el plan del cerebro. Ahora genera el esquema en SQL de Postgres.
+Escríbelo tú entero; yo solo reviso y apruebo. Explícame en lenguaje normal qué
+hace cada bloque antes del código.
+
+1. CORE (silver): las cuatro tablas del cerebro — clients, meetings, messages y
+   ai_signals.
+   - clients: quién es cada cliente (name, company, last_contact, deal_status).
+     Es el centro; todo lo demás apunta aquí con un client_id.
+   - meetings: reuniones (date, summary, action_items[]) con su client_id.
+   - messages: correos y chats (channel, content, sent_at) con su client_id.
+   - ai_signals: patrones detectados (pattern, sources[], flagged_at) con su
+     client_id — recuerda que esta tabla la escribe la capa de análisis, no la
+     conexión de Claude.
+   - CADA tabla lleva estas columnas de rastreo, sin excepción:
+     source_app (gmail/slack/hubspot...), source_id (id en la fuente),
+     updated_at (cuándo cambió allá), synced_at (cuándo lo copiamos).
+   - Una restricción unique (source_app, source_id) por tabla, para no
+     duplicar al re-sincronizar.
+
+2. BRONZE: una tabla cruda por fuente (gmail_raw, hubspot_raw, ...) que guarde el
+   payload tal como llega, sin transformar. Es la red de seguridad.
+
+3. GOLD: 2 o 3 vistas ya cruzadas, con nombres que expliquen qué son, pensadas
+   para que YO (el agente) las consulte directo. Por ejemplo una vista
+   &quot;client_activity&quot; que junte por cliente su último correo, su etapa de trato,
+   su última reunión y su último mensaje de Slack. Estas vistas son las que voy
+   a leer; nada más.
+
+4. RESOLUCIÓN DE ENTIDADES: la lógica para unir al mismo cliente entre fuentes.
+   Empieza por el correo como llave; crea una tabla client_alias para los casos
+   que no calcen por correo, y explícame cómo la lleno.
+
+Reglas: comenta cada tabla y cada vista con una línea de para qué sirve. No
+inventes columnas que no salgan de mis fuentes. Al final, dame el orden exacto
+en que debo correr el SQL (primero core, luego bronze, luego vistas gold) y
+recuérdame que el agente solo debería tener permiso de lectura sobre las vistas
+gold — eso lo endurecemos en el siguiente paso.</pre></div></div><p>Esto es lo que Claude te genera con ese prompt — el DDL de un par de las tablas, ya con las columnas de rastreo, más la vista gold que el agente consulta. No es tarea tuya escribirlo; es para que veas la forma:</p><div><pre>-- clients: quién es cada cliente (el centro de todo)
+create table clients (
+  id           uuid primary key default gen_random_uuid(),
+  name         text,
+  company      text,
+  last_contact date,
+  deal_status  text,                    -- &#x27;lead&#x27; | &#x27;negotiation&#x27; | &#x27;won&#x27;...
+  source_app   text not null,           -- &#x27;hubspot&#x27; | &#x27;gmail&#x27;...
+  source_id    text not null,           -- su id en la fuente
+  synced_at    timestamptz default now(),
+  unique (source_app, source_id)
+);
+
+-- messages: correos y chats de cada cliente, por canal
+create table messages (
+  id         uuid primary key default gen_random_uuid(),
+  client_id  uuid references clients(id),
+  channel    text,                      -- &#x27;gmail&#x27; | &#x27;slack&#x27;...
+  content    text,
+  sent_at    timestamptz,
+  source_app text not null,
+  source_id  text not null,
+  synced_at  timestamptz default now(),
+  unique (source_app, source_id)
+);
+
+-- Vista gold: la actividad de un cliente, lista para que Claude la lea
+create view client_activity as
+select c.name, c.company, c.deal_status,
+       max(m.sent_at)                               as ultimo_mensaje,
+       count(m.id) filter (where m.channel = &#x27;slack&#x27;) as mensajes_slack
+from clients c
+left join messages m on m.client_id = c.id
+group by c.id, c.name, c.company, c.deal_status;</pre></div><div class="gcard"><p>Un detalle de la tabla ai_signals: esa la escribe tu capa de análisis — un workflow que revisa los datos y anota patrones (“este cliente lleva 3 correos sin respuesta”) con la fuente de donde salió. No la escribe la conexión de Claude. El agente LEE el cerebro en solo-lectura; quien anota señales es un proceso aparte. Así Claude nunca tiene permiso de escritura sobre tu base.</p></div><div class="gcard"><p>Lo más difícil no es el DDL — Claude te lo escribe. Es la resolución de entidades: decidir que juan@empresa.com en Gmail, @juanp en Slack y “Juan Pérez” en HubSpot son el mismo cliente. Empieza por el correo como llave común y pídele a Claude una tabla de alias para los casos que no calcen. Ese es el trabajo real de un cerebro que cruza fuentes.</p></div></div></div><div id="g-sincroniza"><p>06 · SINCRONIZA</p><h2>Sincroniza tus fuentes: Airbyte, dlt o n8n (y CDC solo si hace falta)</h2><div><p>El cerebro necesita que alguien copie tus fuentes hacia la Postgres cada tanto. Eso es un sync (ETL o CDC, según qué tan fresco lo quieras). Y aquí está la clave que el video deja clarísima: cada fuente tiene su propio ritmo — no todo va en tiempo real.</p><p>Así se ve un plan de sync de verdad, el del video. Cuatro workflows, un cerebro, siempre al día:</p><div class="gcard"><div><span>Gmail</span><span>Parsear correos</span><span>cada hora</span></div><div><span>Slack</span><span>Extraer hilos</span><span>tiempo real</span></div><div><span>Calendar</span><span>Registrar reuniones</span><span>diario, 8 AM</span></div><div><span>HubSpot</span><span>Traer contactos</span><span>tiempo real</span></div></div><div class="gcard"><p>Mira la mezcla: el correo cada hora, el calendario una vez al día, y solo Slack y el CRM en tiempo real (el CRM, para pescar el cambio de etapa del trato en el momento — lo demás del CRM aguantaría un lote). Eso es lo correcto — el tiempo real se reserva para lo que de verdad no puede esperar. La mayoría de tus datos aguanta un lote cada 15-60 minutos, y eso es justo lo que abarata la cuenta.</p></div><p>¿Con qué se arma cada fila? Cuatro caminos, del más barato al más “en tiempo real”; con presupuesto de $20 casi siempre te quedas en los tres primeros:</p><div class="gcard"><div class="ggrid"><div><p>Airbyte</p><p>El caballito de batalla open source (self-host gratis).</p></div><div><p>Más de 600 conectores (Slack → Postgres, Gmail, CRMs). Configuras fuente y destino en su panel y programas el sync cada 15-60 min. Hoy se posiciona justo como “capa de contexto” para agentes.</p><p><a href="https://github.com/airbytehq/airbyte" target="_blank" rel="noopener">airbytehq/airbyte</a></p></div></div><div class="ggrid"><div><p>dlt</p><p>El sync a la medida, en código (Apache-2.0).</p></div><div><p>Una librería de Python: pip install dlt y un script corto que corre donde sea — tu compu, un cron, Railway. El honesto cuando quieres control fino y no un panel.</p><p><a href="https://github.com/dlt-hub/dlt" target="_blank" rel="noopener">dlt-hub/dlt</a></p></div></div><div class="ggrid"><div><p>n8n</p><p>El pegamento por eventos (webhooks).</p></div><div><p>Ideal para sync casi en tiempo real: un evento de Slack o del CRM dispara un workflow que inserta la fila. Barato y bueno para lo que cambia mucho.</p><p><a href="#/g/n8n-mcp-oficial">guía de n8n + Claude</a></p></div></div><div class="ggrid"><div><p>Estuary Flow</p><p>CDC en tiempo real (sub-segundo), solo cuando de verdad lo necesitas.</p></div><div><p>Free ~10 GB/mes con 2 conectores; luego ~$0.50/GB + ~$0.14/hora por conector (aprox., julio 2026). Resérvalo para las pocas tablas que necesitan frescura de segundos.</p></div></div></div><p>¿Y Fivetran? Es el incumbente empresarial: potentísimo y caro (del orden de ~$500 por millón de filas activas, aprox.). Para un cerebro personal o de equipo chico es matar una mosca a cañonazos — lo menciono solo como el otro extremo de la escala.</p><div class="gcard"><p>El atajo barato para esta guía: Airbyte self-host para el grueso de tus fuentes, dlt cuando quieras un sync a la medida en código, n8n para los eventos de alta rotación por webhook, y Estuary solo para esa tabla que de verdad necesita el dato del último segundo.</p></div><div class="gcard"><p>El aviso honesto de costo: sincronizar tablas que cambian mucho es lo caro — el CDC se cobra por GB o por fila movida, y una tabla muy movida se dispara rápido. Regla práctica: la mayoría de tus datos aguanta un batch cada 15-60 minutos; reserva el tiempo real para las poquísimas tablas que de verdad lo piden. No sincronices todo “por si acaso”.</p></div><div class="gcard"><div><div><h3>La rutina de re-sincronización semanal</h3><p>Se pega una vez y queda grabada. Desde entonces, “re-sync semanal” significa refrescar las fuentes, revisar frescura y avisarte qué quedó viejo — para que el cerebro no se ranció.</p></div><span class="gbtn">Copiar</span></div><div><pre>A partir de hoy llevas la salud del cerebro. Esta es la rutina que corremos una
+vez por semana cuando yo te diga &quot;re-sync semanal&quot;:
+
+1. REFRESCA: dispara el sync de cada fuente según su plan (batch de Airbyte/dlt/
+   n8n). Recuérdame cuáles son batch y cuáles CDC continuo. No re-sincronices
+   lo que no cambió: usa updated_at para traer solo lo nuevo.
+2. FRESCURA: por cada tabla del core, dime el synced_at más viejo y el más
+   nuevo. Marca en rojo cualquier fuente cuyo dato más viejo pase el umbral que
+   acordamos (ej. más de 24 h en algo que debería refrescarse cada hora).
+3. INTEGRIDAD: revisa que la resolución de entidades no se haya roto — clientes
+   duplicados nuevos, correos que aparecen en dos clientes, filas huérfanas en
+   messages sin su client_id. Dame la lista para que yo decida, no la arregles
+   sola.
+4. COSTO: dime cuánto llevo gastado del presupuesto de sync este mes y qué
+   fuente se está comiendo la mayor parte. Si alguna tabla de alta rotación está
+   disparando el costo, propónme bajarle la frecuencia o pasarla a conector
+   vivo.
+5. RESUMEN: cierra con 5 líneas — qué se refrescó, qué quedó viejo y por qué,
+   qué revisar a mano, y si algo debería salir del cerebro (o entrar).
+
+Guarda esta rutina para que &quot;re-sync semanal&quot; siempre signifique estos 5 pasos.
+Y recuérdame la regla de oro: un cerebro que se ve fresco pero está viejo es
+peor que uno que admite su fecha de corte.</pre></div></div></div></div><div id="g-conecta-mcp"><p>07 · CONECTA POR MCP</p><h2>Conéctalo a Claude por MCP — en modo solo-lectura</h2><div><p>Ya tienes el cerebro con datos. Falta que Claude lo pueda leer. Eso lo hace un servidor MCP de Postgres: un puente que le da a Claude la herramienta “consulta esta base”. El más completo hoy es Postgres MCP Pro (crystaldba/postgres-mcp), MIT y en Python — y trae justo lo que quieres: un modo restringido de solo-lectura con topes de recursos, además de chequeos de salud de la base, sugerencias de índices y validación de planes de consulta.</p><p>Se instala una vez y se conecta a Claude Code con un comando. Fíjate en el --access-mode=restricted: ese es el que lo deja en solo-lectura.</p><div class="gcard"><p>Instala el servidor Postgres MCP (Python)</p><div><code>pipx install postgres-mcp</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>Conéctalo a Claude Code en modo solo-lectura</p><div><code>claude mcp add postgres --env DATABASE_URI=&quot;postgresql://usuario:clave@host:5432/tu_base&quot; -- postgres-mcp --access-mode=restricted</code></div><span class="gbtn">Copiar comando</span></div><p>¿Usaste Supabase? Tiene su propio servidor oficial (supabase-community/supabase-mcp, Apache-2.0, en TypeScript) que ya sabe hablar con tu proyecto. Los dos repos: <a href="https://github.com/crystaldba/postgres-mcp" target="_blank" rel="noopener">crystaldba/postgres-mcp</a> y <a href="https://github.com/supabase-community/supabase-mcp" target="_blank" rel="noopener">supabase-community/supabase-mcp</a>.</p><div class="gcard"><div><div><h3>Instala y verifica el Postgres MCP</h3><p>Conecta la base a Claude por MCP en modo restringido y comprueba que quedó bien — sin escribir nada, solo leyendo.</p></div><span class="gbtn">Copiar</span></div><div><pre>Vamos a conectar mi Postgres a Claude por MCP, en modo solo-lectura. Guíame
+paso a paso y explícame qué hace cada comando antes de que lo corra.
+
+1. INSTALA el servidor: crystaldba/postgres-mcp (Postgres MCP Pro, MIT, en
+   Python). Dame el comando exacto para mi sistema (pipx o uv) y qué revisar si
+   falla.
+2. CONÉCTALO a Claude Code con claude mcp add, pasando mi DATABASE_URI como
+   variable de entorno y con --access-mode=restricted (modo restringido de
+   solo-lectura con topes de recursos). Explícame por qué restricted y no el
+   modo sin restricción.
+3. VERIFICA la conexión sin cambiar nada de la base:
+   - Lista las tablas y vistas que ve el MCP.
+   - Muéstrame las vistas gold que definimos y confirma que las encuentra.
+   - Corre el chequeo de salud de la base que trae el servidor (índices, cache,
+     vacuum) y resúmemelo en lenguaje normal.
+   - Haz UNA consulta de lectura de ejemplo contra una vista gold (por ejemplo,
+     cuántos clientes hay por source_app) para confirmar que puede leer.
+4. Si algo falla — no encuentra el MCP, no conecta a la base, o el modo no
+   quedó en restricted — dímelo claro y en qué paso, antes de seguir.
+
+Importante: en este paso NO se escribe ni se modifica nada en la base. Si en
+algún momento necesitas permiso de escritura para &quot;verificar&quot;, detente y
+avísame: no lo tienes ni lo vas a tener.</pre></div></div><div class="gcard"><p>La nota de seguridad que no te puedes saltar</p><p>Un MCP con permiso de escritura sobre toda tu vida es una superficie de ataque real — hubo un caso documentado de inyección SQL contra el Postgres MCP de referencia (el de modelcontextprotocol, hoy archivado; no lo uses). Tres reglas: conéctalo siempre en modo solo-lectura (restricted, como arriba); crea un rol de Postgres con el mínimo privilegio, que solo pueda leer las vistas gold y nada más; y no expongas escrituras que no necesitas. El cerebro lee; para escribir están tus conectores vivos.</p></div><div class="gcard"><div><div><h3>Endurece con un rol solo-lectura</h3><p>El cinturón de seguridad a nivel de la base: un rol de Postgres de mínimo privilegio que solo puede leer las vistas gold. Claude te genera el SQL.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero endurecer la seguridad del cerebro a nivel de la base, no solo confiar
+en el modo del MCP. Genérame el SQL de Postgres para un rol de mínimo
+privilegio, y explícame cada línea antes.
+
+1. Crea un rol nuevo, por ejemplo claude_readonly, SIN permiso de login de
+   superusuario y sin poder crear ni borrar objetos.
+2. QUÍTALE todo por defecto y dale de vuelta SOLO lo mínimo:
+   - Permiso de conexión a la base.
+   - USAGE sobre el esquema.
+   - SELECT únicamente sobre las vistas gold (no sobre las tablas crudas bronze
+     ni sobre el core silver, si se puede evitar).
+   - Nada de INSERT, UPDATE, DELETE, TRUNCATE ni DDL. Revócalos explícitamente.
+3. Asegúrate de que los objetos que se creen en el futuro NO le den permiso
+   automático a este rol (ALTER DEFAULT PRIVILEGES para que no herede SELECT en
+   tablas nuevas sin que yo lo decida).
+4. Dame la cadena de conexión (DATABASE_URI) que debo usar con ESTE rol en el
+   MCP, en vez de la de mi usuario dueño.
+
+Al final, dame una lista de verificación de 5 puntos para confirmar que el rol
+quedó de solo-lectura — incluyendo una consulta que YO pueda correr para probar
+que un INSERT o un UPDATE con ese rol es rechazado. Recuérdame que este rol es
+el que va en el MCP, y que mi usuario dueño (el que puede escribir) nunca se
+conecta a Claude.</pre></div></div></div></div><div id="g-receta"><p>08 · LA RECETA</p><h2>La receta completa: de cero al cerebro que responde</h2><div><p>Junta todo. Seis pasos, en orden:</p><ol><li><span>01</span><span>Elige tu Postgres — Neon Launch o Railway Pro para el “$20” honesto; Supabase Pro si quieres todo montado.</span></li><li><span>02</span><span>Corre /build-my-brain en modo Plan — Claude hace inventario de tus fuentes y te enseña el esquema, el orden de carga y el plan de sync antes de tocar nada.</span></li><li><span>03</span><span>Crea el esquema — con el prompt del esquema, Claude te genera el DDL del core y las vistas gold; lo apruebas y se crea.</span></li><li><span>04</span><span>Sincroniza tus fuentes — Airbyte, dlt o n8n copian Gmail, Slack y el CRM hacia la base; batch para casi todo, tiempo real solo donde haga falta.</span></li><li><span>05</span><span>Conéctalo por MCP en solo-lectura — instalas crystaldba/postgres-mcp, lo conectas con --access-mode=restricted y un rol de mínimo privilegio.</span></li><li><span>06</span><span>Pregúntale al cerebro — una consulta que cruza fuentes, respondida en un lugar en vez de catorce viajes.</span></li></ol><p>El pago de todo el montaje es el paso 6: preguntas que antes hacían sudar a Claude entre catorce conectores, ahora salen de una sola consulta. Este es el prompt que las dispara.</p><div class="gcard"><div><div><h3>Pregúntale al cerebro</h3><p>El pago de todo: una pregunta que cruza tres fuentes, respondida en una sola consulta en vez de catorce viajes entre conectores.</p></div><span class="gbtn">Copiar</span></div><div><pre>Usa el MCP de Postgres para responderme esto consultando el cerebro — no los
+conectores en vivo. Todo debe salir de la base; si un dato no está ahí, dímelo
+en vez de inventarlo o de ir a buscarlo a la fuente.
+
+La pregunta: de los clientes que me escribieron por correo en los últimos 7
+días, dime cuáles además tienen una factura vencida en el CRM y ninguna
+respuesta mía en Slack sobre ese tema. Para cada uno:
+
+- Nombre y empresa (de clients).
+- Fecha del último correo que me mandó y de qué trataba (de messages).
+- Etapa del trato y monto (de clients / la vista gold del CRM).
+- Si hay o no un hilo de Slack relacionado y cuándo fue el último mensaje.
+- Una prioridad sugerida (alta/media/baja) según monto vencido y silencio.
+
+Cómo quiero que trabajes:
+
+1. Primero dime qué vistas gold vas a consultar y con qué llaves las vas a
+   cruzar (probablemente el correo o el client_id). Enséñame el SQL antes de
+   correrlo.
+2. Corre solo lecturas (SELECT). Nada de escribir.
+3. Marca cada fila con su synced_at más reciente entre las fuentes que usaste,
+   para que yo sepa qué tan fresco es cada dato.
+4. Si una fuente está desactualizada (synced_at viejo) o falta, dímelo claro:
+   &quot;esto es de hace 3 horas&quot; es información, no un detalle.
+5. Cierra con una tabla ordenada por prioridad y una línea de qué NO se puede
+   responder solo con el cerebro (por ejemplo, si hace falta el correo del
+   último minuto, eso se pide en vivo, no aquí).</pre></div></div><p>¿Y cómo se ve una respuesta? En el video, Claude llama a una sola herramienta — get_client_activity[cliente] — que cruza HubSpot, Gmail, las notas de reunión (tipo Granola) y Slack en paralelo, y devuelve un tablero. En vez de catorce viajes, esto:</p><div class="gcard"><div><span>Claude ya sabe</span></div><div class="ggrid"><p>Último correo</p><p>“Q3 Review — falta dar seguimiento”, hoy 3:43 PM</p></div><div class="ggrid"><p>Etapa del trato</p><p>Negociación — $45k ARR</p></div><div class="ggrid"><p>Última reunión</p><p>Lunes, 2:00 PM (30 min)</p></div><div class="ggrid"><p>Slack</p><p>#client-acme: “Manda el borrador del contrato para EOD.”</p></div></div><p>No busca: ya sabe. Una consulta, cada fuente, una respuesta — y cada dato con su fecha, para que sepas qué tan fresco es.</p><div class="gcard"><p>Y para que el cerebro no se vuelva un museo de datos viejos, córrele una vez por semana la rutina de re-sincronización — el último prompt de la sección de sincronizar. Un cerebro fresco vale; uno rancio que se ve seguro de sí mismo, no.</p></div></div></div></div><div><div><p>Guía de la comunidad</p><p>Esta es la guía del cerebro de Claude: el patrón de la capa de contexto, la Postgres barata, /build-my-brain y el MCP en solo-lectura, montado paso a paso. Vive en la bóveda de la comunidad de <a href="#/boveda">tododeia</a>.</p></div><div class="gcard"><p>Cierre · la pregunta que decide si te sirve</p><p>“¿Cuántos conectores tienes hoy colgando de Claude — y cuántas de tus preguntas de verdad cruzan tres o cuatro a la vez? Ahí, exactamente ahí, es donde un cerebro empieza a pagarse.”</p></div><div><p>Guías hermanas · antes o después de esta</p><div class="ggrid"><a class="gcard" href="#/g/claude-design"><div><p>Claude Design — el manual definitivo para diseñar con Claude</p><p>La otra cara de conectar cosas a Claude: aquí le das datos; allá le hablas para que te arme presentaciones, webs y apps clickeables sin salir del chat.</p></div></a><a class="gcard" href="#/g/matriz-viral"><div><p>Matriz Viral — Claude estudia tus redes y encuentra el patrón</p><p>Otra forma de darle datos a Claude: en vez de una base propia, el MCP de Apify le baja lo más viral de tus redes para que saque el patrón.</p></div></a><a class="gcard" href="#/g/n8n-mcp-oficial"><div><p>n8n + Claude — automatizaciones con el MCP oficial</p><p>El pegamento del sync por eventos: un webhook de Slack o del CRM dispara un workflow de n8n que inserta la fila en tu Postgres casi en tiempo real.</p></div></a><a class="gcard" href="#/g/plan-claude"><div><p>Plan Claude — el modo arquitecto a fondo</p><p>/build-my-brain corre en modo Plan: aquí entiendes a fondo cómo Claude investiga y te enseña el diseño completo antes de tocar nada.</p></div></a></div></div><div class="gcard"><p>Lo honesto antes de cerrar</p><p>Cinco verdades antes de montar esto. Una: la frescura es el riesgo real — al revés de lo que suena, los datos que cambian a cada segundo son los MÁS caros de mantener frescos, y una copia sincronizada siempre va un paso atrás; el cerebro brilla para lo que consultas todo el tiempo y cruzas entre fuentes, no para el dato del último segundo, que se pide en vivo. Dos: este cerebro es de lectura — responde qué, quién y cuándo; enviar el correo, crear el evento o mover el CRM se quedan en conectores vivos. Tres: conéctalo siempre en modo solo-lectura y con un rol de mínimo privilegio; un MCP que puede escribir en toda tu vida es superficie de ataque (ya hubo un caso documentado de inyección SQL contra un Postgres MCP de referencia). Cuatro: unir “la misma persona” entre Gmail, Slack y el CRM — la resolución de entidades — es lo que de verdad cuesta. Y cinco: si solo tienes 2-3 conectores, si lo que necesitas son acciones y no lecturas, o si no puedes comprometerte a pagar y correr el sync, no lo hagas todavía — un cerebro rancio que se ve autoritativo es peor que ninguno.</p></div></div></div>
+</article>

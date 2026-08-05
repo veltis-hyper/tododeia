@@ -1,0 +1,54 @@
+<article class="chapter guia" data-slug="crea-claude-skills">
+<div><div><h1>Crea Claude Skills</h1><p>aprende a crear tus propios Skills para Claude Code desde cero — estructura, buenas prácticas y ejemplos listos para copiar y usar.</p></div><div><div class="gcard"><h2>Qué es un Skill</h2><p>un Skill es como un superpoder que le das a Claude. es una carpeta con instrucciones que Claude carga automáticamente cuando las necesita — funciona en Claude Code, la API, claude.ai y el Agent SDK.</p><p>en su forma más simple, un Skill es un archivo <code>SKILL.md</code> con metadata YAML y un bloque de instrucciones en lenguaje natural.</p></div><div class="gcard"><h2>Anatomía de un Skill</h2><p>todo Skill necesita un archivo <code>SKILL.md</code> con este formato:</p><pre>---
+name: mi-skill
+description: Describe qué hace este skill en tercera persona
+version: 1.0.0
+---
+
+# Instrucciones
+
+Aquí van las instrucciones en lenguaje natural
+que Claude seguirá cuando active este skill.</pre><p>Estructura de carpeta</p><pre>mi-skill/
+├── SKILL.md          # obligatorio
+├── REFERENCE.md      # opcional — contexto extra
+└── scripts/          # opcional — scripts auxiliares
+    └── lint.sh</pre></div><div class="gcard"><h2>Crea tu primer Skill paso a paso</h2><div><div class="gcard"><p>1. Crea el directorio</p><div><code>mkdir -p mi-skill</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>2. Crea SKILL.md con frontmatter</p><div><code>cat &gt; mi-skill/SKILL.md &lt;&lt; &#x27;EOF&#x27;
+---
+name: mi-skill
+description: Genera resúmenes concisos de archivos de código
+version: 1.0.0
+---
+
+# Instrucciones
+
+Cuando el usuario pida un resumen de código:
+1. Lee el archivo indicado
+2. Identifica la función principal
+3. Resume en 2-3 oraciones qué hace y cómo
+EOF</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>3. (Opcional) Agrega archivos de referencia</p><div><code>echo &#x27;# Contexto adicional\n\nReglas de estilo del proyecto...&#x27; &gt; mi-skill/REFERENCE.md</code></div><span class="gbtn">Copiar comando</span></div></div><p>4. Coloca el Skill donde necesites</p><div class="ggrid"><div class="gcard"><p>Personal (global)</p><code>~/.claude/skills/mi-skill/</code><p>disponible en todos tus proyectos.</p></div><div class="gcard"><p>Por proyecto</p><code>.claude/skills/mi-skill/</code><p>solo aplica a este repo. se comparte con el equipo vía git.</p></div></div></div><div class="gcard"><h2>Los 3 niveles de carga</h2><p>Claude usa un sistema de carga progresiva para no saturar el contexto:</p><div class="ggrid"><div class="gcard"><p>1. Metadata</p><p>Claude lee solo el nombre y descripción del YAML. así decide si el skill es relevante.</p></div><div class="gcard"><p>2. Instrucciones</p><p>si es relevante, carga el cuerpo completo del SKILL.md con todas las instrucciones.</p></div><div class="gcard"><p>3. Recursos</p><p>solo si necesita más contexto, lee REFERENCE.md y archivos auxiliares.</p></div></div><div>la carga progresiva mantiene el contexto limpio — escribe descripciones claras para que Claude active solo los skills que necesita.</div></div><div class="gcard"><h2>Buenas prácticas</h2><ul><li>mantén SKILL.md por debajo de 500 líneas — si crece, divide en skills más pequeños.</li><li>escribe la descripción en tercera persona: &quot;Genera tests unitarios...&quot; no &quot;Genero tests...&quot;</li><li>usa nombres en gerundio cuando sea natural: <code>code-reviewing</code>, <code>api-documenting</code>.</li><li>prueba el skill en diferentes modelos (Opus, Sonnet, Haiku) para verificar compatibilidad.</li><li>incluye un loop de feedback: pide al usuario confirmar antes de acciones destructivas.</li><li>usa instrucciones concretas y específicas — evita frases vagas como &quot;haz lo mejor posible&quot;.</li></ul></div><div class="gcard"><p>Qué NO hacer</p><ul><li>nombres vagos como <code>helper</code> o <code>utils</code> — sé específico.</li><li>rutas hardcodeadas de Windows (<code>C:\Users\...</code>) — usa rutas relativas.</li><li>demasiadas opciones en un solo skill — divide responsabilidades.</li><li>referencias circulares entre skills — mantén dependencias lineales.</li><li>archivos gigantes en REFERENCE.md — solo incluye lo necesario.</li></ul></div><div class="gcard"><h2>Ejemplo completo</h2><p>un skill de code review listo para usar — cópialo y modifícalo a tu gusto:</p><pre>---
+name: code-reviewer
+description: Revisa código buscando bugs, seguridad y mejoras de rendimiento
+version: 1.0.0
+---
+
+# Code Reviewer
+
+Cuando el usuario pida una revisión de código:
+
+1. Lee los archivos indicados o los cambios staged en git
+2. Analiza en este orden:
+   - Bugs potenciales y errores lógicos
+   - Vulnerabilidades de seguridad (OWASP top 10)
+   - Problemas de rendimiento
+   - Legibilidad y mantenibilidad
+3. Presenta hallazgos agrupados por severidad:
+   - 🔴 Crítico — debe corregirse antes de merge
+   - 🟡 Advertencia — recomendado corregir
+   - 🟢 Sugerencia — mejora opcional
+4. Para cada hallazgo incluye:
+   - Archivo y línea
+   - Descripción del problema
+   - Código sugerido de corrección
+5. Al final, da un veredicto: aprobar, aprobar con cambios,
+   o solicitar cambios</pre><div>tip: copia este ejemplo, cambia el nombre y las instrucciones, y tendrás tu propio skill personalizado en segundos.</div></div><div class="gcard"><h2>Dónde funcionan</h2><p>los Skills funcionan en todo el ecosistema de Claude:</p><div class="ggrid"><div class="gcard"><div><p>Claude Code</p></div><p>coloca el skill en <code>.claude/skills/</code> y se activa automáticamente.</p></div><div class="gcard"><div><p>API</p></div><p>pasa skills vía <code>container.skills</code> en la request con el header beta.</p></div><div class="gcard"><div><p>claude.ai</p></div><p>sube tu skill como proyecto y se aplica a todas las conversaciones del proyecto.</p></div><div class="gcard"><div><p>Agent SDK</p></div><p>integra skills programáticamente en agentes custom con el SDK de Claude.</p></div></div></div><div class="gcard"><h2>Guía completa</h2><p>descarga la guía en markdown con templates, más ejemplos y troubleshooting.</p><a href="https://www.tododeia.com/docs/crea-claude-skills-guia.md" target="_blank" rel="noopener">abrir guía completa (markdown) </a></div><div class="gcard"><h2>Links oficiales</h2><ul><li><a href="https://docs.anthropic.com/en/docs/claude-code/skills" target="_blank" rel="noopener">Skills Overview </a></li><li><a href="https://docs.anthropic.com/en/docs/claude-code/skills-quickstart" target="_blank" rel="noopener">Skills Quickstart </a></li><li><a href="https://docs.anthropic.com/en/docs/claude-code/skills-best-practices" target="_blank" rel="noopener">Best Practices </a></li><li><a href="https://docs.anthropic.com/en/docs/claude-code/skills-enterprise" target="_blank" rel="noopener">Enterprise Skills </a></li><li><a href="https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/skills-api" target="_blank" rel="noopener">API Skills Guide </a></li></ul></div><div class="gcard"><p>tip</p><p>empieza con un skill simple, pruébalo, y luego itera. los mejores skills nacen de resolver un problema real que enfrentas todos los días al programar.</p></div></div></div>
+</article>

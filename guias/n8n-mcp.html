@@ -1,0 +1,139 @@
+<article class="chapter guia" data-slug="n8n-mcp">
+<div><div><h1>n8n MCP — Conecta Claude a Tu Negocio sin Código</h1><p>n8n es donde montas agentes para que tu negocio jale solo. El problema: te aventabas a configurarlo todo a mano. Ahora hay un <strong>MCP gratis (21k★)</strong> que le da a Claude acceso a los 1,851 nodos de n8n. Le pegas la dirección de tu instancia y Claude te arma los agentes él mismo. Aquí los prompts para instalarlo, conectarlo y armar los 3 agentes que cambian un negocio: WhatsApp, correos y llamadas.</p></div><div class="gcard"><div><div><p>Del repo a tu primer agente</p><p>Instala · conecta tu n8n · valida · arma los 3 agentes</p><p>Empezamos eligiendo el camino de instalación, conectamos tu instancia con dos variables, verificamos que jale, y terminamos con prompts listos para los 3 agentes del video más una librería de prompts pro para sacarle el 100%.</p></div><div><a href="#g-por-que">Por qué</a><a href="#g-instalacion">Instala</a><a href="#g-configuracion">Conecta</a><a href="#g-agentes">3 Agentes</a><a href="#g-seguridad">Seguridad</a></div></div><div><span class="gpill">mcp · 1,851 nodos n8n</span><span class="gpill">21k★ · MIT · gratis</span><span class="gpill">instala con prompts</span><span class="gpill">whatsapp · correos · llamadas</span></div></div><div><div id="g-por-que"><p>el pain · por qué importa</p><h2>n8n era libertad — pero te ahogaba en setup</h2><div><p><strong>Antes:</strong> n8n es la mejor pieza para automatizar tu negocio sin pagar SaaS por todo. Pero abrías la pantalla, veías 1,851 nodos posibles, y no sabías ni cuál arrastrar primero. Te aventabas a configurar credenciales a mano, leer docs, probar, fallar, repetir. Sin programar, te ahogabas.</p><p><strong>Ahora:</strong> n8n-mcp es un MCP server (gratis, MIT, 21k★ en GitHub) que le da a Claude acceso directo a la documentación de los 1,851 nodos, miles de templates listos, y la API de tu instancia. Le explicas a Claude qué quieres en español, y él busca el template, valida la configuración, arma el workflow y te lo deja listo para que tú lo prendas.</p><div class="ggrid"><div class="gcard"><p>Antes</p><p>Drag &amp; drop a ciegas</p><p>Buscabas el nodo correcto entre 1,851. Probabas configuraciones. Algo fallaba en producción y no sabías por qué.</p></div><div class="gcard"><p>Después</p><p>Lo describes, Claude lo arma</p><p>Le explicas el agente que necesitas. Claude busca templates, elige nodos, valida y te entrega un workflow corriendo.</p></div><div class="gcard"><p>Costo real</p><p>Cero por el conector</p><p>n8n-mcp es MIT. La versión hosted te da 100 llamadas al día gratis. Self-host es 100% libre. Solo pagas tu plan de Claude.</p></div></div><p><strong>Quién lo necesita:</strong> cualquiera que ya pagó por n8n (cloud o self-host) y no termina de soltarle el potencial. También quien estaba a punto de pagarle a un freelancer entre $500 y $2,000 dólares por automatización custom — ese gasto se vuelve innecesario para la mayoría de los flujos básicos de negocio.</p></div></div><div id="g-instalacion"><p>paso 1 · instala el MCP</p><h2>Dos caminos: hosted (cero instalación) o self-host</h2><div><p>n8n-mcp se distribuye como un MCP server. Tienes dos formas de prenderlo en Claude Code: <strong>hosted</strong> (cero instalación, te da una API key gratis con 100 llamadas al día — buena para probar) o <strong>self-host con npx</strong> (corre local, conectado a tu propia instancia de n8n — el camino real para los 3 agentes).</p><ol><li><span class="gpill">1</span><div><p>Elige tu camino</p><p>Hosted (cero instalación, dashboard.n8n-mcp.com te da una API key gratis con 100 llamadas al día) o self-host (npx n8n-mcp con tu propia instancia de n8n). Si ya tienes n8n corriendo, ve directo a self-host.</p></div></li><li><span class="gpill">2</span><div><p>Genera tu API key</p><p>Hosted: regístrate en dashboard.n8n-mcp.com y copia la MCP_API_KEY. Self-host: entra a tu n8n → Settings → n8n API → Create an API key, y guárdala junto con la URL de tu n8n (algo como https://mi-n8n.com/api/v1).</p></div></li><li><span class="gpill">3</span><div><p>Pega el bloque MCP en Claude Code</p><p>En tu config de MCP servers, pega el snippet de abajo (uno para hosted, otro para self-host). Reinicia Claude Code para que cargue el server.</p></div></li><li><span class="gpill">4</span><div><p>Verifica con n8n_health_check</p><p>Ejecuta el prompt de verificación más abajo. Claude llama a n8n_health_check y te confirma si la conexión está viva. Si dice OK, ya tienes acceso a 1,851 nodos y a las herramientas de gestión.</p></div></li></ol><div class="gcard"><p>Camino A · Hosted</p><p>Para probar en 2 minutos sin instalar nada</p><p>Regístrate en <a href="https://dashboard.n8n-mcp.com" target="_blank" rel="noopener">dashboard.n8n-mcp.com</a> y copia tu MCP_API_KEY. Pega este bloque en tu config de MCP. Las herramientas de gestión (crear/editar workflows reales) requieren una instancia de n8n — para eso pasa al Camino B.</p><div><div class="gcard"><p>Config MCP hosted (Claude Code)</p><div><code>{
+  &quot;mcpServers&quot;: {
+    &quot;n8n-mcp&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;n8n-mcp&quot;],
+      &quot;env&quot;: {
+        &quot;MCP_API_KEY&quot;: &quot;tu-api-key-del-dashboard&quot;
+      }
+    }
+  }
+}</code></div><span class="gbtn">Copiar comando</span></div></div></div><div class="gcard"><p>Camino B · Self-host con prompt</p><p>Para los 3 agentes del video — necesita tu n8n</p><p>Si ya tienes n8n corriendo (cloud o self-host), pasa este prompt a Claude Code y deja que él agregue el MCP, te pida las dos variables (URL del API y API key), y verifique la conexión. Si prefieres a mano, abajo está el comando crudo y el bloque JSON.</p><div><div class="gcard"><div><div><h3>Instala n8n-mcp por mí</h3><p>Pégalo en Claude Code. Él te guía con las preguntas exactas y verifica al final.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero instalar el MCP de n8n-mcp (github.com/czlonkowski/n8n-mcp) en este Claude Code. Hazlo por mí:
+
+1. Agrega n8n-mcp a mi configuración MCP usando `claude mcp add` con el comando `npx n8n-mcp`.
+2. Pídeme las dos variables que necesita: N8N_API_URL (la URL del API de mi n8n, normalmente https://mi-n8n.com/api/v1) y N8N_API_KEY (la genero en n8n → Settings → API).
+3. Mete esas variables como env del MCP server.
+4. Cuando termines, llama a la herramienta n8n_health_check para confirmar que la conexión jala.
+5. Si falla, dime exactamente qué pedirle a n8n para arreglarlo.
+
+No toques workflows reales todavía. Solo conexión.</pre></div></div><div class="gcard"><p>Comando manual (correr una vez para probar)</p><div><code>npx n8n-mcp</code></div><span class="gbtn">Copiar comando</span></div><div class="gcard"><p>Config MCP self-host (Claude Code)</p><div><code>{
+  &quot;mcpServers&quot;: {
+    &quot;n8n-mcp&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;n8n-mcp&quot;],
+      &quot;env&quot;: {
+        &quot;N8N_API_URL&quot;: &quot;https://tu-n8n.com/api/v1&quot;,
+        &quot;N8N_API_KEY&quot;: &quot;tu-api-key-de-n8n&quot;
+      }
+    }
+  }
+}</code></div><span class="gbtn">Copiar comando</span></div></div></div><div class="gcard"><p><strong>Tip:</strong> si nunca habías agregado un MCP server a Claude Code, también te jala con <code>claude mcp add n8n-mcp -- npx n8n-mcp</code>. El prompt de arriba se encarga de eso por ti.</p></div></div></div><div id="g-configuracion"><p>paso 2 · conecta tu n8n</p><h2>Dos variables y un prompt para verificar</h2><div><p>El MCP necesita saber dónde vive tu n8n y con qué llave entra. Eso es todo. Si ya pegaste el bloque de self-host, las dos variables van como <code>env</code> dentro del MCP server. Si todavía no las tienes, sácalas así:</p><ul><li><p>N8N_API_URL</p><p>La URL del API de tu instancia. Casi siempre termina en /api/v1.</p><p><strong>De dónde sale:</strong> Tu URL base de n8n + /api/v1 — ej. https://mi-n8n.com/api/v1</p></li><li><p>N8N_API_KEY</p><p>Token que usa el MCP para llamar a tu n8n.</p><p><strong>De dónde sale:</strong> n8n → Settings → n8n API → Create an API key. Cópiala una vez, no se vuelve a mostrar.</p></li><li><p>MCP_API_KEY (opcional)</p><p>Solo para el camino hosted. Te la da el dashboard.</p><p><strong>De dónde sale:</strong> dashboard.n8n-mcp.com → tu cuenta → API key.</p></li></ul><p>Una vez pegadas, reinicia Claude Code para que cargue el MCP. Luego corre este prompt — Claude llama a <code>n8n_health_check</code> y te dice si jaló o si hay algo que arreglar.</p><div class="gcard"><div><div><h3>Verifica que la conexión jala</h3><p>Confirma versión de n8n, workflows activos y problemas de credenciales antes de empezar a construir.</p></div><span class="gbtn">Copiar</span></div><div><pre>Usa la herramienta n8n_health_check del MCP de n8n-mcp y dime:
+
+- Si la conexión con mi instancia de n8n está viva.
+- La versión de n8n que estoy corriendo.
+- Cuántos workflows tengo activos vs inactivos.
+- Si hay algún error de credenciales que deba arreglar antes de empezar a construir.
+
+Si todo está bien, dame luz verde y propón qué workflow armar primero.</pre></div></div><div class="gcard"><p><strong>Si falla:</strong> el 90% de las veces es uno de tres errores — <strong>URL sin /api/v1</strong>, <strong>API key copiada con espacios</strong> o <strong>tu n8n no expone el API público</strong> (revisa la variable de entorno <code>N8N_PUBLIC_API_DISABLED</code> en tu n8n). Pídele a Claude que diagnostique con el output del health check.</p></div></div></div><div id="g-agentes"><p>paso 3 · arma los 3 agentes</p><h2>WhatsApp, correos y llamadas — el fin de semana</h2><div><p>Estos son los tres agentes del video. Cada prompt es self-contained: lo pegas en Claude Code (con n8n-mcp ya instalado y conectado) y Claude busca templates, arma el workflow, lo valida y te lo deja en draft. Tú lo prendes cuando estés listo.</p><p><strong>Importante:</strong> las credenciales (token de WhatsApp, password de Gmail, llaves de Twilio) las metes tú directo en n8n → Credentials. Claude solo las referencia por ID — nunca las pegues en el prompt.</p><div class="gcard"><div><div><h3>Agente 1 — Recepcionista de WhatsApp 24/7</h3><p>Recibe el mensaje, detecta intención, agenda en tu calendario y te manda resumen al final del día.</p></div><span class="gbtn">Copiar</span></div><div><pre>Necesito un agente en n8n que conteste WhatsApp por mí mientras duermo. Arma este workflow:
+
+Trigger:
+- Webhook entrante de WhatsApp (WhatsApp Business o Twilio, lo que tenga template).
+
+Lógica:
+1. Recibe el mensaje del cliente.
+2. Detecta intención: agendar cita, pedir información, queja, otro.
+3. Si es agendar cita → revisa mi Google Calendar, propone tres horarios libres y confirma con el cliente.
+4. Si pide información → responde con las preguntas frecuentes que te paso (te las daré en el siguiente mensaje).
+5. Si es queja u otro → marca el mensaje como pendiente y avisa por correo.
+
+Cierre del día:
+- A las 9 PM, manda un correo resumen: cuántos mensajes contestó, cuántas citas agendó, cuáles quedaron pendientes.
+
+Antes de crear el workflow:
+1. Llama a search_templates con searchMode: &#x27;by_nodes&#x27; y nodeTypes: [&#x27;n8n-nodes-base.whatsApp&#x27;, &#x27;n8n-nodes-base.googleCalendar&#x27;] para ver si hay un template que arrancarle.
+2. Después arma el workflow con n8n_create_workflow.
+3. Valídalo con validate_workflow antes de activarlo.
+4. NO lo actives todavía. Déjamelo en draft para que yo lo prenda.</pre></div></div><div class="gcard"><div><div><h3>Agente 2 — Ordenador de Gmail</h3><p>Cada 15 minutos clasifica tus correos: importantes a la bandeja, presupuestos a Drive, ruido al archivo.</p></div><span class="gbtn">Copiar</span></div><div><pre>Necesito un agente que ordene mi bandeja de Gmail solo. Arma este workflow:
+
+Trigger:
+- Cada 15 minutos, revisa correos nuevos en Gmail.
+
+Reglas de clasificación:
+1. Correos de clientes que ya me compraron → etiqueta &quot;clientes&quot; + bandeja principal.
+2. Correos con la palabra &quot;presupuesto&quot;, &quot;cotización&quot; o &quot;factura&quot; → mueve a la carpeta de Drive &quot;Cotizaciones por revisar&quot; + etiqueta &quot;presupuestos&quot;.
+3. Newsletters, promociones, notificaciones automáticas → archivar y aplicar etiqueta &quot;ruido&quot;.
+4. Correos donde mi nombre aparece en el cuerpo (no solo en CC) → marcar como importante y dejar en bandeja principal.
+5. Cualquier otro caso → dejar en bandeja sin tocar.
+
+Antes de armar:
+1. Llama a search_templates con query: &#x27;gmail filter classify&#x27; para reusar lógica existente.
+2. Arma con n8n_create_workflow y valida con validate_workflow.
+3. Pruébalo en modo dry-run primero — quiero ver qué haría con los últimos 10 correos antes de activarlo.
+
+NO actives nada hasta que yo confirme las reglas.</pre></div></div><div class="gcard"><div><div><h3>Agente 3 — Recepcionista de llamadas</h3><p>Contesta la llamada con voz, agenda en tu calendario y manda el resumen transcrito al chat de tu equipo.</p></div><span class="gbtn">Copiar</span></div><div><pre>Necesito un agente que conteste las llamadas de mi negocio 24/7 como si fuera una recepcionista. Arma este workflow:
+
+Trigger:
+- Llamada entrante vía Twilio (o el provider de voz que tengas template).
+
+Flujo de la llamada:
+1. Saludo grabado con mi nombre de negocio.
+2. Voz del agente (ElevenLabs o el TTS que tenga node) pregunta el motivo de la llamada.
+3. Si quiere agendar → consulta Google Calendar, ofrece tres horarios y confirma.
+4. Si quiere información de productos/servicios → responde con el catálogo que te paso después.
+5. Si es urgencia → escala: marca a mi celular y manda mensaje al chat con la transcripción.
+
+Cierre:
+- Transcribe la llamada completa.
+- Manda un resumen al chat de Slack del negocio (canal #recepcion) con: nombre del cliente si lo dio, motivo, próximo paso, transcripción adjunta.
+
+Antes de crear:
+1. Llama a search_templates con searchMode: &#x27;by_nodes&#x27; y nodeTypes: [&#x27;n8n-nodes-base.twilio&#x27;, &#x27;n8n-nodes-base.slack&#x27;].
+2. Si encuentras un template parecido, úsalo como base.
+3. Arma con n8n_create_workflow y valida con validate_workflow.
+4. NO actives ni metas mis credenciales de Twilio todavía. Déjame el workflow listo y dime exactamente qué credenciales tengo que crear y dónde.</pre></div></div><div class="gcard"><p><strong>Cómo correrlos en orden:</strong> uno por uno, no los tres a la vez. Pega el prompt → espera el plan de Claude → revisa el workflow en n8n → activa cuando estés contento. Si algo se ve raro, pídele que use <code>n8n_test_workflow</code> antes de meter producción.</p></div></div></div><div id="g-prompts-pro"><p>paso 4 · sácale el 100%</p><h2>Prompts pro — toda la caja de herramientas</h2><div><p>Los 3 agentes son la entrada. Pero el MCP expone 20 herramientas en total (7 core + 13 de gestión). Estos prompts cubren los movimientos que más sirven después: buscar templates, auditar tu instancia, modificar workflows sin romper nada, probar antes de prender, y arreglar errores en automático.</p><div class="gcard"><div><div><h3>Busca templates antes de armar desde cero</h3><p>n8n tiene miles de templates. Empieza siempre por aquí — ahorra horas de configuración.</p></div><span class="gbtn">Copiar</span></div><div><pre>Antes de armar cualquier workflow desde cero, busca templates existentes en n8n. Tienen miles disponibles.
+
+Usa search_templates con estos modos según lo que busque:
+
+- Por tarea: { searchMode: &#x27;by_task&#x27;, task: &#x27;webhook_processing&#x27; }
+- Por complejidad para principiantes: { searchMode: &#x27;by_metadata&#x27;, complexity: &#x27;simple&#x27;, maxSetupMinutes: 30 }
+- Por nodos específicos: { searchMode: &#x27;by_nodes&#x27;, nodeTypes: [&#x27;n8n-nodes-base.slack&#x27;] }
+- Por texto libre: { query: &#x27;whatsapp recordatorio cita&#x27; }
+
+Cuando encuentres uno bueno, llama a get_template con mode: &#x27;full&#x27; para ver el JSON completo. Si me lo quieres deployar directo, usa n8n_deploy_template — pero antes pásame el resumen de qué hace y qué nodos usa.</pre></div></div><div class="gcard"><div><div><h3>Audita mi instancia de n8n</h3><p>Reporte de seguridad y deuda técnica: webhooks expuestos, credenciales con permisos amplios, workflows zombi.</p></div><span class="gbtn">Copiar</span></div><div><pre>Audita mi instancia de n8n con la herramienta n8n_audit_instance del MCP. Quiero un reporte que cubra:
+
+1. Workflows expuestos al internet sin autenticación.
+2. Credenciales con permisos más amplios de lo necesario.
+3. Workflows que no se han ejecutado en más de 30 días (candidatos a archivar).
+4. Errores recurrentes en los últimos 7 días que valga la pena arreglar.
+5. Nodos deprecated que debería migrar a su versión nueva.
+
+Dame el reporte en orden de severidad: crítico → recomendado → opcional. Por cada hallazgo, propón el fix concreto pero NO lo apliques. Solo dime qué tocarías y qué riesgo tiene.</pre></div></div><div class="gcard"><div><div><h3>Actualiza un workflow sin romperlo</h3><p>Diff-based update. No rearma todo — solo aplica los cambios que pides. Token-efficient y seguro.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero modificar el workflow con id {WORKFLOW_ID} sin tirar todo y rearmarlo. Usa n8n_update_partial_workflow con operaciones diff:
+
+Cambios que necesito:
+1. {Describe el cambio: ej. &quot;agregar un nodo IF después del webhook que filtre por país&quot;}
+2. {Otro cambio: ej. &quot;actualizar las credenciales del nodo de Slack&quot;}
+3. Limpia conexiones huérfanas si quedan.
+
+Antes de aplicar:
+1. Llama a n8n_get_workflow con mode: &#x27;structure&#x27; para ver el estado actual.
+2. Pasa el plan de operaciones (addNode, updateNode, addConnection, removeConnection, cleanStaleConnections) y muéstramelo antes de ejecutar.
+3. Después de aplicar, valida con n8n_validate_workflow para confirmar que sigue corriendo.
+
+Si el workflow está activo en producción, AVÍSAME antes de tocar nada.</pre></div></div><div class="gcard"><div><div><h3>Prueba un workflow antes de activarlo</h3><p>Ejecuta en modo test con datos dummy. Te muestra el output de cada nodo para que veas dónde rompe.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero probar el workflow con id {WORKFLOW_ID} sin meterlo a producción. Usa n8n_test_workflow:
+
+1. Si es un webhook → mándale un payload de prueba que yo te pase.
+2. Si es un trigger manual → ejecútalo con datos dummy.
+3. Si tiene chat trigger → manda 3 mensajes de prueba que cubran los casos: feliz, edge case, error esperado.
+
+Después de la corrida:
+- Muéstrame el output de cada nodo en orden.
+- Marca en rojo los nodos que fallaron.
+- Si algo falló, propón el fix con n8n_autofix_workflow pero NO lo apliques.</pre></div></div><div class="gcard"><div><div><h3>Arregla errores en automático</h3><p>Cuando algo rompe, autofix sugiere los cambios. Tú apruebas uno por uno antes de aplicar.</p></div><span class="gbtn">Copiar</span></div><div><pre>Mi workflow {WORKFLOW_ID} está rompiendo. Usa n8n_autofix_workflow para diagnosticar y proponer fixes automáticos.
+
+Antes de aplicar el fix:
+1. Muéstrame el diagnóstico: qué nodo falla, qué espera vs qué recibe.
+2. Lista los fixes que el autofix sugiere, cada uno con su impacto.
+3. Espera mi OK por cada fix antes de aplicarlo. NO apliques todo de una.
+4. Después de cada fix, vuelve a validar con n8n_validate_workflow.</pre></div></div><div class="ggrid"><div class="gcard"><p>7 herramientas core</p><p>Funcionan sin tu n8n</p><p>Documentación, búsqueda de nodos, validación, templates. Sirven aunque solo uses el camino hosted.</p><ul><li><p>tools_documentation</p><p>Documentación de cualquier herramienta del MCP. Empieza aquí cuando no sepas qué hace algo.</p></li><li><p>search_nodes</p><p>Búsqueda full-text en los 1,851 nodos. Filtra por &#x27;verified&#x27; o &#x27;community&#x27; y pide ejemplos.</p></li><li><p>get_node</p><p>Detalle de un nodo: propiedades, modos, versiones. Usa detail: &#x27;minimal&#x27; / &#x27;standard&#x27; / &#x27;full&#x27;.</p></li><li><p>validate_node</p><p>Valida la configuración de un nodo antes de meterlo al workflow. Modos minimal o full.</p></li><li><p>validate_workflow</p><p>Valida un workflow completo y devuelve errores con sugerencias de fix.</p></li><li><p>search_templates</p><p>Busca entre miles de templates por tarea, nodos, complejidad o texto libre. Úsalo SIEMPRE antes de armar desde cero.</p></li><li><p>get_template</p><p>Trae el JSON completo de un template. Modos: nodes_only, structure, full.</p></li></ul></div><div class="gcard"><p>13 herramientas de gestión</p><p>Necesitan tu n8n</p><p>Crear, editar, probar, auditar y desplegar workflows reales. Aquí es donde Claude se vuelve tu segundo par de manos.</p><ul><li><p>n8n_create_workflow</p><p>Crea un workflow nuevo en tu instancia de n8n.</p></li><li><p>n8n_get_workflow</p><p>Trae un workflow existente. Modos: full, details, structure, minimal.</p></li><li><p>n8n_update_partial_workflow</p><p>Update por diffs — token-efficient, no rearma todo.</p></li><li><p>n8n_validate_workflow</p><p>Valida un workflow por id ya en n8n.</p></li><li><p>n8n_autofix_workflow</p><p>Sugiere fixes automáticos para errores comunes.</p></li><li><p>n8n_test_workflow</p><p>Ejecuta el workflow en modo test (webhook, form o chat).</p></li><li><p>n8n_executions</p><p>Lista, consulta y limpia ejecuciones pasadas.</p></li><li><p>n8n_manage_credentials</p><p>CRUD de credenciales y schemas. NUNCA pegues secretos en el prompt — usa el flow del MCP.</p></li><li><p>n8n_health_check</p><p>Verifica conectividad con tu instancia.</p></li><li><p>n8n_audit_instance</p><p>Auditoría de seguridad y deuda técnica de tu n8n.</p></li><li><p>n8n_deploy_template</p><p>Deploya un template de n8n.io directo a tu instancia.</p></li><li><p>n8n_workflow_versions</p><p>Historial y rollback de versiones.</p></li><li><p>n8n_delete_workflow</p><p>Borra un workflow. Pídele a Claude que confirme antes.</p></li></ul></div></div></div></div><div id="g-seguridad"><p>paso 5 · no te quemes</p><h2>Las llaves tú las metes — y otras 4 reglas</h2><div><p>El MCP está bien diseñado pero es solo un puente. La seguridad de tus workflows depende de cómo los configures. Estas son las reglas que el repo recomienda y que te van a ahorrar dolores de cabeza.</p><ul><li><p>Tú metes las credenciales, Claude no</p><p>API keys, tokens de WhatsApp, contraseñas SMTP, llaves de Twilio — nunca las pegues en el prompt. Créalas en n8n → Credentials, y deja que el MCP las referencie por ID.</p></li><li><p>No editar workflows en producción directo con IA</p><p>Es la regla #1 del repo. Trabaja en un workflow draft, valídalo con validate_workflow + n8n_test_workflow, y cuando esté limpio, hasta entonces lo activas tú a mano.</p></li><li><p>Webhooks públicos van detrás de un secreto</p><p>Cualquier webhook expuesto al internet debe pedir un header secreto o estar detrás de un nodo IF que lo valide. Si no, cualquiera puede dispararlo.</p></li><li><p>Audita antes de prender más cosas</p><p>Corre n8n_audit_instance una vez al mes. Revisa workflows abandonados, credenciales con permisos amplios y nodos deprecated. Limpia antes de crecer.</p></li><li><p>Backup periódico de tu n8n</p><p>El MCP no respalda nada por ti. Si self-hosteas, configura snapshots de la base de datos. Si usas n8n Cloud, exporta los workflows críticos cada semana.</p></li></ul><div class="gcard"><p><strong>Lectura recomendada:</strong> el repo tiene un <a href="https://github.com/czlonkowski/n8n-mcp/blob/main/docs/SECURITY_HARDENING.md" target="_blank" rel="noopener">SECURITY_HARDENING.md</a> con la guía completa para self-hosters. Si vas a meter el MCP a producción, dale una pasada.</p></div></div></div></div><div><div><p>Guía de la comunidad</p><p>n8n-mcp convierte a Claude en tu segundo par de manos para automatizar tu negocio. Esta guía es parte de la bóveda de <a href="#/boveda">tododeia</a>, una colección libre de recursos para quienes usan Claude todos los días. El repo original está en <a href="https://github.com/czlonkowski/n8n-mcp" target="_blank" rel="noopener">github.com/czlonkowski/n8n-mcp</a>.</p></div><div class="ggrid"><a class="gcard" href="#/g/apis-mcps-a2a"><div><p>APIs, MCPs y A2A</p><p>Qué es un MCP y por qué importa</p></div></a><a class="gcard" href="#/g/whatsapp-agentkit"><div><p>WhatsApp AgentKit</p><p>El otro camino para WhatsApp</p></div></a><a class="gcard" href="#/g/planea-audita-construye"><div><p>Planea, Audita, Construye</p><p>Cómo auditar lo que Claude propone</p></div></a></div><div class="gcard"><p>¿Para quién no es n8n-mcp?</p><p>Si nunca has tocado n8n y no quieres montarlo, el camino hosted te deja explorar pero no construir agentes reales. Para los 3 agentes del video (WhatsApp, correos, llamadas) sí necesitas una instancia de n8n. La buena: n8n Cloud arranca gratis para flujos chicos, y self-host con Docker en una VPS de cinco dólares te da capacidad de sobra para el primer año.</p></div></div></div>
+</article>

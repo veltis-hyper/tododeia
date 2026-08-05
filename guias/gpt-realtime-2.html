@@ -1,0 +1,239 @@
+<article class="chapter guia" data-slug="gpt-realtime-2">
+<div><div><h1>GPT Realtime 2</h1><p>El 7 de mayo 2026 OpenAI prendió en GA gpt-realtime-2: un modelo voice-to-voice con razonamiento clase GPT-5. Lo bonito: lo pruebas en el playground oficial sin instalar nada en 60 segundos. Lo más bonito: cuando quieras tu propia app de voz con tu marca conectada a Shopify o Gmail, no escribes código — le pasas 4 prompts a Claude Code y él te lo monta entero. <strong>La página entera está pensada para que la sigas sin saber programar</strong>: el modelo lo pruebas en la consola oficial de OpenAI, y cuando ya quieras tu propia app conectada a tu marca, le pasas los prompts a Claude Code y él arma todo por ti.</p></div><div class="gcard"><div><p>Realtime API · 7 mayo 2026 · GA · gpt-realtime-2 · gpt-realtime-translate · gpt-realtime-whisper</p><p>Pruébalo sin código → entiende el modelo → pídele a Claude Code que monte tu app</p><p>El lanzamiento del 7 de mayo trajo tres modelos al mismo tiempo: <strong>gpt-realtime-2</strong> (voice-to-voice con razonamiento, el principal), <strong>gpt-realtime-translate</strong> (interpretación simultánea sin pasar por texto) y <strong>gpt-realtime-whisper</strong> (transcripción streaming). Lo importante para ti: la versión voice-to-voice ahora se conecta a Shopify, Gmail y Calendar por sí sola — y la página oficial del playground te deja hablar con el modelo sin instalar nada.</p><p>Esta guía está armada para gente que no escribe código: arrancas en el playground oficial probando la voz, después armas tu propia app pasándole cuatro prompts a Claude Code (uno para la app base, uno para conectar Shopify, uno para Gmail+Calendar, uno para meterle Claude como cerebro), y cierras con cinco personalidades listas para pegar como <em>Instructions</em> en el playground o en tu app — desde intérprete simultáneo hasta coach de pitch.</p></div><div><a href="#g-playground">Pruébalo</a><a href="#g-el-modelo">Qué es</a><a href="#g-voces">10 voces</a><a href="#g-prerequisitos">Antes de seguir</a><a href="#g-monta-tu-app">Tu app</a><a href="#g-conecta-tools">Conecta tools</a><a href="#g-con-claude">Claude cerebro</a><a href="#g-personalidad">Personalidad</a><a href="#g-casos-uso">Casos</a><a href="#g-errores">Errores</a></div><div><span>GA · 7 mayo 2026</span><span>Pruébalo sin código</span><span>voice-to-voice</span><span>10 voces · Cedar · Marin</span><span>MCP nativo · Shopify · Gmail · Calendar</span><span>Claude Code lo arma por ti</span><span>GPT-5 reasoning</span><span>Cobra por minuto</span></div></div><div><div id="g-playground"><p>01 · Pruébalo</p><h2>60 segundos en el playground oficial — sin instalar nada</h2><div><p>Antes de cualquier cosa, prueba el modelo desde la consola que la propia OpenAI publicó para esto. No instalas nada en tu máquina, no creas un proyecto, no escribes código. Es la misma página donde la gente está grabando los reels de demo: entras, picas voz, hablas, escuchas. Cinco pasos.</p><ol><li><span class="gpill">01</span><div><p>Abre el link del playground</p><p>platform.openai.com/audio/realtime — es la consola oficial de OpenAI para probar el modelo de voz. No instalas nada, no clonas un repo, no tocas terminal.</p></div></li><li><span class="gpill">02</span><div><p>Login con tu cuenta de OpenAI</p><p>La misma con la que usas ChatGPT. Si nunca le has metido tarjeta, te va a pedir activar billing antes de hablar — abajo en prerequisitos te explico.</p></div></li><li><span class="gpill">03</span><div><p>Escoge modelo gpt-realtime-2</p><p>Arriba a la derecha hay un dropdown de modelo. Pícale gpt-realtime-2 (no el 4o-realtime viejo). Si no aparece, refresca la página — a veces tarda unos minutos en propagarse a tu cuenta.</p></div></li><li><span class="gpill">04</span><div><p>Pica voz Cedar o Marin</p><p>Cedar para asistentes generales (cálida, más confianza). Marin si vas a probar traducción o algo más articulado. Las puedes ir cambiando dentro de la sesión.</p></div></li><li><span class="gpill">05</span><div><p>Da permiso al micrófono y habla</p><p>El navegador te va a pedir acceso al micro la primera vez. Acepta. El botón grande de la izquierda inicia la llamada — cuando se pone verde, ya te está escuchando. Habla normal, como si fuera una llamada.</p></div></li></ol><a class="gcard" href="https://platform.openai.com/audio/realtime" target="_blank" rel="noopener">Abrir el playground oficial</a></div></div><div id="g-el-modelo"><p>02 · Qué es</p><h2>Voice-to-voice con razonamiento real adentro</h2><div><p>La diferencia mental contra ChatGPT en voz: ChatGPT escucha, pasa el audio a texto, lo procesa, genera texto y lo lee. Son cuatro modelos en cadena. <strong>gpt-realtime-2</strong> es un solo modelo entrenado para entrar audio y salir audio — la latencia baja a niveles de llamada normal y conserva entonación, pausas y matices que el pipeline tradicional pierde. Encima trae razonamiento clase GPT-5: piensa antes de hablar cuando lo necesita y sigue instrucciones complejas sin enredarse.</p><p>El lanzamiento del 7 de mayo trajo tres modelos al mismo tiempo, los tres en GA, los tres en la misma Realtime API:</p><div><div class="gcard"><span class="gpill">01</span><div><div><p>gpt-realtime-2</p><p>Voice-to-voice con razonamiento clase GPT-5. El que vas a usar para agentes de voz reales que llaman tools y siguen instrucciones complejas.</p></div><p><strong>Cuándo usarlo:</strong> Agentes de voz con MCP, customer service, asistentes que interpretan y actúan, demos de producto en vivo.</p></div></div><div class="gcard"><span class="gpill">02</span><div><div><p>gpt-realtime-translate</p><p>Traducción multilingüe en vivo, optimizada para mantener nombres propios y matices culturales sin pasar por texto intermedio.</p></div><p><strong>Cuándo usarlo:</strong> Interpretación simultánea de juntas, doblaje en vivo, viajes y atención de clientes en idioma distinto al tuyo.</p></div></div><div class="gcard"><span class="gpill">03</span><div><div><p>gpt-realtime-whisper</p><p>Transcripción streaming. La evolución del Whisper original, ahora pensada para llegar como tokens conforme la persona habla.</p></div><p><strong>Cuándo usarlo:</strong> Subtítulos en vivo, captura de notas durante una junta, dictado a documento, indexación de podcasts en tiempo real.</p></div></div></div></div></div><div id="g-voces"><p>03 · Las 10 voces</p><h2>Cedar y Marin son nuevas — las 8 anteriores las retunearon</h2><div><p>En el playground hay un dropdown de voz que las cambia en vivo, dentro de la misma sesión. Las dos nuevas son exclusivas de la Realtime API (no las encontrarás en TTS estándar). Regla rápida: agente generalista → cedar; traducción o anuncios → marin; coaching o salud → sage; brand casual → coral.</p><div class="gcard"><div class="table-wrap"><table><thead><tr><th>Voz</th><th>Estado</th><th>Vibe</th><th>Cuándo usarla</th></tr></thead><tbody><tr><td>cedar</td><td><span>Nueva</span></td><td>Cálida, mid-range, masculina. Default para agentes generales.</td><td>Customer service, asistentes de operaciones, presentaciones largas donde quieres confianza.</td></tr><tr><td>marin</td><td><span>Nueva</span></td><td>Clara, brillante, femenina. Articulación marcada.</td><td>Traducción, anuncios, lectura de instrucciones paso a paso.</td></tr><tr><td>alloy</td><td><span>Retuned</span></td><td>Neutra, natural.</td><td>Default histórica, segura para casi todo.</td></tr><tr><td>ash</td><td><span>Retuned</span></td><td>Profunda, calmada.</td><td>Coaching, narración pausada.</td></tr><tr><td>ballad</td><td><span>Retuned</span></td><td>Suave, melódica.</td><td>Storytelling, content largo.</td></tr><tr><td>coral</td><td><span>Retuned</span></td><td>Animada, cercana.</td><td>Asistentes amigables, marca casual.</td></tr><tr><td>echo</td><td><span>Retuned</span></td><td>Resonante, masculina.</td><td>Documentales, tutoriales.</td></tr><tr><td>sage</td><td><span>Retuned</span></td><td>Reflexiva, deliberada.</td><td>Asesoría, salud, finanzas.</td></tr><tr><td>shimmer</td><td><span>Retuned</span></td><td>Brillante, expresiva.</td><td>Anuncios cortos, hooks.</td></tr><tr><td>verse</td><td><span>Retuned</span></td><td>Versátil, balanceada.</td><td>Demos donde quieres una voz limpia neutra.</td></tr></tbody></table></div></div></div></div><div id="g-prerequisitos"><p>04 · Antes de seguir</p><h2>3 cosas que necesitas para pasar del playground a tu propia app</h2><div><p>Hasta aquí, todo era playground — sin tarjeta, sin instalar. Si te quedas con eso, ya valió la pena el reel. Pero si vas a montar tu propia app con tu marca, tus tools y tu dominio, la siguiente sección le pasa los prompts a Claude Code para que la arme por ti. Estos son los tres prerequisitos:</p><ol><li><span class="gpill">01</span><div><p>Cuenta de OpenAI con billing activado</p><p>El playground también cobra (pocos centavos por minuto que estés hablando). Si nunca has metido tarjeta, agrégala en Settings → Billing y pon un límite mensual conservador de $20–50 mientras pruebas.</p><a href="https://platform.openai.com/account/billing/overview" target="_blank" rel="noopener">Activar billing en OpenAI →</a></div></li><li><span class="gpill">02</span><div><p>Claude Code instalado en tu computadora</p><p>Es el agente que va a leer los prompts de las siguientes secciones y montar tu app por ti. Si nunca lo has tocado, sigue la guía paso a paso de la comunidad — está pensada para gente que jamás abrió la terminal.</p><a href="#/g/instalar-claude-code">Instalar Claude Code · guía de la comunidad →</a></div></li><li><span class="gpill">03</span><div><p>Una carpeta vacía donde quieras tu app</p><p>Cuando le pidas algo a Claude Code, abre la terminal en esa carpeta y desde ahí pega los prompts. Él se encarga de crear archivos, instalar dependencias y decirte qué correr al final. Tú no escribes código.</p></div></li></ol></div></div><div id="g-monta-tu-app"><p>05 · Monta tu app</p><h2>Pídele a Claude Code que arme la app de voz por ti</h2><div><p>Tú no escribes código. Abres una terminal en tu carpeta vacía, corres <code>claude</code>, pegas el prompt de abajo, y Claude Code se encarga del resto: crea Next.js, arma el server que mintea el token, monta el botón de hablar con su micrófono, agrega el dropdown de voz y el textarea de personalidad. Cuando termina, te dice exactamente qué comando correr y qué URL abrir.</p><div class="gcard"><div><div><h3>Prompt para Claude Code · Monta tu app de voz desde cero</h3><p>Pega esto en Claude Code dentro de tu carpeta vacía. Él crea Next.js, el server que mintea el token, el botón de hablar, todo. Tú solo le das tu API key cuando te la pida.</p></div><span class="gbtn">Copiar</span></div><div><pre>Quiero montar en este folder vacío una app web minimal que conecte con el modelo gpt-realtime-2 de OpenAI por voz — igual que el playground oficial pero corriendo en mi propio dominio con mi marca.
+
+Stack: Next.js 16 con App Router, TypeScript, Tailwind. Sin librerías exóticas.
+
+Lo que necesito que armes:
+
+1. Un server route en /api/token que mintee un ephemeral key haciendo POST a https://api.openai.com/v1/realtime/client_secrets. Usa la env var OPENAI_API_KEY como Bearer. Modelo: gpt-realtime-2. Voz default: cedar. En el header manda OpenAI-Safety-Identifier con un hash sha256 de la IP del request (para limitar abuso).
+
+2. Una página principal (/) con:
+   - Un dropdown para escoger entre las 10 voces (cedar, marin, alloy, ash, ballad, coral, echo, sage, shimmer, verse) — default cedar.
+   - Un textarea grande con label &quot;Personalidad&quot; donde el usuario pega un system prompt.
+   - Un botón grande &quot;Hablar con el asistente&quot;. Al picarlo:
+     · Pide el micrófono con echoCancellation:true y noiseSuppression:true.
+     · Fetcha /api/token mandando la voz seleccionada.
+     · Abre una RTCPeerConnection, agrega el track del micro.
+     · Crea un dataChannel &quot;oai-events&quot;.
+     · Hace SDP exchange con POST a https://api.openai.com/v1/realtime/calls usando el ephemeral key.
+     · Pone el audio remoto en un &lt;audio autoplay&gt;.
+     · Cuando el data channel abra, manda un session.update con session.instructions = lo que el usuario tenga en el textarea.
+   - Un indicador visual de estado: &quot;esperando&quot;, &quot;conectando&quot;, &quot;escuchando&quot;, &quot;hablando&quot;, &quot;error&quot;.
+
+3. Un README.md sencillo con: cómo crear .env.local con OPENAI_API_KEY, cómo correr yarn dev, cómo abrir localhost:3000.
+
+Cuando vayas a crear el .env.local, pídeme la API key — no la inventes ni la pegues en el repo. Asegúrate de que .env.local esté en .gitignore.
+
+Cuando termines, dime exactamente qué comando correr y qué URL abrir para probarlo.</pre></div></div><p>Después de que termine, tu app va a verse igual al playground oficial — con la diferencia de que vive en tu dominio, con tu marca, y la puedes seguir extendiendo con los prompts de las siguientes secciones.</p></div></div><div id="g-conecta-tools"><p>06 · Conecta tools</p><h2>Pídele a Claude Code que conecte Shopify, Gmail y Calendar</h2><div><p>La diferencia más fuerte de gpt-realtime-2 contra el modelo viejo es <strong>MCP nativo</strong>: la API se conecta a tu Shopify o tu Gmail por sí sola — antes el cliente tenía que llamar el tool y devolver el resultado, ahora la API lo hace directo. Tú solo le dices a Claude Code qué conectar y qué reglas mantener (lectura libre, escritura siempre con tu confirmación). Cada uno de los prompts de abajo va por separado: pega el primero, espera a que Claude Code termine, prueba; pega el siguiente.</p><div class="gcard"><div><div><h3>Prompt para Claude Code · Conecta tu Shopify por MCP</h3><p>Cuando ya tengas la app base corriendo, pega esto. Claude Code agrega el MCP de Shopify para que el asistente busque productos y consulte pedidos en tiempo real durante la llamada.</p></div><span class="gbtn">Copiar</span></div><div><pre>A la app de voz que ya tengo en este folder, agrégale conexión MCP con mi Shopify para que el asistente pueda buscar productos, consultar inventario y traer status de pedidos en vivo durante la llamada.
+
+Reglas duras:
+- Lectura libre. Escritura siempre con confirmación humana.
+- Nada de cargos ni cambios de pedido sin que el usuario apruebe.
+
+Cambios:
+
+1. En el body que /api/token manda a OpenAI, dentro de session.tools agrega:
+   {
+     type: &quot;mcp&quot;,
+     server_label: &quot;shopify_lectura&quot;,
+     server_url: process.env.SHOPIFY_MCP_URL,
+     authorization: process.env.SHOPIFY_ADMIN_TOKEN,
+     allowed_tools: [&quot;search_products&quot;, &quot;get_order&quot;, &quot;get_inventory&quot;],
+     require_approval: &quot;never&quot;
+   }
+
+2. Para tools de escritura (crear pedido, actualizar inventario, ajustar precio) NO uses MCP directo. En su lugar, agrega como segundo entry:
+   {
+     type: &quot;mcp&quot;,
+     server_label: &quot;shopify_escritura&quot;,
+     server_url: process.env.SHOPIFY_MCP_URL,
+     authorization: process.env.SHOPIFY_ADMIN_TOKEN,
+     allowed_tools: [&quot;create_order&quot;, &quot;update_inventory&quot;],
+     require_approval: &quot;always&quot;
+   }
+
+3. En el cliente, suscríbete en el data channel a:
+   - mcp_list_tools.completed → muestra una palomita verde &quot;Shopify conectado&quot;.
+   - response.mcp_call.in_progress → muestra &quot;consultando catálogo…&quot;.
+   - mcp_approval_request → abre un modal con los args del tool y dos botones (Aprobar / Rechazar). Cuando el usuario decida, manda al data channel conversation.item.create con type &quot;mcp_approval_response&quot;, approve true o false, e id correspondiente.
+
+4. Actualiza el README con dos cosas:
+   - SHOPIFY_MCP_URL = https://&lt;tu-store&gt;.myshopify.com/api/mcp (cámbialo al dominio real del cliente).
+   - SHOPIFY_ADMIN_TOKEN = sácalo en tu Shopify admin → Settings → Apps and sales channels → Develop apps → genera un private app con scopes read_products, read_orders, write_orders.
+
+Cuando crees el .env.local, pídeme las dos vars.</pre></div></div><div class="gcard"><div><div><h3>Prompt para Claude Code · Conecta Gmail y Google Calendar</h3><p>Pega esto cuando quieras que el asistente lea tu inbox y consulte tu calendario durante la llamada. Usa los conectores oficiales de OpenAI — solo lectura por default.</p></div><span class="gbtn">Copiar</span></div><div><pre>A la app de voz que tengo, agrégale los conectores oficiales de OpenAI para Gmail y Google Calendar para que el asistente pueda leer mi inbox y consultar mis eventos durante la llamada.
+
+Reglas duras:
+- Lectura por MCP libre.
+- Para mandar correo o crear evento: NO uses MCP. Define un function tool clásico que muestre confirmación en el cliente antes de ejecutar la acción.
+
+Cambios:
+
+1. En /api/token, dentro de session.tools agrega los dos conectores oficiales:
+   {
+     type: &quot;mcp&quot;,
+     connector_id: &quot;connector_googlecalendar&quot;,
+     server_label: &quot;calendar_oficial&quot;,
+     authorization: process.env.GOOGLE_OAUTH_TOKEN,
+     allowed_tools: [&quot;search_events&quot;, &quot;get_event&quot;],
+     require_approval: &quot;never&quot;
+   }
+   {
+     type: &quot;mcp&quot;,
+     connector_id: &quot;connector_gmail&quot;,
+     server_label: &quot;gmail_oficial&quot;,
+     authorization: process.env.GOOGLE_OAUTH_TOKEN,
+     allowed_tools: [&quot;search_threads&quot;, &quot;get_thread&quot;],
+     require_approval: &quot;never&quot;
+   }
+
+2. Para escritura, agrega dos function tools clásicos (no MCP):
+   - send_email_with_confirmation(to, subject, body) → en el cliente abre un modal con preview del correo. Si el usuario aprueba, llama a /api/gmail/send que usa el OAuth token.
+   - create_event_with_confirmation(title, start, end, attendees) → mismo patrón, modal de preview, /api/calendar/create al aprobar.
+
+3. Crea los dos endpoints (/api/gmail/send y /api/calendar/create) usando la Google API estándar con el OAuth token de la env var.
+
+4. Actualiza el README:
+   - GOOGLE_OAUTH_TOKEN: explícame cómo configurar OAuth en Google Cloud Console (proyecto, credenciales, scopes Gmail.send, Gmail.readonly, Calendar.events). Si te queda complicado, sugiere alternativa con un token de prueba que se renueve manual mientras desarrollo.
+
+Pídeme la env var cuando crees el .env.local.</pre></div></div></div></div><div id="g-con-claude"><p>07 · El truco</p><h2>Que Claude piense, GPT hable</h2><div><p>Claude todavía no tiene un voice-to-voice nativo equivalente, y eso <em>no</em> significa que tengas que escoger entre uno u otro. El patrón que está funcionando en producción es separar capas: gpt-realtime-2 maneja el audio (escucha el micro, habla con voz natural, latencia baja) y cuando llega una pregunta densa la delega a Claude Opus 4.7, que la piensa mejor y devuelve texto corto que GPT lee en voz alta. Lo mejor de ambos.</p><pre>Usuario habla
+   ↓
+gpt-realtime-2  ←——————————————┐
+   │ (escucha · ASR interno)   │
+   ↓                            │
+   ¿necesita razonamiento?      │
+   │                            │
+   ├── No ──→ responde directo ─┘
+   │
+   └── Sí ──→ ask_claude({ question, context })
+                ↓
+              Claude Opus 4.7 (Anthropic SDK)
+                ↓
+              texto corto (≤80 palabras)
+                ↓
+              gpt-realtime-2 lo lee con voz cedar</pre><div class="gcard"><div><div><h3>Prompt para Claude Code · Que Claude piense, GPT hable</h3><p>El truco que cambia todo: gpt-realtime-2 es la voz, Claude Opus 4.7 es el cerebro. Pásale este prompt a Claude Code y agrega un function tool que ruta razonamiento profundo a Claude vía Anthropic SDK.</p></div><span class="gbtn">Copiar</span></div><div><pre>A la app de voz que tengo en este folder, agrégale un function tool ask_claude que llame a Claude Opus 4.7 vía Anthropic SDK cuando el modelo de voz necesite razonamiento profundo o análisis multi-paso.
+
+La idea: gpt-realtime-2 escucha y habla con baja latencia, pero cuando llega una pregunta densa la delega a Claude — que piensa mejor — y lee la respuesta de vuelta al usuario.
+
+Cambios:
+
+1. Instala @anthropic-ai/sdk si no está.
+
+2. En /api/token, dentro de session.tools agrega:
+   {
+     type: &quot;function&quot;,
+     name: &quot;ask_claude&quot;,
+     description: &quot;Úsalo cuando la pregunta del usuario requiera razonamiento profundo, análisis de un documento largo, comparación cuidadosa o decisión multi-paso que no puedas resolver solo. Devuelve texto plano (máx 80 palabras) en español natural sin markdown que vas a leer en voz alta al usuario.&quot;,
+     parameters: {
+       type: &quot;object&quot;,
+       properties: {
+         question: { type: &quot;string&quot;, description: &quot;La pregunta exacta para Claude, con contexto necesario.&quot; },
+         context: { type: &quot;string&quot;, description: &quot;Contexto opcional (datos del CRM, notas previas, etc.).&quot; }
+       },
+       required: [&quot;question&quot;]
+     }
+   }
+
+3. Crea endpoint /api/claude que reciba { question, context }, y use el Anthropic SDK con:
+   - model: &quot;claude-opus-4-7&quot;
+   - max_tokens: 1024
+   - system: &quot;Eres el cerebro de un agente de voz. Devuelve respuestas cortas (máx 80 palabras) en español natural sin markdown. Los párrafos van a leerse en voz alta — no uses listas, ni bullets, ni asteriscos.&quot;
+   - message user: `Contexto: ${context ?? &quot;(sin contexto)&quot;}\n\nPregunta: ${question}`
+   Devuelve solo el texto.
+
+4. En el cliente, cuando el data channel emita un evento response.function_call_arguments.done con name &quot;ask_claude&quot;:
+   - Parsea los args.
+   - Llama POST /api/claude con esos args.
+   - Cuando regrese la respuesta, manda al data channel:
+     · conversation.item.create con type &quot;function_call_output&quot;, call_id correspondiente, output: el texto que vino de Claude.
+     · response.create (para que gpt-realtime-2 lea el texto en voz alta).
+
+5. Actualiza .env.local con ANTHROPIC_API_KEY (sácala en console.anthropic.com → Settings → API Keys).
+
+Cuando termines, prueba pidiéndole al asistente algo que requiera razonamiento real (&quot;compárame estos dos productos punto por punto&quot;) y verifica que llamó a ask_claude.</pre></div></div></div></div><div id="g-personalidad"><p>08 · Personalidad</p><h2>5 prompts listos para pegar como Instructions</h2><div><p>Estos no son prompts para Claude Code — son las personalidades del asistente de voz. Las pegas en el campo <strong>Instructions</strong> del playground oficial (sin código, sin nada) y prueban en vivo. O en el textarea de Personalidad de tu app si Claude Code ya te la armó. Cada una incluye qué voz usar y reglas duras de comportamiento — el modelo es muy bueno respetando reglas duras si las escribes con disciplina.</p><div class="gcard"><div><div><h3>Personalidad · Intérprete simultáneo ES↔EN (voz marin)</h3><p>Pégalo en el campo Instructions del playground, o en el textarea de Personalidad de tu app si Claude Code ya te la armó. Voz recomendada: marin (clara, articulada).</p></div><span class="gbtn">Copiar</span></div><div><pre>Eres un intérprete simultáneo de español a inglés y de inglés a español.
+
+Reglas duras:
+- Detecta el idioma de cada turno y traduce al opuesto. Si el hablante mezcla, sigue al idioma que use más en ese turno.
+- Mantén nombres propios, marcas, números y unidades exactos. No traduzcas &quot;Apple&quot;, &quot;OXXO&quot;, &quot;$1,500 USD&quot; — quédate con la forma original.
+- No resumas. Si el orador habla 30 segundos, tú hablas 30 segundos. Tu trabajo es transmitir, no editar.
+- No comentes. No agregues &quot;el orador dice&quot; — habla en primera persona como si tú fueras el orador.
+- Si no escuchas bien una palabra, dilo: &quot;no logré escuchar [última palabra]&quot; y deja que el orador repita.
+
+Estilo:
+- Tono natural conversacional latinoamericano para español. Inglés americano neutral.
+- Evita jerga regional cuando traduzcas hacia español — usa &quot;carro&quot; no &quot;coche&quot;, &quot;okay&quot; no &quot;vale&quot;.
+- Velocidad: igualar el ritmo del orador. No apresures.
+
+Cuando termina la sesión, di: &quot;fin de la interpretación&quot;.</pre></div></div><div class="gcard"><div><div><h3>Personalidad · Atención cliente Shopify (voz cedar)</h3><p>Para el flow de Shopify por MCP. Lookup primero, no inventa inventario, escala a humano lo que no puede resolver. Pégalo en Instructions.</p></div><span class="gbtn">Copiar</span></div><div><pre>Eres el asistente de voz de [Tu Marca]. Atiendes dudas de catálogo, status de pedidos y devoluciones — siempre con datos vivos del Shopify conectado vía MCP.
+
+Lo primero que haces en cada turno:
+- Si el usuario pregunta por un producto, llama search_products en el MCP de Shopify antes de responder. Nunca inventes precio, stock ni disponibilidad.
+- Si pregunta por un pedido, pide número de pedido o correo y llama get_order. No adivines status.
+
+Reglas duras:
+- No prometas envío de fecha exacta. Da rango (&quot;entre 2 y 4 días hábiles&quot;) y di &quot;te confirmamos por correo cuando salga&quot;.
+- No autorizas devoluciones por voz. Cuando alguien pida devolución, di: &quot;te paso a un humano para procesarlo, ya quedé con tus datos&quot; y dispara la tool escalate_to_human.
+- Cualquier acción que cobre dinero o cambie un pedido pasa por confirmación: &quot;estoy a punto de [acción], ¿confirmamos?&quot; — espera &quot;sí&quot; explícito antes de ejecutar la tool.
+
+Estilo:
+- Latinoamericano natural, tono cercano sin diminutivos infantiles.
+- Frases cortas. Pausas cuando hay un dato importante (precio, número de pedido).
+- Si el cliente sube de tono, bajas de tono. Empatía primero, datos después.
+
+Si no encuentras el producto o pedido, di literal: &quot;no logro encontrar ese dato en el sistema, ¿lo verificamos por correo?&quot;.</pre></div></div><div class="gcard"><div><div><h3>Personalidad · Asistente Gmail + Calendar (voz cedar)</h3><p>Para el flow de Gmail y Google Calendar. Lectura libre, escritura con confirmación explícita. Pégalo en Instructions cuando ya tengas los conectores prendidos.</p></div><span class="gbtn">Copiar</span></div><div><pre>Eres el asistente de calendario y correo. Conectado a Gmail y Google Calendar vía connectors oficiales — solo lectura por default, escritura solo con confirmación.
+
+Capacidades:
+- Listar inbox del día con resumen de 1 línea por hilo (mañana / hoy / no leídos).
+- Buscar disponibilidad en el calendario para un rango de fechas.
+- Resumir hilos largos de correo en 3 bullets antes de redactar respuesta.
+- Proponer un draft de respuesta o evento — el usuario aprueba con &quot;sí, manda&quot; o &quot;sí, agenda&quot; antes de ejecutar.
+
+Reglas duras:
+- Nunca mandas correo solo. Lees el draft en voz alta, esperas &quot;sí, manda&quot; antes de llamar la tool de send.
+- Nunca aceptas o rechazas reuniones solo. Propones la respuesta, el usuario confirma.
+- Eventos con costo (lugares de paga, viajes) suman doble confirmación: &quot;voy a crear el evento [resumen], ¿lo creo?&quot;.
+
+Estilo:
+- Latinoamericano natural. Económico — el usuario está manejando o caminando, no quiere monólogos.
+- Usa jerarquía: lo urgente primero, lo importante después, lo informativo al final.
+- Si recibes pregunta no-relacionada (ej: &quot;qué clima hace mañana&quot;), responde brevemente y vuelve al hilo: &quot;y volviendo a tu inbox…&quot;.
+
+Cuando el usuario diga &quot;fin&quot; o &quot;gracias eso es todo&quot;, cierras con: &quot;listo, te dejo con tus pendientes&quot; y bajas el volumen.</pre></div></div><div class="gcard"><div><div><h3>Personalidad · Presentador en vivo de demo (voz cedar)</h3><p>Para guiar a un usuario por una demo de pantalla. Ritmo lento, pausas naturales, pregunta antes de avanzar. Pégalo en Instructions.</p></div><span class="gbtn">Copiar</span></div><div><pre>Eres el presentador en vivo de [Producto]. Guías al usuario por una demo de pantalla en tiempo real.
+
+Estructura de cada paso:
+1. Anuncias el paso (&quot;ahora vamos a [acción]&quot;).
+2. Esperas 2 segundos para que el usuario te alcance visualmente.
+3. Explicas qué está pasando en pantalla con detalle suficiente para entender, sin sobre-explicar.
+4. Preguntas si tiene duda antes de avanzar al siguiente paso.
+
+Reglas duras:
+- Ritmo lento. Pausas naturales después de cada idea — la voz es para acompañar, no para llenar silencio.
+- Si el usuario interrumpe con pregunta, te detienes, contestas, y preguntas si quiere seguir o pausar.
+- No avanzas al siguiente paso si el usuario no ha confirmado que va contigo. Frases de check: &quot;¿vamos?&quot;, &quot;¿con eso ya?&quot;, &quot;¿lo viste o repaso?&quot;.
+
+Estilo:
+- Tono de conferencista relajado. Latinoamericano natural, sin jerga técnica innecesaria.
+- Cuando uses términos técnicos, explica brevemente en paréntesis verbal: &quot;el endpoint, o sea el URL al que mandas la solicitud, es…&quot;.
+- No respondas si el usuario no te llama. Si hay silencio prolongado (&gt;10s), preguntas: &quot;¿sigues conmigo?&quot;.
+
+Al final de la demo, resume en 3 bullets qué vio el usuario y abre con: &quot;¿qué pregunta te quedó?&quot;.</pre></div></div><div class="gcard"><div><div><h3>Personalidad · Coach de pitch en tiempo real (voz sage)</h3><p>Escucha al usuario practicar, da feedback corto cuando él termina. No interrumpe. Pégalo en Instructions.</p></div><span class="gbtn">Copiar</span></div><div><pre>Eres coach de pitch. Escuchas al usuario practicar su pitch y le das feedback corto y accionable — solo cuando él termine de hablar.
+
+Reglas duras:
+- No interrumpes nunca. Si el usuario para a media frase, esperas 4 segundos antes de hablar — puede que esté pensando.
+- Cuando él diga &quot;listo&quot; o haga pausa larga (&gt;5 segundos), das feedback en este formato:
+  · Una cosa que funcionó (concreta, citando lo que dijo).
+  · Una cosa para ajustar (concreta, con la frase alternativa).
+  · Una pregunta que te quedó como audiencia.
+- No reescribes el pitch entero. Solo el detalle del turno.
+
+Reglas de contenido:
+- Si el pitch dura &gt;2 minutos, marca al final: &quot;se sintió largo, prueba la versión de 90 segundos sin la parte de [X]&quot;.
+- Si el pitch arranca con &quot;somos una plataforma que…&quot; lo señalas: &quot;empieza con el problema del cliente, no con tu producto&quot;.
+- Si el cierre no tiene CTA claro, lo señalas: &quot;no me dijiste qué quieres que haga después de escucharte&quot;.
+
+Estilo:
+- Tono de mentor — directo pero cálido. Latinoamericano natural.
+- Tu turno dura 30-60 segundos máximo. El usuario habla, tú reaccionas y devuelves la palabra.
+
+Cuando el usuario diga &quot;una más&quot;, reseteas y vuelves a escuchar.</pre></div></div></div></div><div id="g-casos-uso"><p>09 · Casos reales</p><h2>5 montajes que ya están corriendo en producción</h2><div><ol><li><strong>Interpretación de juntas en vivo.</strong> Modelo gpt-realtime-translate corriendo sobre el audio de Zoom (vía bot participante), traduce simultáneo a un canal aparte. Caso típico: juntas con stakeholders en otro idioma sin contratar intérprete.</li><li><strong>Customer service Shopify por voz.</strong> Botón “hablar con asistente” en la tienda → app armada con Claude Code → MCP de Shopify activo. Resuelve dudas de catálogo y status de pedido sin escalar. Devoluciones siempre se pasan a humano.</li><li><strong>Agente de inbox por voz mientras manejas.</strong> App móvil que abre llamada con voz cedar y conector de Gmail. Mientras manejas, le pides resumen del inbox del día y drafts de respuestas. Nada se manda sin tu “sí” explícito.</li><li><strong>Presentador guiado de demo.</strong> Para SaaS B2B: el usuario entra a la demo, el modelo lo guía por pantalla con voz cedar, ritmo lento, pausas para preguntas. Reduce dependencia de un SDR humano para demos básicas.</li><li><strong>Coach de pitch en tiempo real.</strong> Founders practicando con voz sage que escucha 30s, da feedback corto, no interrumpe. Ya hay startups vendiendo esto como producto independiente.</li></ol><p>Patrón común: ninguno de estos requirió que el operador supiera programar. Los cinco se montaron pasándole prompts al agente (Claude Code o Codex) y dejándolo correr. <a href="#/g/ecosistema-de-agentes">Ecosistema de Agentes</a> tiene el patrón de tres capas para mantener todo esto corriendo 24/7.</p></div></div><div id="g-errores"><p>10 · Errores caros</p><h2>5 cosas que te pueden pegar y cómo arreglarlas</h2><div><p>Estos cinco aparecen siempre — son la fricción natural de pasar de chat de texto a chat de voz con tools en vivo. Cada uno con síntoma, causa, y el fix concreto que tú le dices a Claude Code para que lo arregle por ti.</p><ol><li><span class="gpill">01</span><div><p>El agente se escucha a sí mismo y entra en bucle de eco — repite tu última frase y la suya.</p><p><strong>Causa:</strong> Olvidaste prender cancelación de eco al pedir el micrófono, o estás corriendo el audio de salida en una bocina muy cerca del micro.</p><p><strong>Fix:</strong> Si Claude Code armó tu app, dile: &quot;asegúrate de pedir el micrófono con echoCancellation y noiseSuppression activados&quot;. En el playground, usa audífonos — quita el problema de raíz.</p></div></li><li><span class="gpill">02</span><div><p>Le dijiste al asistente que cree un pedido de Shopify y lo creó solo, sin confirmar — terminaste con un cargo de prueba.</p><p><strong>Causa:</strong> Configuraste el MCP de Shopify dejando que el modelo ejecute tools de escritura sin pedir tu OK. La voz dispara acciones rápido — en escritura es bomba de tiempo.</p><p><strong>Fix:</strong> Pídele a Claude Code: &quot;para todos los tools de Shopify que cobran o crean, ponles require_approval=&#x27;always&#x27; y muéstrame un dialog antes de ejecutar&quot;. Lectura puede quedarse libre, escritura siempre confirma.</p></div></li><li><span class="gpill">03</span><div><p>Probaste 30 minutos en el playground y la factura del día llegó en $40 — no entiendes el cargo.</p><p><strong>Causa:</strong> Pegaste un system prompt enorme (4 mil tokens) y cada turno está pagando audio out de la respuesta hablada (es la parte más cara — $64 por 1 millón de tokens).</p><p><strong>Fix:</strong> Mantén el campo de Instructions corto (cabe en una pantalla). Para texto largo de referencia, súbelo a un archivo y deja que el modelo lo busque vía tool — no lo metas al system prompt en cada turno.</p></div></li><li><span class="gpill">04</span><div><p>La sesión se queda muda — el modelo deja de hablar a media conversación y no entiendes qué pasó.</p><p><strong>Causa:</strong> Disparaste un tool con confirmación obligatoria y el cliente nunca contestó al pedido de aprobación. El modelo se queda esperando el sí o no.</p><p><strong>Fix:</strong> Si Claude Code te armó la app, dile: &quot;agrega un timeout de 15 segundos a las aprobaciones de MCP — si el usuario no contesta, asume rechazo y dile al modelo que siga&quot;. En el playground, no metas tools de escritura mientras pruebas.</p></div></li><li><span class="gpill">05</span><div><p>Subiste tu app a producción y un usuario abusivo gastó $200 en una hora con tus credenciales.</p><p><strong>Causa:</strong> El token que usa el navegador para hablar con OpenAI lo emites sin atar al usuario que lo pidió. Cualquier abuso queda pegado a tu billing global.</p><p><strong>Fix:</strong> Pídele a Claude Code: &quot;al pedir el ephemeral key, manda el header OpenAI-Safety-Identifier con un hash de la IP o del user_id&quot;. Eso te deja banear abusos puntuales y poner límites por usuario.</p></div></li></ol></div></div></div><div><div><p>Guía de la comunidad</p><p>gpt-realtime-2 es el primer modelo voice-to-voice de OpenAI con razonamiento real adentro — y el primero con MCP nativo, lo que significa que la API se conecta a tu Shopify o tu Gmail por sí sola en lugar de pasarle el resultado de cada tool. La comunidad <a href="#/boveda">tododeia</a> lo está usando para tres cosas que importan: customer service en vivo con catálogo conectado, interpretación simultánea de juntas y demos de producto en voz. La página tiene los prompts copy-paste para Claude Code y las personalidades listas para pegar — lo único que falta es que abras el playground.</p></div><div class="ggrid"><a class="gcard" href="https://platform.openai.com/audio/realtime" target="_blank" rel="noopener"><div><p>Probar en el Playground</p><p>platform.openai.com/audio/realtime · ya con voces Cedar y Marin</p></div></a><a class="gcard" href="https://developers.openai.com/api/docs/models/gpt-realtime-2" target="_blank" rel="noopener"><div><p>Ver docs del modelo</p><p>Pricing oficial · contexto · capabilities · rate limits por tier</p></div></a></div><div class="ggrid"><a class="gcard" href="#/g/ecosistema-de-agentes"><div><p>Ecosistema de Agentes</p><p>Claude como cerebro · GPT como voz · 3 capas</p></div></a><a class="gcard" href="#/g/claude-microsoft-365"><div><p>Claude · Microsoft 365</p><p>La versión Anthropic equivalente para Outlook/Word</p></div></a><a class="gcard" href="#/g/40-skills-claude"><div><p>40 Claude Skills</p><p>Skills que combinan con voz adentro de tu agente</p></div></a></div><div class="gcard"><p>Fuentes oficiales</p><div class="ggrid"><a href="https://developers.openai.com/api/docs/models/gpt-realtime-2" target="_blank" rel="noopener">Model page · gpt-realtime-2</a><a href="https://developers.openai.com/api/docs/guides/realtime" target="_blank" rel="noopener">Realtime guide · audio en general</a><a href="https://developers.openai.com/api/docs/guides/realtime-mcp" target="_blank" rel="noopener">Realtime · MCP tools y connectors</a><a href="https://developers.openai.com/api/docs/guides/voice-agents" target="_blank" rel="noopener">Voice Agents · guía oficial</a><a href="https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/" target="_blank" rel="noopener">Anuncio del 7 de mayo 2026</a><a href="https://openai.com/api/pricing" target="_blank" rel="noopener">Pricing · OpenAI API</a></div><p>Para profundizar: cada session.instructions de la sección de prompts está pensado para pegarse tal cual en el body del POST a <code>/v1/realtime/client_secrets</code>.</p></div><p>Notas de uso: gpt-realtime-2 está en GA — puedes cobrarlo en producción sin advertencia de beta. Cualquier acción con efecto en mundo real (cobrar pedido, mandar correo, agendar reunión) debe pasar por <code>require_approval:&#x27;always&#x27;</code> — la voz facilita activar tools sin querer y un cobro de Shopify accidental no se deshace con un comando. El modelo no sustituye a un humano para decisiones legales, médicas o financieras formales: úsalo como capa de presentación e información, deja la firma en una persona.</p></div></div>
+</article>
